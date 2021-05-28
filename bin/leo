@@ -1,0 +1,2 @@
+# java -cp ${BASH_SOURCE%/*}/../build/libs/leo-script-jvm-0.25.jar leo25.MainKt $@
+${BASH_SOURCE%/*}/../build/bin/macosX64/releaseExecutable/leo-script.kexe $@
