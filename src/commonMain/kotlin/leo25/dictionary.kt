@@ -57,13 +57,11 @@ val anyEnd: End = AnythingEnd
 fun resolution(dictionary: Dictionary): Resolution = ResolverResolution(dictionary)
 fun resolution(binding: Binding): Resolution = BindingResolution(binding)
 
-fun Dictionary.update(token: Token, fn: (Resolution?) -> Resolution?): Dictionary =
-	fn(tokenToResolutionMap.get(token)).let { resolutionOrNull ->
-		Dictionary(
-			if (resolutionOrNull == null) tokenToResolutionMap.remove(token)
-			else tokenToResolutionMap.put(token to resolutionOrNull)
-		)
-	}
+fun Dictionary.update(token: Token, fn: (Resolution?) -> Resolution): Dictionary =
+	Dictionary(
+		null
+			?: tokenToResolutionMap.updateOrNull(token) { fn(it) }
+			?: tokenToResolutionMap.put(token to fn(null)))
 
 fun Dictionary.updateContinuation(token: Token, fn: Dictionary.() -> Resolution): Dictionary =
 	update(token) { resolutionOrNull ->
