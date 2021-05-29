@@ -1,11 +1,9 @@
 test
+  frog
   try kiss
-  is equal quote try success kiss
+  is equal quote try success kiss frog
 
 test
-  try boom.fail
-  is equal quote try error boom
-
-test
-  try fail bool
-  is equal quote try error syntax
+  frog
+  try kick.fail
+  is equal quote try error kick frog

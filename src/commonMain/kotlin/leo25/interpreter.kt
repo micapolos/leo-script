@@ -104,6 +104,7 @@ fun Interpreter.plusStaticOrNullLeo(scriptField: ScriptField): Leo<Interpreter?>
 		commentName -> leo
 		doName -> plusDoLeo(scriptField.rhs)
 		doingName -> plusDoingOrNullLeo(scriptField.rhs)
+		failName -> plusFailLeo(scriptField.rhs)
 		isName -> plusIsOrNullLeo(scriptField.rhs)
 		privateName -> plusPrivateLeo(scriptField.rhs)
 		quoteName -> plusQuoteLeo(scriptField.rhs)
@@ -124,7 +125,6 @@ fun Interpreter.plusDynamicOrNullLeo(field: Field): Leo<Interpreter?> =
 		beName -> plusBeLeo(field.rhs)
 		evaluateName -> plusEvaluateLeo(field.rhs)
 		exampleName -> plusExampleLeo(field.rhs)
-		failName -> plusFailLeo(field.rhs)
 		hashName -> plusHashOrNullLeo(field.rhs)
 		takeName -> plusTakeLeo(field.rhs)
 		textName -> plusTextOrNullLeo(field.rhs)
@@ -169,9 +169,10 @@ fun Interpreter.plusEvaluateLeo(rhs: Rhs): Leo<Interpreter> =
 fun Interpreter.plusExampleLeo(rhs: Rhs): Leo<Interpreter> =
 	leo.also { rhs.valueOrThrow }
 
-fun Interpreter.plusFailLeo(rhs: Rhs): Leo<Interpreter> =
-	if (!rhs.valueOrThrow.isEmpty) value(syntaxName).throwError()
-	else leo.also { value.throwError() }
+fun Interpreter.plusFailLeo(rhs: Script): Leo<Interpreter> =
+	dictionary.valueLeo(value, rhs).bind { value ->
+		leo.also { value.throwError() }
+	}
 
 fun Interpreter.plusTest2Leo(test: Script): Leo<Interpreter> =
 	test.matchInfix(isName) { lhs, rhs ->

@@ -4,6 +4,7 @@ use test comment
 use test do
 use test evaluate
 use test example
+use test fail
 use test get
 use test give
 use test hash
