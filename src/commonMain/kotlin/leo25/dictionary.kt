@@ -197,8 +197,8 @@ fun Dictionary.applyLeo(block: Block, given: Value): Leo<Value> =
 	}
 
 fun Dictionary.applyRepeatingLeo(script: Script, given: Value): Leo<Value> =
-	given.leo.bindRepeating { given ->
-		set(given).valueLeo(script)
+	given.leo.bindRepeating { repeatingGiven ->
+		set(repeatingGiven).valueLeo(script)
 	}
 
 fun Dictionary.applyRecursingLeo(script: Script, given: Value): Leo<Value> =
@@ -232,13 +232,13 @@ fun Dictionary.letDefinitionOrNull(rhs: Script): Leo<Definition?> =
 		?: letBeDefinitionOrNull(rhs)
 
 fun Dictionary.letDoDefinitionOrNull(rhs: Script): Definition? =
-	rhs.matchInfix(doName) { lhs, rhs ->
-		definition(pattern(lhs), binding(function(body(rhs))))
+	rhs.matchInfix(doName) { lhs, doRhs ->
+		definition(pattern(lhs), binding(function(body(doRhs))))
 	}
 
 fun Dictionary.letBeDefinitionOrNull(rhs: Script): Leo<Definition?> =
-	rhs.matchInfix(beName) { lhs, rhs ->
-		valueLeo(rhs).bind { value ->
+	rhs.matchInfix(beName) { lhs, beRhs ->
+		valueLeo(beRhs).bind { value ->
 			definition(pattern(lhs), binding(value)).leo
 		}
 	} ?: leo(null)

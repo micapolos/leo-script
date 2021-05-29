@@ -10,4 +10,4 @@ actual val nativeDictionary: Dictionary
 		.plus(numberPlusNumberDefinition)
 		.plus(numberMinusNumberDefinition)
 		.plus(numberTimesNumberDefinition)
-		//.plus(numberIsLessThanNumberDefinition)
+		.plus(numberIsLessThanNumberDefinition)

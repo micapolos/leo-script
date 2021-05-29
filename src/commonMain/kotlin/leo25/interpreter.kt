@@ -1,8 +1,23 @@
 package leo25
 
-import leo.base.*
+import leo.base.fold
+import leo.base.orNullIf
+import leo.base.reverse
 import leo13.base.negate
-import leo14.*
+import leo14.FieldScriptLine
+import leo14.Literal
+import leo14.LiteralScriptLine
+import leo14.Script
+import leo14.ScriptField
+import leo14.ScriptLine
+import leo14.fieldOrNull
+import leo14.isEmpty
+import leo14.lineSeq
+import leo14.literal
+import leo14.matchEmpty
+import leo14.matchInfix
+import leo14.onlyLineOrNull
+import leo14.plus
 import leo25.natives.nativeDictionary
 import leo25.parser.scriptOrThrow
 
@@ -154,26 +169,6 @@ fun Interpreter.plusExampleLeo(rhs: Rhs): Leo<Interpreter> =
 fun Interpreter.plusFailLeo(rhs: Rhs): Leo<Interpreter> =
 	if (!rhs.valueOrThrow.isEmpty) value(syntaxName).throwError()
 	else leo.also { value.throwError() }
-
-// TODO: Refactor to check that the test contains code which evaluates to "is yes / is no",
-// and allow using any check.
-fun Interpreter.plusTestLeo(test: Script): Leo<Interpreter> =
-	test.matchInfix(isName) { lhs, rhs ->
-		rhs.matchPrefix(equalName) { rhs ->
-			dictionary.valueLeo(lhs).bind { lhs ->
-				dictionary.valueLeo(rhs).bind { rhs ->
-					if (lhs.equals(rhs)) leo
-					else leo.also {
-						value(testName fieldTo test.value)
-							.plus(
-								causeName fieldTo
-									lhs.plus(isName fieldTo value(notName fieldTo value(equalName fieldTo rhs)))
-							).throwError()
-					}
-				}
-			}
-		}
-	}!!
 
 fun Interpreter.plusTest2Leo(test: Script): Leo<Interpreter> =
 	test.matchInfix(isName) { lhs, rhs ->
