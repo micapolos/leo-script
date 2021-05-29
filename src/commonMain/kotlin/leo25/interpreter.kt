@@ -39,6 +39,9 @@ fun Interpreter.set(context: Context): Interpreter =
 fun Dictionary.valueLeo(script: Script): Leo<Value> =
 	context.interpreterLeo(script).map { it.value }
 
+fun Dictionary.valueLeo(value: Value, script: Script): Leo<Value> =
+	context.interpreter(value).plusLeo(script).map { it.value }
+
 fun Dictionary.fieldsValueLeo(script: Script): Leo<Value> =
 	value().leo.fold(script.lineSeq.reverse) { line ->
 		bind { value ->
@@ -239,8 +242,7 @@ fun Interpreter.plusTraceOrNullLeo(rhs: Script): Leo<Interpreter?> =
 		?: leo(null)
 
 fun Interpreter.plusTryLeo(rhs: Script): Leo<Interpreter> =
-	if (!value.isEmpty) value(syntaxName).throwError()
-	else dictionary.valueLeo(rhs)
+	dictionary.valueLeo(value, rhs)
 		.bind { value -> setLeo(value(tryName fieldTo value(successName fieldTo value))) }
 		.catch { throwable -> setLeo(value(tryName fieldTo throwable.value)) }
 

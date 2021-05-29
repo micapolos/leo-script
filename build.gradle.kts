@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.5.10"
+    java
 }
 
 group = "micapolos"
@@ -24,7 +25,27 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
+        withJava()
+        compilations {
+            val main = getByName("main")
+            tasks {
+                register<Jar>("buildFatJar") {
+                    group = "application"
+                    dependsOn(build)
+                    manifest {
+                        attributes["Main-Class"] = "leo25.MainKt"
+                    }
+                    from(
+                        configurations
+                            .getByName("compileClasspath")
+                            .map { if (it.isDirectory) it else zipTree(it) },
+                        main.output.classesDirs)
+                    archiveBaseName.set("${project.name}-fat")
+                }
+            }
+        }
     }
+
     sourceSets {
         val commonMain by getting
         val commonTest by getting {

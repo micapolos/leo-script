@@ -6,6 +6,7 @@ import leo14.line
 import leo14.lineTo
 import leo14.literal
 import leo14.script
+import leo25.natives.minusName
 import kotlin.test.Test
 
 class InterpreterTest {
@@ -302,6 +303,31 @@ class InterpreterTest {
 	}
 
 	@Test
+	fun doRepeatingLong() {
+		script(
+			line(literal(10000)),
+			doName lineTo script(
+				repeatingName lineTo script(
+					numberName lineTo script(),
+					isName lineTo script(equalName lineTo script(line(literal(0)))),
+					switchName lineTo script(
+						yesName lineTo script(doName lineTo script(line(literal("OK")))),
+						noName lineTo script(
+							doName lineTo script(
+								numberName lineTo script(),
+								minusName lineTo script(line(literal(1))),
+								repeatName lineTo script(),
+							)
+						)
+					)
+				)
+			)
+		)
+			.interpret
+			.assertEqualTo(script(line(literal("OK"))))
+	}
+
+	@Test
 	fun doRecursing() {
 		script(
 			"number" lineTo script("one"),
@@ -554,19 +580,21 @@ class InterpreterTest {
 	@Test
 	fun try_success() {
 		script(
-			tryName lineTo script("foo")
+			"foo" lineTo script(),
+			tryName lineTo script("bar")
 		)
 			.interpret
-			.assertEqualTo(script(tryName lineTo script(successName lineTo script("foo"))))
+			.assertEqualTo(script(tryName lineTo script(successName lineTo script("bar" lineTo script("foo")))))
 	}
 
 	@Test
 	fun try_error() {
 		script(
-			tryName lineTo script(line("boom"), line("fail"))
+			"foo" lineTo script(),
+			tryName lineTo script(line("bar"), line("fail"))
 		)
 			.interpret
-			.assertEqualTo(script(tryName lineTo script(errorName lineTo script("boom"))))
+			.assertEqualTo(script(tryName lineTo script(errorName lineTo script("bar" lineTo script("foo")))))
 	}
 
 	@Test
