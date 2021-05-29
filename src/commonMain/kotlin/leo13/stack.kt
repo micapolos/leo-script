@@ -321,3 +321,18 @@ val Stack<Char>.charString: String get() = array.toCharArray().concatToString()
 
 fun <T> StackLink<T>.updateValue(fn: (T) -> T): StackLink<T> =
 	StackLink(stack, fn(value))
+
+// TODO: Refactor it to be tail recursive
+fun <T: Any> Stack<T>.updateFirstOrNull(fn: (T) -> T?): Stack<T>? =
+	when (this) {
+		is EmptyStack -> null
+		is LinkStack -> {
+			val updated = fn(link.value)
+			if (updated != null) stack(link.stack linkTo updated)
+			else {
+				val stack = link.stack.updateFirstOrNull(fn)
+				if (stack != null) stack(stack linkTo link.value)
+				else null
+			}
+		}
+	}
