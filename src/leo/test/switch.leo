@@ -14,8 +14,8 @@ test
 
 test
   try
-    shape triangle height
+    shape triangle height 10
     switch
-      circle red
-      rectangle blue
+      circle doing circle.radius
+      rectangle doing rectangle.height
   is equal quote try error switch
