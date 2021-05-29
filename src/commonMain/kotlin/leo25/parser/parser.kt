@@ -30,8 +30,8 @@ fun parser(string: String, startIndex: Int): Parser<String> =
 
 fun parser(string: String): Parser<String> = parser(string, 0)
 
-fun unitParser(char: Char): Parser<Unit> = parser(char).map { Unit }
-fun unitParser(string: String): Parser<Unit> = parser(string).map { Unit }
+fun unitParser(char: Char): Parser<Unit> = parser(char).map { }
+fun unitParser(string: String): Parser<Unit> = parser(string).map { }
 
 fun charParser(fn: (Char) -> Boolean): Parser<Char> =
 	partialParser { char ->
@@ -245,42 +245,6 @@ fun <T> Parser<T>.stackLinkSeparatedBy(parser: Parser<Unit>): Parser<StackLink<T
 val Parser<*>.countParser: Parser<Int>
 	get() =
 		stackParser.map { it.size }
-
-val indentParser: Parser<Int> get() = tabParser.countParser
-
-fun Script.plusParser(indent: Int): Parser<Script> =
-	indentParser
-		.bind { indent ->
-			lineParser(indent)
-		}
-		.bind { line ->
-			TODO()
-		}
-
-fun lineParser(indent: Int): Parser<ScriptLine> =
-	nameParser.bind { name ->
-		nullParser<ScriptLine>()
-			.firstCharOr(
-				unitParser(' ').bind {
-					lineParser(indent).map { line ->
-						name lineTo script(line)
-					}
-				})
-			.firstCharOr(
-				unitParser('.').bind {
-					script(name).plusParser(indent).map { script ->
-						name lineTo script
-					}
-				}
-			)
-			.firstCharOr(
-				unitParser('\n').bind {
-					script().plusParser(indent.inc()).map { script ->
-						name lineTo script
-					}
-				}
-			)
-	}
 
 val stringParser: Parser<String>
 	get() =

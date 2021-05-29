@@ -35,9 +35,6 @@ fun Dictionary.resolutionOrNull(link: Link): Resolution? =
 		?.dictionaryOrNull
 		?.resolutionOrNull(link.value)
 
-fun Dictionary.resolutionOrNull(function: Function): Resolution? =
-	null
-
 fun Dictionary.resolutionOrNull(field: Field): Resolution? =
 	orNull
 		?.resolutionOrNull(token(begin(field.name)))
@@ -47,7 +44,7 @@ fun Dictionary.resolutionOrNull(field: Field): Resolution? =
 fun Dictionary.resolutionOrNull(rhs: Rhs): Resolution? =
 	when (rhs) {
 		is ValueRhs -> resolutionOrNull(rhs.value)
-		is FunctionRhs -> resolutionOrNull(rhs.function)
+		is FunctionRhs -> null
 		is NativeRhs -> resolutionOrNull(rhs.native)
 	} ?: resolutionOrNull(token(anyEnd))
 

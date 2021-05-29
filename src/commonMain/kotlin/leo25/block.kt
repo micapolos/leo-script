@@ -11,13 +11,6 @@ data class Block(val typeOrNull: BlockType?, val untypedScript: Script)
 fun BlockType.block(script: Script) = Block(this, script)
 fun defaultBlock(script: Script) = Block(null, script)
 
-val BlockType.name
-	get() =
-		when (this) {
-			BlockType.REPEATEDLY -> repeatingName
-			BlockType.RECURSIVELY -> recursingName
-		}
-
 val String.blockTypeOrNull: BlockType?
 	get() =
 		when (this) {
@@ -31,7 +24,5 @@ fun block(script: Script): Block =
 
 fun typedBlockOrNull(script: Script): Block? =
 	script.linkOrNull?.onlyLineOrNull?.fieldOrNull?.let { field ->
-		field.string.blockTypeOrNull?.let { blockType ->
-			blockType.block(field.rhs)
-		}
+		field.string.blockTypeOrNull?.block(field.rhs)
 	}

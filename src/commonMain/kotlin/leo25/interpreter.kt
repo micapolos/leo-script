@@ -98,7 +98,7 @@ fun Interpreter.plusDefinitionsOrNullLeo(scriptField: ScriptField): Leo<Interpre
 fun Interpreter.plusStaticOrNullLeo(scriptField: ScriptField): Leo<Interpreter?> =
 	when (scriptField.string) {
 		asName -> plusAsLeo(scriptField.rhs)
-		commentName -> plusCommentLeo(scriptField.rhs)
+		commentName -> leo
 		doName -> plusDoLeo(scriptField.rhs)
 		doingName -> plusDoingOrNullLeo(scriptField.rhs)
 		isName -> plusIsOrNullLeo(scriptField.rhs)
@@ -224,8 +224,8 @@ fun Interpreter.plusQuoteLeo(rhs: Script): Leo<Interpreter> =
 	setLeo(value.script.plus(rhs).value)
 
 fun Interpreter.plusSetLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.fieldsValueLeo(rhs).bind { rhs ->
-		setLeo(value.setOrThrow(rhs))
+	dictionary.fieldsValueLeo(rhs).bind { rhsValue ->
+		setLeo(value.setOrThrow(rhsValue))
 	}
 
 fun Interpreter.plusSwitchLeo(rhs: Script): Leo<Interpreter> =
@@ -279,9 +279,6 @@ fun Interpreter.plusIsOrNullLeo(rhs: Script, negate: Boolean = false): Leo<Inter
 fun Interpreter.plusIsMatchingLeo(rhs: Script, negate: Boolean): Leo<Interpreter> =
 	setLeo(value.isMatching(pattern(rhs), negate))
 
-fun Interpreter.plusCommentLeo(rhs: Script): Leo<Interpreter> =
-	leo
-
 fun Interpreter.plusPrivateLeo(rhs: Script): Leo<Interpreter> =
 	context.private.interpreterLeo(rhs).map { interpreter ->
 		use(interpreter.context.publicDictionary)
@@ -303,8 +300,8 @@ fun Interpreter.plusValueOrNullLeo(rhs: Rhs): Leo<Interpreter?> =
 
 
 fun Interpreter.plusWithLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.valueLeo(rhs).bind { rhs ->
-		setLeo(value + rhs)
+	dictionary.valueLeo(rhs).bind { rhsValue ->
+		setLeo(value + rhsValue)
 	}
 
 val Interpreter.dictionary

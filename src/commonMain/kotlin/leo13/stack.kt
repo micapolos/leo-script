@@ -314,9 +314,6 @@ val Stack<*>.size
 	get() =
 		0.fold(this) { inc() }
 
-operator fun <V> StackLink<V>.component1() = stack
-operator fun <V> StackLink<V>.component2() = value
-
 fun <V, R> Stack<V>.split(fn: (Stack<V>, V) -> R): R? =
 	linkOrNull?.run { fn(stack, value) }
 

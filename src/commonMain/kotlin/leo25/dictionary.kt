@@ -269,8 +269,8 @@ fun Dictionary.updateStructureLeo(value: Value, scriptField: ScriptField): Leo<V
 fun Dictionary.updateStructureLeo(link: Link, scriptField: ScriptField): Leo<Link> =
 	if (link.field.name == scriptField.string)
 		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.leo.bind { rhs ->
-			context.interpreter(rhs).plusLeo(scriptField.rhs).map { rhs ->
-				(link.value linkTo (scriptField.string fieldTo rhs.value))
+			context.interpreter(rhs).plusLeo(scriptField.rhs).map { rhsValue ->
+				(link.value linkTo (scriptField.string fieldTo rhsValue.value))
 			}
 		}
 	else updateStructureLeo(link.value, scriptField).map { it linkTo link.field }
