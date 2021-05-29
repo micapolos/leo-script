@@ -6,8 +6,8 @@ let
   do
     option
     switch
-      present take map.present.doing
-      absent option
+      present doing take map.present.doing
+      absent doing option
 
 test
   option present "Hello, "

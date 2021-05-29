@@ -9,8 +9,8 @@ test
     number
     is less than 2
     switch
-      yes do number
-      no do
+      yes doing number
+      no doing
         number.decrement.decrement.recurse
         plus number.decrement.recurse
   is equal 987

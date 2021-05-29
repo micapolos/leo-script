@@ -11,13 +11,14 @@ test
     number
     is equal 0
     switch
-      yes do first.number
-      no do
+      yes doing first.number
+      no doing
         number
         is equal 1
         switch
-          yes do second.number
-          no do
+          yes doing
+            second.number
+          no doing
             number.decrement
             first second.number
             second

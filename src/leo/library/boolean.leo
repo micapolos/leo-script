@@ -4,8 +4,8 @@ let
   do
     boolean
     switch
-      false do true.boolean
-      true do false.boolean
+      false doing true.boolean
+      true doing false.boolean
 
 test
   false.boolean.negate
@@ -21,8 +21,8 @@ let
   do
     boolean
     switch
-      true do and.boolean
-      false do false.boolean
+      true doing and.boolean
+      false doing false.boolean
 
 test
   false.boolean
@@ -50,8 +50,8 @@ let
   do
     boolean
     switch
-      false do or.boolean
-      true do true.boolean
+      false doing or.boolean
+      true doing true.boolean
 
 test
   false.boolean

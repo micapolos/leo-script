@@ -1,6 +1,6 @@
 use library list
+
 empty.list
-append item 1
-append item 2
-append item 3
+append item "Hello, "
+append item "world!"
 reverse

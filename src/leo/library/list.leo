@@ -30,8 +30,8 @@ let
   do repeating
     fold.list
     switch
-      empty do item
-      link do
+      empty doing item
+      link doing
         item
         with link.last
         take fold.doing

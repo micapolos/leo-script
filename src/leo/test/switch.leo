@@ -1,18 +1,16 @@
 test
-  shape circle radius
+  shape circle radius 10
   switch
-    circle red
-    rectangle blue
-  is equal
-    red circle radius
+    circle doing circle.radius
+    rectangle doing rectangle.height
+  is equal radius 10
 
 test
-  shape rectangle side
+  shape rectangle height 10
   switch
-    circle red
-    rectangle blue
-  is equal
-    blue rectangle side
+    circle doing circle.radius
+    rectangle doing rectangle.height
+  is equal height 10
 
 test
   try
