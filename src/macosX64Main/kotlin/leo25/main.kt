@@ -1,6 +1,7 @@
 package leo25
 
 import leo.base.print
+import leo14.literal
 import leo25.natives.fileText
 import leo25.parser.scriptOrThrow
 
@@ -8,7 +9,9 @@ fun main(args: Array<String>) {
 	try {
 		environment().interpret(readText(args).scriptOrThrow)
 	} catch (e: ValueError) {
-		value("parser" fieldTo  e.value).errorValue.string
+		value("parser" fieldTo e.value).errorValue.string
+	} catch (e: Exception) {
+		value(field(literal(e.toString()))).errorValue.string
 	}.print
 }
 
