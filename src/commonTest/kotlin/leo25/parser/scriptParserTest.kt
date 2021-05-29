@@ -1,12 +1,12 @@
 package leo25.parser
 
-import leo.base.assertEqualTo
+import leo25.base.assertEqualTo
 import leo13.stack
-import leo14.fieldTo
-import leo14.line
-import leo14.lineTo
-import leo14.literal
-import leo14.script
+import leo25.fieldTo
+import leo25.line
+import leo25.lineTo
+import leo25.literal
+import leo25.script
 import leo25.ValueError
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

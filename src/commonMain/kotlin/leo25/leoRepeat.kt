@@ -1,6 +1,6 @@
 package leo25
 
-import leo.base.effect
+import leo25.base.effect
 
 fun Leo<Value>.valueBindRepeating(fn: (Value) -> Leo<Value>): Leo<Value> =
 	Leo { environment ->

@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 data class AppendableIndented(val appendable: Appendable, val indent: Int)
 

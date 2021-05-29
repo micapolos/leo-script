@@ -1,19 +1,19 @@
 package leo13
 
-import leo.base.Seq
-import leo.base.SeqNode
-import leo.base.appendableString
-import leo.base.emptySeq
-import leo.base.fail
-import leo.base.fold
-import leo.base.ifNotNull
-import leo.base.notNullIf
-import leo.base.orNull
-import leo.base.orNullIf
-import leo.base.runIf
-import leo.base.seq
-import leo.base.the
-import leo.base.then
+import leo25.base.Seq
+import leo25.base.SeqNode
+import leo25.base.appendableString
+import leo25.base.emptySeq
+import leo25.base.fail
+import leo25.base.fold
+import leo25.base.ifNotNull
+import leo25.base.notNullIf
+import leo25.base.orNull
+import leo25.base.orNullIf
+import leo25.base.runIf
+import leo25.base.seq
+import leo25.base.the
+import leo25.base.then
 
 sealed class Stack<out T>
 

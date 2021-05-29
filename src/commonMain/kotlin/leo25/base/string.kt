@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 fun appendableString(fn: (Appendable) -> Unit): String {
 	val stringBuilder = StringBuilder()

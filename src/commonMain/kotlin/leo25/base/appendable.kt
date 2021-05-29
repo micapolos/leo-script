@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 fun Appendable.tryAppend(tryFn: Appendable.() -> Appendable?): Appendable? =
 	StringBuilder().let { stringBuilder ->

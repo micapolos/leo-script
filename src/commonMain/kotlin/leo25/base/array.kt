@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 inline fun <R, V> R.fold(array: Array<V>, fn: R.(V) -> R): R =
 	array.fold(this) { folded, value ->

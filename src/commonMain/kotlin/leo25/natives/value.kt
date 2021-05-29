@@ -1,11 +1,30 @@
 package leo25.natives
 
-import leo.base.map
-import leo.base.stack
 import leo13.array
-import leo14.Number
-import leo14.literal
-import leo25.*
+import leo25.Dictionary
+import leo25.Number
+import leo25.Value
+import leo25.base.map
+import leo25.base.stack
+import leo25.bindingOrNull
+import leo25.field
+import leo25.fieldOrNull
+import leo25.fieldSeq
+import leo25.fieldTo
+import leo25.getOrNull
+import leo25.literal
+import leo25.native
+import leo25.nativeName
+import leo25.nativeOrNull
+import leo25.notName
+import leo25.notNullOrThrow
+import leo25.numberOrThrow
+import leo25.plus
+import leo25.resolutionOrNull
+import leo25.rhs
+import leo25.textOrThrow
+import leo25.value
+import leo25.valueOrNull
 
 fun Dictionary.nativeValue(name: String): Value =
 	resolutionOrNull(value(name))!!.bindingOrNull!!.valueOrNull!!

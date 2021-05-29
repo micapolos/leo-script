@@ -6,9 +6,6 @@ import leo13.linkOrNull
 import leo13.reverse
 import leo13.stack
 import leo13.stackLink
-import leo14.Script
-import leo14.literal
-import leo14.nameStackOrNull
 import leo25.natives.fileText
 import leo25.parser.scriptOrThrow
 

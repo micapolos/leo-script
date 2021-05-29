@@ -1,8 +1,7 @@
 package leo25.natives
 
-import leo.base.assertEqualTo
-import leo.base.assertNotNull
-import leo14.*
+import leo25.base.assertEqualTo
+import leo25.base.assertNotNull
 import leo25.*
 import kotlin.test.Test
 

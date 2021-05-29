@@ -1,8 +1,7 @@
 package leo25
 
-import leo.base.fold
-import leo.base.runIfNotNull
-import leo14.Literal
+import leo25.base.fold
+import leo25.base.runIfNotNull
 
 sealed class Notation
 object EmptyNotation : Notation()

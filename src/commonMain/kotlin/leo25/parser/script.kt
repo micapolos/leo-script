@@ -2,7 +2,7 @@ package leo25.parser
 
 import leo13.fold
 import leo13.reverse
-import leo14.*
+import leo25.*
 import leo25.LiteralAtom
 import leo25.NameAtom
 

@@ -1,7 +1,6 @@
 package leo25
 
-import leo.base.*
-import leo14.Literal
+import leo25.base.*
 
 val Notation.string get() = appendableString { it.append(this) }.addMissingNewline
 

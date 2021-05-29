@@ -1,8 +1,7 @@
 package leo25
 
-import leo.base.fold
-import leo.base.reverse
-import leo14.*
+import leo25.base.fold
+import leo25.base.reverse
 
 val Value.script: Script
 	get() =

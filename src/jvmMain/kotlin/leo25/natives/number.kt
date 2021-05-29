@@ -1,10 +1,10 @@
 package leo25.natives
 
-import leo14.Number
-import leo14.compareTo
-import leo14.minus
-import leo14.plus
-import leo14.times
+import leo25.Number
+import leo25.compareTo
+import leo25.minus
+import leo25.plus
+import leo25.times
 
 fun plus(a: Number, b: Number) = a.plus(b)
 fun minus(a: Number, b: Number) = a.minus(b)

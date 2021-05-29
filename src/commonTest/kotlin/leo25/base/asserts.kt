@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

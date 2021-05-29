@@ -1,6 +1,5 @@
 package leo25
 
-import leo14.Script
 import leo25.parser.scriptOrThrow
 import leo25.prelude.preludeDictionary
 

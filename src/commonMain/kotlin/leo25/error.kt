@@ -1,6 +1,5 @@
 package leo25
 
-import leo14.literal
 import leo25.natives.stackTraceValue
 
 data class ValueError(val value: Value) : Error() {

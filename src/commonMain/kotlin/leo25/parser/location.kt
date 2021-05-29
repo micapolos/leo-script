@@ -1,9 +1,9 @@
 package leo25.parser
 
-import leo14.Script
-import leo14.lineTo
-import leo14.literal
-import leo14.script
+import leo25.Script
+import leo25.lineTo
+import leo25.literal
+import leo25.script
 
 data class Location(
 	val lineNumber: Int,

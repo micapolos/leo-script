@@ -1,9 +1,6 @@
 package leo25
 
-import leo.base.assertEqualTo
-import leo14.lineTo
-import leo14.literal
-import leo14.script
+import leo25.base.assertEqualTo
 import kotlin.test.Test
 
 class ValueScriptTest {

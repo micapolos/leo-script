@@ -1,7 +1,7 @@
 package leo25.natives
 
-import leo14.Script
 import leo25.Dictionary
+import leo25.Script
 import leo25.Value
 import leo25.binding
 import leo25.body

@@ -1,4 +1,4 @@
-package leo.base
+package leo25.base
 
 data class Effect<out S, out V>(val state: S, val value: V)
 

@@ -1,9 +1,8 @@
 package leo25
 
-import leo.base.Seq
-import leo.base.ifOrNull
-import leo.base.notNullIf
-import leo.base.orIfNull
+import leo25.base.Seq
+import leo25.base.notNullIf
+import leo25.base.orIfNull
 import leo13.*
 
 // TODO: Replace with high-performance persistent implementation (ie: using Trie).

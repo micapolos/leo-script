@@ -1,9 +1,8 @@
 package leo25
 
-import leo.base.fold
-import leo.base.orNull
-import leo.base.reverse
-import leo14.script
+import leo25.base.fold
+import leo25.base.orNull
+import leo25.base.reverse
 
 fun Dictionary.resolveLeo(value: Value): Leo<Value> =
 	value.tracedLeo.bind {

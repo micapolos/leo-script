@@ -1,8 +1,7 @@
 package leo25
 
-import leo.base.Seq
-import leo.base.map
-import leo14.script
+import leo25.base.Seq
+import leo25.base.map
 
 data class Definition(val pattern: Pattern, val binding: Binding)
 

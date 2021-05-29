@@ -1,7 +1,7 @@
 package leo25
 
-import leo.base.Effect
-import leo.base.effect
+import leo25.base.Effect
+import leo25.base.effect
 
 data class Stateful<S, out V>(
 	val run: (S) -> Effect<S, V>

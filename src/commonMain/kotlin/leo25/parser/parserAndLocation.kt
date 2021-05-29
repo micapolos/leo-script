@@ -1,7 +1,7 @@
 package leo25.parser
 
-import leo.base.charSeq
-import leo.base.fold
+import leo25.base.charSeq
+import leo25.base.fold
 import leo25.throwError
 import leo25.value
 

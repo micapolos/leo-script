@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package leo.base
+package leo25.base
 
 import leo13.Stack
 import leo13.StackLink

@@ -1,6 +1,6 @@
 package leo13
 
-import leo.base.assertEqualTo
+import leo25.base.assertEqualTo
 import kotlin.test.Test
 
 class StackTest {

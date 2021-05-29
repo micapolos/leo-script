@@ -1,8 +1,8 @@
 package leo25
 
-import leo.base.Effect
-import leo.base.effect
-import leo.base.orIfNull
+import leo25.base.Effect
+import leo25.base.effect
+import leo25.base.orIfNull
 
 data class Environment(
 	val fileLibraryMap: Dict<Use, Dictionary> = dict(),

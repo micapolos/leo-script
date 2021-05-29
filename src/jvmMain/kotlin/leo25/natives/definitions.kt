@@ -1,7 +1,7 @@
 package leo25.natives
 
-import leo14.*
-import leo14.Number
+import leo25.*
+import leo25.Number
 import leo25.*
 import java.lang.reflect.Field
 import java.lang.reflect.Method

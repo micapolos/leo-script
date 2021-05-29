@@ -1,6 +1,6 @@
 package leo25
 
-import leo.base.print
+import leo25.base.print
 import leo.java.io.inString
 import leo25.natives.fileText
 import leo25.parser.scriptOrThrow

@@ -1,7 +1,5 @@
 package leo25
 
-import leo14.*
-
 val Script.notation: Notation
 	get() =
 		when (this) {

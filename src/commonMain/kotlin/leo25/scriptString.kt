@@ -1,7 +1,5 @@
 package leo25
 
-import leo14.Script
-
 val Script.string
 	get() =
 		notation.string

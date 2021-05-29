@@ -1,11 +1,7 @@
 package leo25
 
-import leo.base.assertEqualTo
-import leo.base.assertNotNull
-import leo14.line
-import leo14.lineTo
-import leo14.literal
-import leo14.script
+import leo25.base.assertEqualTo
+import leo25.base.assertNotNull
 import leo25.natives.minusName
 import kotlin.test.Test
 

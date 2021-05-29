@@ -1,6 +1,6 @@
-package leo14
+package leo25
 
-import leo.base.assertEqualTo
+import leo25.base.assertEqualTo
 import leo13.assertContains
 import kotlin.test.Test
 

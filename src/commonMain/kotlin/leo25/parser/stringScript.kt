@@ -1,6 +1,6 @@
 package leo25.parser
 
-import leo14.Script
+import leo25.Script
 
 val String.scriptOrNull: Script?
 	get() =

@@ -1,6 +1,6 @@
 package leo25.parser
 
-import leo.base.assertEqualTo
+import leo25.base.assertEqualTo
 import kotlin.test.Test
 
 class IndentedTest {

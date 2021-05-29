@@ -1,11 +1,11 @@
 package leo25.parser
 
-import leo.base.*
+import leo25.base.*
 import leo13.*
 import leo13.Stack
 import leo13.stack
-import leo14.*
-import leo14.Number
+import leo25.*
+import leo25.Number
 
 data class Parser<T>(
 	val plusCharFn: (Char) -> Parser<T>?,

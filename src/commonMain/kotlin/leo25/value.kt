@@ -1,9 +1,7 @@
 package leo25
 
-import leo.base.*
+import leo25.base.*
 import leo13.base.negate
-import leo14.*
-import leo14.Number
 
 sealed class Value {
 	override fun toString() = string
