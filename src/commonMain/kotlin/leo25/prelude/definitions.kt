@@ -1,4 +1,4 @@
-package leo25.natives
+package leo25.prelude
 
 import leo14.compareTo
 import leo14.lineTo
@@ -7,11 +7,18 @@ import leo14.minus
 import leo14.plus
 import leo14.script
 import leo14.times
-import leo14.compareTo
 import leo25.anyName
 import leo25.field
 import leo25.isName
 import leo25.isValue
+import leo25.natives.appendName
+import leo25.natives.lessName
+import leo25.natives.minusName
+import leo25.natives.nativeDefinition
+import leo25.natives.nativeValue
+import leo25.natives.plusName
+import leo25.natives.thanName
+import leo25.natives.timesName
 import leo25.numberName
 import leo25.numberOrThrow
 import leo25.textName

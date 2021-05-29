@@ -20,6 +20,7 @@ import leo14.onlyLineOrNull
 import leo14.plus
 import leo25.natives.nativeDictionary
 import leo25.parser.scriptOrThrow
+import leo25.prelude.preludeDictionary
 
 data class Interpreter(
 	val context: Context,
@@ -64,7 +65,7 @@ val String.dictionary: Dictionary
 
 val Script.dictionary: Dictionary
 	get() =
-		nativeDictionary.context.interpreter().plusLeo(this).get.context.publicDictionary
+		preludeDictionary.context.interpreter().plusLeo(this).get.context.publicDictionary
 
 fun Context.interpreterLeo(script: Script): Leo<Interpreter> =
 	interpreter().plusLeo(script)
@@ -269,6 +270,7 @@ fun Interpreter.plusIsOrNullLeo(rhs: Script, negate: Boolean = false): Leo<Inter
 		when (field.string) {
 			equalName -> plusIsEqualLeo(field.rhs, negate)
 			matchingName -> plusIsMatchingLeo(field.rhs, negate)
+			// TODO: It's not working with "is not less than" and others
 			notName -> plusIsOrNullLeo(field.rhs, negate.negate)
 			else -> leo(null)
 		}

@@ -2,5 +2,19 @@ use library number
 
 test
   2
-  plus 2
-  is equal 4
+  plus 3
+  is equal 5
+
+test
+  5
+  minus 3
+  is equal 2
+
+test
+  2
+  times 3
+  is equal 6
+
+test
+  4
+  is less than 5

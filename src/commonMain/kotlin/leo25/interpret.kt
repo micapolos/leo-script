@@ -1,8 +1,8 @@
 package leo25
 
 import leo14.Script
-import leo25.natives.nativeDictionary
 import leo25.parser.scriptOrThrow
+import leo25.prelude.preludeDictionary
 
 val String.interpret: String
 	get() =
@@ -23,5 +23,5 @@ fun Environment.interpret(script: Script): Script =
 
 val Script.interpretLeo: Leo<Script>
 	get() =
-		nativeDictionary.valueLeo(this).map { it.script }
+		preludeDictionary.valueLeo(this).map { it.script }
 
