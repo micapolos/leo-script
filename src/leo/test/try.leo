@@ -5,5 +5,5 @@ test
 
 test
   frog
-  try kick.fail
-  is equal quote try error kick frog
+  try kiss.fail
+  is equal quote try error kiss frog

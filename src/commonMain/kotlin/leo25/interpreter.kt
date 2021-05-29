@@ -18,7 +18,6 @@ import leo14.matchEmpty
 import leo14.matchInfix
 import leo14.onlyLineOrNull
 import leo14.plus
-import leo25.natives.nativeDictionary
 import leo25.parser.scriptOrThrow
 import leo25.prelude.preludeDictionary
 
@@ -110,11 +109,11 @@ fun Interpreter.plusStaticOrNullLeo(scriptField: ScriptField): Leo<Interpreter?>
 		quoteName -> plusQuoteLeo(scriptField.rhs)
 		setName -> plusSetLeo(scriptField.rhs)
 		switchName -> plusSwitchLeo(scriptField.rhs)
-		testName -> plusTest2Leo(scriptField.rhs)
+		testName -> plusTestLeo(scriptField.rhs)
 		traceName -> plusTraceOrNullLeo(scriptField.rhs)
 		tryName -> plusTryLeo(scriptField.rhs)
 		updateName -> plusUpdateLeo(scriptField.rhs)
-		useName -> plusUseOrNullLeo(scriptField.rhs)
+		useName -> plusUseLeo(scriptField.rhs)
 		withName -> plusWithLeo(scriptField.rhs)
 		else -> leo(null)
 	}
@@ -174,7 +173,7 @@ fun Interpreter.plusFailLeo(rhs: Script): Leo<Interpreter> =
 		leo.also { value.throwError() }
 	}
 
-fun Interpreter.plusTest2Leo(test: Script): Leo<Interpreter> =
+fun Interpreter.plusTestLeo(test: Script): Leo<Interpreter> =
 	test.matchInfix(isName) { lhs, rhs ->
 		dictionary.valueLeo(test).bind { result ->
 			when (result) {
@@ -287,8 +286,8 @@ fun Interpreter.plusPrivateLeo(rhs: Script): Leo<Interpreter> =
 		use(interpreter.context.publicDictionary)
 	}
 
-fun Interpreter.plusUseOrNullLeo(rhs: Script): Leo<Interpreter?> =
-	rhs.useOrNull.leo.nullableBind {
+fun Interpreter.plusUseLeo(rhs: Script): Leo<Interpreter> =
+	rhs.useOrNull.notNullOrThrow { value.plus(useName fieldTo rhs.value) }.leo.bind {
 		plusLeo(it)
 	}
 
