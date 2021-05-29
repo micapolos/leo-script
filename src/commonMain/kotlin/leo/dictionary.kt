@@ -164,7 +164,9 @@ fun Dictionary.switchOrNullLeo(field: Field, scriptLine: ScriptLine): Leo<Value?
 
 fun Dictionary.switchOrNullLeo(field: Field, scriptField: ScriptField): Leo<Value?> =
 	ifOrNull(field.name == scriptField.string) {
-		context.interpreter(value(field)).plusLeo(scriptField.rhs).map { it.value }
+		valueLeo(scriptField.rhs).bind { rhsValue ->
+			rhsValue.functionOrThrow.applyLeo(value(field))
+		}
 	} ?: leo(null)
 
 fun Dictionary.applyLeo(body: Body, given: Value): Leo<Value> =

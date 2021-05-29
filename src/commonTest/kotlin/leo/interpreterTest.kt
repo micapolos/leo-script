@@ -255,22 +255,22 @@ class InterpreterTest {
 		script(
 			"the" lineTo script(literal("Hello, world!")),
 			switchName lineTo script(
-				"text" lineTo script("one"),
-				"number" lineTo script("two")
+				textName lineTo script(doingName lineTo script(textName lineTo script())),
+				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
 			)
 		)
 			.interpret
-			.assertEqualTo(script("one" lineTo script(literal("Hello, world!"))))
+			.assertEqualTo(script(literal("Hello, world!")))
 
 		script(
 			"the" lineTo script(literal(1)),
 			switchName lineTo script(
-				"text" lineTo script("one"),
-				"number" lineTo script("two")
+				textName lineTo script(doingName lineTo script(textName lineTo script())),
+				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
 			)
 		)
 			.interpret
-			.assertEqualTo(script("two" lineTo script(literal(1))))
+			.assertEqualTo(script(literal(1)))
 	}
 
 	@Test
@@ -282,10 +282,10 @@ class InterpreterTest {
 					numberName lineTo script(),
 					switchName lineTo script(
 						"zero" lineTo script(
-							doName lineTo script(line(literal("OK")))
+							doingName lineTo script(line(literal("OK")))
 						),
 						"one" lineTo script(
-							doName lineTo script(
+							doingName lineTo script(
 								numberName lineTo script("zero"),
 								repeatName lineTo script(),
 							)
@@ -307,9 +307,9 @@ class InterpreterTest {
 					numberName lineTo script(),
 					isName lineTo script(equalName lineTo script(line(literal(0)))),
 					switchName lineTo script(
-						yesName lineTo script(doName lineTo script(line(literal("OK")))),
+						yesName lineTo script(doingName lineTo script(line(literal("OK")))),
 						noName lineTo script(
-							doName lineTo script(
+							doingName lineTo script(
 								numberName lineTo script(),
 								minusName lineTo script(line(literal(1))),
 								repeatName lineTo script(),
@@ -332,10 +332,10 @@ class InterpreterTest {
 					numberName lineTo script(),
 					switchName lineTo script(
 						"zero" lineTo script(
-							doName lineTo script(line(literal("OK")))
+							doingName lineTo script(line(literal("OK")))
 						),
 						"one" lineTo script(
-							doName lineTo script(
+							doingName lineTo script(
 								numberName lineTo script("zero"),
 								recurseName lineTo script()
 							)

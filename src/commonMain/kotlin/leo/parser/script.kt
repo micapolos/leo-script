@@ -11,7 +11,7 @@ val preprocessingScriptParser: Parser<Script> =
 
 val <T> Parser<T>.preprocessing: Parser<T>
 	get() =
-		withoutTrailingSpaces.withoutEmptyLines.addingMissingNewline
+		withoutEmptyLines.withoutTrailingSpaces.addingMissingNewline
 
 val scriptParser: Parser<Script>
 	get() =

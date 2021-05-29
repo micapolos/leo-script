@@ -81,3 +81,33 @@ test
     append item 3
     append item 2
     append item 1
+
+let
+  list any
+  map item doing any
+  do
+    empty.list.item
+    fold
+      list
+      doing
+        item.list
+        append
+          last.item
+          take map.item.doing
+        item
+    list.reverse
+
+test
+  empty.list
+  append item 1
+  append item 2
+  append item 3
+  map item doing
+    item.number
+    plus 10
+    item
+  is equal
+    empty.list
+    append item 11
+    append item 12
+    append item 13

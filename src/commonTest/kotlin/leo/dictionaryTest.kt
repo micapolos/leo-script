@@ -303,13 +303,13 @@ class DictionaryTest {
 	fun switchOrNull() {
 		dictionary()
 			.switchLeo(
-				value("shape" fieldTo value("circle" fieldTo value("radius" fieldTo value("zero")))),
+				value("the" fieldTo value(field(literal("Hello, world!")))),
 				script(
-					"circle" lineTo script("radius"),
-					"rectangle" lineTo script("side")
+					textName lineTo script(doingName lineTo script(textName)),
+					numberName lineTo script(doingName lineTo script(numberName))
 				)
 			)
 			.get
-			.assertEqualTo(value("radius" fieldTo value("zero")))
+			.assertEqualTo(value(field(literal("Hello, world!"))))
 	}
 }
