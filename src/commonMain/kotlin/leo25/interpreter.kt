@@ -122,7 +122,6 @@ fun Interpreter.plusDynamicOrNullLeo(field: Field): Leo<Interpreter?> =
 		exampleName -> plusExampleLeo(field.rhs)
 		failName -> plusFailLeo(field.rhs)
 		hashName -> plusHashOrNullLeo(field.rhs)
-		repeatName -> plusRepeatLeo(field.rhs)
 		takeName -> plusTakeLeo(field.rhs)
 		textName -> plusTextOrNullLeo(field.rhs)
 		valueName -> plusValueOrNullLeo(field.rhs)
@@ -305,15 +304,6 @@ fun Interpreter.plusWithLeo(rhs: Script): Leo<Interpreter> =
 	dictionary.valueLeo(rhs).bind { rhs ->
 		setLeo(value + rhs)
 	}
-
-fun Interpreter.plusValueLeo(rhs: Script): Leo<Interpreter?> =
-	rhs.useOrNull.leo.nullableBind {
-		plusLeo(it)
-	}
-
-fun Interpreter.plusRepeatLeo(rhs: Rhs): Leo<Interpreter> =
-	if (rhs.isEmpty) value.leo.repeat.bind { setLeo(it) }
-	else value(syntaxName fieldTo value.plus(repeatName fieldTo rhs)).throwError()
 
 val Interpreter.dictionary
 	get() =

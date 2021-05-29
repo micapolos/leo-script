@@ -197,7 +197,7 @@ fun Dictionary.applyLeo(block: Block, given: Value): Leo<Value> =
 	}
 
 fun Dictionary.applyRepeatingLeo(script: Script, given: Value): Leo<Value> =
-	given.leo.bindRepeating { repeatingGiven ->
+	given.leo.valueBindRepeating { repeatingGiven ->
 		set(repeatingGiven).valueLeo(script)
 	}
 

@@ -291,7 +291,6 @@ class InterpreterTest {
 							doName lineTo script(
 								numberName lineTo script("zero"),
 								repeatName lineTo script(),
-								"tail" lineTo script("ignored")
 							)
 						)
 					)

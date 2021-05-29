@@ -153,9 +153,7 @@ fun Value.getOrNull(name: String): Value? =
 	bodyOrNull?.selectOrNull(name)
 
 fun Value.resolveOrNull(name: String): Value? =
-	ifOrNull(name != repeatName) { // TODO: This is a temporary hack... resolve "repeat" and "recurse" differently
-		getOrNull(name) ?: makeOrNull(name)
-	}
+	getOrNull(name) ?: makeOrNull(name)
 
 fun Field.rhsOrNull(name: String): Rhs? =
 	notNullIf(this.name == name) { rhs }
@@ -285,19 +283,6 @@ fun Boolean.isValue(negated: Boolean) =
 val Value.hashValue
 	get() =
 		value(hashName fieldTo value(field(literal(hashCode()))))
-
-val Value.repeatValueOrNull: Value?
-	get() =
-		resolvePostfixOrNull(repeatName) { this }
-
-fun Value.unlinkOrNull(fn: Value.(Value) -> Value?): Value? =
-	linkOrNull?.run {
-		value.let { lhs ->
-			field.rhs.valueOrNull?.let { rhs ->
-				lhs.fn(rhs)
-			}
-		}
-	}
 
 fun Value.fieldOrNull(name: String): Field? =
 	fieldOrNull?.orNull(name)
