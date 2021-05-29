@@ -18,4 +18,4 @@ test
     switch
       circle red
       rectangle blue
-  is equal quote try error nonexaustive
+  is equal quote try error switch

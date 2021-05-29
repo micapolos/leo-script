@@ -8,6 +8,7 @@ import leo.base.orIfNull
 import leo.base.reverse
 import leo.base.runIf
 import leo.base.seq
+import leo.natives.nativeValue
 
 data class Dictionary(val tokenToResolutionMap: Dict<Token, Resolution>)
 
@@ -143,30 +144,24 @@ fun Resolution?.orNullMerge(resolution: Resolution): Resolution =
 	this?.merge(resolution) ?: resolution
 
 fun Dictionary.switchLeo(value: Value, script: Script): Leo<Value> =
-	switchLeo(value.switchFieldOrThrow, script)
-
-fun Dictionary.switchLeo(field: Field, script: Script): Leo<Value> =
-	when (script) {
-		is LinkScript -> switchLeo(field, script.link)
-		is UnitScript -> value("nonexaustive").throwError()
+	fieldsValueLeo(script).bind { cases ->
+		switchLeo(value.switchFieldOrThrow, cases)
 	}
 
-fun Dictionary.switchLeo(field: Field, scriptLink: ScriptLink): Leo<Value> =
-	switchOrNullLeo(field, scriptLink.line).or {
-		switchLeo(field, scriptLink.lhs)
+fun Dictionary.switchLeo(field: Field, cases: Value): Leo<Value> =
+	when (cases) {
+		EmptyValue -> value(switchName).throwError()
+		is LinkValue -> switchLeo(field, cases.link)
 	}
 
-fun Dictionary.switchOrNullLeo(field: Field, scriptLine: ScriptLine): Leo<Value?> =
-	when (scriptLine) {
-		is FieldScriptLine -> switchOrNullLeo(field, scriptLine.field)
-		is LiteralScriptLine -> leo(null)
+fun Dictionary.switchLeo(field: Field, link: Link): Leo<Value> =
+	switchOrNullLeo(field, link.field).or {
+		switchLeo(field, link.value)
 	}
 
-fun Dictionary.switchOrNullLeo(field: Field, scriptField: ScriptField): Leo<Value?> =
-	ifOrNull(field.name == scriptField.string) {
-		valueLeo(scriptField.rhs).bind { rhsValue ->
-			rhsValue.functionOrThrow.applyLeo(value(field))
-		}
+fun switchOrNullLeo(field: Field, case: Field): Leo<Value?> =
+	ifOrNull(field.name == case.name) {
+		value(case).nativeValue(doingName).functionOrThrow.applyLeo(value(field))
 	} ?: leo(null)
 
 fun Dictionary.applyLeo(body: Body, given: Value): Leo<Value> =
