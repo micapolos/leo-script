@@ -1,4 +1,4 @@
-package leo13
+package leo25
 
 import leo25.base.assertEqualTo
 import kotlin.test.Test
@@ -6,11 +6,11 @@ import kotlin.test.Test
 class StackTest {
 	@Test
 	fun zip() {
-		leo13.zip(stack(2, 1, 0), stack("two", "one", "zero"))
+		leo25.zip(stack(2, 1, 0), stack("two", "one", "zero"))
 			.assertEqualTo(stack(2 to "two", 1 to "one", 0 to "zero"))
-		leo13.zip(stack(2, 1, 0), stack("one", "zero"))
+		leo25.zip(stack(2, 1, 0), stack("one", "zero"))
 			.assertEqualTo(stack(2 to null, 1 to "one", 0 to "zero"))
-		leo13.zip(stack(1, 0), stack("two", "one", "zero"))
+		leo25.zip(stack(1, 0), stack("two", "one", "zero"))
 			.assertEqualTo(stack(null to "two", 1 to "one", 0 to "zero"))
 	}
 

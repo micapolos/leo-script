@@ -1,9 +1,9 @@
 package leo25.parser
 
 import leo25.base.assertEqualTo
-import leo13.charString
-import leo13.stack
-import leo13.stackLink
+import leo25.charString
+import leo25.stack
+import leo25.stackLink
 import leo25.literal
 import leo25.number
 import kotlin.test.Test

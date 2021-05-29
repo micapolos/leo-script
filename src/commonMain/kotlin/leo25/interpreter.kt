@@ -3,7 +3,7 @@ package leo25
 import leo25.base.fold
 import leo25.base.orNullIf
 import leo25.base.reverse
-import leo13.base.negate
+import leo25.base.negate
 import leo25.parser.scriptOrThrow
 import leo25.prelude.preludeDictionary
 

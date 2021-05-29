@@ -1,11 +1,11 @@
 package leo25
 
-import leo13.StackLink
-import leo13.array
-import leo13.linkOrNull
-import leo13.reverse
-import leo13.stack
-import leo13.stackLink
+import leo25.StackLink
+import leo25.array
+import leo25.linkOrNull
+import leo25.reverse
+import leo25.stack
+import leo25.stackLink
 import leo25.natives.fileText
 import leo25.parser.scriptOrThrow
 

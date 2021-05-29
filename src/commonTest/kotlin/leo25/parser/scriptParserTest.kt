@@ -1,7 +1,7 @@
 package leo25.parser
 
 import leo25.base.assertEqualTo
-import leo13.stack
+import leo25.stack
 import leo25.fieldTo
 import leo25.line
 import leo25.lineTo

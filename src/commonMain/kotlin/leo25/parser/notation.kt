@@ -1,9 +1,9 @@
 package leo25.parser
 
-import leo13.Stack
-import leo13.array
-import leo13.fold
-import leo13.reverse
+import leo25.Stack
+import leo25.array
+import leo25.fold
+import leo25.reverse
 import leo25.*
 
 val atomParser: Parser<Atom>

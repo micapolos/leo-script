@@ -1,7 +1,7 @@
 package leo25
 
 import leo25.base.assertEqualTo
-import leo13.assertContains
+import leo25.assertContains
 import kotlin.test.Test
 
 class ScriptTest {

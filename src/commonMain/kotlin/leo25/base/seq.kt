@@ -2,14 +2,14 @@
 
 package leo25.base
 
-import leo13.Stack
-import leo13.StackLink
-import leo13.fold
-import leo13.link
-import leo13.push
-import leo13.reverse
-import leo13.seq
-import leo13.stack
+import leo25.Stack
+import leo25.StackLink
+import leo25.fold
+import leo25.link
+import leo25.push
+import leo25.reverse
+import leo25.seq
+import leo25.stack
 
 data class SeqNode<T>(
 	val first: T,

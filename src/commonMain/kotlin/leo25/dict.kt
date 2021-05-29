@@ -3,7 +3,7 @@ package leo25
 import leo25.base.Seq
 import leo25.base.notNullIf
 import leo25.base.orIfNull
-import leo13.*
+import leo25.*
 
 // TODO: Replace with high-performance persistent implementation (ie: using Trie).
 

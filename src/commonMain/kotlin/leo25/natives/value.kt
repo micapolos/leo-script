@@ -1,6 +1,6 @@
 package leo25.natives
 
-import leo13.array
+import leo25.array
 import leo25.Dictionary
 import leo25.Number
 import leo25.Value
