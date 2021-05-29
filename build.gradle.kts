@@ -14,7 +14,7 @@ kotlin {
 //    macosX64 {
 //        binaries {
 //            executable {
-//                entryPoint = "leo25.main"
+//                entryPoint = "leo.main"
 //            }
 //        }
 //    }
@@ -33,7 +33,7 @@ kotlin {
                     group = "application"
                     dependsOn(build)
                     manifest {
-                        attributes["Main-Class"] = "leo25.MainKt"
+                        attributes["Main-Class"] = "leo.MainKt"
                     }
                     from(
                         configurations
