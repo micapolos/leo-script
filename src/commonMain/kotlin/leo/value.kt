@@ -234,7 +234,7 @@ val Value.nameOrNull: String?
 	get() =
 		fieldOrNull?.onlyNameOrNull
 
-fun Value.resolveInfixOrNull(name: String, fn: Value.(Value) -> Value?): Value? =
+fun <T: Any> Value.resolveInfixOrNull(name: String, fn: Value.(Value) -> T?): T? =
 	linkOrNull?.run {
 		value.let { lhs ->
 			field.valueOrNull(name)?.let { rhs ->
@@ -243,21 +243,21 @@ fun Value.resolveInfixOrNull(name: String, fn: Value.(Value) -> Value?): Value? 
 		}
 	}
 
-fun Value.resolvePrefixOrNull(name: String, fn: (Value) -> Value?): Value? =
+fun <T: Any> Value.resolvePrefixOrNull(name: String, fn: (Value) -> T?): T? =
 	resolveInfixOrNull(name) { rhs ->
 		resolveEmptyOrNull {
 			fn(rhs)
 		}
 	}
 
-fun Value.resolvePostfixOrNull(name: String, fn: Value.() -> Value?): Value? =
+fun <T: Any> Value.resolvePostfixOrNull(name: String, fn: Value.() -> T?): T? =
 	resolveInfixOrNull(name) { rhs ->
 		rhs.resolveEmptyOrNull {
 			fn()
 		}
 	}
 
-fun Value.resolveOrNull(name: String, fn: () -> Value?): Value? =
+fun <T> Value.resolveOrNull(name: String, fn: () -> T?): T? =
 	resolveInfixOrNull(name) { rhs ->
 		resolveEmptyOrNull {
 			rhs.resolveEmptyOrNull {
@@ -266,7 +266,7 @@ fun Value.resolveOrNull(name: String, fn: () -> Value?): Value? =
 		}
 	}
 
-fun Value.resolveEmptyOrNull(fn: () -> Value?): Value? =
+fun <T: Any> Value.resolveEmptyOrNull(fn: () -> T?): T? =
 	ifOrNull(isEmpty) {
 		fn()
 	}
