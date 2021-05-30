@@ -32,6 +32,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		commentName -> rhs.commentCompilation.map(::op)
 		doName -> rhs.doCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
+		letName -> rhs.letCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
 		else -> rhs.expressionCompilation.map { rhsExpression ->
 			FieldOp(OpField(string, ExpressionOpFieldRhs(rhsExpression)))
@@ -73,11 +74,29 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 val Script.asCompilation: Compilation<As> get() =
 	patternCompilation.map(::as_)
 
+val Script.beCompilation: Compilation<Be> get() =
+	expressionCompilation.map(::be)
+
 val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
 
 val Script.doCompilation: Compilation<Do> get() =
 	expressionCompilation.map(::do_)
+
+val Script.letCompilation: Compilation<Let> get() =
+	matchInfix { lhs, name, rhs ->
+		lhs.patternCompilation.bind { pattern ->
+			when (name) {
+				beName -> rhs.beCompilation.map { be ->
+					let(pattern, be)
+				}
+				doName -> rhs.doCompilation.map { do_ ->
+					let(pattern, do_)
+				}
+				else -> value().throwError()
+			}
+		}
+	}?:value().throwError()
 
 val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
@@ -86,5 +105,3 @@ val Script.failCompilation: Compilation<Fail> get() =
 	if (isEmpty) fail.compilation
 	else value(failName fieldTo value).throwError()
 
-val Script.beCompilation: Compilation<Be> get() =
-	expressionCompilation.map(::be)

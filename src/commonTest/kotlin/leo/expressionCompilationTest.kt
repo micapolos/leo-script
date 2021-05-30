@@ -84,6 +84,51 @@ class ExpressionCompilationTest {
 	}
 
 	@Test
+	fun letBe() {
+		script(
+			line(literal("Hello, world!")),
+			letName lineTo script(
+				line("ping"),
+				beName lineTo script("pong")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, world!")),
+					op(let(pattern(script("ping")), be(expression("pong" opTo expression()))))))
+	}
+
+	@Test
+	fun letDo() {
+		script(
+			line(literal("Hello, world!")),
+			letName lineTo script(
+				line("ping"),
+				doName lineTo script("pong")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, world!")),
+					op(let(pattern(script("ping")), do_(expression("pong" opTo expression()))))))
+	}
+
+	@Test
+	fun letError() {
+		assertFailsWith<ValueError> {
+			script(
+				line(literal("Hello, world!")),
+				letName lineTo script())
+				.expression
+		}
+
+		assertFailsWith<ValueError> {
+			script(
+				line(literal("Hello, world!")),
+				letName lineTo script("foo"))
+				.expression
+		}
+	}
+
+	@Test
 	fun switch() {
 		script(
 			line(literal("Hello, world!")),
