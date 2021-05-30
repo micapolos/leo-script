@@ -108,6 +108,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun give() {
+		script(
+			line("point"),
+			giveName lineTo script("x"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(give(syntax("x" lineTo syntax())))))
+	}
+
+	@Test
 	fun is_() {
 		script(
 			line("point"),
@@ -367,6 +379,18 @@ class SyntaxCompilationTest {
 						atom2(literal("foo")),
 						atom2(literal(123))))
 				))
+	}
+
+	@Test
+	fun take() {
+		script(
+			line("point"),
+			takeName lineTo script("x"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(take(syntax("x" lineTo syntax())))))
 	}
 
 	@Test

@@ -16,6 +16,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is ExampleSyntaxLine -> exampleName lineTo example.script
 		is FailSyntaxLine -> failName lineTo fail.script
 		is GetSyntaxLine -> getName lineTo get.script
+		is GiveSyntaxLine -> giveName lineTo give.script
 		is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
 		is MatchingSyntaxLine -> matchingName lineTo matching.script
@@ -25,6 +26,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is RepeatSyntaxLine -> repeatName lineTo repeat.script
 		is SetSyntaxLine -> setName lineTo set.script
 		is SwitchSyntaxLine -> switchName lineTo switch.script
+		is TakeSyntaxLine -> giveName lineTo take.script
 		is TestSyntaxLine -> testName lineTo test.script
 		is TrySyntaxLine -> tryName lineTo try_.script
 		is UpdateSyntaxLine -> updateName lineTo update.script
@@ -40,6 +42,7 @@ val Equal.script get() = syntax.script
 val Example.script get() = syntax.script
 val Fail.script get() = syntax.script
 val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
+val Give.script get() = syntax.script
 val Not.script get() = syntax.script
 val Let.script get() = pattern.script.plus(rhs.scriptLine)
 val Matching.script get() = pattern.script
@@ -49,6 +52,7 @@ val Repeat.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })
 val Case.scriptLine get() = name lineTo script(doingName lineTo doing.script)
+val Take.script get() = syntax.script
 val Test.script get() = syntax.script.plus(isName lineTo is_.script)
 val Try.script get() = syntax.script
 val Update.script get() = script(fieldStack.map { scriptLine })
