@@ -1,5 +1,7 @@
 package leo
 
+import leo.natives.getName
+
 val Script.expression get() = expressionCompilation.get
 
 val Script.expressionCompilation: Compilation<Expression> get() =
@@ -35,6 +37,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		commentName -> rhs.commentCompilation.map(::op)
 		doName -> rhs.doCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
+		getName -> rhs.getCompilation.map(::op)
 		letName -> rhs.letCompilation.map(::op)
 		setName -> rhs.setCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
@@ -91,6 +94,12 @@ val Script.commentCompilation: Compilation<Comment> get() =
 
 val Script.doCompilation: Compilation<Do> get() =
 	expressionCompilation.map(::do_)
+
+val Script.getCompilation: Compilation<Get> get() =
+	lineStack
+		.map { fieldOrNull?.onlyStringOrNull.notNullOrThrow { value(getName fieldTo value(field)) } }
+		.let(::Get)
+		.compilation
 
 val Script.letCompilation: Compilation<Let> get() =
 	matchInfix { lhs, name, rhs ->

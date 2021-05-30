@@ -216,7 +216,7 @@ val Script.lineSeq: Seq<ScriptLine>
 
 val Script.lineStack: Stack<ScriptLine>
 	get() =
-		lineSeq.reverse.stack
+		lineSeq.stack
 
 val ScriptLink.lineSeqNode: SeqNode<ScriptLine>
 	get() =

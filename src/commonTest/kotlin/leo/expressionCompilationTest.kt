@@ -77,6 +77,18 @@ class ExpressionCompilationTest {
 	}
 
 	@Test
+	fun get() {
+		script(
+			line("point"),
+			getName lineTo script(line("x"), line("y")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op("point"),
+					op(get("x", "y"))))
+	}
+
+	@Test
 	fun letBe() {
 		script(
 			line(literal("Hello, world!")),

@@ -33,4 +33,9 @@ class ScriptTest {
 		script("x").nameStackOrNull!!.assertContains("x")
 		script("x" lineTo script("y")).nameStackOrNull!!.assertContains("y", "x")
 	}
+
+	@Test
+	fun scriptLineStack() {
+		script(line("x"), line("y")).lineStack.assertEqualTo(stack(line("x"), line("y")))
+	}
 }

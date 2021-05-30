@@ -46,7 +46,7 @@ fun <S, T> Stateful<S, T>.catch(fn: (Throwable) -> Stateful<S, T>): Stateful<S, 
 	}
 
 val <S, T> Stack<Stateful<S, T>>.flat: Stateful<S, Stack<T>> get() =
-	stack<T>().stateful<S, Stack<T>>().fold(reverse) { statefulValue ->
+	stack<T>().stateful<S, Stack<T>>().fold(this) { statefulValue ->
 		bind { stack ->
 			statefulValue.bind { value ->
 				stack.push(value).reverse.stateful()
