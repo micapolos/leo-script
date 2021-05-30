@@ -34,7 +34,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		exampleName -> rhs.exampleCompilation.map(::line)
 		failName -> rhs.failCompilation.map(::line)
 		getName -> rhs.getCompilation.map(::line)
-		//isName -> rhs.isCompilation.map(::line)
+		isName -> rhs.isCompilation.map(::line)
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)

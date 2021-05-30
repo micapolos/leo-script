@@ -102,7 +102,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
-		//is IsSyntaxLine -> TODO()
+		is IsSyntaxLine -> TODO()
 		is LetSyntaxLine -> plusEvaluation(line.let)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
