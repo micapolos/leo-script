@@ -313,7 +313,7 @@ fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
 		plusEvaluation(field(dictionary.function(body(rhs))))
 	}
 
-fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator?> =
+fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 	plusEvaluation(field(dictionary.function(body(doing.block.block))))
 
 fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
