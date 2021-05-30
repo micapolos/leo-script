@@ -155,10 +155,3 @@ fun isRhs(equal: Equal): IsRhs = EqualIsRhs(equal)
 fun isRhs(matching: Matching): IsRhs = MatchingIsRhs(matching)
 
 val Is.negate get() = copy(negated = negated.negate)
-
-val IsRhs.syntax get() =
-	when (this) {
-		is EqualIsRhs -> equal.syntax
-		is MatchingIsRhs -> matching.pattern
-		is SyntaxIsRhs -> TODO()
-	}
