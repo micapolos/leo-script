@@ -4,6 +4,7 @@ import leo.base.Effect
 import leo.base.Seq
 import leo.base.effect
 import leo.base.fold
+import kotlin.reflect.KProperty0
 
 data class Stateful<S, out V>(
 	val run: (S) -> Effect<S, V>
@@ -33,7 +34,7 @@ fun <S, V> Stateful<S, V?>.or(fn: () -> Stateful<S, V>): Stateful<S, V> =
 	bind { it?.stateful() ?: fn() }
 
 fun <S, V, O> Stateful<S, V>.map(fn: (V) -> O): Stateful<S, O> =
-	bind { fn(it).stateful<S, O>() }
+	bind { fn(it).stateful() }
 
 fun <S, V, O> Stateful<S, V?>.nullableMap(fn: (V) -> O): Stateful<S, O?> =
 	nullableBind { fn(it).stateful<S, O>() }

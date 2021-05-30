@@ -116,7 +116,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(is_(syntax(syntaxLine("ok"))))))
+					line(is_(isRhs(syntax(syntaxLine("ok")))))))
 	}
 
 	@Test
@@ -128,7 +128,55 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(is_(not(syntax(syntaxLine("ok")))))))
+					line(is_(isRhs(syntax(syntaxLine("ok")))).negate)))
+	}
+
+	@Test
+	fun isEqual() {
+		script(
+			line("point"),
+			isName lineTo script(equalName lineTo script(line("ok"))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(isRhs(equal(syntax(syntaxLine("ok"))))))))
+	}
+
+	@Test
+	fun isNotEqual() {
+		script(
+			line("point"),
+			isName lineTo script(notName lineTo script(equalName lineTo script(line("ok")))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(isRhs(equal(syntax(syntaxLine("ok"))))).negate)))
+	}
+
+	@Test
+	fun isMatching() {
+		script(
+			line("point"),
+			isName lineTo script(matchingName lineTo script(line("ok"))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(isRhs(matching(pattern(script("ok"))))))))
+	}
+
+	@Test
+	fun isNotMatching() {
+		script(
+			line("point"),
+			isName lineTo script(notName lineTo script(matchingName lineTo script(line("ok")))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(isRhs(matching(pattern(script("ok"))))).negate)))
 	}
 
 	@Test
@@ -334,7 +382,7 @@ class SyntaxCompilationTest {
 					"foo" lineTo syntax(),
 					line(test(
 						syntax("zoo" lineTo syntax()),
-						is_(syntax("zar" lineTo syntax()))))))
+						is_(isRhs(syntax("zar" lineTo syntax())))))))
 	}
 
 	@Test

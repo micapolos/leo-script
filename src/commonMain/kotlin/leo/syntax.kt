@@ -1,5 +1,7 @@
 package leo
 
+import leo.base.negate
+
 data class Syntax(val lineStack: Stack<SyntaxLine>)
 
 sealed class SyntaxLine
@@ -41,10 +43,11 @@ data class Be(val syntax: Syntax)
 data class Comment(val script: Script)
 data class Do(val block: SyntaxBlock)
 data class Doing(val block: SyntaxBlock)
+data class Equal(val syntax: Syntax)
 data class Example(val syntax: Syntax)
 data class Fail(val syntax: Syntax)
 data class Get(val nameStack: Stack<String>)
-data class Is(val syntaxOrNot: Or<Syntax, Not>)
+data class Is(val rhs: IsRhs, val negated: Boolean)
 data class Let(val pattern: Pattern, val rhs: LetRhs)
 data class Matching(val pattern: Pattern)
 data class Not(val syntax: Syntax)
@@ -62,6 +65,11 @@ data class With(val syntax: Syntax)
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
+
+sealed class IsRhs
+data class SyntaxIsRhs(val syntax: Syntax): IsRhs()
+data class EqualIsRhs(val equal: Equal): IsRhs()
+data class MatchingIsRhs(val matching: Matching): IsRhs()
 
 val Get.nameSeq get() = nameStack.reverse.seq
 val Syntax.lineSeq get() = lineStack.reverse.seq
@@ -112,12 +120,11 @@ fun block(syntax: Syntax) = block(null, syntax)
 fun comment(script: Script) = Comment(script)
 fun do_(block: SyntaxBlock) = Do(block)
 fun doing(block: SyntaxBlock) = Doing(block)
+fun equal(syntax: Syntax) = Equal(syntax)
 fun example(syntax: Syntax) = Example(syntax)
 fun fail(syntax: Syntax) = Fail(syntax)
 fun get(vararg names: String) = Get(stack(*names))
-fun is_(syntaxOrNot: Or<Syntax, Not>) = Is(syntaxOrNot)
-fun is_(not: Not) = is_(Syntax::class.or(not))
-fun is_(syntax: Syntax) = is_(syntax.or(Not::class))
+fun is_(rhs: IsRhs) = Is(rhs, negated = false)
 fun matching(pattern: Pattern) = Matching(pattern)
 fun not(syntax: Syntax) = Not(syntax)
 fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
@@ -132,11 +139,18 @@ fun try_(syntax: Syntax) = Try(syntax)
 fun update(vararg fields: SyntaxField) = Update(stack(*fields))
 fun with(syntax: Syntax) = With(syntax)
 
-val Is.syntax get() =
-	when (syntaxOrNot) {
-		is FirstOr -> syntaxOrNot.first
-		is SecondOr -> syntax(notName lineTo syntaxOrNot.second.syntax)
-	}
-
 fun atom(field: SyntaxField): SyntaxAtom = FieldSyntaxAtom(field)
 fun atom2(literal: Literal): SyntaxAtom = LiteralSyntaxAtom(literal)
+
+fun isRhs(syntax: Syntax): IsRhs = SyntaxIsRhs(syntax)
+fun isRhs(equal: Equal): IsRhs = EqualIsRhs(equal)
+fun isRhs(matching: Matching): IsRhs = MatchingIsRhs(matching)
+
+val Is.negate get() = copy(negated = negated.negate)
+
+val IsRhs.syntax get() =
+	when (this) {
+		is EqualIsRhs -> equal.syntax
+		is MatchingIsRhs -> matching.pattern
+		is SyntaxIsRhs -> TODO()
+	}

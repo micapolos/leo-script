@@ -4,6 +4,7 @@ import leo.base.fold
 import leo.base.negate
 import leo.base.orNullIf
 import leo.base.reverse
+import leo.base.runIf
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
 
@@ -102,7 +103,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
-		is IsSyntaxLine -> TODO()
+		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
@@ -275,36 +276,37 @@ fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(test.syntax.plus(isName lineTo test.is_.syntax)).bind { result ->
-		when (result) {
-			true.isValue -> evaluation
-			false.isValue ->
-				dictionary.valueEvaluation(test.syntax).bind { lhs ->
-					dictionary.valueEvaluation(test.is_.syntax).bind { rhs ->
-						evaluation.also {
-							value(testName fieldTo test.script.value)
-								.plus(
-									causeName fieldTo
-											lhs.plus(isName fieldTo value(notName fieldTo rhs))
-								).throwError()
-						}
-					}
-				}
-			else -> evaluation.also {
-				value(
-					testName fieldTo result.plus(
-						isName fieldTo value(
-							notName fieldTo value(
-								matchingName fieldTo value(
-									isName fieldTo value(anyName)
-								)
-							)
-						)
-					)
-				).throwError()
-			}
-		}
-	}
+	TODO()
+//	dictionary.valueEvaluation(test.syntax.plus(line(test.is_))).bind { result ->
+//		when (result) {
+//			true.isValue -> evaluation
+//			false.isValue ->
+//				dictionary.valueEvaluation(test.syntax).bind { lhs ->
+//					dictionary.valueEvaluation(test.is_.rhs.syntax).bind { rhs ->
+//						evaluation.also {
+//							value(testName fieldTo test.script.value)
+//								.plus(
+//									causeName fieldTo
+//											lhs.plus(isName fieldTo value(notName fieldTo rhs))
+//								).throwError()
+//						}
+//					}
+//				}
+//			else -> evaluation.also {
+//				value(
+//					testName fieldTo result.plus(
+//						isName fieldTo value(
+//							notName fieldTo value(
+//								matchingName fieldTo value(
+//									isName fieldTo value(anyName)
+//								)
+//							)
+//						)
+//					)
+//				).throwError()
+//			}
+//		}
+//	}
 
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	setEvaluation(value.apply(get))
@@ -410,6 +412,31 @@ fun Evaluator.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Eval
 			// TODO: It's not working with "is not less than" and others
 			notName -> plusIsOrNullEvaluation(field.rhs, negate.negate)
 			else -> evaluation(null)
+		}
+	}
+
+fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
+	booleanEvaluation(is_.rhs).bind { boolean ->
+		setEvaluation(boolean.runIf(is_.negated) { negate }.isValue)
+	}
+
+fun Evaluator.booleanEvaluation(rhs: IsRhs): Evaluation<Boolean> =
+	when (rhs) {
+		is EqualIsRhs -> booleanEvaluation(rhs.equal)
+		is MatchingIsRhs -> booleanEvaluation(rhs.matching)
+		is SyntaxIsRhs -> booleanIsEvaluation(rhs.syntax)
+	}
+
+fun Evaluator.booleanEvaluation(equal: Equal): Evaluation<Boolean> =
+	dictionary.valueEvaluation(equal.syntax).map { value == it }
+
+fun Evaluator.booleanEvaluation(matching: Matching): Evaluation<Boolean> =
+	value.isMatching(matching.pattern).evaluation
+
+fun Evaluator.booleanIsEvaluation(syntax: Syntax): Evaluation<Boolean> =
+	dictionary.valueEvaluation(syntax).bind { rhsValue ->
+		dictionary.resolveEvaluation(value.plus(isName fieldTo rhsValue)).map { isValue ->
+			isValue.isBoolean
 		}
 	}
 

@@ -1,5 +1,7 @@
 package leo
 
+import leo.base.runIf
+
 val Syntax.script: Script get() =
 	script(lineStack.map { scriptLine })
 
@@ -34,6 +36,7 @@ val As.script get() = pattern.script
 val Be.script get() = syntax.script
 val Do.script get() = block.script
 val Doing.script get() = block.script
+val Equal.script get() = syntax.script
 val Example.script get() = syntax.script
 val Fail.script get() = syntax.script
 val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
@@ -66,9 +69,13 @@ val LetRhs.scriptLine get() =
 	}
 
 val Is.script get() =
-	when (syntaxOrNot) {
-		is FirstOr -> syntaxOrNot.first.script
-		is SecondOr -> script(notName lineTo syntaxOrNot.second.script)
+	rhs.script.runIf(negated) { script(notName lineTo this) }
+
+val IsRhs.script get() =
+	when (this) {
+		is EqualIsRhs -> script(equalName lineTo equal.script)
+		is MatchingIsRhs -> script(matchingName lineTo matching.script)
+		is SyntaxIsRhs -> syntax.script
 	}
 
 val SyntaxAtom.scriptLine get() =

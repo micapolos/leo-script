@@ -277,6 +277,22 @@ val Boolean.isValue
 	get() =
 		value(isName fieldTo value(if (this) yesName else noName))
 
+val Value.isBooleanOrNull: Boolean?
+	get() =
+		resolvePrefixOrNull(isName) { rhs ->
+			rhs.nameOrNull?.let { name ->
+				when (name) {
+					yesName -> true
+					noName -> false
+					else -> null
+				}
+			}
+		}
+
+val Value.isBoolean: Boolean
+	get() =
+		isBooleanOrNull.notNullOrThrow { plus(notName fieldTo value("boolean")) }
+
 fun Boolean.isValue(negated: Boolean) =
 	runIf(negated) { negate }.isValue
 
@@ -313,6 +329,12 @@ fun Value.isMatching(pattern: Pattern, negate: Boolean = false): Value =
 		.resolutionOrNull(this)
 		?.bindingOrNull
 		.let { (it != null).isValue(negate) }
+
+fun Value.isMatching(pattern: Pattern): Boolean =
+	dictionary()
+		.plus(definition(pattern, binding(this)))
+		.resolutionOrNull(this)
+		?.bindingOrNull != null
 
 val Value.resolveNameOrNull: Value?
 	get() =

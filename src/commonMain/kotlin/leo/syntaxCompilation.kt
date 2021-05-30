@@ -136,10 +136,24 @@ val Script.failCompilation: Compilation<Fail> get() =
 	syntaxCompilation.map(::fail)
 
 val Script.isCompilation: Compilation<Is> get() =
-	syntaxOrNotCompilation.map(::is_)
+	matchPrefix(notName) { rhs ->
+		rhs.isRhsCompilation.map(::is_).map { it.negate }
+	} ?: isRhsCompilation.map(::is_)
+
+val Script.isRhsCompilation: Compilation<IsRhs> get() =
+	matchPrefix { name, rhs ->
+		when (name) {
+			matchingName -> rhs.matchingCompilation.map(::isRhs)
+			equalName -> rhs.equalCompilation.map(::isRhs)
+			else -> null
+		}
+	} ?: syntaxCompilation.map(::isRhs)
 
 val Script.matchingCompilation: Compilation<Matching> get() =
 	patternCompilation.map(::matching)
+
+val Script.equalCompilation: Compilation<Equal> get() =
+	syntaxCompilation.map(::equal)
 
 val Script.notCompilation: Compilation<Not> get() =
 	syntaxCompilation.map(::not)
