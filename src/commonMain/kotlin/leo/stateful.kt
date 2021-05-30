@@ -55,10 +55,10 @@ fun <S, F, I> Stateful<S, F>.foldStateful(seq: Seq<I>, fn: F.(I) -> Stateful<S, 
 	}
 
 val <S, T> Stack<Stateful<S, T>>.flat: Stateful<S, Stack<T>> get() =
-	stack<T>().stateful<S, Stack<T>>().fold(this) { statefulValue ->
+	stack<T>().stateful<S, Stack<T>>().fold(reverse) { statefulValue ->
 		bind { stack ->
 			statefulValue.bind { value ->
-				stack.push(value).reverse.stateful()
+				stack.push(value).stateful()
 			}
 		}
 	}

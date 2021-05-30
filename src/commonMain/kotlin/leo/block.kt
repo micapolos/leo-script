@@ -21,3 +21,9 @@ fun typedBlockOrNull(script: Script): Block? =
 	script.linkOrNull?.onlyLineOrNull?.fieldOrNull?.let { field ->
 		field.string.blockTypeOrNull?.block(expression(field.rhs))
 	}
+
+val BlockType.scriptName get() =
+	when (this) {
+		BlockType.REPEATEDLY -> repeatingName
+		BlockType.RECURSIVELY -> recursingName
+	}
