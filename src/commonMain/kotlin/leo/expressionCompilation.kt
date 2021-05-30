@@ -32,6 +32,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		tryName -> rhs.tryCompilation.map(::op)
 		updateName -> rhs.updateCompilation.map(::op)
 		useName -> rhs.useCompilation.map(::op)
+		withName -> rhs.withCompilation.map(::op)
 		else -> opFieldCompilation.map(::op)
 	}
 
@@ -110,3 +111,6 @@ val Script.updateCompilation: Compilation<Update> get() =
 
 val Script.useCompilation: Compilation<Use> get() =
 	useOrNull.notNullOrThrow { value(useName fieldTo value) }.compilation
+
+val Script.withCompilation: Compilation<With> get() =
+	expressionCompilation.map(::with)

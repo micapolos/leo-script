@@ -204,4 +204,16 @@ class ExpressionCompilationTest {
 					op("point"),
 					op(use("lib", "text"))))
 	}
+
+	@Test
+	fun with() {
+		script(
+			line("point"),
+			withName lineTo script(line("center")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op("point"),
+					op(with(expression(op("center"))))))
+	}
 }
