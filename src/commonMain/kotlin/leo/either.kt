@@ -1,9 +1,11 @@
 package leo
 
-sealed class Either<out First, out Second>
+import kotlin.reflect.KClass
 
-data class FirstEither<First, Second>(val first: First): Either<First, Second>()
-data class SecondEither<First, Second>(val second: Second): Either<First, Second>()
+sealed class Or<out First, out Second>
 
-fun <First, Second> First.firstEither(): Either<First, Second> = FirstEither(this)
-fun <First, Second> Second.secondEither(): Either<First, Second> = SecondEither(this)
+data class FirstOr<First, Second>(val first: First): Or<First, Second>()
+data class SecondOr<First, Second>(val second: Second): Or<First, Second>()
+
+infix fun <First, Second : Any> First.or(second: KClass<Second>): Or<First, Second> = FirstOr(this)
+infix fun <First: Any, Second> KClass<First>.or(second: Second): Or<First, Second> = SecondOr(second)

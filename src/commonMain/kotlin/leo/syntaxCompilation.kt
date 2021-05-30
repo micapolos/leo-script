@@ -27,6 +27,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		doingName -> rhs.doingCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
 		getName -> rhs.getCompilation.map(::op)
+		matchingName -> rhs.matchingCompilation.map(::op)
 		letName -> rhs.letCompilation.map(::op)
 		setName -> rhs.setCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
@@ -103,6 +104,12 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 
 val Script.failCompilation: Compilation<Fail> get() =
 	syntaxCompilation.map(::fail)
+
+val Script.matchingCompilation: Compilation<Matching> get() =
+	patternCompilation.map(::matching)
+
+val Script.notCompilation: Compilation<Not> get() =
+	syntaxCompilation.map(::not)
 
 val Script.setCompilation: Compilation<Set> get() =
 	lineStack.map { opFieldCompilation }.flat.map(::Set)

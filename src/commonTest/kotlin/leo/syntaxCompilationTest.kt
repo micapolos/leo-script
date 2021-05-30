@@ -134,6 +134,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun matching() {
+			script(
+				line(literal("Hello, world!")),
+				matchingName lineTo script(textName))
+				.syntax
+				.assertEqualTo(
+					syntax(
+						op(literal("Hello, world!")),
+						op(matching(pattern(script(textName))))))
+	}
+
+	@Test
 	fun switch() {
 		script(
 			line(literal("Hello, world!")),
