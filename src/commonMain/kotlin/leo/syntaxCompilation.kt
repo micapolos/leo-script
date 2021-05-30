@@ -32,6 +32,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)
+		quoteName -> rhs.quoteCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
 		switchName -> rhs.switchCompilation.map(::line)
 		testName -> rhs.testCompilation.map(::line)
@@ -120,6 +121,9 @@ val Script.matchingCompilation: Compilation<Matching> get() =
 
 val Script.notCompilation: Compilation<Not> get() =
 	syntaxCompilation.map(::not)
+
+val Script.quoteCompilation: Compilation<Quote> get() =
+	quote(this).compilation
 
 val Script.setCompilation: Compilation<Set> get() =
 	lineStack.map { syntaxFieldCompilation }.flat.map(::Set)

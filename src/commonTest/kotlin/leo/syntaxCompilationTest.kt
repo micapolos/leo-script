@@ -223,6 +223,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun quote() {
+		script(
+			line(literal("Hello, world!")),
+			quoteName lineTo script("foo"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal("Hello, world!")),
+					line(quote(script("foo")))))
+	}
+
+	@Test
 	fun switchCaseError() {
 		assertFailsWith<ValueError> {
 			script(
