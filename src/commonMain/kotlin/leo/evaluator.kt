@@ -249,7 +249,7 @@ fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 				dictionary.valueEvaluation(test.syntax).bind { lhs ->
 					dictionary.valueEvaluation(test.is_.syntax).bind { rhs ->
 						evaluation.also {
-							value(testName fieldTo value("todo"))
+							value(testName fieldTo test.script.value)
 								.plus(
 									causeName fieldTo
 											lhs.plus(isName fieldTo value(notName fieldTo rhs))
