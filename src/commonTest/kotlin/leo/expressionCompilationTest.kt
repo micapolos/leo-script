@@ -143,4 +143,16 @@ class ExpressionCompilationTest {
 						textName caseTo expression(op(literal("text"))),
 						numberName caseTo expression(op(literal("number")))))))
 	}
+
+	@Test
+	fun try_() {
+		script(
+			line(literal("Hello, ")),
+			tryName lineTo script(line(literal("boom!"))))
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, ")),
+					op(try_(expression(op(literal("boom!")))))))
+	}
 }

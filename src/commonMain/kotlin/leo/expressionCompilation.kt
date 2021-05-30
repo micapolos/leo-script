@@ -34,6 +34,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		failName -> rhs.failCompilation.map(::op)
 		letName -> rhs.letCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
+		tryName -> rhs.tryCompilation.map(::op)
 		else -> rhs.expressionCompilation.map { rhsExpression ->
 			FieldOp(OpField(string, ExpressionOpFieldRhs(rhsExpression)))
 		}
@@ -105,3 +106,5 @@ val Script.failCompilation: Compilation<Fail> get() =
 	if (isEmpty) fail.compilation
 	else value(failName fieldTo value).throwError()
 
+val Script.tryCompilation: Compilation<Try> get() =
+	expressionCompilation.map(::try_)

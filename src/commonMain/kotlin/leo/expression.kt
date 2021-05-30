@@ -17,6 +17,7 @@ data class FailOp(val fail: Fail): Op()
 data class FieldOp(val field: OpField): Op()
 data class LetOp(val let: Let): Op()
 data class SwitchOp(val switch: Switch): Op()
+data class TryOp(val try_: Try): Op()
 
 data class OpField(val name: String, val rhsExpression: OpFieldRhs)
 
@@ -36,10 +37,9 @@ data class Be(val expression: Expression)
 data class Comment(val script: Script)
 data class Do(val expression: Expression)
 object Fail
-data class LetDo(val expression: Expression)
-data class LetBe(val expression: Expression)
-
 data class Let(val pattern: Pattern, val rhs: LetRhs)
+data class Try(val expression: Expression)
+
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
@@ -70,6 +70,7 @@ fun op(do_: Do): Op = DoOp(do_)
 fun op(fail: Fail): Op = FailOp(fail)
 fun op(let: Let): Op = LetOp(let)
 fun op(switch: Switch): Op = SwitchOp(switch)
+fun op(try_: Try): Op = TryOp(try_)
 
 fun as_(pattern: Pattern) = As(pattern)
 fun be(expression: Expression) = Be(expression)
@@ -78,3 +79,4 @@ fun do_(expression: Expression) = Do(expression)
 val fail get() = Fail
 fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
 fun let(pattern: Pattern, do_: Do) = Let(pattern, DoLetRhs(do_))
+fun try_(expression: Expression) = Try(expression)
