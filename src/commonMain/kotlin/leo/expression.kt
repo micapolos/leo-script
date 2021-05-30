@@ -9,6 +9,7 @@ data class LinkExpression(val link: ExpressionLink): Expression()
 data class ExpressionLink(val lhsExpression: Expression, val field: Op)
 
 sealed class Op
+data class AsOp(val as_: As): Op()
 data class FieldOp(val field: OpField): Op()
 data class BindOp(val typed: Expression): Op()
 data class InvokeOp(val typed: Expression): Op()
@@ -27,9 +28,9 @@ data class LinkSwitch(val link: SwitchLink): Switch()
 data class SwitchLink(val lhsSwitch: Switch, val rhsCase: Case)
 data class Case(val name: String, val expression: Expression)
 
+data class As(val pattern: Pattern)
 data class LetDo(val expression: Expression)
 data class LetBe(val expression: Expression)
-data class As(val pattern: Pattern)
 
 fun expression(vararg ops: Op): Expression =
 	(EmptyExpression as Expression).fold(ops) { op ->
@@ -51,3 +52,6 @@ fun op(literal: Literal): Op =
 	}
 
 fun op(switch: Switch): Op = SwitchOp(switch)
+fun op(as_: As): Op = AsOp(as_)
+
+fun as_(pattern: Pattern) = As(pattern)
