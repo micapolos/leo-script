@@ -98,7 +98,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is QuoteSyntaxLine -> TODO()
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()
-		is TestSyntaxLine -> TODO()
+		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
 		is UseSyntaxLine -> plusEvaluation(line.use)
@@ -239,6 +239,38 @@ fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 		}
 	}.notNullOrThrow {
 		value(syntaxName fieldTo value(testName fieldTo test.value))
+	}
+
+fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(test.syntax.plus(line(test.is_))).bind { result ->
+		when (result) {
+			true.isValue -> evaluation
+			false.isValue ->
+				dictionary.valueEvaluation(test.syntax).bind { lhs ->
+					dictionary.valueEvaluation(test.is_.syntax).bind { rhs ->
+						evaluation.also {
+							value(testName fieldTo value("todo"))
+								.plus(
+									causeName fieldTo
+											lhs.plus(isName fieldTo value(notName fieldTo rhs))
+								).throwError()
+						}
+					}
+				}
+			else -> evaluation.also {
+				value(
+					testName fieldTo result.plus(
+						isName fieldTo value(
+							notName fieldTo value(
+								matchingName fieldTo value(
+									isName fieldTo value(anyName)
+								)
+							)
+						)
+					)
+				).throwError()
+			}
+		}
 	}
 
 fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =

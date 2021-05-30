@@ -67,6 +67,7 @@ val Switch.caseSeq get() = caseStack.reverse.seq
 val Update.fieldSeq get() = fieldStack.reverse.seq
 
 fun syntax(vararg syntaxLines: SyntaxLine): Syntax = Syntax(stack(*syntaxLines))
+fun Syntax.plus(line: SyntaxLine): Syntax = Syntax(lineStack.push(line))
 fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 
 fun syntaxLine(name: String) = name lineTo syntax()
@@ -126,3 +127,9 @@ fun test(syntax: Syntax, is_: Is) = Test(syntax, is_)
 fun try_(syntax: Syntax) = Try(syntax)
 fun update(vararg fields: SyntaxField) = Update(stack(*fields))
 fun with(syntax: Syntax) = With(syntax)
+
+val Is.syntax get() =
+	when (syntaxOrNot) {
+		is FirstOr -> syntaxOrNot.first
+		is SecondOr -> syntax(notName lineTo syntaxOrNot.second.syntax)
+	}
