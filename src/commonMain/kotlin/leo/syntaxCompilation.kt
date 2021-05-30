@@ -33,6 +33,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		privateName -> rhs.privateCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
 		switchName -> rhs.switchCompilation.map(::line)
+		testName -> rhs.testCompilation.map(::line)
 		tryName -> rhs.tryCompilation.map(::line)
 		updateName -> rhs.updateCompilation.map(::line)
 		useName -> rhs.useCompilation.map(::line)
@@ -126,6 +127,9 @@ val Script.syntaxOrNotCompilation: Compilation<Or<Syntax, Not>> get() =
 
 val Script.tryCompilation: Compilation<Try> get() =
 	syntaxCompilation.map(::try_)
+
+val Script.testCompilation: Compilation<Test> get() =
+	syntaxCompilation.map(::test)
 
 val Script.updateCompilation: Compilation<Update> get() =
 	lineStack.map { syntaxFieldCompilation }.flat.map(::Update)
