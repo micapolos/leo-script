@@ -32,6 +32,8 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)
+		recurseName -> rhs.recurseCompilation.map(::line)
+		repeatName -> rhs.repeatCompilation.map(::line)
 		quoteName -> rhs.quoteCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
 		switchName -> rhs.switchCompilation.map(::line)
@@ -132,6 +134,12 @@ val Script.matchingCompilation: Compilation<Matching> get() =
 
 val Script.notCompilation: Compilation<Not> get() =
 	syntaxCompilation.map(::not)
+
+val Script.recurseCompilation: Compilation<Recurse> get() =
+	syntaxCompilation.map(::recurse)
+
+val Script.repeatCompilation: Compilation<Repeat> get() =
+	syntaxCompilation.map(::repeat)
 
 val Script.quoteCompilation: Compilation<Quote> get() =
 	quote(this).compilation

@@ -253,6 +253,30 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun recurse() {
+		script(
+			"foo" lineTo script(),
+			recurseName lineTo script("bar" lineTo script()))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"foo" lineTo syntax(),
+					line(recurse(syntax("bar" lineTo syntax())))))
+	}
+
+	@Test
+	fun repeat() {
+		script(
+			"foo" lineTo script(),
+			repeatName lineTo script("bar" lineTo script()))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"foo" lineTo syntax(),
+					line(repeat(syntax("bar" lineTo syntax())))))
+	}
+
+	@Test
 	fun quote() {
 		script(
 			line(literal("Hello, world!")),

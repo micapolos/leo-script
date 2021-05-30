@@ -90,6 +90,8 @@ fun Interpreter.plusEvaluation(line: SyntaxLine): Evaluation<Interpreter> =
 		is LiteralSyntaxLine -> TODO()
 		is MatchingSyntaxLine -> TODO()
 		is PrivateSyntaxLine -> TODO()
+		is RecurseSyntaxLine -> TODO()
+		is RepeatSyntaxLine -> TODO()
 		is QuoteSyntaxLine -> TODO()
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()
