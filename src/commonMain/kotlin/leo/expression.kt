@@ -10,6 +10,7 @@ data class ExpressionLink(val lhsExpression: Expression, val field: Op)
 
 sealed class Op
 data class AsOp(val as_: As): Op()
+data class BeOp(val be: Be): Op()
 data class CommentOp(val comment: Comment): Op()
 data class DoOp(val do_: Do): Op()
 data class FailOp(val fail: Fail): Op()
@@ -32,6 +33,7 @@ data class SwitchLink(val lhsSwitch: Switch, val rhsCase: Case)
 data class Case(val name: String, val expression: Expression)
 
 data class As(val pattern: Pattern)
+data class Be(val expression: Expression)
 data class Comment(val script: Script)
 data class Do(val expression: Expression)
 object Fail
@@ -58,12 +60,14 @@ fun op(literal: Literal): Op =
 	}
 
 fun op(as_: As): Op = AsOp(as_)
+fun op(be: Be): Op = BeOp(be)
 fun op(comment: Comment): Op = CommentOp(comment)
 fun op(do_: Do): Op = DoOp(do_)
 fun op(fail: Fail): Op = FailOp(fail)
 fun op(switch: Switch): Op = SwitchOp(switch)
 
 fun as_(pattern: Pattern) = As(pattern)
+fun be(expression: Expression) = Be(expression)
 fun comment(script: Script) = Comment(script)
 fun do_(expression: Expression) = Do(expression)
 val fail get() = Fail

@@ -28,6 +28,7 @@ val ScriptLine.opCompilation: Compilation<Op> get() =
 val ScriptField.opCompilation: Compilation<Op> get() =
 	when (string) {
 		asName -> rhs.asCompilation.map(::op)
+		beName -> rhs.beCompilation.map(::op)
 		commentName -> rhs.commentCompilation.map(::op)
 		doName -> rhs.doCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
@@ -84,3 +85,6 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 val Script.failCompilation: Compilation<Fail> get() =
 	if (isEmpty) fail.compilation
 	else value(failName fieldTo value).throwError()
+
+val Script.beCompilation: Compilation<Be> get() =
+	expressionCompilation.map(::be)

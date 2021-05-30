@@ -29,6 +29,18 @@ class ExpressionCompilationTest {
 	}
 
 	@Test
+	fun be() {
+		script(
+			line(literal("Hello, ")),
+			beName lineTo script(line(literal("world!"))))
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, ")),
+					op(be(expression(op(literal("world!")))))))
+	}
+
+	@Test
 	fun comment() {
 		script(
 			line(literal("Hello, world!")),
