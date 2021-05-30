@@ -336,3 +336,13 @@ fun Value.replaceOrThrow(field: Field): Value =
 fun Link.replaceOrThrow(field: Field): Link =
 	if (this.field.name == field.name) value linkTo field
 	else value.replaceOrThrow(field).linkTo(this.field)
+
+fun Value.get(name: String): Value =
+	bodyOrNull?.selectOrNull(name).notNullOrThrow { plus(getName fieldTo value(name)) }
+
+fun Value.apply(get: Get): Value =
+	let { target ->
+		value().fold(get.nameSeq) { name ->
+			plus(target.get(name))
+		}
+	}

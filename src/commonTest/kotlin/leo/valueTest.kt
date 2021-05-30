@@ -191,4 +191,26 @@ class ValueTest {
 					)
 			}
 	}
+
+	@Test
+	fun applyGet() {
+		value(
+			"point" fieldTo value(
+				"x" fieldTo value("zero"),
+				"y" fieldTo value("one")))
+			.apply(get("x", "y", "y"))
+			.assertEqualTo(
+				value(
+					"x" fieldTo value("zero"),
+					"y" fieldTo value("one"),
+					"y" fieldTo value("one")))
+
+		assertFailsWith<ValueError> {
+			value(
+				"point" fieldTo value(
+					"x" fieldTo value("zero"),
+					"y" fieldTo value("one")))
+				.apply(get("z"))
+		}
+	}
 }
