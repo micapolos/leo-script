@@ -27,7 +27,7 @@ class DictionaryTest {
 					binding(value("pong"))
 				)
 			)
-			.applyOrNullLeo(value("ping"))
+			.applyOrNullEvaluation(value("ping"))
 			.get
 			.assertEqualTo(value("pong"))
 	}
@@ -42,9 +42,9 @@ class DictionaryTest {
 				)
 			)
 			.run {
-				applyOrNullLeo(value("name" fieldTo value())).get.assertEqualTo(value("ok"))
-				applyOrNullLeo(value("name" fieldTo value("michal"))).get.assertEqualTo(value("ok"))
-				applyOrNullLeo(value("name" fieldTo value(field(literal("Michał"))))).get.assertEqualTo(value("ok"))
+				applyOrNullEvaluation(value("name" fieldTo value())).get.assertEqualTo(value("ok"))
+				applyOrNullEvaluation(value("name" fieldTo value("michal"))).get.assertEqualTo(value("ok"))
+				applyOrNullEvaluation(value("name" fieldTo value(field(literal("Michał"))))).get.assertEqualTo(value("ok"))
 			}
 	}
 
@@ -58,8 +58,8 @@ class DictionaryTest {
 				)
 			)
 			.run {
-				applyOrNullLeo(value("ping")).get.assertEqualTo(value("pong"))
-				applyOrNullLeo(value("ping")).get.assertEqualTo(value("pong"))
+				applyOrNullEvaluation(value("ping")).get.assertEqualTo(value("pong"))
+				applyOrNullEvaluation(value("ping")).get.assertEqualTo(value("pong"))
 			}
 	}
 
@@ -73,7 +73,7 @@ class DictionaryTest {
 				)
 			)
 			.run {
-				applyOrNullLeo(value("a" fieldTo value(), "plus" fieldTo value("b" fieldTo value())))
+				applyOrNullEvaluation(value("a" fieldTo value(), "plus" fieldTo value("b" fieldTo value())))
 					.get
 					.assertEqualTo(value("ok"))
 			}
@@ -88,7 +88,7 @@ class DictionaryTest {
 					binding(value("ok"))
 				)
 			)
-			.applyOrNullLeo(value(field(literal("foo"))))
+			.applyOrNullEvaluation(value(field(literal("foo"))))
 			.get
 			.assertEqualTo(value("ok"))
 
@@ -99,7 +99,7 @@ class DictionaryTest {
 					binding(value("ok"))
 				)
 			)
-			.applyOrNullLeo(value(field(literal("foo"))))
+			.applyOrNullEvaluation(value(field(literal("foo"))))
 			.get
 			.assertEqualTo(value("ok"))
 
@@ -110,7 +110,7 @@ class DictionaryTest {
 					binding(value("ok"))
 				)
 			)
-			.applyOrNullLeo(value(field(literal("bar"))))
+			.applyOrNullEvaluation(value(field(literal("bar"))))
 			.get
 			.assertEqualTo(null)
 
@@ -121,7 +121,7 @@ class DictionaryTest {
 					binding(value("ok"))
 				)
 			)
-			.applyOrNullLeo(value(field(literal(123))))
+			.applyOrNullEvaluation(value(field(literal(123))))
 			.get
 			.assertEqualTo(value("ok"))
 
@@ -132,7 +132,7 @@ class DictionaryTest {
 					binding(value("ok"))
 				)
 			)
-			.applyOrNullLeo(value(field(literal(124))))
+			.applyOrNullEvaluation(value(field(literal(124))))
 			.get
 			.assertEqualTo(null)
 	}
@@ -302,7 +302,7 @@ class DictionaryTest {
 	@Test
 	fun switchOrNull() {
 		dictionary()
-			.switchLeo(
+			.switchEvaluation(
 				value("the" fieldTo value(field(literal("Hello, world!")))),
 				script(
 					textName lineTo script(doingName lineTo script(textName)),

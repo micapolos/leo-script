@@ -15,35 +15,35 @@ data class Interpreter(
 fun Context.interpreter(value: Value = value()) =
 	Interpreter(this, value)
 
-fun Interpreter.setLeo(value: Value): Leo<Interpreter> =
-	context.interpreter(value).leo
+fun Interpreter.setEvaluation(value: Value): Evaluation<Interpreter> =
+	context.interpreter(value).evaluation
 
 fun Interpreter.set(context: Context): Interpreter =
 	context.interpreter(value)
 
-fun Dictionary.valueLeo(script: Script): Leo<Value> =
-	context.interpreterLeo(script).map { it.value }
+fun Dictionary.valueEvaluation(script: Script): Evaluation<Value> =
+	context.interpreterEvaluation(script).map { it.value }
 
-fun Dictionary.valueLeo(value: Value, script: Script): Leo<Value> =
-	context.interpreter(value).plusLeo(script).map { it.value }
+fun Dictionary.valueEvaluation(value: Value, script: Script): Evaluation<Value> =
+	context.interpreter(value).plusEvaluation(script).map { it.value }
 
-fun Dictionary.fieldsValueLeo(script: Script): Leo<Value> =
-	value().leo.fold(script.lineSeq.reverse) { line ->
+fun Dictionary.valueRhsEvaluation(script: Script): Evaluation<Value> =
+	value().evaluation.fold(script.lineSeq.reverse) { line ->
 		bind { value ->
-			fieldLeo(line).bind { field ->
-				value.plus(field).leo
+			fieldEvaluation(line).bind { field ->
+				value.plus(field).evaluation
 			}
 		}
 	}
 
-fun Dictionary.fieldLeo(scriptLine: ScriptLine): Leo<Field> =
+fun Dictionary.fieldEvaluation(scriptLine: ScriptLine): Evaluation<Field> =
 	when (scriptLine) {
-		is FieldScriptLine -> fieldLeo(scriptLine.field)
-		is LiteralScriptLine -> field(scriptLine.literal).leo
+		is FieldScriptLine -> fieldEvaluation(scriptLine.field)
+		is LiteralScriptLine -> field(scriptLine.literal).evaluation
 	}
 
-fun Dictionary.fieldLeo(scriptField: ScriptField): Leo<Field> =
-	valueLeo(scriptField.rhs).map {
+fun Dictionary.fieldEvaluation(scriptField: ScriptField): Evaluation<Field> =
+	valueEvaluation(scriptField.rhs).map {
 		scriptField.string fieldTo it
 	}
 
@@ -53,121 +53,121 @@ val String.dictionary: Dictionary
 
 val Script.dictionary: Dictionary
 	get() =
-		preludeDictionary.context.interpreter().plusLeo(this).get.context.publicDictionary
+		preludeDictionary.context.interpreter().plusEvaluation(this).get.context.publicDictionary
 
-fun Context.interpreterLeo(script: Script): Leo<Interpreter> =
-	interpreter().plusLeo(script)
+fun Context.interpreterEvaluation(script: Script): Evaluation<Interpreter> =
+	interpreter().plusEvaluation(script)
 
-fun Interpreter.plusLeo(script: Script): Leo<Interpreter> =
-	leo.fold(script.lineSeq.reverse) { line ->
+fun Interpreter.plusEvaluation(script: Script): Evaluation<Interpreter> =
+	evaluation.fold(script.lineSeq.reverse) { line ->
 		bind {
-			it.plusLeo(line)
+			it.plusEvaluation(line)
 		}
 	}
 
-fun Interpreter.plusLeo(scriptLine: ScriptLine): Leo<Interpreter> =
+fun Interpreter.plusEvaluation(scriptLine: ScriptLine): Evaluation<Interpreter> =
 	when (scriptLine) {
-		is FieldScriptLine -> plusLeo(scriptLine.field)
-		is LiteralScriptLine -> plusLeo(scriptLine.literal)
+		is FieldScriptLine -> plusEvaluation(scriptLine.field)
+		is LiteralScriptLine -> plusEvaluation(scriptLine.literal)
 	}
 
-fun Interpreter.plusLeo(scriptField: ScriptField): Leo<Interpreter> =
-	plusDefinitionsOrNullLeo(scriptField).or {
-		plusStaticOrNullLeo(scriptField).or {
-			plusDynamicLeo(scriptField)
+fun Interpreter.plusEvaluation(scriptField: ScriptField): Evaluation<Interpreter> =
+	plusDefinitionsOrNullLEvaluation(scriptField).or {
+		plusStaticOrNullEvaluation(scriptField).or {
+			plusDynamicEvaluation(scriptField)
 		}
 	}
 
-fun Interpreter.plusDefinitionsOrNullLeo(scriptField: ScriptField): Leo<Interpreter?> =
-	dictionary.definitionSeqOrNullLeo(scriptField).nullableMap { definitionSeq ->
+fun Interpreter.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evaluation<Interpreter?> =
+	dictionary.definitionSeqOrNullEvaluation(scriptField).nullableMap { definitionSeq ->
 		set(context.fold(definitionSeq.reverse) { plus(it) })
 	}
 
-fun Interpreter.plusStaticOrNullLeo(scriptField: ScriptField): Leo<Interpreter?> =
+fun Interpreter.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Interpreter?> =
 	when (scriptField.string) {
-		asName -> plusAsLeo(scriptField.rhs)
-		commentName -> leo
-		doName -> plusDoLeo(scriptField.rhs)
-		doingName -> plusDoingOrNullLeo(scriptField.rhs)
-		failName -> plusFailLeo(scriptField.rhs)
-		isName -> plusIsOrNullLeo(scriptField.rhs)
-		privateName -> plusPrivateLeo(scriptField.rhs)
-		quoteName -> plusQuoteLeo(scriptField.rhs)
-		setName -> plusSetLeo(scriptField.rhs)
-		switchName -> plusSwitchLeo(scriptField.rhs)
-		testName -> plusTestLeo(scriptField.rhs)
-		traceName -> plusTraceOrNullLeo(scriptField.rhs)
-		tryName -> plusTryLeo(scriptField.rhs)
-		updateName -> plusUpdateLeo(scriptField.rhs)
-		useName -> plusUseLeo(scriptField.rhs)
-		withName -> plusWithLeo(scriptField.rhs)
-		else -> leo(null)
+		asName -> plusAsEvaluation(scriptField.rhs)
+		commentName -> evaluation
+		doName -> plusDoEvaluation(scriptField.rhs)
+		doingName -> plusDoingOrNullEvaluation(scriptField.rhs)
+		failName -> plusFailEvaluation(scriptField.rhs)
+		isName -> plusIsOrNullEvaluation(scriptField.rhs)
+		privateName -> plusPrivateEvaluation(scriptField.rhs)
+		quoteName -> plusQuoteEvaluation(scriptField.rhs)
+		setName -> plusSetEvaluation(scriptField.rhs)
+		switchName -> plusSwitchEvaluation(scriptField.rhs)
+		testName -> plusTestEvaluation(scriptField.rhs)
+		traceName -> plusTraceOrNullEvaluation(scriptField.rhs)
+		tryName -> plusTryEvaluation(scriptField.rhs)
+		updateName -> plusUpdateEvaluation(scriptField.rhs)
+		useName -> plusUseEvaluation(scriptField.rhs)
+		withName -> plusWithEvaluation(scriptField.rhs)
+		else -> evaluation(null)
 	}
 
-fun Interpreter.plusDynamicOrNullLeo(field: Field): Leo<Interpreter?> =
+fun Interpreter.plusDynamicOrNullEvaluation(field: Field): Evaluation<Interpreter?> =
 	when (field.name) {
-		giveName -> plusApplyLeo(field.rhs)
-		beName -> plusBeLeo(field.rhs)
-		evaluateName -> plusEvaluateLeo(field.rhs)
-		exampleName -> plusExampleLeo(field.rhs)
-		hashName -> plusHashOrNullLeo(field.rhs)
-		takeName -> plusTakeLeo(field.rhs)
-		textName -> plusTextOrNullLeo(field.rhs)
-		valueName -> plusValueOrNullLeo(field.rhs)
-		else -> leo(null)
+		giveName -> plusApplyEvaluation(field.rhs)
+		beName -> plusBeEvaluation(field.rhs)
+		evaluateName -> plusEvaluateEvaluation(field.rhs)
+		exampleName -> plusExampleEvaluation(field.rhs)
+		hashName -> plusHashOrNullEvaluation(field.rhs)
+		takeName -> plusTakeEvaluation(field.rhs)
+		textName -> plusTextOrNullEvaluation(field.rhs)
+		valueName -> plusValueOrNullEvaluation(field.rhs)
+		else -> evaluation(null)
 	}
 
-fun Interpreter.plusApplyLeo(rhs: Rhs): Leo<Interpreter> =
-	value.functionOrThrow.leo.bind { function ->
-		function.applyLeo(rhs.valueOrThrow).bind { output ->
-			setLeo(output)
+fun Interpreter.plusApplyEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+	value.functionOrThrow.evaluation.bind { function ->
+		function.applyEvaluation(rhs.valueOrThrow).bind { output ->
+			setEvaluation(output)
 		}
 	}
 
-fun Interpreter.plusTakeLeo(rhs: Rhs): Leo<Interpreter> =
-	rhs.valueOrThrow.functionOrThrow.leo.bind { function ->
-		function.applyLeo(value).bind { output ->
-			setLeo(output)
+fun Interpreter.plusTakeEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+	rhs.valueOrThrow.functionOrThrow.evaluation.bind { function ->
+		function.applyEvaluation(value).bind { output ->
+			setEvaluation(output)
 		}
 	}
 
-fun Interpreter.plusTextOrNullLeo(rhs: Rhs): Leo<Interpreter?> =
+fun Interpreter.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
 	rhs.valueOrNull?.resolveEmptyOrNull {
 		value.resolvePrefixOrNull(valueName) {
 			value(field(literal(it.string)))
 		}
 	}
-		.leo
-		.nullableBind { setLeo(it) }
+		.evaluation
+		.nullableBind { setEvaluation(it) }
 
-fun Interpreter.plusBeLeo(rhs: Rhs): Leo<Interpreter> =
-	setLeo(rhs.valueOrThrow)
+fun Interpreter.plusBeEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+	setEvaluation(rhs.valueOrThrow)
 
-fun Interpreter.plusDoLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.applyLeo(block(rhs), value).bind { setLeo(it) }
+fun Interpreter.plusDoEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.applyEvaluation(block(rhs), value).bind { setEvaluation(it) }
 
-fun Interpreter.plusEvaluateLeo(rhs: Rhs): Leo<Interpreter> =
-	dictionary.set(rhs.valueOrThrow).valueLeo(value.script).bind { evaluated ->
-		setLeo(evaluated)
+fun Interpreter.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+	dictionary.set(rhs.valueOrThrow).valueEvaluation(value.script).bind { evaluated ->
+		setEvaluation(evaluated)
 	}
 
-fun Interpreter.plusExampleLeo(rhs: Rhs): Leo<Interpreter> =
-	leo.also { rhs.valueOrThrow }
+fun Interpreter.plusExampleEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+	evaluation.also { rhs.valueOrThrow }
 
-fun Interpreter.plusFailLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.valueLeo(value, rhs).bind { value ->
-		leo.also { value.throwError() }
+fun Interpreter.plusFailEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.valueEvaluation(value, rhs).bind { value ->
+		evaluation.also { value.throwError() }
 	}
 
-fun Interpreter.plusTestLeo(test: Script): Leo<Interpreter> =
+fun Interpreter.plusTestEvaluation(test: Script): Evaluation<Interpreter> =
 	test.matchInfix(isName) { lhs, rhs ->
-		dictionary.valueLeo(test).bind { result ->
+		dictionary.valueEvaluation(test).bind { result ->
 			when (result) {
-				true.isValue -> leo
+				true.isValue -> evaluation
 				false.isValue ->
-					dictionary.valueLeo(lhs).bind { lhs ->
-						dictionary.valueLeo(rhs).bind { rhs ->
-							leo.also {
+					dictionary.valueEvaluation(lhs).bind { lhs ->
+						dictionary.valueEvaluation(rhs).bind { rhs ->
+							evaluation.also {
 								value(testName fieldTo test.value)
 									.plus(
 										causeName fieldTo
@@ -176,7 +176,7 @@ fun Interpreter.plusTestLeo(test: Script): Leo<Interpreter> =
 							}
 						}
 					}
-				else -> leo.also {
+				else -> evaluation.also {
 					value(
 						testName fieldTo result.plus(
 							isName fieldTo value(
@@ -195,109 +195,109 @@ fun Interpreter.plusTestLeo(test: Script): Leo<Interpreter> =
 		value(syntaxName fieldTo value(testName fieldTo test.value))
 	}
 
-fun Interpreter.plusDoingOrNullLeo(rhs: Script): Leo<Interpreter?> =
-	rhs.orNullIf(rhs.isEmpty).leo.nullableBind {
-		plusLeo(field(dictionary.function(body(rhs))))
+fun Interpreter.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Interpreter?> =
+	rhs.orNullIf(rhs.isEmpty).evaluation.nullableBind {
+		plusEvaluation(field(dictionary.function(body(rhs))))
 	}
 
-fun Interpreter.plusHashOrNullLeo(rhs: Rhs): Leo<Interpreter?> =
-	if (rhs.valueOrNull?.isEmpty == true) setLeo(value.hashValue)
-	else leo(null)
+fun Interpreter.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
+	if (rhs.valueOrNull?.isEmpty == true) setEvaluation(value.hashValue)
+	else evaluation(null)
 
-fun Interpreter.plusIsEqualLeo(rhs: Script, negate: Boolean): Leo<Interpreter?> =
-	dictionary.valueLeo(rhs).bind {
-		setLeo(value.equals(it).isValue(negate))
+fun Interpreter.plusIsEqualEvaluation(rhs: Script, negate: Boolean): Evaluation<Interpreter?> =
+	dictionary.valueEvaluation(rhs).bind {
+		setEvaluation(value.equals(it).isValue(negate))
 	}
 
-fun Interpreter.plusQuoteLeo(rhs: Script): Leo<Interpreter> =
-	setLeo(value.script.plus(rhs).value)
+fun Interpreter.plusQuoteEvaluation(rhs: Script): Evaluation<Interpreter> =
+	setEvaluation(value.script.plus(rhs).value)
 
-fun Interpreter.plusSetLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.fieldsValueLeo(rhs).bind { rhsValue ->
-		setLeo(value.setOrThrow(rhsValue))
+fun Interpreter.plusSetEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.valueRhsEvaluation(rhs).bind { rhsValue ->
+		setEvaluation(value.setOrThrow(rhsValue))
 	}
 
-fun Interpreter.plusSwitchLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.switchLeo(value, rhs).bind {
-		setLeo(it)
+fun Interpreter.plusSwitchEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.switchEvaluation(value, rhs).bind {
+		setEvaluation(it)
 	}
 
-fun Interpreter.plusTraceOrNullLeo(rhs: Script): Leo<Interpreter?> =
+fun Interpreter.plusTraceOrNullEvaluation(rhs: Script): Evaluation<Interpreter?> =
 	rhs
-		.matchEmpty { traceValueLeo.bind { setLeo(it) } }
-		?: leo(null)
+		.matchEmpty { traceValueEvaluation.bind { setEvaluation(it) } }
+		?: evaluation(null)
 
-fun Interpreter.plusTryLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.valueLeo(value, rhs)
-		.bind { value -> setLeo(value(tryName fieldTo value(successName fieldTo value))) }
-		.catch { throwable -> setLeo(value(tryName fieldTo throwable.value)) }
+fun Interpreter.plusTryEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.valueEvaluation(value, rhs)
+		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
+		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value)) }
 
-fun Interpreter.plusUpdateLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.updateLeo(value, rhs).bind { setLeo(it) }
+fun Interpreter.plusUpdateEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.updateEvaluation(value, rhs).bind { setEvaluation(it) }
 
-fun Interpreter.plusDynamicLeo(scriptField: ScriptField): Leo<Interpreter> =
-	dictionary.fieldLeo(scriptField).bind { field ->
-		plusDynamicOrNullLeo(field).or {
-			plusLeo(field)
+fun Interpreter.plusDynamicEvaluation(scriptField: ScriptField): Evaluation<Interpreter> =
+	dictionary.fieldEvaluation(scriptField).bind { field ->
+		plusDynamicOrNullEvaluation(field).or {
+			plusEvaluation(field)
 		}
 	}
 
-fun Interpreter.plusLeo(literal: Literal): Leo<Interpreter> =
-	plusLeo(field(literal))
+fun Interpreter.plusEvaluation(literal: Literal): Evaluation<Interpreter> =
+	plusEvaluation(field(literal))
 
-fun Interpreter.plusLeo(field: Field): Leo<Interpreter> =
-	dictionary.resolveLeo(value.plus(field)).bind {
-		setLeo(it)
+fun Interpreter.plusEvaluation(field: Field): Evaluation<Interpreter> =
+	dictionary.resolveEvaluation(value.plus(field)).bind {
+		setEvaluation(it)
 	}
 
-fun Interpreter.plusAsLeo(rhs: Script): Leo<Interpreter> =
-	setLeo(value.as_(pattern(rhs)))
+fun Interpreter.plusAsEvaluation(rhs: Script): Evaluation<Interpreter> =
+	setEvaluation(value.as_(pattern(rhs)))
 
-fun Interpreter.plusIsOrNullLeo(rhs: Script, negate: Boolean = false): Leo<Interpreter?> =
-	rhs.onlyLineOrNull?.fieldOrNull.leo.nullableBind { field ->
+fun Interpreter.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Evaluation<Interpreter?> =
+	rhs.onlyLineOrNull?.fieldOrNull.evaluation.nullableBind { field ->
 		when (field.string) {
-			equalName -> plusIsEqualLeo(field.rhs, negate)
-			matchingName -> plusIsMatchingLeo(field.rhs, negate)
+			equalName -> plusIsEqualEvaluation(field.rhs, negate)
+			matchingName -> plusIsMatchingEvaluation(field.rhs, negate)
 			// TODO: It's not working with "is not less than" and others
-			notName -> plusIsOrNullLeo(field.rhs, negate.negate)
-			else -> leo(null)
+			notName -> plusIsOrNullEvaluation(field.rhs, negate.negate)
+			else -> evaluation(null)
 		}
 	}
 
-fun Interpreter.plusIsMatchingLeo(rhs: Script, negate: Boolean): Leo<Interpreter> =
-	setLeo(value.isMatching(pattern(rhs), negate))
+fun Interpreter.plusIsMatchingEvaluation(rhs: Script, negate: Boolean): Evaluation<Interpreter> =
+	setEvaluation(value.isMatching(pattern(rhs), negate))
 
-fun Interpreter.plusPrivateLeo(rhs: Script): Leo<Interpreter> =
-	context.private.interpreterLeo(rhs).map { interpreter ->
+fun Interpreter.plusPrivateEvaluation(rhs: Script): Evaluation<Interpreter> =
+	context.private.interpreterEvaluation(rhs).map { interpreter ->
 		use(interpreter.context.publicDictionary)
 	}
 
-fun Interpreter.plusUseLeo(rhs: Script): Leo<Interpreter> =
-	rhs.useOrNull.notNullOrThrow { value.plus(useName fieldTo rhs.value) }.leo.bind {
-		plusLeo(it)
+fun Interpreter.plusUseEvaluation(rhs: Script): Evaluation<Interpreter> =
+	rhs.useOrNull.notNullOrThrow { value.plus(useName fieldTo rhs.value) }.evaluation.bind {
+		plusEvaluation(it)
 	}
 
-fun Interpreter.plusValueOrNullLeo(rhs: Rhs): Leo<Interpreter?> =
+fun Interpreter.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
 	rhs.valueOrNull?.resolveEmptyOrNull {
 		value.textOrNull?.let {
 			value(valueName fieldTo it.scriptOrThrow.value)
 		}
 	}
-		.leo
-		.nullableBind { setLeo(it) }
+		.evaluation
+		.nullableBind { setEvaluation(it) }
 
 
-fun Interpreter.plusWithLeo(rhs: Script): Leo<Interpreter> =
-	dictionary.valueLeo(rhs).bind { rhsValue ->
-		setLeo(value + rhsValue)
+fun Interpreter.plusWithEvaluation(rhs: Script): Evaluation<Interpreter> =
+	dictionary.valueEvaluation(rhs).bind { rhsValue ->
+		setEvaluation(value + rhsValue)
 	}
 
 val Interpreter.dictionary
 	get() =
 		context.privateDictionary
 
-fun Interpreter.plusLeo(use: Use): Leo<Interpreter> =
-	Leo { it.libraryEffect(use) }.map { use(it) }
+fun Interpreter.plusEvaluation(use: Use): Evaluation<Interpreter> =
+	Evaluation { it.libraryEffect(use) }.map { use(it) }
 
 fun Interpreter.use(dictionary: Dictionary): Interpreter =
 	set(context.plusPrivate(dictionary))

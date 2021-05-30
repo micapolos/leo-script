@@ -4,15 +4,15 @@ import leo.base.fold
 import leo.base.orNull
 import leo.base.reverse
 
-fun Dictionary.resolveLeo(value: Value): Leo<Value> =
-	value.tracedLeo.bind {
-		applyOrNullLeo(value).or {
-			value.resolveLeo
+fun Dictionary.resolveEvaluation(value: Value): Evaluation<Value> =
+	value.tracedEvaluation.bind {
+		applyOrNullEvaluation(value).or {
+			value.resolveEvaluation
 		}
 	}
 
-fun Dictionary.applyOrNullLeo(value: Value): Leo<Value?> =
-	resolutionOrNull(value)?.bindingOrNull?.applyLeo(value) ?: leo(null)
+fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
+	resolutionOrNull(value)?.bindingOrNull?.applyEvaluation(value) ?: evaluation(null)
 
 fun Dictionary.resolutionOrNull(token: Token): Resolution? =
 	tokenToResolutionMap.get(token)

@@ -143,50 +143,50 @@ fun Resolution.merge(resolution: Resolution): Resolution =
 fun Resolution?.orNullMerge(resolution: Resolution): Resolution =
 	this?.merge(resolution) ?: resolution
 
-fun Dictionary.switchLeo(value: Value, script: Script): Leo<Value> =
-	fieldsValueLeo(script).bind { cases ->
-		switchLeo(value.switchFieldOrThrow, cases)
+fun Dictionary.switchEvaluation(value: Value, script: Script): Evaluation<Value> =
+	valueRhsEvaluation(script).bind { cases ->
+		switchEvaluation(value.switchFieldOrThrow, cases)
 	}
 
-fun Dictionary.switchLeo(field: Field, cases: Value): Leo<Value> =
+fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(switchName).throwError()
-		is LinkValue -> switchLeo(field, cases.link)
+		is LinkValue -> switchEvaluation(field, cases.link)
 	}
 
-fun Dictionary.switchLeo(field: Field, link: Link): Leo<Value> =
-	switchOrNullLeo(field, link.field).or {
-		switchLeo(field, link.value)
+fun Dictionary.switchEvaluation(field: Field, link: Link): Evaluation<Value> =
+	switchOrNullEvaluation(field, link.field).or {
+		switchEvaluation(field, link.value)
 	}
 
-fun switchOrNullLeo(field: Field, case: Field): Leo<Value?> =
+fun switchOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
 	ifOrNull(field.name == case.name) {
-		value(case).nativeValue(doingName).functionOrThrow.applyLeo(value(field))
-	} ?: leo(null)
+		value(case).nativeValue(doingName).functionOrThrow.applyEvaluation(value(field))
+	} ?: evaluation(null)
 
-fun Dictionary.applyLeo(body: Body, given: Value): Leo<Value> =
+fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
-		is FnBody -> body.fn(set(given)).leo
-		is BlockBody -> applyLeo(body.block, given)
+		is FnBody -> body.fn(set(given)).evaluation
+		is BlockBody -> applyEvaluation(body.block, given)
 	}
 
-fun Dictionary.applyLeo(block: Block, given: Value): Leo<Value> =
+fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 	when (block.typeOrNull) {
-		BlockType.REPEATEDLY -> applyRepeatingLeo(block.untypedScript, given)
-		BlockType.RECURSIVELY -> applyRecursingLeo(block.untypedScript, given)
-		null -> applyUntypedLeo(block.untypedScript, given)
+		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.untypedScript, given)
+		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.untypedScript, given)
+		null -> applyUntypedEvaluation(block.untypedScript, given)
 	}
 
-fun Dictionary.applyRepeatingLeo(script: Script, given: Value): Leo<Value> =
-	given.leo.valueBindRepeating { repeatingGiven ->
-		set(repeatingGiven).valueLeo(script)
+fun Dictionary.applyRepeatingEvaluation(script: Script, given: Value): Evaluation<Value> =
+	given.evaluation.valueBindRepeating { repeatingGiven ->
+		set(repeatingGiven).valueEvaluation(script)
 	}
 
-fun Dictionary.applyRecursingLeo(script: Script, given: Value): Leo<Value> =
-	set(given).plusRecurse(script).valueLeo(script)
+fun Dictionary.applyRecursingEvaluation(script: Script, given: Value): Evaluation<Value> =
+	set(given).plusRecurse(script).valueEvaluation(script)
 
-fun Dictionary.applyUntypedLeo(script: Script, given: Value): Leo<Value> =
-	set(given).valueLeo(script)
+fun Dictionary.applyUntypedEvaluation(script: Script, given: Value): Evaluation<Value> =
+	set(given).valueEvaluation(script)
 
 fun Dictionary.plusRecurse(script: Script): Dictionary =
 	plus(
@@ -201,15 +201,15 @@ fun Dictionary.plusRecurse(script: Script): Dictionary =
 		)
 	)
 
-fun Dictionary.definitionSeqOrNullLeo(scriptField: ScriptField): Leo<Seq<Definition>?> =
+fun Dictionary.definitionSeqOrNullEvaluation(scriptField: ScriptField): Evaluation<Seq<Definition>?> =
 	when (scriptField.string) {
 		"let" -> letDefinitionOrNull(scriptField.rhs).nullableMap { seq(it) }
-		else -> leo(null)
+		else -> evaluation(null)
 	}
 
-fun Dictionary.letDefinitionOrNull(rhs: Script): Leo<Definition?> =
+fun Dictionary.letDefinitionOrNull(rhs: Script): Evaluation<Definition?> =
 	null
-		?: letDoDefinitionOrNull(rhs)?.leo
+		?: letDoDefinitionOrNull(rhs)?.evaluation
 		?: letBeDefinitionOrNull(rhs)
 
 fun Dictionary.letDoDefinitionOrNull(rhs: Script): Definition? =
@@ -217,41 +217,41 @@ fun Dictionary.letDoDefinitionOrNull(rhs: Script): Definition? =
 		definition(pattern(lhs), binding(function(body(doRhs))))
 	}
 
-fun Dictionary.letBeDefinitionOrNull(rhs: Script): Leo<Definition?> =
+fun Dictionary.letBeDefinitionOrNull(rhs: Script): Evaluation<Definition?> =
 	rhs.matchInfix(beName) { lhs, beRhs ->
-		valueLeo(beRhs).bind { value ->
-			definition(pattern(lhs), binding(value)).leo
+		valueEvaluation(beRhs).bind { value ->
+			definition(pattern(lhs), binding(value)).evaluation
 		}
-	} ?: leo(null)
+	} ?: evaluation(null)
 
-fun Dictionary.updateLeo(value: Value, script: Script): Leo<Value> =
+fun Dictionary.updateEvaluation(value: Value, script: Script): Evaluation<Value> =
 	value.structureOrThrow.let { structure ->
-		updateStructureLeo(structure.value, script).map { rhs ->
+		updateStructureEvaluation(structure.value, script).map { rhs ->
 			value(structure.name fieldTo rhs)
 		}
 	}
 
-fun Dictionary.updateStructureLeo(value: Value, script: Script): Leo<Value> =
-	value.leo.fold(script.lineSeq.reverse) { line ->
+fun Dictionary.updateStructureEvaluation(value: Value, script: Script): Evaluation<Value> =
+	value.evaluation.fold(script.lineSeq.reverse) { line ->
 		line.fieldOrNull.notNullOrThrow { value(line.field) }.let { fieldOrNull ->
 			bind { value ->
-				updateStructureLeo(value, fieldOrNull)
+				updateStructureEvaluation(value, fieldOrNull)
 			}
 		}
 	}
 
-fun Dictionary.updateStructureLeo(value: Value, scriptField: ScriptField): Leo<Value> =
+fun Dictionary.updateStructureEvaluation(value: Value, scriptField: ScriptField): Evaluation<Value> =
 	when (value) {
 		EmptyValue -> value("no" fieldTo value("field" fieldTo value(scriptField.string))).throwError()
 		is LinkValue ->
-			updateStructureLeo(value.link, scriptField).map { value(it) }
+			updateStructureEvaluation(value.link, scriptField).map { value(it) }
 	}
 
-fun Dictionary.updateStructureLeo(link: Link, scriptField: ScriptField): Leo<Link> =
+fun Dictionary.updateStructureEvaluation(link: Link, scriptField: ScriptField): Evaluation<Link> =
 	if (link.field.name == scriptField.string)
-		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.leo.bind { rhs ->
-			context.interpreter(rhs).plusLeo(scriptField.rhs).map { rhsValue ->
+		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.evaluation.bind { rhs ->
+			context.interpreter(rhs).plusEvaluation(scriptField.rhs).map { rhsValue ->
 				(link.value linkTo (scriptField.string fieldTo rhsValue.value))
 			}
 		}
-	else updateStructureLeo(link.value, scriptField).map { it linkTo link.field }
+	else updateStructureEvaluation(link.value, scriptField).map { it linkTo link.field }

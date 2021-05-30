@@ -15,12 +15,12 @@ val Script.interpret: Script
 
 fun Environment.interpret(script: Script): Script =
 	try {
-		script.interpretLeo.run(this).value
+		script.interpretEvaluation.run(this).value
 	} catch (e: Throwable) {
 		e.value.script
 	}
 
-val Script.interpretLeo: Leo<Script>
+val Script.interpretEvaluation: Evaluation<Script>
 	get() =
-		preludeDictionary.valueLeo(this).map { it.script }
+		preludeDictionary.valueEvaluation(this).map { it.script }
 

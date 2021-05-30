@@ -2,8 +2,8 @@ package leo
 
 import leo.base.effect
 
-fun Leo<Value>.valueBindRepeating(fn: (Value) -> Leo<Value>): Leo<Value> =
-	Leo { environment ->
+fun Evaluation<Value>.valueBindRepeating(fn: (Value) -> Evaluation<Value>): Evaluation<Value> =
+	Evaluation { environment ->
 		run(environment).let { effect ->
 			var repeatedEffect = effect
 			while (true) {

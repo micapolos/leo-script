@@ -7,7 +7,7 @@ class FunctionTest {
 	@Test
 	fun apply() {
 		dictionary().function(body(script("name")))
-			.applyLeo(value("name" fieldTo value("foo"))).get
+			.applyEvaluation(value("name" fieldTo value("foo"))).get
 			.assertEqualTo(value("name" fieldTo value("foo")))
 	}
 }

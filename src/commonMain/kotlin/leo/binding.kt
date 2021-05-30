@@ -7,10 +7,10 @@ data class FunctionBinding(val function: Function) : Binding()
 fun binding(value: Value): Binding = ValueBinding(value)
 fun binding(function: Function): Binding = FunctionBinding(function)
 
-fun Binding.applyLeo(given: Value): Leo<Value> =
+fun Binding.applyEvaluation(given: Value): Evaluation<Value> =
 	when (this) {
-		is FunctionBinding -> function.applyLeo(given)
-		is ValueBinding -> value.leo
+		is FunctionBinding -> function.applyEvaluation(given)
+		is ValueBinding -> value.evaluation
 	}
 
 val Binding.valueOrNull: Value?

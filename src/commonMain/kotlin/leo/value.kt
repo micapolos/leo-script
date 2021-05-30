@@ -82,20 +82,20 @@ val Value.switchFieldOrThrow: Field
 	get() =
 		structureOrThrow.value.fieldOrNull.notNullOrThrow { plus(switchName fieldTo value()) }
 
-val Value.resolveLeo: Leo<Value>
+val Value.resolveEvaluation: Evaluation<Value>
 	get() =
-		resolveFunctionApplyOrNullLeo.or { resolve.leo }
+		resolveFunctionApplyOrNullEvaluation.or { resolve.evaluation }
 
 val Value.resolve: Value
 	get() = resolveNameOrNull ?: this
 
-val Value.resolveFunctionApplyOrNullLeo: Leo<Value?>
+val Value.resolveFunctionApplyOrNullEvaluation: Evaluation<Value?>
 	get() =
 		resolveOrNull(doingName, giveName) { rhs ->
 			functionOrNull?.let { function ->
-				function.applyLeo(rhs)
+				function.applyEvaluation(rhs)
 			}
-		} ?: leo(null)
+		} ?: evaluation(null)
 
 val Value.fieldSeq: Seq<Field>
 	get() =

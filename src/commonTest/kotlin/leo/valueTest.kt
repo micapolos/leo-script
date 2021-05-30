@@ -20,7 +20,7 @@ class ValueTest {
 	@Test
 	fun dictionaryResolve() {
 		dictionary()
-			.resolveLeo(value("foo")).get
+			.resolveEvaluation(value("foo")).get
 			.assertEqualTo(value("foo"))
 	}
 
@@ -86,7 +86,7 @@ class ValueTest {
 			field(dictionary().function(body(script("name")))),
 			giveName fieldTo value("name" fieldTo value("foo"))
 		)
-			.resolveFunctionApplyOrNullLeo
+			.resolveFunctionApplyOrNullEvaluation
 			.get
 			.assertEqualTo(value("name" fieldTo value("foo")))
 	}

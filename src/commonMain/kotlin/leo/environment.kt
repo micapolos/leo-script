@@ -25,10 +25,10 @@ fun Environment.libraryEffect(use: Use): Effect<Environment, Dictionary> =
 			copy(fileLibraryMap = fileLibraryMap.put(use to dictionary)) effect dictionary
 		}
 
-val Value.tracedLeo: Leo<Unit>
+val Value.tracedEvaluation: Evaluation<Unit>
 	get() =
-		Leo { it.copy(traceOrNull = it.traceOrNull?.push(this)) effect Unit }
+		Evaluation { it.copy(traceOrNull = it.traceOrNull?.push(this)) effect Unit }
 
-val traceValueLeo: Leo<Value>
+val traceValueEvaluation: Evaluation<Value>
 	get() =
-		Leo { it effect it.traceOrNull?.value.orIfNull { value(traceName fieldTo value(disabledName)) } }
+		Evaluation { it effect it.traceOrNull?.value.orIfNull { value(traceName fieldTo value(disabledName)) } }
