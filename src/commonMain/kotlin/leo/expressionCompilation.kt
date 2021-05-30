@@ -5,19 +5,7 @@ import leo.natives.getName
 val Script.expression get() = expressionCompilation.get
 
 val Script.expressionCompilation: Compilation<Expression> get() =
-	when (this) {
-		is UnitScript -> EmptyExpression.compilation
-		is LinkScript -> link.expressionLinkCompilation.bind { link ->
-			LinkExpression(link).compilation
-		}
-	}
-
-val ScriptLink.expressionLinkCompilation: Compilation<ExpressionLink> get() =
-	lhs.expressionCompilation.bind { expression ->
-		line.opCompilation.bind { op ->
-			ExpressionLink(expression, op).compilation
-		}
-	}
+	lineStack.map { opCompilation }.flat.map(::Expression)
 
 val ScriptLine.opCompilation: Compilation<Op> get() =
 	when (this) {
@@ -59,19 +47,7 @@ val Literal.opCompilation: Compilation<Op> get() =
 	}
 
 val Script.switchCompilation: Compilation<Switch> get() =
-	when (this) {
-		is UnitScript -> EmptySwitch.compilation
-		is LinkScript -> link.switchLinkCompilation.bind { link ->
-			LinkSwitch(link).compilation
-		}
-	}
-
-val ScriptLink.switchLinkCompilation: Compilation<SwitchLink> get() =
-	lhs.switchCompilation.bind { switch ->
-		line.caseCompilation.bind { case ->
-			SwitchLink(switch, case).compilation
-		}
-	}
+	lineStack.map { caseCompilation }.flat.map(::Switch)
 
 val ScriptLine.caseCompilation: Compilation<Case> get() =
 	when (this) {

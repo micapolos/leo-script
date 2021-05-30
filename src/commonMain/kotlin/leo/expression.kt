@@ -1,12 +1,6 @@
 package leo
 
-import leo.base.fold
-
-sealed class Expression
-object EmptyExpression: Expression()
-data class LinkExpression(val link: ExpressionLink): Expression()
-
-data class ExpressionLink(val lhsExpression: Expression, val field: Op)
+data class Expression(val opStack: Stack<Op>)
 
 sealed class Op
 data class AsOp(val as_: As): Op()
@@ -30,10 +24,7 @@ data class NativeOpFieldRhs(val native: Native): OpFieldRhs()
 data class FunctionOpFieldRhs(val function: Function): OpFieldRhs()
 data class ExpressionOpFieldRhs(val typed: Expression): OpFieldRhs()
 
-sealed class Switch
-object EmptySwitch: Switch()
-data class LinkSwitch(val link: SwitchLink): Switch()
-data class SwitchLink(val lhsSwitch: Switch, val rhsCase: Case)
+data class Switch(val caseStack: Stack<Case>)
 data class Case(val name: String, val expression: Expression)
 
 data class As(val pattern: Pattern)
@@ -51,15 +42,8 @@ sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
 
-fun expression(vararg ops: Op): Expression =
-	(EmptyExpression as Expression).fold(ops) { op ->
-		LinkExpression(ExpressionLink(this, op))
-	}
-
-fun switch(vararg cases: Case): Switch =
-	(EmptySwitch as Switch).fold(cases) { case ->
-		LinkSwitch(SwitchLink(this, case))
-	}
+fun expression(vararg ops: Op): Expression = Expression(stack(*ops))
+fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 
 fun op(name: String) = name opTo expression()
 infix fun String.opTo(expression: Expression) = FieldOp(this fieldTo expression)
