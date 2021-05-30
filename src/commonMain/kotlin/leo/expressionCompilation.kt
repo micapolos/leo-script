@@ -1,7 +1,5 @@
 package leo
 
-import leo.base.orNullIf
-
 val Script.expression get() = expressionCompilation.get
 
 val Script.expressionCompilation: Compilation<Expression> get() =
@@ -25,6 +23,11 @@ val ScriptLine.opCompilation: Compilation<Op> get() =
 		is LiteralScriptLine -> literal.opCompilation
 	}
 
+val ScriptLine.opFieldCompilation: Compilation<OpField> get() =
+	fieldOrNull
+		.notNullOrThrow { script(this, notName lineTo script("field")).value }
+		.opFieldCompilation
+
 val ScriptField.opCompilation: Compilation<Op> get() =
 	when (string) {
 		asName -> rhs.asCompilation.map(::op)
@@ -33,11 +36,15 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		doName -> rhs.doCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
 		letName -> rhs.letCompilation.map(::op)
+		setName -> rhs.setCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
 		tryName -> rhs.tryCompilation.map(::op)
-		else -> rhs.expressionCompilation.map { rhsExpression ->
-			FieldOp(OpField(string, ExpressionOpFieldRhs(rhsExpression)))
-		}
+		else -> opFieldCompilation.map(::op)
+	}
+
+val ScriptField.opFieldCompilation: Compilation<OpField> get() =
+	rhs.expressionCompilation.map { rhsExpression ->
+		OpField(string, ExpressionOpFieldRhs(rhsExpression))
 	}
 
 val Literal.opCompilation: Compilation<Op> get() =
@@ -104,6 +111,9 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 
 val Script.failCompilation: Compilation<Fail> get() =
 	expressionCompilation.map(::fail)
+
+val Script.setCompilation: Compilation<Set> get() =
+	lineStack.map { opFieldCompilation }.flat.map(::Set)
 
 val Script.tryCompilation: Compilation<Try> get() =
 	expressionCompilation.map(::try_)

@@ -138,6 +138,22 @@ class ExpressionCompilationTest {
 	}
 
 	@Test
+	fun set() {
+		script(
+			line("point"),
+			setName lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op("point"),
+					op(set(
+						"x" fieldTo expression(op("zero")),
+						"y" fieldTo expression(op("one"))))))
+	}
+
+	@Test
 	fun try_() {
 		script(
 			line(literal("Hello, ")),

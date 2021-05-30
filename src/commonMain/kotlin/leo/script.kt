@@ -6,7 +6,9 @@ import leo.base.emptySeq
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
+import leo.base.reverse
 import leo.base.seq
+import leo.base.stack
 import leo.base.then
 
 sealed class Script {
@@ -211,6 +213,10 @@ val Script.lineSeq: Seq<ScriptLine>
 			is UnitScript -> emptySeq()
 			is LinkScript -> seq { link.lineSeqNode }
 		}
+
+val Script.lineStack: Stack<ScriptLine>
+	get() =
+		lineSeq.reverse.stack
 
 val ScriptLink.lineSeqNode: SeqNode<ScriptLine>
 	get() =

@@ -16,6 +16,7 @@ data class DoOp(val do_: Do): Op()
 data class FailOp(val fail: Fail): Op()
 data class FieldOp(val field: OpField): Op()
 data class LetOp(val let: Let): Op()
+data class SetOp(val set: Set): Op()
 data class SwitchOp(val switch: Switch): Op()
 data class TryOp(val try_: Try): Op()
 
@@ -38,6 +39,7 @@ data class Comment(val script: Script)
 data class Do(val expression: Expression)
 data class Fail(val expression: Expression)
 data class Let(val pattern: Pattern, val rhs: LetRhs)
+data class Set(val fieldStack: Stack<OpField>)
 data class Try(val expression: Expression)
 
 sealed class LetRhs
@@ -54,7 +56,9 @@ fun switch(vararg cases: Case): Switch =
 		LinkSwitch(SwitchLink(this, case))
 	}
 
-infix fun String.opTo(expression: Expression) = FieldOp(OpField(this, ExpressionOpFieldRhs(expression)))
+fun op(name: String) = name opTo expression()
+infix fun String.opTo(expression: Expression) = FieldOp(this fieldTo expression)
+infix fun String.fieldTo(expression: Expression) = OpField(this, ExpressionOpFieldRhs(expression))
 infix fun String.caseTo(expression: Expression) = Case(this, expression)
 
 fun op(literal: Literal): Op =
@@ -68,8 +72,10 @@ fun op(be: Be): Op = BeOp(be)
 fun op(comment: Comment): Op = CommentOp(comment)
 fun op(do_: Do): Op = DoOp(do_)
 fun op(fail: Fail): Op = FailOp(fail)
+fun op(field: OpField): Op = FieldOp(field)
 fun op(let: Let): Op = LetOp(let)
 fun op(switch: Switch): Op = SwitchOp(switch)
+fun op(set: Set): Op = SetOp(set)
 fun op(try_: Try): Op = TryOp(try_)
 
 fun as_(pattern: Pattern) = As(pattern)
@@ -79,4 +85,5 @@ fun do_(expression: Expression) = Do(expression)
 fun fail(expression: Expression) = Fail(expression)
 fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
 fun let(pattern: Pattern, do_: Do) = Let(pattern, DoLetRhs(do_))
+fun set(vararg fields: OpField) = Set(stack(*fields))
 fun try_(expression: Expression) = Try(expression)
