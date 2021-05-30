@@ -5,25 +5,25 @@ import leo.base.assertNotNull
 import leo.*
 import kotlin.test.Test
 
-class NativeInterpreterTest {
+class NativeEvaluatorTest {
 	@Test
 	fun nullObjectJava() {
 		script(line(nullName), line(javaName))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native(null)))
 	}
 
 	@Test
 	fun trueObjectJava() {
 		script(line(trueName), line(javaName))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native(true)))
 	}
 
 	@Test
 	fun falseObjectJava() {
 		script(line(falseName), line(javaName))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native(false)))
 	}
 
@@ -35,7 +35,7 @@ class NativeInterpreterTest {
 			objectName lineTo script(),
 			className lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(className lineTo script(javaName lineTo native("foo".javaClass))))
 	}
 
@@ -45,7 +45,7 @@ class NativeInterpreterTest {
 			line(literal("Hello, world!")),
 			javaName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native("Hello, world!")))
 	}
 
@@ -56,7 +56,7 @@ class NativeInterpreterTest {
 			javaName lineTo script(),
 			textName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal("Hello, world!")))
 	}
 
@@ -67,7 +67,7 @@ class NativeInterpreterTest {
 			integerName lineTo script(),
 			javaName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native(123)))
 	}
 
@@ -80,7 +80,7 @@ class NativeInterpreterTest {
 			integerName lineTo script(),
 			numberName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal(123)))
 	}
 
@@ -91,7 +91,7 @@ class NativeInterpreterTest {
 			javaName lineTo script(),
 			numberName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal(123)))
 	}
 
@@ -103,7 +103,7 @@ class NativeInterpreterTest {
 			arrayName lineTo script(),
 			javaName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.get(nativeName)
 			.assertNotNull
 	}
@@ -115,7 +115,7 @@ class NativeInterpreterTest {
 			className lineTo script(),
 			javaName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(javaName lineTo native(String::class.java)))
 	}
 
@@ -128,7 +128,7 @@ class NativeInterpreterTest {
 			className lineTo script(),
 			fieldName lineTo script(literal("TYPE"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					fieldName lineTo script(
@@ -150,7 +150,7 @@ class NativeInterpreterTest {
 			fieldName lineTo script(literal("TYPE")),
 			getName lineTo script(line(nullName), line(javaName))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					javaName lineTo native(
@@ -174,7 +174,7 @@ class NativeInterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					methodName lineTo script(
@@ -201,7 +201,7 @@ class NativeInterpreterTest {
 				argsName lineTo script(line(arrayName), line(javaName))
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					javaName lineTo native(

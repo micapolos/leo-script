@@ -250,7 +250,7 @@ fun Dictionary.updateStructureEvaluation(value: Value, scriptField: ScriptField)
 fun Dictionary.updateStructureEvaluation(link: Link, scriptField: ScriptField): Evaluation<Link> =
 	if (link.field.name == scriptField.string)
 		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.evaluation.bind { rhs ->
-			context.interpreter(rhs).plusEvaluation(scriptField.rhs).map { rhsValue ->
+			context.evaluator(rhs).plusEvaluation(scriptField.rhs).map { rhsValue ->
 				(link.value linkTo (scriptField.string fieldTo rhsValue.value))
 			}
 		}

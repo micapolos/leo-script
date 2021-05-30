@@ -7,28 +7,28 @@ import leo.base.negate
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
 
-data class Interpreter(
+data class Evaluator(
 	val context: Context,
 	val value: Value
 )
 
-fun Context.interpreter(value: Value = value()) =
-	Interpreter(this, value)
+fun Context.evaluator(value: Value = value()) =
+	Evaluator(this, value)
 
-fun Interpreter.setEvaluation(value: Value): Evaluation<Interpreter> =
-	context.interpreter(value).evaluation
+fun Evaluator.setEvaluation(value: Value): Evaluation<Evaluator> =
+	context.evaluator(value).evaluation
 
-fun Interpreter.set(context: Context): Interpreter =
-	context.interpreter(value)
+fun Evaluator.set(context: Context): Evaluator =
+	context.evaluator(value)
 
 fun Dictionary.valueEvaluation(script: Script): Evaluation<Value> =
-	context.interpreterEvaluation(script).map { it.value }
+	context.evaluatorEvaluation(script).map { it.value }
 
 fun Dictionary.valueEvaluation(expression: Expression): Evaluation<Value> =
 	valueEvaluation(expression.script)
 
 fun Dictionary.valueEvaluation(value: Value, script: Script): Evaluation<Value> =
-	context.interpreter(value).plusEvaluation(script).map { it.value }
+	context.evaluator(value).plusEvaluation(script).map { it.value }
 
 fun Dictionary.valueRhsEvaluation(script: Script): Evaluation<Value> =
 	value().evaluation.fold(script.lineSeq.reverse) { line ->
@@ -56,12 +56,12 @@ val String.dictionary: Dictionary
 
 val Script.dictionary: Dictionary
 	get() =
-		preludeDictionary.context.interpreter().plusEvaluation(this).get.context.publicDictionary
+		preludeDictionary.context.evaluator().plusEvaluation(this).get.context.publicDictionary
 
-fun Context.interpreterEvaluation(script: Script): Evaluation<Interpreter> =
-	interpreter().plusEvaluation(script)
+fun Context.evaluatorEvaluation(script: Script): Evaluation<Evaluator> =
+	evaluator().plusEvaluation(script)
 
-fun Interpreter.plusEvaluation(script: Script): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(script: Script): Evaluation<Evaluator> =
 	evaluation.fold(script.lineSeq.reverse) { line ->
 		bind {
 			it.plusEvaluation(line)
@@ -69,12 +69,12 @@ fun Interpreter.plusEvaluation(script: Script): Evaluation<Interpreter> =
 	}
 
 fun Dictionary.valueEvaluation(syntax: Syntax): Evaluation<Value> =
-	context.interpreter(value()).plusEvaluation(syntax).map { it.value }
+	context.evaluator(value()).plusEvaluation(syntax).map { it.value }
 
-fun Interpreter.plusEvaluation(syntax: Syntax): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 	evaluation.foldStateful(syntax.lineStack.seq.reverse) { plusEvaluation(it) }
 
-fun Interpreter.plusEvaluation(line: SyntaxLine): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	when (line) {
 		is AsSyntaxLine -> plusEvaluation(line.as_)
 		is BeSyntaxLine -> plusEvaluation(line.be)
@@ -102,25 +102,25 @@ fun Interpreter.plusEvaluation(line: SyntaxLine): Evaluation<Interpreter> =
 		is WithSyntaxLine -> TODO()
 	}
 
-fun Interpreter.plusEvaluation(scriptLine: ScriptLine): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(scriptLine: ScriptLine): Evaluation<Evaluator> =
 	when (scriptLine) {
 		is FieldScriptLine -> plusEvaluation(scriptLine.field)
 		is LiteralScriptLine -> plusEvaluation(scriptLine.literal)
 	}
 
-fun Interpreter.plusEvaluation(scriptField: ScriptField): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(scriptField: ScriptField): Evaluation<Evaluator> =
 	plusDefinitionsOrNullLEvaluation(scriptField).or {
 		plusStaticOrNullEvaluation(scriptField).or {
 			plusDynamicEvaluation(scriptField)
 		}
 	}
 
-fun Interpreter.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evaluation<Interpreter?> =
+fun Evaluator.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evaluation<Evaluator?> =
 	dictionary.definitionSeqOrNullEvaluation(scriptField).nullableMap { definitionSeq ->
 		set(context.fold(definitionSeq.reverse) { plus(it) })
 	}
 
-fun Interpreter.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Interpreter?> =
+fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Evaluator?> =
 	when (scriptField.string) {
 		asName -> plusAsEvaluation(scriptField.rhs)
 		commentName -> evaluation
@@ -141,7 +141,7 @@ fun Interpreter.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation
 		else -> evaluation(null)
 	}
 
-fun Interpreter.plusDynamicOrNullEvaluation(field: Field): Evaluation<Interpreter?> =
+fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
 		giveName -> plusApplyEvaluation(field.rhs)
 		beName -> plusBeEvaluation(field.rhs)
@@ -154,21 +154,21 @@ fun Interpreter.plusDynamicOrNullEvaluation(field: Field): Evaluation<Interprete
 		else -> evaluation(null)
 	}
 
-fun Interpreter.plusApplyEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+fun Evaluator.plusApplyEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	value.functionOrThrow.evaluation.bind { function ->
 		function.applyEvaluation(rhs.valueOrThrow).bind { output ->
 			setEvaluation(output)
 		}
 	}
 
-fun Interpreter.plusTakeEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+fun Evaluator.plusTakeEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	rhs.valueOrThrow.functionOrThrow.evaluation.bind { function ->
 		function.applyEvaluation(value).bind { output ->
 			setEvaluation(output)
 		}
 	}
 
-fun Interpreter.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
+fun Evaluator.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	rhs.valueOrNull?.resolveEmptyOrNull {
 		value.resolvePrefixOrNull(valueName) {
 			value(field(literal(it.string)))
@@ -177,32 +177,32 @@ fun Interpreter.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
 		.evaluation
 		.nullableBind { setEvaluation(it) }
 
-fun Interpreter.plusBeEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+fun Evaluator.plusBeEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	setEvaluation(rhs.valueOrThrow)
 
-fun Interpreter.plusEvaluation(be: Be): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
 
-fun Interpreter.plusEvaluation(comment: Comment): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
 	evaluation
 
-fun Interpreter.plusDoEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusDoEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(block(rhs), value).bind { setEvaluation(it) }
 
-fun Interpreter.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	dictionary.set(rhs.valueOrThrow).valueEvaluation(value.script).bind { evaluated ->
 		setEvaluation(evaluated)
 	}
 
-fun Interpreter.plusExampleEvaluation(rhs: Rhs): Evaluation<Interpreter> =
+fun Evaluator.plusExampleEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	evaluation.also { rhs.valueOrThrow }
 
-fun Interpreter.plusFailEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusFailEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, rhs).bind { value ->
 		evaluation.also { value.throwError() }
 	}
 
-fun Interpreter.plusTestEvaluation(test: Script): Evaluation<Interpreter> =
+fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 	test.matchInfix(isName) { lhs, rhs ->
 		dictionary.valueEvaluation(test).bind { result ->
 			when (result) {
@@ -238,68 +238,68 @@ fun Interpreter.plusTestEvaluation(test: Script): Evaluation<Interpreter> =
 		value(syntaxName fieldTo value(testName fieldTo test.value))
 	}
 
-fun Interpreter.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Interpreter?> =
+fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
 	rhs.orNullIf(rhs.isEmpty).evaluation.nullableBind {
 		plusEvaluation(field(dictionary.function(body(rhs))))
 	}
 
-fun Interpreter.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
+fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	if (rhs.valueOrNull?.isEmpty == true) setEvaluation(value.hashValue)
 	else evaluation(null)
 
-fun Interpreter.plusIsEqualEvaluation(rhs: Script, negate: Boolean): Evaluation<Interpreter?> =
+fun Evaluator.plusIsEqualEvaluation(rhs: Script, negate: Boolean): Evaluation<Evaluator?> =
 	dictionary.valueEvaluation(rhs).bind {
 		setEvaluation(value.equals(it).isValue(negate))
 	}
 
-fun Interpreter.plusQuoteEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusQuoteEvaluation(rhs: Script): Evaluation<Evaluator> =
 	setEvaluation(value.script.plus(rhs).value)
 
-fun Interpreter.plusSetEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusSetEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueRhsEvaluation(rhs).bind { rhsValue ->
 		setEvaluation(value.setOrThrow(rhsValue))
 	}
 
-fun Interpreter.plusSwitchEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusSwitchEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.switchEvaluation(value, rhs).bind {
 		setEvaluation(it)
 	}
 
-fun Interpreter.plusTraceOrNullEvaluation(rhs: Script): Evaluation<Interpreter?> =
+fun Evaluator.plusTraceOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
 	rhs
 		.matchEmpty { traceValueEvaluation.bind { setEvaluation(it) } }
 		?: evaluation(null)
 
-fun Interpreter.plusTryEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusTryEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, rhs)
 		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
 		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value)) }
 
-fun Interpreter.plusUpdateEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusUpdateEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.updateEvaluation(value, rhs).bind { setEvaluation(it) }
 
-fun Interpreter.plusDynamicEvaluation(scriptField: ScriptField): Evaluation<Interpreter> =
+fun Evaluator.plusDynamicEvaluation(scriptField: ScriptField): Evaluation<Evaluator> =
 	dictionary.fieldEvaluation(scriptField).bind { field ->
 		plusDynamicOrNullEvaluation(field).or {
 			plusEvaluation(field)
 		}
 	}
 
-fun Interpreter.plusEvaluation(literal: Literal): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(literal: Literal): Evaluation<Evaluator> =
 	plusEvaluation(field(literal))
 
-fun Interpreter.plusEvaluation(field: Field): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(field: Field): Evaluation<Evaluator> =
 	dictionary.resolveEvaluation(value.plus(field)).bind {
 		setEvaluation(it)
 	}
 
-fun Interpreter.plusAsEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusAsEvaluation(rhs: Script): Evaluation<Evaluator> =
 	plusEvaluation(as_(pattern(rhs)))
 
-fun Interpreter.plusEvaluation(as_: As): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
 	setEvaluation(value.as_(as_.pattern))
 
-fun Interpreter.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Evaluation<Interpreter?> =
+fun Evaluator.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Evaluation<Evaluator?> =
 	rhs.onlyLineOrNull?.fieldOrNull.evaluation.nullableBind { field ->
 		when (field.string) {
 			equalName -> plusIsEqualEvaluation(field.rhs, negate)
@@ -310,20 +310,20 @@ fun Interpreter.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Ev
 		}
 	}
 
-fun Interpreter.plusIsMatchingEvaluation(rhs: Script, negate: Boolean): Evaluation<Interpreter> =
+fun Evaluator.plusIsMatchingEvaluation(rhs: Script, negate: Boolean): Evaluation<Evaluator> =
 	setEvaluation(value.isMatching(pattern(rhs), negate))
 
-fun Interpreter.plusPrivateEvaluation(rhs: Script): Evaluation<Interpreter> =
-	context.private.interpreterEvaluation(rhs).map { interpreter ->
-		use(interpreter.context.publicDictionary)
+fun Evaluator.plusPrivateEvaluation(rhs: Script): Evaluation<Evaluator> =
+	context.private.evaluatorEvaluation(rhs).map { evaluator ->
+		use(evaluator.context.publicDictionary)
 	}
 
-fun Interpreter.plusUseEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusUseEvaluation(rhs: Script): Evaluation<Evaluator> =
 	rhs.useOrNull.notNullOrThrow { value.plus(useName fieldTo rhs.value) }.evaluation.bind {
 		plusEvaluation(it)
 	}
 
-fun Interpreter.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
+fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	rhs.valueOrNull?.resolveEmptyOrNull {
 		value.textOrNull?.let {
 			value(valueName fieldTo it.scriptOrThrow.value)
@@ -333,17 +333,17 @@ fun Interpreter.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
 		.nullableBind { setEvaluation(it) }
 
 
-fun Interpreter.plusWithEvaluation(rhs: Script): Evaluation<Interpreter> =
+fun Evaluator.plusWithEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(rhs).bind { rhsValue ->
 		setEvaluation(value + rhsValue)
 	}
 
-val Interpreter.dictionary
+val Evaluator.dictionary
 	get() =
 		context.privateDictionary
 
-fun Interpreter.plusEvaluation(use: Use): Evaluation<Interpreter> =
+fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
 	Evaluation { it.libraryEffect(use) }.map { use(it) }
 
-fun Interpreter.use(dictionary: Dictionary): Interpreter =
+fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))

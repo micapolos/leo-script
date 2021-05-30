@@ -7,7 +7,7 @@ import leo25.parser.scriptOrThrow
 
 fun main(args: Array<String>) {
 	try {
-		environment().interpret(readText(args).scriptOrThrow)
+		environment().evaluate(readText(args).scriptOrThrow)
 	} catch (e: ValueError) {
 		value("parser" fieldTo e.value).errorValue.string
 	} catch (e: Exception) {

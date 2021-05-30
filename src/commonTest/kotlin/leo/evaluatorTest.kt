@@ -5,25 +5,25 @@ import leo.base.assertNotNull
 import leo.natives.minusName
 import kotlin.test.Test
 
-class InterpreterTest {
+class EvaluatorTest {
 	@Test
 	fun literal() {
 		script(line(literal("ok")))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(line(literal("ok"))))
 	}
 
 	@Test
 	fun name() {
 		script("ok")
-			.interpret
+			.evaluate
 			.assertEqualTo(script("ok"))
 	}
 
 	@Test
 	fun field() {
 		script("foo" lineTo script("bar"))
-			.interpret
+			.evaluate
 			.assertEqualTo(script("foo" lineTo script("bar")))
 	}
 
@@ -33,7 +33,7 @@ class InterpreterTest {
 			"foo" lineTo script("bar"),
 			"zoo" lineTo script("zar")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"foo" lineTo script("bar"),
@@ -50,7 +50,7 @@ class InterpreterTest {
 				"y" lineTo script("one")
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"point" lineTo script(
@@ -67,7 +67,7 @@ class InterpreterTest {
 			"red" lineTo script(),
 			"color" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("color" lineTo script("red")))
 	}
 
@@ -80,7 +80,7 @@ class InterpreterTest {
 			),
 			"x" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("x" lineTo script("zero")))
 
 		script(
@@ -90,7 +90,7 @@ class InterpreterTest {
 			),
 			"y" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("y" lineTo script("one")))
 	}
 
@@ -103,7 +103,7 @@ class InterpreterTest {
 			),
 			"x" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("x" lineTo script("zero")))
 
 		script(
@@ -113,7 +113,7 @@ class InterpreterTest {
 			),
 			"y" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("y" lineTo script("one")))
 
 		script(
@@ -121,7 +121,7 @@ class InterpreterTest {
 			"y" lineTo script("one"),
 			"point" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"point" lineTo script(
@@ -135,7 +135,7 @@ class InterpreterTest {
 	@Test
 	fun function() {
 		script("function" lineTo script("foo"))
-			.interpret
+			.evaluate
 			.assertEqualTo(script("function" lineTo script("foo")))
 	}
 
@@ -145,7 +145,7 @@ class InterpreterTest {
 			doingName lineTo script("name"),
 			giveName lineTo script("name" lineTo script("foo"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("name" lineTo script("foo")))
 	}
 
@@ -155,7 +155,7 @@ class InterpreterTest {
 			"name" lineTo script("foo"),
 			takeName lineTo script(doingName lineTo script("name"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("name" lineTo script("foo")))
 	}
 
@@ -165,7 +165,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			giveName lineTo script("bar")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					errorName lineTo script(
@@ -182,7 +182,7 @@ class InterpreterTest {
 			"map" lineTo script(doingName lineTo script("foo")),
 			doingName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(doingName lineTo script("foo")))
 	}
 
@@ -192,7 +192,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			letName lineTo script("bar")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"foo" lineTo script(),
@@ -210,7 +210,7 @@ class InterpreterTest {
 			),
 			"name" lineTo script("foo")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("name" lineTo script("foo")))
 	}
 
@@ -223,7 +223,7 @@ class InterpreterTest {
 			),
 			"name" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal("foo")))
 	}
 
@@ -241,7 +241,7 @@ class InterpreterTest {
 			line(literal(2)),
 			"increment" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					line(literal(2)),
@@ -259,7 +259,7 @@ class InterpreterTest {
 				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal("Hello, world!")))
 
 		script(
@@ -269,7 +269,7 @@ class InterpreterTest {
 				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal(1)))
 	}
 
@@ -294,7 +294,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(line(literal("OK"))))
 	}
 
@@ -319,7 +319,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(line(literal("OK"))))
 	}
 
@@ -344,7 +344,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(line(literal("OK"))))
 	}
 
@@ -354,7 +354,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			quoteName lineTo script(hashName)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"foo" lineTo script(),
@@ -369,7 +369,7 @@ class InterpreterTest {
 			quoteName lineTo script(hashName),
 			evaluateName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(hashName lineTo script(line(literal(value().hashCode())))))
 	}
 
@@ -382,7 +382,7 @@ class InterpreterTest {
 			),
 			evaluateName lineTo script(literal("world!"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("ok" lineTo script(literal("Hello, world!"))))
 	}
 
@@ -395,7 +395,7 @@ class InterpreterTest {
 			"increment" lineTo script(),
 			commentName lineTo script("expecting" lineTo script(literal(5)))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("increment" lineTo script(literal(2))))
 	}
 
@@ -405,7 +405,7 @@ class InterpreterTest {
 			"zero" lineTo script(),
 			beName lineTo script("one")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("one"))
 	}
 
@@ -427,7 +427,7 @@ class InterpreterTest {
 			),
 			"ping" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("pong"))
 	}
 
@@ -444,14 +444,14 @@ class InterpreterTest {
 			),
 			"ping" lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("ping"))
 	}
 
 	@Test
 	fun use() {
 		script(useName lineTo script("lib" lineTo script("text")))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(errorName lineTo script(literal("lib/text.leo (No such file or directory)"))))
 	}
 
@@ -461,14 +461,14 @@ class InterpreterTest {
 			textName lineTo script("hello"),
 			plusName lineTo script(textName lineTo script("world"))
 		)
-			.interpret
+			.evaluate
 			.assertNotNull // TODO: Check for error.
 	}
 
 	@Test
 	fun trace() {
 		environment(traceOrNull = emptyTrace)
-			.interpret(
+			.evaluate(
 				script(
 					line(literal("Hello, ")),
 					plusName lineTo script(line(literal("world!"))),
@@ -492,7 +492,7 @@ class InterpreterTest {
 	@Test
 	fun trace_disabled() {
 		environment()
-			.interpret(
+			.evaluate(
 				script(
 					line(literal("Hello, ")),
 					plusName lineTo script(line(literal("world!"))),
@@ -508,7 +508,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			hashName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(hashName lineTo script(literal(value("foo").hashCode()))))
 	}
 
@@ -518,21 +518,21 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			isName lineTo script(equalName lineTo script("foo"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 
 		script(
 			"foo" lineTo script(),
 			isName lineTo script(equalName lineTo script("bar"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 
 		script(
 			line(literal("foo")),
 			isName lineTo script(equalName lineTo script(line(literal("foo"))))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
@@ -542,7 +542,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			isName lineTo script(notName lineTo script(equalName lineTo script("bar")))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
@@ -559,7 +559,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 	}
 
@@ -568,7 +568,7 @@ class InterpreterTest {
 		script(
 			line("frog"),
 			"fail" lineTo script("kiss"))
-			.interpret
+			.evaluate
 			.assertEqualTo(script(errorName lineTo script("kiss" lineTo script("frog"))))
 	}
 
@@ -578,7 +578,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			tryName lineTo script("bar")
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(tryName lineTo script(successName lineTo script("bar" lineTo script("foo")))))
 	}
 
@@ -588,7 +588,7 @@ class InterpreterTest {
 			"foo" lineTo script(),
 			tryName lineTo script(line("bar"), line("fail"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(tryName lineTo script(errorName lineTo script("bar" lineTo script("foo")))))
 	}
 
@@ -606,7 +606,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script())
 	}
 
@@ -620,7 +620,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script())
 	}
 
@@ -638,7 +638,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					errorName lineTo script(
@@ -673,14 +673,14 @@ class InterpreterTest {
 				matchingName lineTo script(textName lineTo script(anyName))
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 
 		script(
 			line(literal("doo")),
 			isName lineTo script(matchingName lineTo script(numberName lineTo script(anyName)))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 	}
 
@@ -694,7 +694,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 
 		script(
@@ -705,7 +705,7 @@ class InterpreterTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
@@ -716,7 +716,7 @@ class InterpreterTest {
 			line(valueName),
 			line(textName)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(literal("foo bar\n")))
 	}
 
@@ -726,7 +726,7 @@ class InterpreterTest {
 			line(literal("foo bar\n")),
 			line(valueName)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(valueName lineTo script("foo" lineTo script("bar"))))
 	}
 
@@ -739,7 +739,7 @@ class InterpreterTest {
 				"z" lineTo script("two")
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"x" lineTo script("zero"),
@@ -755,7 +755,7 @@ class InterpreterTest {
 			"x" lineTo script("zero"),
 			withName lineTo script()
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("x" lineTo script("zero")))
 	}
 
@@ -765,7 +765,7 @@ class InterpreterTest {
 			"x" lineTo script("zero"),
 			exampleName lineTo script("foo" lineTo script("bar"))
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script("x" lineTo script("zero")))
 	}
 
@@ -781,7 +781,7 @@ class InterpreterTest {
 				"y" lineTo script("three")
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"point" lineTo script(
@@ -803,7 +803,7 @@ class InterpreterTest {
 				"y" lineTo script("four")
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"point" lineTo script(
@@ -828,7 +828,7 @@ class InterpreterTest {
 				"x" lineTo script("updated")
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(
 				script(
 					"point" lineTo script(

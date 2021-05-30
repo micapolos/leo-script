@@ -29,7 +29,7 @@ class PerformanceTest {
 				)
 			)
 		)
-			.interpret
+			.evaluate
 			.assertEqualTo(script(line(literal("OK"))))
 	}
 
