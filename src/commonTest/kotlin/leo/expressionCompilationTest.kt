@@ -138,15 +138,29 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, world!")),
 			switchName lineTo script(
-				textName lineTo script(line(literal("text"))),
-				numberName lineTo script(line(literal("number")))))
+				textName lineTo script(
+					doingName lineTo script(line(literal("text")))),
+				numberName lineTo script(
+					doingName lineTo script(line(literal("number"))))))
 			.expression
 			.assertEqualTo(
 				expression(
 					op(literal("Hello, world!")),
 					op(switch(
-						textName caseTo expression(op(literal("text"))),
-						numberName caseTo expression(op(literal("number")))))))
+						textName caseDoing expression(op(literal("text"))),
+						numberName caseDoing expression(op(literal("number")))))))
+	}
+
+	@Test
+	fun switchCaseError() {
+		assertFailsWith<ValueError> {
+			script(
+				line(literal("Hello, world!")),
+				switchName lineTo script(
+					textName lineTo script("foo"),
+					numberName lineTo script("bar")))
+				.expression
+		}
 	}
 
 	@Test

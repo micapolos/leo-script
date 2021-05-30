@@ -24,6 +24,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		beName -> rhs.beCompilation.map(::op)
 		commentName -> rhs.commentCompilation.map(::op)
 		doName -> rhs.doCompilation.map(::op)
+		doingName -> rhs.doingCompilation.map(::op)
 		failName -> rhs.failCompilation.map(::op)
 		getName -> rhs.getCompilation.map(::op)
 		letName -> rhs.letCompilation.map(::op)
@@ -57,8 +58,8 @@ val ScriptLine.caseCompilation: Compilation<Case> get() =
 	}
 
 val ScriptField.caseCompilation: Compilation<Case> get() =
-	rhs.expressionCompilation.bind { expression ->
-		Case(string, expression).compilation
+	rhs.rhsOrNull(doingName).notNullOrThrow { value("case") }.doingCompilation.bind { doing ->
+		Case(string, doing).compilation
 	}
 
 val Script.asCompilation: Compilation<As> get() =
@@ -72,6 +73,9 @@ val Script.commentCompilation: Compilation<Comment> get() =
 
 val Script.doCompilation: Compilation<Do> get() =
 	expressionCompilation.map(::do_)
+
+val Script.doingCompilation: Compilation<Doing> get() =
+	expressionCompilation.map(::doing)
 
 val Script.getCompilation: Compilation<Get> get() =
 	lineStack
