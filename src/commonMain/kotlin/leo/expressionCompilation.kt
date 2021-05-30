@@ -1,5 +1,7 @@
 package leo
 
+import leo.base.orNullIf
+
 val Script.expression get() = expressionCompilation.get
 
 val Script.expressionCompilation: Compilation<Expression> get() =
@@ -28,6 +30,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		asName -> rhs.asCompilation.map(::op)
 		commentName -> rhs.commentCompilation.map(::op)
 		doName -> rhs.doCompilation.map(::op)
+		failName -> rhs.failCompilation.map(::op)
 		switchName -> rhs.switchCompilation.map(::op)
 		else -> rhs.expressionCompilation.map { rhsExpression ->
 			FieldOp(OpField(string, ExpressionOpFieldRhs(rhsExpression)))
@@ -77,3 +80,7 @@ val Script.doCompilation: Compilation<Do> get() =
 
 val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
+
+val Script.failCompilation: Compilation<Fail> get() =
+	if (isEmpty) fail.compilation
+	else value(failName fieldTo value).throwError()

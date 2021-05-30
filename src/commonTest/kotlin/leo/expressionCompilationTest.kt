@@ -2,6 +2,7 @@ package leo
 
 import leo.base.assertEqualTo
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class ExpressionCompilationTest {
 	@Test
@@ -49,6 +50,25 @@ class ExpressionCompilationTest {
 				expression(
 					op(literal("Hello, world!")),
 					op(do_(expression("length" opTo expression())))))
+	}
+
+	@Test
+	fun fail() {
+		script(
+			line(literal("Hello, world!")),
+			failName lineTo script())
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, world!")),
+					op(fail)))
+
+		assertFailsWith<ValueError> {
+			script(
+				line(literal("Hello, world!")),
+				failName lineTo script("foo"))
+				.expression
+		}
 	}
 
 	@Test
