@@ -11,6 +11,7 @@ data class ExpressionLink(val lhsExpression: Expression, val field: Op)
 sealed class Op
 data class AsOp(val as_: As): Op()
 data class CommentOp(val comment: Comment): Op()
+data class DoOp(val do_: Do): Op()
 data class FieldOp(val field: OpField): Op()
 data class BindOp(val typed: Expression): Op()
 data class InvokeOp(val typed: Expression): Op()
@@ -31,6 +32,7 @@ data class Case(val name: String, val expression: Expression)
 
 data class As(val pattern: Pattern)
 data class Comment(val script: Script)
+data class Do(val expression: Expression)
 data class LetDo(val expression: Expression)
 data class LetBe(val expression: Expression)
 
@@ -44,7 +46,7 @@ fun switch(vararg cases: Case): Switch =
 		LinkSwitch(SwitchLink(this, case))
 	}
 
-infix fun String.fieldTo(expression: Expression) = FieldOp(OpField(this, ExpressionOpFieldRhs(expression)))
+infix fun String.opTo(expression: Expression) = FieldOp(OpField(this, ExpressionOpFieldRhs(expression)))
 infix fun String.caseTo(expression: Expression) = Case(this, expression)
 
 fun op(literal: Literal): Op =
@@ -55,7 +57,9 @@ fun op(literal: Literal): Op =
 
 fun op(as_: As): Op = AsOp(as_)
 fun op(comment: Comment): Op = CommentOp(comment)
+fun op(do_: Do): Op = DoOp(do_)
 fun op(switch: Switch): Op = SwitchOp(switch)
 
 fun as_(pattern: Pattern) = As(pattern)
 fun comment(script: Script) = Comment(script)
+fun do_(expression: Expression) = Do(expression)

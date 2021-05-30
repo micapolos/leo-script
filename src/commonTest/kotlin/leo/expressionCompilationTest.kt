@@ -40,6 +40,18 @@ class ExpressionCompilationTest {
 	}
 
 	@Test
+	fun do_() {
+		script(
+			line(literal("Hello, world!")),
+			doName lineTo script("length"))
+			.expression
+			.assertEqualTo(
+				expression(
+					op(literal("Hello, world!")),
+					op(do_(expression("length" opTo expression())))))
+	}
+
+	@Test
 	fun switch() {
 		script(
 			line(literal("Hello, world!")),
