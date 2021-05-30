@@ -45,6 +45,7 @@ fun Dictionary.resolutionOrNull(rhs: Rhs): Resolution? =
 		is ValueRhs -> resolutionOrNull(rhs.value)
 		is FunctionRhs -> null
 		is NativeRhs -> resolutionOrNull(rhs.native)
+		is PatternRhs -> null
 	} ?: resolutionOrNull(token(anyEnd))
 
 fun Dictionary.resolutionOrNull(native: Native): Resolution? =

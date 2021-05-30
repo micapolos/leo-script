@@ -21,10 +21,12 @@ sealed class Rhs
 data class ValueRhs(val value: Value) : Rhs()
 data class FunctionRhs(val function: Function) : Rhs()
 data class NativeRhs(val native: Native) : Rhs()
+data class PatternRhs(val pattern: Pattern) : Rhs()
 
 fun rhs(value: Value): Rhs = ValueRhs(value)
 fun rhs(function: Function): Rhs = FunctionRhs(function)
 fun rhs(native: Native): Rhs = NativeRhs(native)
+fun rhs(pattern: Pattern): Rhs = PatternRhs(pattern)
 
 val Rhs.valueOrNull: Value? get() = (this as? ValueRhs)?.value
 val Rhs.valueOrThrow: Value

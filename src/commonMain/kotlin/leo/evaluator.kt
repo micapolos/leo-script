@@ -64,6 +64,9 @@ val Script.dictionary: Dictionary
 fun Context.evaluatorEvaluation(script: Script): Evaluation<Evaluator> =
 	evaluator().plusEvaluation(script)
 
+fun Context.evaluatorEvaluation(syntax: Syntax): Evaluation<Evaluator> =
+	evaluator().plusEvaluation(syntax)
+
 fun Evaluator.plusEvaluation(script: Script): Evaluation<Evaluator> =
 	evaluation.fold(script.lineSeq.reverse) { line ->
 		bind {
@@ -92,10 +95,10 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is LetSyntaxLine -> TODO()
 		is LiteralSyntaxLine -> TODO()
 		is MatchingSyntaxLine -> TODO()
-		is PrivateSyntaxLine -> TODO()
+		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> TODO()
 		is RepeatSyntaxLine -> TODO()
-		is QuoteSyntaxLine -> TODO()
+		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()
 		is TestSyntaxLine -> plusEvaluation(line.test)
@@ -290,6 +293,9 @@ fun Evaluator.plusIsEqualEvaluation(rhs: Script, negate: Boolean): Evaluation<Ev
 fun Evaluator.plusQuoteEvaluation(rhs: Script): Evaluation<Evaluator> =
 	setEvaluation(value.script.plus(rhs).value)
 
+fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
+	setEvaluation(value.plus(quote.script.value))
+
 fun Evaluator.plusSetEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueRhsEvaluation(rhs).bind { rhsValue ->
 		setEvaluation(value.setOrThrow(rhsValue))
@@ -358,6 +364,11 @@ fun Evaluator.plusIsMatchingEvaluation(rhs: Script, negate: Boolean): Evaluation
 
 fun Evaluator.plusPrivateEvaluation(rhs: Script): Evaluation<Evaluator> =
 	context.private.evaluatorEvaluation(rhs).map { evaluator ->
+		use(evaluator.context.publicDictionary)
+	}
+
+fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
+	context.private.evaluatorEvaluation(private.syntax).map { evaluator ->
 		use(evaluator.context.publicDictionary)
 	}
 
