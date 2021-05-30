@@ -67,20 +67,13 @@ class ExpressionCompilationTest {
 	@Test
 	fun fail() {
 		script(
-			line(literal("Hello, world!")),
-			failName lineTo script())
+			line(literal("Hello, ")),
+			failName lineTo script(line(literal("boom!"))))
 			.expression
 			.assertEqualTo(
 				expression(
-					op(literal("Hello, world!")),
-					op(fail)))
-
-		assertFailsWith<ValueError> {
-			script(
-				line(literal("Hello, world!")),
-				failName lineTo script("foo"))
-				.expression
-		}
+					op(literal("Hello, ")),
+					op(fail(expression(op(literal("boom!")))))))
 	}
 
 	@Test

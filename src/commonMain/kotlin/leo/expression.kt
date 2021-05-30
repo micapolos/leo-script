@@ -36,7 +36,7 @@ data class As(val pattern: Pattern)
 data class Be(val expression: Expression)
 data class Comment(val script: Script)
 data class Do(val expression: Expression)
-object Fail
+data class Fail(val expression: Expression)
 data class Let(val pattern: Pattern, val rhs: LetRhs)
 data class Try(val expression: Expression)
 
@@ -76,7 +76,7 @@ fun as_(pattern: Pattern) = As(pattern)
 fun be(expression: Expression) = Be(expression)
 fun comment(script: Script) = Comment(script)
 fun do_(expression: Expression) = Do(expression)
-val fail get() = Fail
+fun fail(expression: Expression) = Fail(expression)
 fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
 fun let(pattern: Pattern, do_: Do) = Let(pattern, DoLetRhs(do_))
 fun try_(expression: Expression) = Try(expression)

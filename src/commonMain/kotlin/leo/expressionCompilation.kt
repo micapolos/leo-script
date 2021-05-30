@@ -103,8 +103,7 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
 
 val Script.failCompilation: Compilation<Fail> get() =
-	if (isEmpty) fail.compilation
-	else value(failName fieldTo value).throwError()
+	expressionCompilation.map(::fail)
 
 val Script.tryCompilation: Compilation<Try> get() =
 	expressionCompilation.map(::try_)
