@@ -1,7 +1,5 @@
 package leo
 
-import kotlin.math.exp
-
 enum class BlockType { REPEATEDLY, RECURSIVELY }
 data class Block(val typeOrNull: BlockType?, val expression: Expression)
 

@@ -284,3 +284,18 @@ fun Dictionary.structureEvaluation(link: Link, syntaxField: SyntaxField): Evalua
 			}
 		}
 	else structureEvaluation(link.value, syntaxField).map { it linkTo link.field }
+
+fun Dictionary.bindingEvaluation(rhs: LetRhs): Evaluation<Binding> =
+	when (rhs) {
+		is BeLetRhs -> bindingEvaluation(rhs.be)
+		is DoLetRhs -> bindingEvaluation(rhs.do_)
+	}
+
+fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
+	valueEvaluation(be.syntax).map(::binding)
+
+fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
+	binding(function(body(do_.block.block))).evaluation
+
+val SyntaxBlock.block: Block get() =
+	Block(typeOrNull, expression(script))

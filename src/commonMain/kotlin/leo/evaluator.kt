@@ -1,9 +1,9 @@
 package leo
 
 import leo.base.fold
+import leo.base.negate
 import leo.base.orNullIf
 import leo.base.reverse
-import leo.base.negate
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
 
@@ -53,6 +53,11 @@ fun Dictionary.fieldEvaluation(scriptField: ScriptField): Evaluation<Field> =
 		scriptField.string fieldTo it
 	}
 
+fun Dictionary.fieldEvaluation(field: SyntaxField): Evaluation<Field> =
+	valueEvaluation(field.rhsSyntax).map { rhs ->
+		field.name fieldTo rhs
+	}
+
 val String.dictionary: Dictionary
 	get() =
 		scriptOrThrow.dictionary
@@ -87,14 +92,14 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> TODO()
 		is DoingSyntaxLine -> TODO()
-		is ExampleSyntaxLine -> TODO()
-		is FailSyntaxLine -> TODO()
-		is FieldSyntaxLine -> TODO()
-		is GetSyntaxLine -> TODO()
+		is ExampleSyntaxLine -> plusEvaluation(line.example)
+		is FailSyntaxLine -> plusEvaluation(line.fail)
+		is FieldSyntaxLine -> plusEvaluation(line.field)
+		is GetSyntaxLine -> plusEvaluation(line.get)
 		is IsSyntaxLine -> TODO()
-		is LetSyntaxLine -> TODO()
-		is LiteralSyntaxLine -> TODO()
-		is MatchingSyntaxLine -> TODO()
+		is LetSyntaxLine -> plusEvaluation(line.let)
+		is LiteralSyntaxLine -> plusEvaluation(line.literal)
+		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> TODO()
 		is RepeatSyntaxLine -> TODO()
@@ -203,10 +208,21 @@ fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 fun Evaluator.plusExampleEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	evaluation.also { rhs.valueOrThrow }
 
+fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(example.syntax).bind { evaluation }
+
 fun Evaluator.plusFailEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, rhs).bind { value ->
 		evaluation.also { value.throwError() }
 	}
+
+fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, fail.syntax).bind { value ->
+		evaluation.also { value.throwError() }
+	}
+
+fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
+	plusEvaluation(matchingName fieldTo rhs(matching.pattern))
 
 fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 	test.matchInfix(isName) { lhs, rhs ->
@@ -274,6 +290,19 @@ fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 				).throwError()
 			}
 		}
+	}
+
+fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
+	setEvaluation(value.apply(get))
+
+fun Evaluator.plusEvaluation(field: SyntaxField): Evaluation<Evaluator> =
+	dictionary.fieldEvaluation(field).bind { field ->
+		plusEvaluation(field)
+	}
+
+fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
+	dictionary.bindingEvaluation(let.rhs).bind { binding ->
+		set(context.plus(definition(let.pattern, binding))).evaluation
 	}
 
 fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
