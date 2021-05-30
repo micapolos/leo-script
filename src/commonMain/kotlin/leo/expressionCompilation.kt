@@ -25,8 +25,9 @@ val ScriptLine.opCompilation: Compilation<Op> get() =
 
 val ScriptField.opCompilation: Compilation<Op> get() =
 	when (string) {
-		asName -> rhs.patternCompilation.map { pattern -> op(as_(pattern)) }
-		switchName -> rhs.switchCompilation.map { switch -> SwitchOp(switch) }
+		asName -> rhs.asCompilation.map(::op)
+		commentName -> rhs.commentCompilation.map(::op)
+		switchName -> rhs.switchCompilation.map(::op)
 		else -> rhs.expressionCompilation.map { rhsExpression ->
 			FieldOp(OpField(string, ExpressionOpFieldRhs(rhsExpression)))
 		}
@@ -63,6 +64,12 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 	rhs.expressionCompilation.bind { expression ->
 		Case(string, expression).compilation
 	}
+
+val Script.commentCompilation: Compilation<Comment> get() =
+	comment(this).compilation
+
+val Script.asCompilation: Compilation<As> get() =
+	patternCompilation.map(::as_)
 
 val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
