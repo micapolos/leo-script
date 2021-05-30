@@ -4,16 +4,16 @@ import leo.base.assertEqualTo
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class ExpressionCompilationTest {
+class SyntaxCompilationTest {
 	@Test
 	fun literal() {
 		script(line(literal("Hello, world!")))
-			.expression
-			.assertEqualTo(expression(op(literal("Hello, world!"))))
+			.syntax
+			.assertEqualTo(syntax(op(literal("Hello, world!"))))
 
 		script(line(literal(123)))
-			.expression
-			.assertEqualTo(expression(op(literal(123))))
+			.syntax
+			.assertEqualTo(syntax(op(literal(123))))
 	}
 
 	@Test
@@ -21,9 +21,9 @@ class ExpressionCompilationTest {
 	 	script(
 		  line(literal("Hello, world!")),
 	    asName lineTo script(textName lineTo script(anyName)))
-		  .expression
+		  .syntax
 		  .assertEqualTo(
-			  expression(
+			  syntax(
 				  op(literal("Hello, world!")),
 				  op(as_(pattern(script(textName lineTo script(anyName)))))))
 	}
@@ -33,11 +33,11 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, ")),
 			beName lineTo script(line(literal("world!"))))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, ")),
-					op(be(expression(op(literal("world!")))))))
+					op(be(syntax(op(literal("world!")))))))
 	}
 
 	@Test
@@ -45,9 +45,9 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, world!")),
 			commentName lineTo script("greeting"))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, world!")),
 					op(comment(script("greeting")))))
 	}
@@ -57,11 +57,11 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, world!")),
 			doName lineTo script("length"))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, world!")),
-					op(do_(expression("length" opTo expression())))))
+					op(do_(syntax("length" opTo syntax())))))
 	}
 
 	@Test
@@ -69,11 +69,11 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, ")),
 			failName lineTo script(line(literal("boom!"))))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, ")),
-					op(fail(expression(op(literal("boom!")))))))
+					op(fail(syntax(op(literal("boom!")))))))
 	}
 
 	@Test
@@ -81,9 +81,9 @@ class ExpressionCompilationTest {
 		script(
 			line("point"),
 			getName lineTo script(line("x"), line("y")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op("point"),
 					op(get("x", "y"))))
 	}
@@ -95,11 +95,11 @@ class ExpressionCompilationTest {
 			letName lineTo script(
 				line("ping"),
 				beName lineTo script("pong")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, world!")),
-					op(let(pattern(script("ping")), be(expression("pong" opTo expression()))))))
+					op(let(pattern(script("ping")), be(syntax("pong" opTo syntax()))))))
 	}
 
 	@Test
@@ -109,11 +109,11 @@ class ExpressionCompilationTest {
 			letName lineTo script(
 				line("ping"),
 				doName lineTo script("pong")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, world!")),
-					op(let(pattern(script("ping")), do_(expression("pong" opTo expression()))))))
+					op(let(pattern(script("ping")), do_(syntax("pong" opTo syntax()))))))
 	}
 
 	@Test
@@ -122,14 +122,14 @@ class ExpressionCompilationTest {
 			script(
 				line(literal("Hello, world!")),
 				letName lineTo script())
-				.expression
+				.syntax
 		}
 
 		assertFailsWith<ValueError> {
 			script(
 				line(literal("Hello, world!")),
 				letName lineTo script("foo"))
-				.expression
+				.syntax
 		}
 	}
 
@@ -142,13 +142,13 @@ class ExpressionCompilationTest {
 					doingName lineTo script(line(literal("text")))),
 				numberName lineTo script(
 					doingName lineTo script(line(literal("number"))))))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, world!")),
 					op(switch(
-						textName caseDoing expression(op(literal("text"))),
-						numberName caseDoing expression(op(literal("number")))))))
+						textName caseDoing syntax(op(literal("text"))),
+						numberName caseDoing syntax(op(literal("number")))))))
 	}
 
 	@Test
@@ -159,7 +159,7 @@ class ExpressionCompilationTest {
 				switchName lineTo script(
 					textName lineTo script("foo"),
 					numberName lineTo script("bar")))
-				.expression
+				.syntax
 		}
 	}
 
@@ -170,13 +170,13 @@ class ExpressionCompilationTest {
 			setName lineTo script(
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op("point"),
 					op(set(
-						"x" fieldTo expression(op("zero")),
-						"y" fieldTo expression(op("one"))))))
+						"x" fieldTo syntax(op("zero")),
+						"y" fieldTo syntax(op("one"))))))
 	}
 
 	@Test
@@ -184,11 +184,11 @@ class ExpressionCompilationTest {
 		script(
 			line(literal("Hello, ")),
 			tryName lineTo script(line(literal("boom!"))))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op(literal("Hello, ")),
-					op(try_(expression(op(literal("boom!")))))))
+					op(try_(syntax(op(literal("boom!")))))))
 	}
 
 	@Test
@@ -198,13 +198,13 @@ class ExpressionCompilationTest {
 			updateName lineTo script(
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op("point"),
 					op(update(
-						"x" fieldTo expression(op("zero")),
-						"y" fieldTo expression(op("one"))))))
+						"x" fieldTo syntax(op("zero")),
+						"y" fieldTo syntax(op("one"))))))
 	}
 
 	@Test
@@ -212,9 +212,9 @@ class ExpressionCompilationTest {
 		script(
 			line("point"),
 			useName lineTo script("lib" lineTo script("text")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op("point"),
 					op(use("lib", "text"))))
 	}
@@ -224,10 +224,10 @@ class ExpressionCompilationTest {
 		script(
 			line("point"),
 			withName lineTo script(line("center")))
-			.expression
+			.syntax
 			.assertEqualTo(
-				expression(
+				syntax(
 					op("point"),
-					op(with(expression(op("center"))))))
+					op(with(syntax(op("center"))))))
 	}
 }

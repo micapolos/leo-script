@@ -2,10 +2,10 @@ package leo
 
 import leo.natives.getName
 
-val Script.expression get() = expressionCompilation.get
+val Script.syntax get() = syntaxCompilation.get
 
-val Script.expressionCompilation: Compilation<Expression> get() =
-	lineStack.map { opCompilation }.flat.map(::Expression)
+val Script.syntaxCompilation: Compilation<Syntax> get() =
+	lineStack.map { opCompilation }.flat.map(::Syntax)
 
 val ScriptLine.opCompilation: Compilation<Op> get() =
 	when (this) {
@@ -38,7 +38,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 	}
 
 val ScriptField.opFieldCompilation: Compilation<OpField> get() =
-	rhs.expressionCompilation.map { rhsExpression ->
+	rhs.syntaxCompilation.map { rhsExpression ->
 		OpField(string, ExpressionOpFieldRhs(rhsExpression))
 	}
 
@@ -66,16 +66,16 @@ val Script.asCompilation: Compilation<As> get() =
 	patternCompilation.map(::as_)
 
 val Script.beCompilation: Compilation<Be> get() =
-	expressionCompilation.map(::be)
+	syntaxCompilation.map(::be)
 
 val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
 
 val Script.doCompilation: Compilation<Do> get() =
-	expressionCompilation.map(::do_)
+	syntaxCompilation.map(::do_)
 
 val Script.doingCompilation: Compilation<Doing> get() =
-	expressionCompilation.map(::doing)
+	syntaxCompilation.map(::doing)
 
 val Script.getCompilation: Compilation<Get> get() =
 	lineStack
@@ -102,13 +102,13 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
 
 val Script.failCompilation: Compilation<Fail> get() =
-	expressionCompilation.map(::fail)
+	syntaxCompilation.map(::fail)
 
 val Script.setCompilation: Compilation<Set> get() =
 	lineStack.map { opFieldCompilation }.flat.map(::Set)
 
 val Script.tryCompilation: Compilation<Try> get() =
-	expressionCompilation.map(::try_)
+	syntaxCompilation.map(::try_)
 
 val Script.updateCompilation: Compilation<Update> get() =
 	lineStack.map { opFieldCompilation }.flat.map(::Update)
@@ -117,4 +117,4 @@ val Script.useCompilation: Compilation<Use> get() =
 	useOrNull.notNullOrThrow { value(useName fieldTo value) }.compilation
 
 val Script.withCompilation: Compilation<With> get() =
-	expressionCompilation.map(::with)
+	syntaxCompilation.map(::with)

@@ -1,6 +1,6 @@
 package leo
 
-data class Expression(val opStack: Stack<Op>)
+data class Syntax(val opStack: Stack<Op>)
 
 sealed class Op
 data class AsOp(val as_: As): Op()
@@ -24,35 +24,36 @@ data class OpField(val name: String, val rhsExpression: OpFieldRhs)
 sealed class OpFieldRhs
 data class NativeOpFieldRhs(val native: Native): OpFieldRhs()
 data class FunctionOpFieldRhs(val function: Function): OpFieldRhs()
-data class ExpressionOpFieldRhs(val typed: Expression): OpFieldRhs()
+data class ExpressionOpFieldRhs(val typed: Syntax): OpFieldRhs()
 
 data class Switch(val caseStack: Stack<Case>)
 data class Case(val name: String, val doing: Doing)
 
 data class As(val pattern: Pattern)
-data class Be(val expression: Expression)
+data class Be(val syntax: Syntax)
 data class Comment(val script: Script)
-data class Do(val expression: Expression)
-data class Doing(val expression: Expression)
-data class Fail(val expression: Expression)
+data class Do(val syntax: Syntax)
+data class Doing(val syntax: Syntax)
+data class Fail(val syntax: Syntax)
 data class Get(val nameStack: Stack<String>)
 data class Let(val pattern: Pattern, val rhs: LetRhs)
+data class Not(val syntax: Syntax)
 data class Set(val fieldStack: Stack<OpField>)
-data class Try(val expression: Expression)
+data class Try(val syntax: Syntax)
 data class Update(val fieldStack: Stack<OpField>)
-data class With(val expression: Expression)
+data class With(val syntax: Syntax)
 
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
 
-fun expression(vararg ops: Op): Expression = Expression(stack(*ops))
+fun syntax(vararg ops: Op): Syntax = Syntax(stack(*ops))
 fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 
-fun op(name: String) = name opTo expression()
-infix fun String.opTo(expression: Expression) = FieldOp(this fieldTo expression)
-infix fun String.fieldTo(expression: Expression) = OpField(this, ExpressionOpFieldRhs(expression))
-infix fun String.caseDoing(expression: Expression) = Case(this, doing(expression))
+fun op(name: String) = name opTo syntax()
+infix fun String.opTo(syntax: Syntax) = FieldOp(this fieldTo syntax)
+infix fun String.fieldTo(syntax: Syntax) = OpField(this, ExpressionOpFieldRhs(syntax))
+infix fun String.caseDoing(syntax: Syntax) = Case(this, doing(syntax))
 
 fun op(literal: Literal): Op =
 	when (literal) {
@@ -77,15 +78,16 @@ fun op(use: Use): Op = UseOp(use)
 fun op(with: With): Op = WithOp(with)
 
 fun as_(pattern: Pattern) = As(pattern)
-fun be(expression: Expression) = Be(expression)
+fun be(syntax: Syntax) = Be(syntax)
 fun comment(script: Script) = Comment(script)
-fun do_(expression: Expression) = Do(expression)
-fun doing(expression: Expression) = Doing(expression)
-fun fail(expression: Expression) = Fail(expression)
+fun do_(syntax: Syntax) = Do(syntax)
+fun doing(syntax: Syntax) = Doing(syntax)
+fun fail(syntax: Syntax) = Fail(syntax)
 fun get(vararg names: String) = Get(stack(*names))
+fun not(syntax: Syntax) = Not(syntax)
 fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
 fun let(pattern: Pattern, do_: Do) = Let(pattern, DoLetRhs(do_))
 fun set(vararg fields: OpField) = Set(stack(*fields))
-fun try_(expression: Expression) = Try(expression)
+fun try_(syntax: Syntax) = Try(syntax)
 fun update(vararg fields: OpField) = Update(stack(*fields))
-fun with(expression: Expression) = With(expression)
+fun with(syntax: Syntax) = With(syntax)
