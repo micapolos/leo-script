@@ -164,4 +164,20 @@ class ExpressionCompilationTest {
 					op(literal("Hello, ")),
 					op(try_(expression(op(literal("boom!")))))))
 	}
+
+	@Test
+	fun update() {
+		script(
+			line("point"),
+			updateName lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op("point"),
+					op(update(
+						"x" fieldTo expression(op("zero")),
+						"y" fieldTo expression(op("one"))))))
+	}
 }

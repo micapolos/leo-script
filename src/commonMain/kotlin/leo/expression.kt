@@ -19,6 +19,7 @@ data class LetOp(val let: Let): Op()
 data class SetOp(val set: Set): Op()
 data class SwitchOp(val switch: Switch): Op()
 data class TryOp(val try_: Try): Op()
+data class UpdateOp(val update: Update): Op()
 
 data class OpField(val name: String, val rhsExpression: OpFieldRhs)
 
@@ -41,6 +42,7 @@ data class Fail(val expression: Expression)
 data class Let(val pattern: Pattern, val rhs: LetRhs)
 data class Set(val fieldStack: Stack<OpField>)
 data class Try(val expression: Expression)
+data class Update(val fieldStack: Stack<OpField>)
 
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
@@ -77,6 +79,7 @@ fun op(let: Let): Op = LetOp(let)
 fun op(switch: Switch): Op = SwitchOp(switch)
 fun op(set: Set): Op = SetOp(set)
 fun op(try_: Try): Op = TryOp(try_)
+fun op(update: Update): Op = UpdateOp(update)
 
 fun as_(pattern: Pattern) = As(pattern)
 fun be(expression: Expression) = Be(expression)
@@ -87,3 +90,4 @@ fun let(pattern: Pattern, be: Be) = Let(pattern, BeLetRhs(be))
 fun let(pattern: Pattern, do_: Do) = Let(pattern, DoLetRhs(do_))
 fun set(vararg fields: OpField) = Set(stack(*fields))
 fun try_(expression: Expression) = Try(expression)
+fun update(vararg fields: OpField) = Update(stack(*fields))
