@@ -30,6 +30,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		isName -> rhs.isCompilation.map(::line)
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
+		privateName -> rhs.privateCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
 		switchName -> rhs.switchCompilation.map(::line)
 		tryName -> rhs.tryCompilation.map(::line)
@@ -99,6 +100,9 @@ val Script.letCompilation: Compilation<Let> get() =
 
 val Script.patternCompilation: Compilation<Pattern> get() =
 	pattern(this).compilation // TODO: Implement properly
+
+val Script.privateCompilation: Compilation<Private> get() =
+	syntaxCompilation.map(::private)
 
 val Script.failCompilation: Compilation<Fail> get() =
 	syntaxCompilation.map(::fail)

@@ -198,6 +198,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun private() {
+		script(
+			line(literal("Hello, world!")),
+			privateName lineTo script("foo"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal("Hello, world!")),
+					line(private(syntax("foo" lineTo syntax())))))
+	}
+
+	@Test
 	fun switchCaseError() {
 		assertFailsWith<ValueError> {
 			script(
