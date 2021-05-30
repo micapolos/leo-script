@@ -376,8 +376,8 @@ class SyntaxCompilationTest {
 					line(set(
 						atom("x" fieldTo syntax(syntaxLine("zero"))),
 						atom("y" fieldTo syntax(syntaxLine("one"))),
-						atom2(literal("foo")),
-						atom2(literal(123))))
+						syntaxAtom(literal("foo")),
+						syntaxAtom(literal(123))))
 				))
 	}
 

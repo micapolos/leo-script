@@ -10,7 +10,7 @@ val Script.syntaxCompilation: Compilation<Syntax> get() =
 val ScriptLine.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (this) {
 		is FieldScriptLine -> field.syntaxLineCompilation
-		is LiteralScriptLine -> line(atom2(literal)).compilation
+		is LiteralScriptLine -> line(syntaxAtom(literal)).compilation
 	}
 
 val ScriptLine.syntaxAtomCompilation: Compilation<SyntaxAtom> get() =
@@ -62,7 +62,7 @@ val ScriptField.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	}
 
 val Literal.syntaxLineCompilation: Compilation<SyntaxAtom> get() =
-	atom2(this).compilation
+	syntaxAtom(this).compilation
 
 val Script.switchCompilation: Compilation<Switch> get() =
 	lineStack.map { caseCompilation }.flat.map(::Switch)
