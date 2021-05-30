@@ -12,6 +12,7 @@ data class FailSyntaxLine(val fail: Fail): SyntaxLine()
 data class FieldSyntaxLine(val field: SyntaxField): SyntaxLine()
 data class GetSyntaxLine(val get: Get): SyntaxLine()
 data class LetSyntaxLine(val let: Let): SyntaxLine()
+data class LiteralSyntaxLine(val literal: Literal): SyntaxLine()
 data class MatchingSyntaxLine(val matching: Matching): SyntaxLine()
 data class SetSyntaxLine(val set: Set): SyntaxLine()
 data class SwitchSyntaxLine(val switch: Switch): SyntaxLine()
@@ -57,12 +58,6 @@ infix fun String.lineTo(syntax: Syntax) = FieldSyntaxLine(this fieldTo syntax)
 infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, ExpressionSyntaxRhs(syntax))
 infix fun String.caseDoing(syntax: Syntax) = Case(this, doing(syntax))
 
-fun syntaxLine(literal: Literal): SyntaxLine =
-	when (literal) {
-		is NumberLiteral -> FieldSyntaxLine(SyntaxField(numberName, NativeSyntaxRhs(native(literal.number))))
-		is StringLiteral -> FieldSyntaxLine(SyntaxField(textName, NativeSyntaxRhs(native(literal.string))))
-	}
-
 fun line(as_: As): SyntaxLine = AsSyntaxLine(as_)
 fun line(be: Be): SyntaxLine = BeSyntaxLine(be)
 fun line(comment: Comment): SyntaxLine = CommentSyntaxLine(comment)
@@ -72,6 +67,7 @@ fun line(fail: Fail): SyntaxLine = FailSyntaxLine(fail)
 fun line(field: SyntaxField): SyntaxLine = FieldSyntaxLine(field)
 fun line(get: Get): SyntaxLine = GetSyntaxLine(get)
 fun line(let: Let): SyntaxLine = LetSyntaxLine(let)
+fun syntaxLine(literal: Literal): SyntaxLine = LiteralSyntaxLine(literal)
 fun line(matching: Matching): SyntaxLine = MatchingSyntaxLine(matching)
 fun line(switch: Switch): SyntaxLine = SwitchSyntaxLine(switch)
 fun line(set: Set): SyntaxLine = SetSyntaxLine(set)

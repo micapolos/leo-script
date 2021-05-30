@@ -44,10 +44,7 @@ val ScriptField.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	}
 
 val Literal.syntaxLineCompilation: Compilation<SyntaxLine> get() =
-	when (this) {
-		is NumberLiteral -> FieldSyntaxLine(SyntaxField(numberName, NativeSyntaxRhs(native(number)))).compilation
-		is StringLiteral -> FieldSyntaxLine(SyntaxField(textName, NativeSyntaxRhs(native(string)))).compilation
-	}
+	syntaxLine(this).compilation
 
 val Script.switchCompilation: Compilation<Switch> get() =
 	lineStack.map { caseCompilation }.flat.map(::Switch)
