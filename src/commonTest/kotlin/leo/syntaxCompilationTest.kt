@@ -95,6 +95,30 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun is_() {
+		script(
+			line("point"),
+			isName lineTo script(line("ok")))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(syntax(syntaxLine("ok"))))))
+	}
+
+	@Test
+	fun isNot() {
+		script(
+			line("point"),
+			isName lineTo script(notName lineTo script(line("ok"))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine("point"),
+					line(is_(not(syntax(syntaxLine("ok")))))))
+	}
+
+	@Test
 	fun letBe() {
 		script(
 			line(literal("Hello, world!")),

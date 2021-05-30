@@ -27,6 +27,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		doingName -> rhs.doingCompilation.map(::line)
 		failName -> rhs.failCompilation.map(::line)
 		getName -> rhs.getCompilation.map(::line)
+		isName -> rhs.isCompilation.map(::line)
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
@@ -102,6 +103,9 @@ val Script.patternCompilation: Compilation<Pattern> get() =
 val Script.failCompilation: Compilation<Fail> get() =
 	syntaxCompilation.map(::fail)
 
+val Script.isCompilation: Compilation<Is> get() =
+	syntaxOrNotCompilation.map(::is_)
+
 val Script.matchingCompilation: Compilation<Matching> get() =
 	patternCompilation.map(::matching)
 
@@ -110,6 +114,11 @@ val Script.notCompilation: Compilation<Not> get() =
 
 val Script.setCompilation: Compilation<Set> get() =
 	lineStack.map { syntaxFieldCompilation }.flat.map(::Set)
+
+val Script.syntaxOrNotCompilation: Compilation<Or<Syntax, Not>> get() =
+	null
+		?: matchPrefix(notName) { rhs -> rhs.notCompilation.map { not -> Syntax::class.or(not) } }
+		?: syntaxCompilation.map { syntax -> syntax.or(Not::class) }
 
 val Script.tryCompilation: Compilation<Try> get() =
 	syntaxCompilation.map(::try_)
