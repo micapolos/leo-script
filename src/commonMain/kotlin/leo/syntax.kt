@@ -21,12 +21,7 @@ data class UpdateSyntaxLine(val update: Update): SyntaxLine()
 data class UseSyntaxLine(val use: Use): SyntaxLine()
 data class WithSyntaxLine(val with: With): SyntaxLine()
 
-data class SyntaxField(val name: String, val rhsExpression: SyntaxRhs)
-
-sealed class SyntaxRhs
-data class NativeSyntaxRhs(val native: Native): SyntaxRhs()
-data class FunctionSyntaxRhs(val function: Function): SyntaxRhs()
-data class ExpressionSyntaxRhs(val typed: Syntax): SyntaxRhs()
+data class SyntaxField(val name: String, val rhsSyntax: Syntax)
 
 data class Switch(val caseStack: Stack<Case>)
 data class Case(val name: String, val doing: Doing)
@@ -55,7 +50,7 @@ fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 
 fun syntaxLine(name: String) = name lineTo syntax()
 infix fun String.lineTo(syntax: Syntax) = FieldSyntaxLine(this fieldTo syntax)
-infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, ExpressionSyntaxRhs(syntax))
+infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, syntax)
 infix fun String.caseDoing(syntax: Syntax) = Case(this, doing(syntax))
 
 fun line(as_: As): SyntaxLine = AsSyntaxLine(as_)

@@ -39,8 +39,8 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	}
 
 val ScriptField.syntaxFieldCompilation: Compilation<SyntaxField> get() =
-	rhs.syntaxCompilation.map { rhsExpression ->
-		SyntaxField(string, ExpressionSyntaxRhs(rhsExpression))
+	rhs.syntaxCompilation.map { rhsSyntax ->
+		SyntaxField(string, rhsSyntax)
 	}
 
 val Literal.syntaxLineCompilation: Compilation<SyntaxLine> get() =
