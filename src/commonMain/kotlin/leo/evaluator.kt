@@ -110,7 +110,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> plusEvaluation(line.set)
-		is SwitchSyntaxLine -> TODO()
+		is SwitchSyntaxLine -> plusEvaluation(line.switch)
 		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
@@ -349,6 +349,11 @@ fun Evaluator.plusSetEvaluation(rhs: Script): Evaluation<Evaluator> =
 
 fun Evaluator.plusSwitchEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.switchEvaluation(value, rhs).bind {
+		setEvaluation(it)
+	}
+
+fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
+	dictionary.evaluation(value, switch).bind {
 		setEvaluation(it)
 	}
 

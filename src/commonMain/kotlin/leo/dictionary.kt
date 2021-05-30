@@ -5,6 +5,7 @@ import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.map
 import leo.base.notNullIf
+import leo.base.nullOf
 import leo.base.orIfNull
 import leo.base.reverse
 import leo.base.runIf
@@ -164,6 +165,16 @@ fun switchOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
 	ifOrNull(field.name == case.name) {
 		value(case).nativeValue(doingName).functionOrThrow.applyEvaluation(value(field))
 	} ?: evaluation(null)
+
+fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
+	value.switchFieldOrThrow.let { field ->
+		nullOf<Value>().evaluation.foldStateful(switch.caseSeq) { case ->
+			if (this != null || field.name != case.name) evaluation
+			else applyEvaluation(case.doing.block.block, value(field))
+		}.map { valueOrNull ->
+			valueOrNull.notNullOrThrow { value(switchName) }
+		}
+	}
 
 fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
