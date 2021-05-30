@@ -255,3 +255,32 @@ fun Dictionary.updateStructureEvaluation(link: Link, scriptField: ScriptField): 
 			}
 		}
 	else updateStructureEvaluation(link.value, scriptField).map { it linkTo link.field }
+
+fun Dictionary.evaluation(value: Value, update: Update): Evaluation<Value> =
+	value.structureOrThrow.let { structure ->
+		structureEvaluation(structure.value, update).map { rhs ->
+			value(structure.name fieldTo rhs)
+		}
+	}
+
+fun Dictionary.structureEvaluation(value: Value, update: Update): Evaluation<Value> =
+	value.evaluation.fold(update.fieldSeq) { field ->
+		bind { value ->
+			structureEvaluation(value, field)
+		}
+	}
+
+fun Dictionary.structureEvaluation(value: Value, syntaxField: SyntaxField): Evaluation<Value> =
+	when (value) {
+		EmptyValue -> value("no" fieldTo value("field" fieldTo value(syntaxField.name))).throwError()
+		is LinkValue -> structureEvaluation(value.link, syntaxField).map { value(it) }
+	}
+
+fun Dictionary.structureEvaluation(link: Link, syntaxField: SyntaxField): Evaluation<Link> =
+	if (link.field.name == syntaxField.name)
+		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.evaluation.bind { rhs ->
+			context.evaluator(rhs).plusEvaluation(syntaxField.rhsSyntax).map { rhsValue ->
+				(link.value linkTo (syntaxField.name fieldTo rhsValue.value))
+			}
+		}
+	else structureEvaluation(link.value, syntaxField).map { it linkTo link.field }

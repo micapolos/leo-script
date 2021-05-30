@@ -97,9 +97,9 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is SwitchSyntaxLine -> TODO()
 		is TestSyntaxLine -> TODO()
 		is TrySyntaxLine -> TODO()
-		is UpdateSyntaxLine -> TODO()
-		is UseSyntaxLine -> TODO()
-		is WithSyntaxLine -> TODO()
+		is UpdateSyntaxLine -> plusEvaluation(line.update)
+		is UseSyntaxLine -> plusEvaluation(line.use)
+		is WithSyntaxLine -> plusEvaluation(line.with)
 	}
 
 fun Evaluator.plusEvaluation(scriptLine: ScriptLine): Evaluation<Evaluator> =
@@ -278,6 +278,9 @@ fun Evaluator.plusTryEvaluation(rhs: Script): Evaluation<Evaluator> =
 fun Evaluator.plusUpdateEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.updateEvaluation(value, rhs).bind { setEvaluation(it) }
 
+fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
+	dictionary.evaluation(value, update).bind { setEvaluation(it) }
+
 fun Evaluator.plusDynamicEvaluation(scriptField: ScriptField): Evaluation<Evaluator> =
 	dictionary.fieldEvaluation(scriptField).bind { field ->
 		plusDynamicOrNullEvaluation(field).or {
@@ -335,6 +338,11 @@ fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 
 fun Evaluator.plusWithEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(rhs).bind { rhsValue ->
+		setEvaluation(value + rhsValue)
+	}
+
+fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(with.syntax).bind { rhsValue ->
 		setEvaluation(value + rhsValue)
 	}
 
