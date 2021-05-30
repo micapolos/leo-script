@@ -25,6 +25,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
 		doingName -> rhs.doingCompilation.map(::line)
+		exampleName -> rhs.exampleCompilation.map(::line)
 		failName -> rhs.failCompilation.map(::line)
 		getName -> rhs.getCompilation.map(::line)
 		isName -> rhs.isCompilation.map(::line)
@@ -77,6 +78,9 @@ val Script.doCompilation: Compilation<Do> get() =
 
 val Script.doingCompilation: Compilation<Doing> get() =
 	syntaxCompilation.map(::doing)
+
+val Script.exampleCompilation: Compilation<Example> get() =
+	syntaxCompilation.map(::example)
 
 val Script.getCompilation: Compilation<Get> get() =
 	lineStack
