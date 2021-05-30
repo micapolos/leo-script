@@ -30,6 +30,9 @@ fun Dictionary.valueEvaluation(expression: Expression): Evaluation<Value> =
 fun Dictionary.valueEvaluation(value: Value, script: Script): Evaluation<Value> =
 	context.evaluator(value).plusEvaluation(script).map { it.value }
 
+fun Dictionary.valueEvaluation(value: Value, syntax: Syntax): Evaluation<Value> =
+	context.evaluator(value).plusEvaluation(syntax).map { it.value }
+
 fun Dictionary.valueRhsEvaluation(script: Script): Evaluation<Value> =
 	value().evaluation.fold(script.lineSeq.reverse) { line ->
 		bind { value ->
@@ -96,7 +99,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()
 		is TestSyntaxLine -> TODO()
-		is TrySyntaxLine -> TODO()
+		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
 		is UseSyntaxLine -> plusEvaluation(line.use)
 		is WithSyntaxLine -> plusEvaluation(line.with)
@@ -272,6 +275,11 @@ fun Evaluator.plusTraceOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
 
 fun Evaluator.plusTryEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, rhs)
+		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
+		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value)) }
+
+fun Evaluator.plusEvaluation(try_: Try): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, try_.syntax)
 		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
 		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value)) }
 

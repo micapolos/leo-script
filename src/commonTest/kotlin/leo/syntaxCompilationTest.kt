@@ -318,15 +318,30 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun test() {
+	fun testIs() {
 		script(
 			"foo" lineTo script(),
-			testName lineTo script("bar"))
+			testName lineTo script(
+				"zoo" lineTo script(),
+				isName lineTo script("zar")))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					"foo" lineTo syntax(),
-					line(test(syntax("bar" lineTo syntax())))))
+					line(test(
+						syntax("zoo" lineTo syntax()),
+						is_(syntax("zar" lineTo syntax()))))))
+	}
+
+	@Test
+	fun testError() {
+		assertFailsWith<ValueError> {
+			script(
+				"foo" lineTo script(),
+				testName lineTo script("bar")
+			)
+				.syntax
+		}
 	}
 
 	@Test

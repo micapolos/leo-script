@@ -156,7 +156,13 @@ val Script.tryCompilation: Compilation<Try> get() =
 	syntaxCompilation.map(::try_)
 
 val Script.testCompilation: Compilation<Test> get() =
-	syntaxCompilation.map(::test)
+	matchInfix(isName) { lhs, rhs ->
+		lhs.syntaxCompilation.bind { syntax ->
+			rhs.isCompilation.map { is_ ->
+				test(syntax, is_)
+			}
+		}
+	}.notNullOrThrow { value(testName fieldTo value) }
 
 val Script.updateCompilation: Compilation<Update> get() =
 	lineStack.map { syntaxFieldCompilation }.flat.map(::Update)
