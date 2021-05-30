@@ -90,8 +90,8 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is AsSyntaxLine -> plusEvaluation(line.as_)
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
-		is DoSyntaxLine -> TODO()
-		is DoingSyntaxLine -> TODO()
+		is DoSyntaxLine -> plusEvaluation(line.do_)
+		is DoingSyntaxLine -> plusEvaluation(line.doing)
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is FieldSyntaxLine -> plusEvaluation(line.field)
@@ -199,6 +199,9 @@ fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
 
 fun Evaluator.plusDoEvaluation(rhs: Script): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(block(rhs), value).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
+	dictionary.applyEvaluation(do_.block.block, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	dictionary.set(rhs.valueOrThrow).valueEvaluation(value.script).bind { evaluated ->
@@ -309,6 +312,9 @@ fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
 	rhs.orNullIf(rhs.isEmpty).evaluation.nullableBind {
 		plusEvaluation(field(dictionary.function(body(rhs))))
 	}
+
+fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator?> =
+	plusEvaluation(field(dictionary.function(body(doing.block.block))))
 
 fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	if (rhs.valueOrNull?.isEmpty == true) setEvaluation(value.hashValue)
