@@ -43,6 +43,7 @@ val ScriptField.opCompilation: Compilation<Op> get() =
 		switchName -> rhs.switchCompilation.map(::op)
 		tryName -> rhs.tryCompilation.map(::op)
 		updateName -> rhs.updateCompilation.map(::op)
+		useName -> rhs.useCompilation.map(::op)
 		else -> opFieldCompilation.map(::op)
 	}
 
@@ -130,3 +131,6 @@ val Script.tryCompilation: Compilation<Try> get() =
 
 val Script.updateCompilation: Compilation<Update> get() =
 	lineStack.map { opFieldCompilation }.flat.map(::Update)
+
+val Script.useCompilation: Compilation<Use> get() =
+	useOrNull.notNullOrThrow { value(useName fieldTo value) }.compilation

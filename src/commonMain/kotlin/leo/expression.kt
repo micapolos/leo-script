@@ -21,6 +21,7 @@ data class SetOp(val set: Set): Op()
 data class SwitchOp(val switch: Switch): Op()
 data class TryOp(val try_: Try): Op()
 data class UpdateOp(val update: Update): Op()
+data class UseOp(val use: Use): Op()
 
 data class OpField(val name: String, val rhsExpression: OpFieldRhs)
 
@@ -83,6 +84,7 @@ fun op(switch: Switch): Op = SwitchOp(switch)
 fun op(set: Set): Op = SetOp(set)
 fun op(try_: Try): Op = TryOp(try_)
 fun op(update: Update): Op = UpdateOp(update)
+fun op(use: Use): Op = UseOp(use)
 
 fun as_(pattern: Pattern) = As(pattern)
 fun be(expression: Expression) = Be(expression)

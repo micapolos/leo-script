@@ -192,4 +192,16 @@ class ExpressionCompilationTest {
 						"x" fieldTo expression(op("zero")),
 						"y" fieldTo expression(op("one"))))))
 	}
+
+	@Test
+	fun use() {
+		script(
+			line("point"),
+			useName lineTo script("lib" lineTo script("text")))
+			.expression
+			.assertEqualTo(
+				expression(
+					op("point"),
+					op(use("lib", "text"))))
+	}
 }
