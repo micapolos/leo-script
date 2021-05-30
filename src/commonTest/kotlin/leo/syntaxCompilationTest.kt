@@ -64,7 +64,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(do_(syntax("length" lineTo syntax())))
+					line(do_(block(syntax("length" lineTo syntax()))))
 				))
 	}
 
@@ -157,7 +157,37 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(pattern(script("ping")), do_(syntax("pong" lineTo syntax()))))
+					line(let(pattern(script("ping")), do_(block(syntax("pong" lineTo syntax())))))
+				))
+	}
+
+	@Test
+	fun letDoRecursing() {
+		script(
+			line(literal("Hello, world!")),
+			letName lineTo script(
+				line("ping"),
+				doName lineTo script(recursingName lineTo script("pong"))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal("Hello, world!")),
+					line(let(pattern(script("ping")), do_(block(BlockType.RECURSIVELY, syntax("pong" lineTo syntax())))))
+				))
+	}
+
+	@Test
+	fun letDoRepeating() {
+		script(
+			line(literal("Hello, world!")),
+			letName lineTo script(
+				line("ping"),
+				doName lineTo script(repeatingName lineTo script("pong"))))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal("Hello, world!")),
+					line(let(pattern(script("ping")), do_(block(BlockType.REPEATEDLY, syntax("pong" lineTo syntax())))))
 				))
 	}
 

@@ -71,14 +71,25 @@ val Script.asCompilation: Compilation<As> get() =
 val Script.beCompilation: Compilation<Be> get() =
 	syntaxCompilation.map(::be)
 
+val Script.blockCompilation: Compilation<SyntaxBlock> get() =
+	matchPrefix { name, rhs ->
+		name
+			.blockTypeOrNull
+			?.let { blockType ->
+				rhs.syntaxCompilation.map { syntax ->
+					block(blockType, syntax)
+				}
+			}
+	} ?: syntaxCompilation.map(::block)
+
 val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
 
 val Script.doCompilation: Compilation<Do> get() =
-	syntaxCompilation.map(::do_)
+	blockCompilation.map(::do_)
 
 val Script.doingCompilation: Compilation<Doing> get() =
-	syntaxCompilation.map(::doing)
+	blockCompilation.map(::doing)
 
 val Script.exampleCompilation: Compilation<Example> get() =
 	syntaxCompilation.map(::example)

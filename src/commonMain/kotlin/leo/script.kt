@@ -398,6 +398,13 @@ fun <R : Any> Script.matchInfix(name: String, fn: (Script, Script) -> R?): R? =
 		}
 	}
 
+fun <R : Any> Script.matchPrefix(fn: (String, Script) -> R?): R? =
+	matchInfix { lhs, name, rhs ->
+		lhs.matchEmpty {
+			fn(name, rhs)
+		}
+	}
+
 fun <R : Any> Script.matchInfix(fn: (Script, String, Script) -> R?): R? =
 	linkOrNull?.let { link ->
 		link.lhs.let { lhs ->
