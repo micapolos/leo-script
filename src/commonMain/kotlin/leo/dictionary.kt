@@ -172,23 +172,23 @@ fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 
 fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 	when (block.typeOrNull) {
-		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.untypedScript, given)
-		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.untypedScript, given)
-		null -> applyUntypedEvaluation(block.untypedScript, given)
+		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.expression, given)
+		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.expression, given)
+		null -> applyUntypedEvaluation(block.expression, given)
 	}
 
-fun Dictionary.applyRepeatingEvaluation(script: Script, given: Value): Evaluation<Value> =
+fun Dictionary.applyRepeatingEvaluation(expression: Expression, given: Value): Evaluation<Value> =
 	given.evaluation.valueBindRepeating { repeatingGiven ->
-		set(repeatingGiven).valueEvaluation(script)
+		set(repeatingGiven).valueEvaluation(expression)
 	}
 
-fun Dictionary.applyRecursingEvaluation(script: Script, given: Value): Evaluation<Value> =
-	set(given).plusRecurse(script).valueEvaluation(script)
+fun Dictionary.applyRecursingEvaluation(expression: Expression, given: Value): Evaluation<Value> =
+	set(given).plusRecurse(expression).valueEvaluation(expression)
 
-fun Dictionary.applyUntypedEvaluation(script: Script, given: Value): Evaluation<Value> =
-	set(given).valueEvaluation(script)
+fun Dictionary.applyUntypedEvaluation(expression: Expression, given: Value): Evaluation<Value> =
+	set(given).valueEvaluation(expression.script)
 
-fun Dictionary.plusRecurse(script: Script): Dictionary =
+fun Dictionary.plusRecurse(expression: Expression): Dictionary =
 	plus(
 		definition(
 			pattern(
@@ -197,7 +197,7 @@ fun Dictionary.plusRecurse(script: Script): Dictionary =
 					recurseName lineTo script()
 				)
 			),
-			binding(function(body(BlockType.RECURSIVELY.block(script))))
+			binding(function(body(BlockType.RECURSIVELY.block(expression))))
 		)
 	)
 

@@ -1,10 +1,12 @@
 package leo
 
-enum class BlockType { REPEATEDLY, RECURSIVELY }
-data class Block(val typeOrNull: BlockType?, val untypedScript: Script)
+import kotlin.math.exp
 
-fun BlockType.block(script: Script) = Block(this, script)
-fun defaultBlock(script: Script) = Block(null, script)
+enum class BlockType { REPEATEDLY, RECURSIVELY }
+data class Block(val typeOrNull: BlockType?, val expression: Expression)
+
+fun BlockType.block(expression: Expression) = Block(this, expression)
+fun defaultBlock(expression: Expression) = Block(null, expression)
 
 val String.blockTypeOrNull: BlockType?
 	get() =
@@ -15,9 +17,9 @@ val String.blockTypeOrNull: BlockType?
 		}
 
 fun block(script: Script): Block =
-	typedBlockOrNull(script) ?: defaultBlock(script)
+	typedBlockOrNull(script) ?: defaultBlock(expression(script))
 
 fun typedBlockOrNull(script: Script): Block? =
 	script.linkOrNull?.onlyLineOrNull?.fieldOrNull?.let { field ->
-		field.string.blockTypeOrNull?.block(field.rhs)
+		field.string.blockTypeOrNull?.block(expression(field.rhs))
 	}

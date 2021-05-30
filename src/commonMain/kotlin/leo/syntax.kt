@@ -1,6 +1,6 @@
 package leo
 
-data class Syntax(val syntaxLineStack: Stack<SyntaxLine>)
+data class Syntax(val lineStack: Stack<SyntaxLine>)
 
 sealed class SyntaxLine
 data class AsSyntaxLine(val as_: As): SyntaxLine()
@@ -54,6 +54,12 @@ data class With(val syntax: Syntax)
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
+
+val Get.nameSeq get() = nameStack.reverse.seq
+val Syntax.lineSeq get() = lineStack.reverse.seq
+val Set.fieldSeq get() = fieldStack.reverse.seq
+val Switch.caseSeq get() = caseStack.reverse.seq
+val Update.fieldSeq get() = fieldStack.reverse.seq
 
 fun syntax(vararg syntaxLines: SyntaxLine): Syntax = Syntax(stack(*syntaxLines))
 fun switch(vararg cases: Case): Switch = Switch(stack(*cases))

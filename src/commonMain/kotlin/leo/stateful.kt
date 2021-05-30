@@ -1,7 +1,9 @@
 package leo
 
 import leo.base.Effect
+import leo.base.Seq
 import leo.base.effect
+import leo.base.fold
 
 data class Stateful<S, out V>(
 	val run: (S) -> Effect<S, V>
@@ -42,6 +44,13 @@ fun <S, T> Stateful<S, T>.catch(fn: (Throwable) -> Stateful<S, T>): Stateful<S, 
 			run(state)
 		} catch (throwable: Throwable) {
 			fn(throwable).run(state)
+		}
+	}
+
+fun <S, F, I> Stateful<S, F>.foldStateful(seq: Seq<I>, fn: F.(I) -> Stateful<S, F>): Stateful<S, F> =
+	bind { folded ->
+		fold(seq) { item ->
+			folded.fn(item)
 		}
 	}
 

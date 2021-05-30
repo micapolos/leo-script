@@ -24,6 +24,9 @@ fun Interpreter.set(context: Context): Interpreter =
 fun Dictionary.valueEvaluation(script: Script): Evaluation<Value> =
 	context.interpreterEvaluation(script).map { it.value }
 
+fun Dictionary.valueEvaluation(expression: Expression): Evaluation<Value> =
+	valueEvaluation(expression.script)
+
 fun Dictionary.valueEvaluation(value: Value, script: Script): Evaluation<Value> =
 	context.interpreter(value).plusEvaluation(script).map { it.value }
 
@@ -63,6 +66,38 @@ fun Interpreter.plusEvaluation(script: Script): Evaluation<Interpreter> =
 		bind {
 			it.plusEvaluation(line)
 		}
+	}
+
+fun Dictionary.valueEvaluation(syntax: Syntax): Evaluation<Value> =
+	context.interpreter(value()).plusEvaluation(syntax).map { it.value }
+
+fun Interpreter.plusEvaluation(syntax: Syntax): Evaluation<Interpreter> =
+	evaluation.foldStateful(syntax.lineStack.seq.reverse) { plusEvaluation(it) }
+
+fun Interpreter.plusEvaluation(line: SyntaxLine): Evaluation<Interpreter> =
+	when (line) {
+		is AsSyntaxLine -> plusEvaluation(line.as_)
+		is BeSyntaxLine -> plusEvaluation(line.be)
+		is CommentSyntaxLine -> plusEvaluation(line.comment)
+		is DoSyntaxLine -> TODO()
+		is DoingSyntaxLine -> TODO()
+		is ExampleSyntaxLine -> TODO()
+		is FailSyntaxLine -> TODO()
+		is FieldSyntaxLine -> TODO()
+		is GetSyntaxLine -> TODO()
+		is IsSyntaxLine -> TODO()
+		is LetSyntaxLine -> TODO()
+		is LiteralSyntaxLine -> TODO()
+		is MatchingSyntaxLine -> TODO()
+		is PrivateSyntaxLine -> TODO()
+		is QuoteSyntaxLine -> TODO()
+		is SetSyntaxLine -> TODO()
+		is SwitchSyntaxLine -> TODO()
+		is TestSyntaxLine -> TODO()
+		is TrySyntaxLine -> TODO()
+		is UpdateSyntaxLine -> TODO()
+		is UseSyntaxLine -> TODO()
+		is WithSyntaxLine -> TODO()
 	}
 
 fun Interpreter.plusEvaluation(scriptLine: ScriptLine): Evaluation<Interpreter> =
@@ -142,6 +177,12 @@ fun Interpreter.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Interpreter?> =
 
 fun Interpreter.plusBeEvaluation(rhs: Rhs): Evaluation<Interpreter> =
 	setEvaluation(rhs.valueOrThrow)
+
+fun Interpreter.plusEvaluation(be: Be): Evaluation<Interpreter> =
+	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
+
+fun Interpreter.plusEvaluation(comment: Comment): Evaluation<Interpreter> =
+	evaluation
 
 fun Interpreter.plusDoEvaluation(rhs: Script): Evaluation<Interpreter> =
 	dictionary.applyEvaluation(block(rhs), value).bind { setEvaluation(it) }
@@ -251,7 +292,10 @@ fun Interpreter.plusEvaluation(field: Field): Evaluation<Interpreter> =
 	}
 
 fun Interpreter.plusAsEvaluation(rhs: Script): Evaluation<Interpreter> =
-	setEvaluation(value.as_(pattern(rhs)))
+	plusEvaluation(as_(pattern(rhs)))
+
+fun Interpreter.plusEvaluation(as_: As): Evaluation<Interpreter> =
+	setEvaluation(value.as_(as_.pattern))
 
 fun Interpreter.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Evaluation<Interpreter?> =
 	rhs.onlyLineOrNull?.fieldOrNull.evaluation.nullableBind { field ->
