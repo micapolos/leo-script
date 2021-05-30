@@ -101,8 +101,8 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is LiteralSyntaxLine -> plusEvaluation(line.literal)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
-		is RecurseSyntaxLine -> TODO()
-		is RepeatSyntaxLine -> TODO()
+		is RecurseSyntaxLine -> plusEvaluation(line.recurse)
+		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()
@@ -405,6 +405,16 @@ fun Evaluator.plusPrivateEvaluation(rhs: Script): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
 	context.private.evaluatorEvaluation(private.syntax).map { evaluator ->
 		use(evaluator.context.publicDictionary)
+	}
+
+fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(recurse.syntax).bind { repeatValue ->
+		plusEvaluation(recurseName fieldTo repeatValue)
+	}
+
+fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(repeat.syntax).bind { repeatValue ->
+		plusEvaluation(repeatName fieldTo repeatValue)
 	}
 
 fun Evaluator.plusUseEvaluation(rhs: Script): Evaluation<Evaluator> =
