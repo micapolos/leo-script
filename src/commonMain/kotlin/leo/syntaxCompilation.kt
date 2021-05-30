@@ -5,48 +5,48 @@ import leo.natives.getName
 val Script.syntax get() = syntaxCompilation.get
 
 val Script.syntaxCompilation: Compilation<Syntax> get() =
-	lineStack.map { opCompilation }.flat.map(::Syntax)
+	lineStack.map { syntaxLineCompilation }.flat.map(::Syntax)
 
-val ScriptLine.opCompilation: Compilation<Op> get() =
+val ScriptLine.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (this) {
-		is FieldScriptLine -> field.opCompilation
-		is LiteralScriptLine -> literal.opCompilation
+		is FieldScriptLine -> field.syntaxLineCompilation
+		is LiteralScriptLine -> literal.syntaxLineCompilation
 	}
 
-val ScriptLine.opFieldCompilation: Compilation<OpField> get() =
+val ScriptLine.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	fieldOrNull
 		.notNullOrThrow { script(this, notName lineTo script("field")).value }
-		.opFieldCompilation
+		.syntaxFieldCompilation
 
-val ScriptField.opCompilation: Compilation<Op> get() =
+val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {
-		asName -> rhs.asCompilation.map(::op)
-		beName -> rhs.beCompilation.map(::op)
-		commentName -> rhs.commentCompilation.map(::op)
-		doName -> rhs.doCompilation.map(::op)
-		doingName -> rhs.doingCompilation.map(::op)
-		failName -> rhs.failCompilation.map(::op)
-		getName -> rhs.getCompilation.map(::op)
-		matchingName -> rhs.matchingCompilation.map(::op)
-		letName -> rhs.letCompilation.map(::op)
-		setName -> rhs.setCompilation.map(::op)
-		switchName -> rhs.switchCompilation.map(::op)
-		tryName -> rhs.tryCompilation.map(::op)
-		updateName -> rhs.updateCompilation.map(::op)
-		useName -> rhs.useCompilation.map(::op)
-		withName -> rhs.withCompilation.map(::op)
-		else -> opFieldCompilation.map(::op)
+		asName -> rhs.asCompilation.map(::line)
+		beName -> rhs.beCompilation.map(::line)
+		commentName -> rhs.commentCompilation.map(::line)
+		doName -> rhs.doCompilation.map(::line)
+		doingName -> rhs.doingCompilation.map(::line)
+		failName -> rhs.failCompilation.map(::line)
+		getName -> rhs.getCompilation.map(::line)
+		matchingName -> rhs.matchingCompilation.map(::line)
+		letName -> rhs.letCompilation.map(::line)
+		setName -> rhs.setCompilation.map(::line)
+		switchName -> rhs.switchCompilation.map(::line)
+		tryName -> rhs.tryCompilation.map(::line)
+		updateName -> rhs.updateCompilation.map(::line)
+		useName -> rhs.useCompilation.map(::line)
+		withName -> rhs.withCompilation.map(::line)
+		else -> syntaxFieldCompilation.map(::line)
 	}
 
-val ScriptField.opFieldCompilation: Compilation<OpField> get() =
+val ScriptField.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	rhs.syntaxCompilation.map { rhsExpression ->
-		OpField(string, ExpressionOpFieldRhs(rhsExpression))
+		SyntaxField(string, ExpressionSyntaxRhs(rhsExpression))
 	}
 
-val Literal.opCompilation: Compilation<Op> get() =
+val Literal.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (this) {
-		is NumberLiteral -> FieldOp(OpField(numberName, NativeOpFieldRhs(native(number)))).compilation
-		is StringLiteral -> FieldOp(OpField(textName, NativeOpFieldRhs(native(string)))).compilation
+		is NumberLiteral -> FieldSyntaxLine(SyntaxField(numberName, NativeSyntaxRhs(native(number)))).compilation
+		is StringLiteral -> FieldSyntaxLine(SyntaxField(textName, NativeSyntaxRhs(native(string)))).compilation
 	}
 
 val Script.switchCompilation: Compilation<Switch> get() =
@@ -112,13 +112,13 @@ val Script.notCompilation: Compilation<Not> get() =
 	syntaxCompilation.map(::not)
 
 val Script.setCompilation: Compilation<Set> get() =
-	lineStack.map { opFieldCompilation }.flat.map(::Set)
+	lineStack.map { syntaxFieldCompilation }.flat.map(::Set)
 
 val Script.tryCompilation: Compilation<Try> get() =
 	syntaxCompilation.map(::try_)
 
 val Script.updateCompilation: Compilation<Update> get() =
-	lineStack.map { opFieldCompilation }.flat.map(::Update)
+	lineStack.map { syntaxFieldCompilation }.flat.map(::Update)
 
 val Script.useCompilation: Compilation<Use> get() =
 	useOrNull.notNullOrThrow { value(useName fieldTo value) }.compilation

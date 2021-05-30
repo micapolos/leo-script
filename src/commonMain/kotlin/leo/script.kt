@@ -6,7 +6,6 @@ import leo.base.emptySeq
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
-import leo.base.reverse
 import leo.base.seq
 import leo.base.stack
 import leo.base.then

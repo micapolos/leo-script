@@ -11,7 +11,6 @@ import leo.field
 import leo.fieldOrNull
 import leo.fieldSeq
 import leo.fieldTo
-import leo.opTo
 import leo.getOrNull
 import leo.literal
 import leo.native

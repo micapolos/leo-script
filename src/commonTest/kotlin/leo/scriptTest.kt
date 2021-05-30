@@ -8,13 +8,15 @@ class ScriptTest {
 	fun code() {
 		script(
 			line(literal(2)),
-			line("plus" fieldTo literal(3)))
+			line("plus" fieldTo literal(3))
+		)
 			.code
 			.assertEqualTo("2.plus(3)")
 
 		script(
 			line(literal(2.5)),
-			line("plus" fieldTo literal(3.5)))
+			line("plus" fieldTo literal(3.5))
+		)
 			.code
 			.assertEqualTo("2.5.plus(3.5)")
 

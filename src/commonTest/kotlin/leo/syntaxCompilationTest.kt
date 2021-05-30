@@ -9,11 +9,11 @@ class SyntaxCompilationTest {
 	fun literal() {
 		script(line(literal("Hello, world!")))
 			.syntax
-			.assertEqualTo(syntax(op(literal("Hello, world!"))))
+			.assertEqualTo(syntax(syntaxLine(literal("Hello, world!"))))
 
 		script(line(literal(123)))
 			.syntax
-			.assertEqualTo(syntax(op(literal(123))))
+			.assertEqualTo(syntax(syntaxLine(literal(123))))
 	}
 
 	@Test
@@ -24,8 +24,9 @@ class SyntaxCompilationTest {
 		  .syntax
 		  .assertEqualTo(
 			  syntax(
-				  op(literal("Hello, world!")),
-				  op(as_(pattern(script(textName lineTo script(anyName)))))))
+				  syntaxLine(literal("Hello, world!")),
+				  line(as_(pattern(script(textName lineTo script(anyName)))))
+			  ))
 	}
 
 	@Test
@@ -36,8 +37,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, ")),
-					op(be(syntax(op(literal("world!")))))))
+					syntaxLine(literal("Hello, ")),
+					line(be(syntax(syntaxLine(literal("world!")))))
+				))
 	}
 
 	@Test
@@ -48,8 +50,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, world!")),
-					op(comment(script("greeting")))))
+					syntaxLine(literal("Hello, world!")),
+					line(comment(script("greeting")))
+				))
 	}
 
 	@Test
@@ -60,8 +63,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, world!")),
-					op(do_(syntax("length" opTo syntax())))))
+					syntaxLine(literal("Hello, world!")),
+					line(do_(syntax("length" lineTo syntax())))
+				))
 	}
 
 	@Test
@@ -72,8 +76,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, ")),
-					op(fail(syntax(op(literal("boom!")))))))
+					syntaxLine(literal("Hello, ")),
+					line(fail(syntax(syntaxLine(literal("boom!")))))
+				))
 	}
 
 	@Test
@@ -84,8 +89,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op("point"),
-					op(get("x", "y"))))
+					syntaxLine("point"),
+					line(get("x", "y"))
+				))
 	}
 
 	@Test
@@ -98,8 +104,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, world!")),
-					op(let(pattern(script("ping")), be(syntax("pong" opTo syntax()))))))
+					syntaxLine(literal("Hello, world!")),
+					line(let(pattern(script("ping")), be(syntax("pong" lineTo syntax()))))
+				))
 	}
 
 	@Test
@@ -112,8 +119,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, world!")),
-					op(let(pattern(script("ping")), do_(syntax("pong" opTo syntax()))))))
+					syntaxLine(literal("Hello, world!")),
+					line(let(pattern(script("ping")), do_(syntax("pong" lineTo syntax()))))
+				))
 	}
 
 	@Test
@@ -141,8 +149,9 @@ class SyntaxCompilationTest {
 				.syntax
 				.assertEqualTo(
 					syntax(
-						op(literal("Hello, world!")),
-						op(matching(pattern(script(textName))))))
+						syntaxLine(literal("Hello, world!")),
+						line(matching(pattern(script(textName))))
+					))
 	}
 
 	@Test
@@ -157,10 +166,11 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, world!")),
-					op(switch(
-						textName caseDoing syntax(op(literal("text"))),
-						numberName caseDoing syntax(op(literal("number")))))))
+					syntaxLine(literal("Hello, world!")),
+					line(switch(
+						textName caseDoing syntax(syntaxLine(literal("text"))),
+						numberName caseDoing syntax(syntaxLine(literal("number")))))
+				))
 	}
 
 	@Test
@@ -185,10 +195,11 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op("point"),
-					op(set(
-						"x" fieldTo syntax(op("zero")),
-						"y" fieldTo syntax(op("one"))))))
+					"point" lineTo syntax(),
+					line(set(
+						"x" fieldTo syntax(syntaxLine("zero")),
+						"y" fieldTo syntax(syntaxLine("one"))))
+				))
 	}
 
 	@Test
@@ -199,8 +210,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op(literal("Hello, ")),
-					op(try_(syntax(op(literal("boom!")))))))
+					syntaxLine(literal("Hello, ")),
+					line(try_(syntax(syntaxLine(literal("boom!")))))
+				))
 	}
 
 	@Test
@@ -213,10 +225,11 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op("point"),
-					op(update(
-						"x" fieldTo syntax(op("zero")),
-						"y" fieldTo syntax(op("one"))))))
+					syntaxLine("point"),
+					line(update(
+						"x" fieldTo syntax(syntaxLine("zero")),
+						"y" fieldTo syntax(syntaxLine("one"))))
+				))
 	}
 
 	@Test
@@ -227,8 +240,9 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op("point"),
-					op(use("lib", "text"))))
+					syntaxLine("point"),
+					line(use("lib", "text"))
+				))
 	}
 
 	@Test
@@ -239,7 +253,8 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(
 				syntax(
-					op("point"),
-					op(with(syntax(op("center"))))))
+					syntaxLine("point"),
+					line(with(syntax(syntaxLine("center"))))
+				))
 	}
 }
