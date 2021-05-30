@@ -1,9 +1,7 @@
 package leo
 
-import leo.base.fold
-
 val Syntax.script: Script get() =
-	script().fold(lineSeq) { plus(it.scriptLine) }
+	script(lineStack.map { scriptLine })
 
 val SyntaxLine.scriptLine: ScriptLine get() =
 	when (this) {
