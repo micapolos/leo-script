@@ -58,6 +58,12 @@ fun Dictionary.fieldEvaluation(field: SyntaxField): Evaluation<Field> =
 		field.name fieldTo rhs
 	}
 
+fun Dictionary.fieldEvaluation(atom: SyntaxAtom): Evaluation<Field> =
+	when (atom) {
+		is FieldSyntaxAtom -> fieldEvaluation(atom.field)
+		is LiteralSyntaxAtom -> field(atom.literal).evaluation
+	}
+
 val String.dictionary: Dictionary
 	get() =
 		scriptOrThrow.dictionary
@@ -88,23 +94,22 @@ fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	when (line) {
 		is AsSyntaxLine -> plusEvaluation(line.as_)
+		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
-		is FieldSyntaxLine -> plusEvaluation(line.field)
 		is GetSyntaxLine -> plusEvaluation(line.get)
-		is IsSyntaxLine -> TODO()
+		//is IsSyntaxLine -> TODO()
 		is LetSyntaxLine -> plusEvaluation(line.let)
-		is LiteralSyntaxLine -> plusEvaluation(line.literal)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> plusEvaluation(line.recurse)
 		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
-		is SetSyntaxLine -> TODO()
+		is SetSyntaxLine -> plusEvaluation(line.set)
 		is SwitchSyntaxLine -> TODO()
 		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
@@ -117,6 +122,12 @@ fun Evaluator.plusEvaluation(scriptLine: ScriptLine): Evaluation<Evaluator> =
 	when (scriptLine) {
 		is FieldScriptLine -> plusEvaluation(scriptLine.field)
 		is LiteralScriptLine -> plusEvaluation(scriptLine.literal)
+	}
+
+fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
+	when (atom) {
+		is FieldSyntaxAtom -> plusEvaluation(atom.field)
+		is LiteralSyntaxAtom -> plusEvaluation(atom.literal)
 	}
 
 fun Evaluator.plusEvaluation(scriptField: ScriptField): Evaluation<Evaluator> =
@@ -264,7 +275,7 @@ fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(test.syntax.plus(line(test.is_))).bind { result ->
+	dictionary.valueEvaluation(test.syntax.plus(isName lineTo test.is_.syntax)).bind { result ->
 		when (result) {
 			true.isValue -> evaluation
 			false.isValue ->
@@ -361,6 +372,9 @@ fun Evaluator.plusUpdateEvaluation(rhs: Script): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
 	dictionary.evaluation(value, update).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(set: Set): Evaluation<Evaluator> =
+	dictionary.evaluation(value, set).bind { setEvaluation(it) }
 
 fun Evaluator.plusDynamicEvaluation(scriptField: ScriptField): Evaluation<Evaluator> =
 	dictionary.fieldEvaluation(scriptField).bind { field ->

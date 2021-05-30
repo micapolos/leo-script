@@ -10,6 +10,12 @@ val Script.syntaxCompilation: Compilation<Syntax> get() =
 val ScriptLine.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (this) {
 		is FieldScriptLine -> field.syntaxLineCompilation
+		is LiteralScriptLine -> line(atom2(literal)).compilation
+	}
+
+val ScriptLine.syntaxAtomCompilation: Compilation<SyntaxAtom> get() =
+	when (this) {
+		is FieldScriptLine -> field.syntaxAtomCompilation
 		is LiteralScriptLine -> literal.syntaxLineCompilation
 	}
 
@@ -28,7 +34,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		exampleName -> rhs.exampleCompilation.map(::line)
 		failName -> rhs.failCompilation.map(::line)
 		getName -> rhs.getCompilation.map(::line)
-		isName -> rhs.isCompilation.map(::line)
+		//isName -> rhs.isCompilation.map(::line)
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)
@@ -42,16 +48,19 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		updateName -> rhs.updateCompilation.map(::line)
 		useName -> rhs.useCompilation.map(::line)
 		withName -> rhs.withCompilation.map(::line)
-		else -> syntaxFieldCompilation.map(::line)
+		else -> syntaxAtomCompilation.map(::line)
 	}
+
+val ScriptField.syntaxAtomCompilation: Compilation<SyntaxAtom> get() =
+	syntaxFieldCompilation.map(::atom)
 
 val ScriptField.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	rhs.syntaxCompilation.map { rhsSyntax ->
-		SyntaxField(string, rhsSyntax)
+		string fieldTo rhsSyntax
 	}
 
-val Literal.syntaxLineCompilation: Compilation<SyntaxLine> get() =
-	syntaxLine(this).compilation
+val Literal.syntaxLineCompilation: Compilation<SyntaxAtom> get() =
+	atom2(this).compilation
 
 val Script.switchCompilation: Compilation<Switch> get() =
 	lineStack.map { caseCompilation }.flat.map(::Switch)
@@ -145,7 +154,7 @@ val Script.quoteCompilation: Compilation<Quote> get() =
 	quote(this).compilation
 
 val Script.setCompilation: Compilation<Set> get() =
-	lineStack.map { syntaxFieldCompilation }.flat.map(::Set)
+	lineStack.map { syntaxAtomCompilation }.flat.map(::Set)
 
 val Script.syntaxOrNotCompilation: Compilation<Or<Syntax, Not>> get() =
 	null

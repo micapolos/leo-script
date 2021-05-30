@@ -5,6 +5,7 @@ val Syntax.script: Script get() =
 
 val SyntaxLine.scriptLine: ScriptLine get() =
 	when (this) {
+		is AtomSyntaxLine -> atom.scriptLine
 		is AsSyntaxLine -> asName lineTo as_.script
 		is BeSyntaxLine -> beName lineTo be.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
@@ -12,11 +13,9 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is DoingSyntaxLine -> doingName lineTo doing.script
 		is ExampleSyntaxLine -> exampleName lineTo example.script
 		is FailSyntaxLine -> failName lineTo fail.script
-		is FieldSyntaxLine -> field.scriptLine
 		is GetSyntaxLine -> getName lineTo get.script
-		is IsSyntaxLine -> isName lineTo is_.script
+		//is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
-		is LiteralSyntaxLine -> literal.line
 		is MatchingSyntaxLine -> matchingName lineTo matching.script
 		is PrivateSyntaxLine -> privateName lineTo private.script
 		is QuoteSyntaxLine -> quoteName lineTo quote.script
@@ -44,7 +43,7 @@ val Matching.script get() = pattern.script
 val Private.script get() = syntax.script
 val Recurse.script get() = syntax.script
 val Repeat.script get() = syntax.script
-val Set.script get() = script(fieldStack.map { scriptLine })
+val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })
 val Case.scriptLine get() = name lineTo script(doingName lineTo doing.script)
 val Test.script get() = syntax.script.plus(isName lineTo is_.script)
@@ -70,4 +69,10 @@ val Is.script get() =
 	when (syntaxOrNot) {
 		is FirstOr -> syntaxOrNot.first.script
 		is SecondOr -> script(notName lineTo syntaxOrNot.second.script)
+	}
+
+val SyntaxAtom.scriptLine get() =
+	when (this) {
+		is FieldSyntaxAtom -> field.scriptLine
+		is LiteralSyntaxAtom -> literal.line
 	}

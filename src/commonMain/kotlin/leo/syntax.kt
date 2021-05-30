@@ -10,11 +10,10 @@ data class DoSyntaxLine(val do_: Do): SyntaxLine()
 data class DoingSyntaxLine(val doing: Doing): SyntaxLine()
 data class ExampleSyntaxLine(val example: Example): SyntaxLine()
 data class FailSyntaxLine(val fail: Fail): SyntaxLine()
-data class FieldSyntaxLine(val field: SyntaxField): SyntaxLine()
+data class AtomSyntaxLine(val atom: SyntaxAtom): SyntaxLine()
 data class GetSyntaxLine(val get: Get): SyntaxLine()
-data class IsSyntaxLine(val is_: Is): SyntaxLine()
+//data class IsSyntaxLine(val is_: Is): SyntaxLine()
 data class LetSyntaxLine(val let: Let): SyntaxLine()
-data class LiteralSyntaxLine(val literal: Literal): SyntaxLine()
 data class MatchingSyntaxLine(val matching: Matching): SyntaxLine()
 data class PrivateSyntaxLine(val private: Private): SyntaxLine()
 data class RecurseSyntaxLine(val recurse: Recurse): SyntaxLine()
@@ -29,6 +28,10 @@ data class UseSyntaxLine(val use: Use): SyntaxLine()
 data class WithSyntaxLine(val with: With): SyntaxLine()
 
 data class SyntaxField(val name: String, val rhsSyntax: Syntax)
+
+sealed class SyntaxAtom
+data class FieldSyntaxAtom(val field: SyntaxField): SyntaxAtom()
+data class LiteralSyntaxAtom(val literal: Literal): SyntaxAtom()
 
 data class Switch(val caseStack: Stack<Case>)
 data class Case(val name: String, val doing: Doing)
@@ -49,7 +52,7 @@ data class Private(val syntax: Syntax)
 data class Repeat(val syntax: Syntax)
 data class Recurse(val syntax: Syntax)
 data class Quote(val script: Script)
-data class Set(val fieldStack: Stack<SyntaxField>)
+data class Set(val atomStack: Stack<SyntaxAtom>)
 data class SyntaxBlock(val typeOrNull: BlockType?, val syntax: Syntax)
 data class Test(val syntax: Syntax, val is_: Is)
 data class Try(val syntax: Syntax)
@@ -62,7 +65,7 @@ data class DoLetRhs(val do_: Do): LetRhs()
 
 val Get.nameSeq get() = nameStack.reverse.seq
 val Syntax.lineSeq get() = lineStack.reverse.seq
-val Set.fieldSeq get() = fieldStack.reverse.seq
+val Set.atomSeq get() = atomStack.reverse.seq
 val Switch.caseSeq get() = caseStack.reverse.seq
 val Update.fieldSeq get() = fieldStack.reverse.seq
 
@@ -71,7 +74,7 @@ fun Syntax.plus(line: SyntaxLine): Syntax = Syntax(lineStack.push(line))
 fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 
 fun syntaxLine(name: String) = name lineTo syntax()
-infix fun String.lineTo(syntax: Syntax) = FieldSyntaxLine(this fieldTo syntax)
+infix fun String.lineTo(syntax: Syntax) = line(atom(this fieldTo syntax))
 infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, syntax)
 infix fun String.caseDoing(block: SyntaxBlock) = Case(this, doing(block))
 infix fun String.caseDoing(syntax: Syntax) = this caseDoing block(null, syntax)
@@ -83,11 +86,12 @@ fun line(do_: Do): SyntaxLine = DoSyntaxLine(do_)
 fun line(doing: Doing): SyntaxLine = DoingSyntaxLine(doing)
 fun line(example: Example): SyntaxLine = ExampleSyntaxLine(example)
 fun line(fail: Fail): SyntaxLine = FailSyntaxLine(fail)
-fun line(field: SyntaxField): SyntaxLine = FieldSyntaxLine(field)
+fun line(field: SyntaxField): SyntaxLine = line(atom(field))
 fun line(get: Get): SyntaxLine = GetSyntaxLine(get)
-fun line(is_: Is): SyntaxLine = IsSyntaxLine(is_)
+//fun line(is_: Is): SyntaxLine = IsSyntaxLine(is_)
 fun line(let: Let): SyntaxLine = LetSyntaxLine(let)
-fun syntaxLine(literal: Literal): SyntaxLine = LiteralSyntaxLine(literal)
+fun syntaxLine(literal: Literal): SyntaxLine = line(atom2(literal))
+fun line(atom: SyntaxAtom): SyntaxLine = AtomSyntaxLine(atom)
 fun line(matching: Matching): SyntaxLine = MatchingSyntaxLine(matching)
 fun line(switch: Switch): SyntaxLine = SwitchSyntaxLine(switch)
 fun line(private: Private): SyntaxLine = PrivateSyntaxLine(private)
@@ -122,7 +126,7 @@ fun private(syntax: Syntax) = Private(syntax)
 fun recurse(syntax: Syntax) = Recurse(syntax)
 fun repeat(syntax: Syntax) = Repeat(syntax)
 fun quote(script: Script) = Quote(script)
-fun set(vararg fields: SyntaxField) = Set(stack(*fields))
+fun set(vararg atoms: SyntaxAtom) = Set(stack(*atoms))
 fun test(syntax: Syntax, is_: Is) = Test(syntax, is_)
 fun try_(syntax: Syntax) = Try(syntax)
 fun update(vararg fields: SyntaxField) = Update(stack(*fields))
@@ -133,3 +137,6 @@ val Is.syntax get() =
 		is FirstOr -> syntaxOrNot.first
 		is SecondOr -> syntax(notName lineTo syntaxOrNot.second.syntax)
 	}
+
+fun atom(field: SyntaxField): SyntaxAtom = FieldSyntaxAtom(field)
+fun atom2(literal: Literal): SyntaxAtom = LiteralSyntaxAtom(literal)

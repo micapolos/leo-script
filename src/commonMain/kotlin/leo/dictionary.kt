@@ -3,6 +3,7 @@ package leo
 import leo.base.Seq
 import leo.base.fold
 import leo.base.ifOrNull
+import leo.base.map
 import leo.base.notNullIf
 import leo.base.orIfNull
 import leo.base.reverse
@@ -299,3 +300,10 @@ fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
 
 val SyntaxBlock.block: Block get() =
 	Block(typeOrNull, expression(script))
+
+fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
+	value().evaluation.foldStateful(set.atomSeq) { atom ->
+		fieldEvaluation(atom).map { field ->
+			plus(field)
+		}
+	}.map { value.setOrThrow(it) }

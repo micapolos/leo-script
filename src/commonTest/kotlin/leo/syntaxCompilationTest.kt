@@ -107,29 +107,29 @@ class SyntaxCompilationTest {
 				))
 	}
 
-	@Test
-	fun is_() {
-		script(
-			line("point"),
-			isName lineTo script(line("ok")))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine("point"),
-					line(is_(syntax(syntaxLine("ok"))))))
-	}
+//	@Test
+//	fun is_() {
+//		script(
+//			line("point"),
+//			isName lineTo script(line("ok")))
+//			.syntax
+//			.assertEqualTo(
+//				syntax(
+//					syntaxLine("point"),
+//					line(is_(syntax(syntaxLine("ok"))))))
+//	}
 
-	@Test
-	fun isNot() {
-		script(
-			line("point"),
-			isName lineTo script(notName lineTo script(line("ok"))))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine("point"),
-					line(is_(not(syntax(syntaxLine("ok")))))))
-	}
+//	@Test
+//	fun isNot() {
+//		script(
+//			line("point"),
+//			isName lineTo script(notName lineTo script(line("ok"))))
+//			.syntax
+//			.assertEqualTo(
+//				syntax(
+//					syntaxLine("point"),
+//					line(is_(not(syntax(syntaxLine("ok")))))))
+//	}
 
 	@Test
 	fun letBe() {
@@ -306,14 +306,18 @@ class SyntaxCompilationTest {
 			line("point"),
 			setName lineTo script(
 				"x" lineTo script("zero"),
-				"y" lineTo script("one")))
+				"y" lineTo script("one"),
+				line(literal("foo")),
+				line(literal(123))))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					"point" lineTo syntax(),
 					line(set(
-						"x" fieldTo syntax(syntaxLine("zero")),
-						"y" fieldTo syntax(syntaxLine("one"))))
+						atom("x" fieldTo syntax(syntaxLine("zero"))),
+						atom("y" fieldTo syntax(syntaxLine("one"))),
+						atom2(literal("foo")),
+						atom2(literal(123))))
 				))
 	}
 
