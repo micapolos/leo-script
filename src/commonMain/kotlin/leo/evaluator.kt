@@ -343,9 +343,7 @@ fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusDoingOrNullEvaluation(rhs: Script): Evaluation<Evaluator?> =
-	rhs.orNullIf(rhs.isEmpty).evaluation.nullableBind {
-		plusEvaluation(field(dictionary.function(body(rhs))))
-	}
+	rhs.doingCompilationOrNull.evaluation.nullableBind { plusEvaluation(it.get) }
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 	plusEvaluation(field(dictionary.function(body(doing.block.block))))

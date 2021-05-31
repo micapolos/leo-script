@@ -1,5 +1,6 @@
 package leo
 
+import leo.base.notNullIf
 import leo.natives.getName
 
 val Script.syntax get() = syntaxCompilation.get
@@ -30,7 +31,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		beName -> rhs.beCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
-		doingName -> rhs.doingCompilation.map(::line)
+		doingName -> rhs.doingCompilationOrNull?.map(::line)
 		exampleName -> rhs.exampleCompilation.map(::line)
 		failName -> rhs.failCompilation.map(::line)
 		getName -> rhs.getCompilation.map(::line)
@@ -50,8 +51,8 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		updateName -> rhs.updateCompilation.map(::line)
 		useName -> rhs.useCompilation.map(::line)
 		withName -> rhs.withCompilation.map(::line)
-		else -> syntaxAtomCompilation.map(::line)
-	}
+		else -> null
+	} ?: syntaxAtomCompilation.map(::line)
 
 val ScriptField.syntaxAtomCompilation: Compilation<SyntaxAtom> get() =
 	syntaxFieldCompilation.map(::atom)
@@ -74,7 +75,7 @@ val ScriptLine.caseCompilation: Compilation<Case> get() =
 	}
 
 val ScriptField.caseCompilation: Compilation<Case> get() =
-	rhs.rhsOrNull(doingName).notNullOrThrow { value("case") }.doingCompilation.bind { doing ->
+	rhs.rhsOrNull(doingName).notNullOrThrow { value("case") }.doingCompilationOrThrow.bind { doing ->
 		Case(string, doing).compilation
 	}
 
@@ -101,8 +102,13 @@ val Script.commentCompilation: Compilation<Comment> get() =
 val Script.doCompilation: Compilation<Do> get() =
 	blockCompilation.map(::do_)
 
-val Script.doingCompilation: Compilation<Doing> get() =
-	blockCompilation.map(::doing)
+val Script.doingCompilationOrNull: Compilation<Doing>? get() =
+	notNullIf(!isEmpty) {
+		blockCompilation.map(::doing)
+	}
+
+val Script.doingCompilationOrThrow: Compilation<Doing> get() =
+	doingCompilationOrNull.notNullOrThrow { value(doingName) }
 
 val Script.exampleCompilation: Compilation<Example> get() =
 	syntaxCompilation.map(::example)
