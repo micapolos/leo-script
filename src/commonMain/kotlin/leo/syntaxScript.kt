@@ -61,11 +61,6 @@ val With.script get() = syntax.script
 
 val SyntaxField.scriptLine get() = name lineTo rhsSyntax.script
 
-val SyntaxBlock.script get() =
-	typeOrNull?.scriptName
-		?.let { name -> script(name lineTo syntax.script) }
-		?: syntax.script
-
 val LetRhs.scriptLine get() =
 	when (this) {
 		is BeLetRhs -> beName lineTo be.script

@@ -1,14 +1,11 @@
 package leo
 
-import leo.base.Seq
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.base.nullOf
 import leo.base.orIfNull
-import leo.base.reverse
 import leo.base.runIf
-import leo.base.seq
 import leo.natives.nativeValue
 
 data class Dictionary(val tokenToResolutionMap: Dict<Token, Resolution>)
@@ -144,11 +141,6 @@ fun Resolution.merge(resolution: Resolution): Resolution =
 fun Resolution?.orNullMerge(resolution: Resolution): Resolution =
 	this?.merge(resolution) ?: resolution
 
-fun Dictionary.switchEvaluation(value: Value, script: Script): Evaluation<Value> =
-	valueRhsEvaluation(script).bind { cases ->
-		switchEvaluation(value.switchFieldOrThrow, cases)
-	}
-
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(switchName).throwError()
@@ -169,7 +161,7 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 	value.switchFieldOrThrow.let { field ->
 		nullOf<Value>().evaluation.foldStateful(switch.caseSeq) { case ->
 			if (this != null || field.name != case.name) evaluation
-			else applyEvaluation(case.doing.block.block, value(field))
+			else applyEvaluation(case.doing.block, value(field))
 		}.map { valueOrNull ->
 			valueOrNull.notNullOrThrow { value(switchName) }
 		}
@@ -183,23 +175,23 @@ fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 
 fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 	when (block.typeOrNull) {
-		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.expression, given)
-		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.expression, given)
-		null -> applyUntypedEvaluation(block.expression, given)
+		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.syntax, given)
+		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.syntax, given)
+		null -> applyUntypedEvaluation(block.syntax, given)
 	}
 
-fun Dictionary.applyRepeatingEvaluation(expression: Expression, given: Value): Evaluation<Value> =
+fun Dictionary.applyRepeatingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
 	given.evaluation.valueBindRepeating { repeatingGiven ->
-		set(repeatingGiven).valueEvaluation(expression)
+		set(repeatingGiven).valueEvaluation(syntax)
 	}
 
-fun Dictionary.applyRecursingEvaluation(expression: Expression, given: Value): Evaluation<Value> =
-	set(given).plusRecurse(expression).valueEvaluation(expression)
+fun Dictionary.applyRecursingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
+	set(given).plusRecurse(syntax).valueEvaluation(syntax)
 
-fun Dictionary.applyUntypedEvaluation(expression: Expression, given: Value): Evaluation<Value> =
-	set(given).valueEvaluation(expression.script)
+fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
+	set(given).valueEvaluation(syntax)
 
-fun Dictionary.plusRecurse(expression: Expression): Dictionary =
+fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			pattern(
@@ -208,64 +200,9 @@ fun Dictionary.plusRecurse(expression: Expression): Dictionary =
 					recurseName lineTo script()
 				)
 			),
-			binding(function(body(BlockType.RECURSIVELY.block(expression))))
+			binding(function(body(BlockType.RECURSIVELY.block(syntax))))
 		)
 	)
-
-fun Dictionary.definitionSeqOrNullEvaluation(scriptField: ScriptField): Evaluation<Seq<Definition>?> =
-	when (scriptField.string) {
-		"let" -> letDefinitionOrNull(scriptField.rhs).nullableMap { seq(it) }
-		else -> evaluation(null)
-	}
-
-fun Dictionary.letDefinitionOrNull(rhs: Script): Evaluation<Definition?> =
-	null
-		?: letDoDefinitionOrNull(rhs)?.evaluation
-		?: letBeDefinitionOrNull(rhs)
-
-fun Dictionary.letDoDefinitionOrNull(rhs: Script): Definition? =
-	rhs.matchInfix(doName) { lhs, doRhs ->
-		definition(pattern(lhs), binding(function(body(doRhs))))
-	}
-
-fun Dictionary.letBeDefinitionOrNull(rhs: Script): Evaluation<Definition?> =
-	rhs.matchInfix(beName) { lhs, beRhs ->
-		valueEvaluation(beRhs).bind { value ->
-			definition(pattern(lhs), binding(value)).evaluation
-		}
-	} ?: evaluation(null)
-
-fun Dictionary.updateEvaluation(value: Value, script: Script): Evaluation<Value> =
-	value.structureOrThrow.let { structure ->
-		updateStructureEvaluation(structure.value, script).map { rhs ->
-			value(structure.name fieldTo rhs)
-		}
-	}
-
-fun Dictionary.updateStructureEvaluation(value: Value, script: Script): Evaluation<Value> =
-	value.evaluation.fold(script.lineSeq.reverse) { line ->
-		line.fieldOrNull.notNullOrThrow { value(line.field) }.let { fieldOrNull ->
-			bind { value ->
-				updateStructureEvaluation(value, fieldOrNull)
-			}
-		}
-	}
-
-fun Dictionary.updateStructureEvaluation(value: Value, scriptField: ScriptField): Evaluation<Value> =
-	when (value) {
-		EmptyValue -> value("no" fieldTo value("field" fieldTo value(scriptField.string))).throwError()
-		is LinkValue ->
-			updateStructureEvaluation(value.link, scriptField).map { value(it) }
-	}
-
-fun Dictionary.updateStructureEvaluation(link: Link, scriptField: ScriptField): Evaluation<Link> =
-	if (link.field.name == scriptField.string)
-		link.field.rhs.valueOrNull.notNullOrThrow { value(link) }.evaluation.bind { rhs ->
-			context.evaluator(rhs).plusEvaluation(scriptField.rhs).map { rhsValue ->
-				(link.value linkTo (scriptField.string fieldTo rhsValue.value))
-			}
-		}
-	else updateStructureEvaluation(link.value, scriptField).map { it linkTo link.field }
 
 fun Dictionary.evaluation(value: Value, update: Update): Evaluation<Value> =
 	value.structureOrThrow.let { structure ->
@@ -306,10 +243,7 @@ fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 	valueEvaluation(be.syntax).map(::binding)
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	binding(function(body(do_.block.block))).evaluation
-
-val SyntaxBlock.block: Block get() =
-	Block(typeOrNull, expression(syntax.script))
+	binding(function(body(do_.block))).evaluation
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->

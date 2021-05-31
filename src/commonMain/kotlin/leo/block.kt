@@ -1,10 +1,9 @@
 package leo
 
 enum class BlockType { REPEATEDLY, RECURSIVELY }
-data class Block(val typeOrNull: BlockType?, val expression: Expression)
+data class Block(val typeOrNull: BlockType?, val syntax: Syntax)
 
-fun BlockType.block(expression: Expression) = Block(this, expression)
-fun defaultBlock(expression: Expression) = Block(null, expression)
+fun BlockType.block(syntax: Syntax) = Block(this, syntax)
 
 val String.blockTypeOrNull: BlockType?
 	get() =
@@ -13,14 +12,6 @@ val String.blockTypeOrNull: BlockType?
 			recursingName -> BlockType.RECURSIVELY
 			else -> null
 		}
-
-fun block(script: Script): Block =
-	typedBlockOrNull(script) ?: defaultBlock(expression(script))
-
-fun typedBlockOrNull(script: Script): Block? =
-	script.linkOrNull?.onlyLineOrNull?.fieldOrNull?.let { field ->
-		field.string.blockTypeOrNull?.block(expression(field.rhs))
-	}
 
 val BlockType.scriptName get() =
 	when (this) {

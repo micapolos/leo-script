@@ -6,4 +6,4 @@ data class FnBody(val fn: (Dictionary) -> Value) : Body()
 
 fun body(block: Block): Body = BlockBody(block)
 fun body(fn: Dictionary.() -> Value): Body = FnBody(fn)
-fun body(script: Script): Body = body(block(script))
+fun body(script: Script): Body = body(block(script.syntax))

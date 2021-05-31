@@ -48,11 +48,11 @@ val Body.script: Script
 
 val Block.script: Script
 	get() =
-		typedScriptOrNull ?: expression.script
+		typedScriptOrNull ?: syntax.script
 
 val Block.typedScriptOrNull: Script?
 	get() =
-		typeOrNull?.name?.let { script(it lineTo expression.script) }
+		typeOrNull?.scriptName?.let { script(it lineTo syntax.script) }
 
 val Native.script: Script
 	get() =

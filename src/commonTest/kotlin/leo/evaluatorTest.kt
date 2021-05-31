@@ -193,12 +193,7 @@ class EvaluatorTest {
 			letName lineTo script("bar")
 		)
 			.evaluate
-			.assertEqualTo(
-				script(
-					"foo" lineTo script(),
-					letName lineTo script("bar")
-				)
-			)
+			.assertEqualTo(script("error"))
 	}
 
 	@Test
@@ -463,43 +458,6 @@ class EvaluatorTest {
 		)
 			.evaluate
 			.assertNotNull // TODO: Check for error.
-	}
-
-	@Test
-	fun trace() {
-		environment(traceOrNull = emptyTrace)
-			.evaluate(
-				script(
-					line(literal("Hello, ")),
-					plusName lineTo script(line(literal("world!"))),
-					traceName lineTo script()
-				)
-			)
-			.assertEqualTo(
-				script(
-					traceName lineTo script(
-						resolveName lineTo script(literal("Hello, ")),
-						resolveName lineTo script(literal("world!")),
-						resolveName lineTo script(
-							line(literal("Hello, ")),
-							plusName lineTo script(line(literal("world!")))
-						)
-					)
-				)
-			)
-	}
-
-	@Test
-	fun trace_disabled() {
-		environment()
-			.evaluate(
-				script(
-					line(literal("Hello, ")),
-					plusName lineTo script(line(literal("world!"))),
-					traceName lineTo script()
-				)
-			)
-			.assertEqualTo(script(traceName lineTo script(disabledName)))
 	}
 
 	@Test

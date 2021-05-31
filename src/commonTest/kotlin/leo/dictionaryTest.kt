@@ -298,18 +298,4 @@ class DictionaryTest {
 				)
 			)
 	}
-
-	@Test
-	fun switchOrNull() {
-		dictionary()
-			.switchEvaluation(
-				value("the" fieldTo value(field(literal("Hello, world!")))),
-				script(
-					textName lineTo script(doingName lineTo script(textName)),
-					numberName lineTo script(doingName lineTo script(numberName))
-				)
-			)
-			.get
-			.assertEqualTo(value(field(literal("Hello, world!"))))
-	}
 }

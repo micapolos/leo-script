@@ -85,7 +85,7 @@ val Script.asCompilation: Compilation<As> get() =
 val Script.beCompilation: Compilation<Be> get() =
 	syntaxCompilation.map(::be)
 
-val Script.blockCompilation: Compilation<SyntaxBlock> get() =
+val Script.blockCompilation: Compilation<Block> get() =
 	matchPrefix { name, rhs ->
 		name
 			.blockTypeOrNull
