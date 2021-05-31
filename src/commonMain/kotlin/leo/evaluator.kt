@@ -147,14 +147,14 @@ fun Evaluator.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evalua
 
 fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Evaluator?> =
 	when (scriptField.string) {
-		asName -> plusAsEvaluation(scriptField.rhs)
-		commentName -> plusEvaluation(comment(scriptField.rhs))
-		doName -> plusDoEvaluation(scriptField.rhs)
+		asName -> plusEvaluation(scriptField.rhs.asCompilation.get)
+		commentName -> plusEvaluation(scriptField.rhs.commentCompilation.get)
+		doName -> plusEvaluation(scriptField.rhs.doCompilation.get)
 		doingName -> plusDoingOrNullEvaluation(scriptField.rhs)
-		failName -> plusFailEvaluation(scriptField.rhs)
+		failName -> plusEvaluation(scriptField.rhs.failCompilation.get)
 		isName -> plusIsOrNullEvaluation(scriptField.rhs)
-		privateName -> plusPrivateEvaluation(scriptField.rhs)
-		quoteName -> plusQuoteEvaluation(scriptField.rhs)
+		privateName -> plusEvaluation(scriptField.rhs.privateCompilation.get)
+		quoteName -> plusEvaluation(scriptField.rhs.quoteCompilation.get)
 		setName -> plusSetEvaluation(scriptField.rhs)
 		switchName -> plusSwitchEvaluation(scriptField.rhs)
 		testName -> plusTestEvaluation(scriptField.rhs)
