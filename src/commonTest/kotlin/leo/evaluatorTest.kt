@@ -546,23 +546,6 @@ class EvaluatorTest {
 			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
-
-	@Test
-	fun isNotNotEqual() {
-		script(
-			"foo" lineTo script(),
-			isName lineTo script(
-				notName lineTo script(
-					notName lineTo script(
-						equalName lineTo script("bar")
-					)
-				)
-			)
-		)
-			.evaluate
-			.assertEqualTo(script(isName lineTo script(noName)))
-	}
-
 	@Test
 	fun fail() {
 		script(
