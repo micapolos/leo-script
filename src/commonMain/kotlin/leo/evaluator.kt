@@ -441,30 +441,28 @@ fun Evaluator.plusIsOrNullEvaluation(rhs: Script, negate: Boolean = false): Eval
 	}
 
 fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
-	booleanEvaluation(is_.rhs).bind { boolean ->
-		setEvaluation(boolean.runIf(is_.negated) { negate }.isValue)
+	isValueEvaluation(is_.rhs).bind { isValue ->
+		setEvaluation(isValue.runIf(is_.negated) { isNegate })
 	}
 
-fun Evaluator.booleanEvaluation(rhs: IsRhs): Evaluation<Boolean> =
+fun Evaluator.isValueEvaluation(rhs: IsRhs): Evaluation<Value> =
 	when (rhs) {
-		is EqualIsRhs -> booleanEvaluation(rhs.equal)
-		is MatchingIsRhs -> booleanEvaluation(rhs.matching)
-		is SyntaxIsRhs -> booleanIsEvaluation(rhs.syntax)
+		is EqualIsRhs -> isValueEvaluation(rhs.equal)
+		is MatchingIsRhs -> isValueEvaluation(rhs.matching)
+		is SyntaxIsRhs -> isValueEvaluation(rhs.syntax)
 	}
 
-fun Evaluator.booleanEvaluation(equal: Equal): Evaluation<Boolean> =
+fun Evaluator.isValueEvaluation(equal: Equal): Evaluation<Value> =
 	dictionary.valueEvaluation(equal.syntax).map {
-		value == it
+		(value == it).isValue
 	}
 
-fun Evaluator.booleanEvaluation(matching: Matching): Evaluation<Boolean> =
-	value.isMatching(matching.pattern).evaluation
+fun Evaluator.isValueEvaluation(matching: Matching): Evaluation<Value> =
+	value.isMatching(matching.pattern).isValue.evaluation
 
-fun Evaluator.booleanIsEvaluation(syntax: Syntax): Evaluation<Boolean> =
+fun Evaluator.isValueEvaluation(syntax: Syntax): Evaluation<Value> =
 	dictionary.valueEvaluation(syntax).bind { rhsValue ->
-		dictionary.resolveEvaluation(value.plus(isName fieldTo rhsValue)).map { isValue ->
-			isValue.isBoolean
-		}
+		dictionary.resolveEvaluation(value.plus(isName fieldTo rhsValue))
 	}
 
 fun Evaluator.plusIsMatchingEvaluation(rhs: Script, negate: Boolean): Evaluation<Evaluator> =

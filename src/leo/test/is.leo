@@ -8,3 +8,10 @@ test
   is equal
     foo
     is bar
+
+test
+  foo
+  is not bar
+  is equal
+    foo
+    is not bar

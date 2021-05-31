@@ -1,7 +1,18 @@
 package leo
 
-import leo.base.*
+import leo.base.Seq
+import leo.base.SeqNode
+import leo.base.fold
+import leo.base.ifOrNull
+import leo.base.mapFirstOrNull
 import leo.base.negate
+import leo.base.notNullIf
+import leo.base.orNullIf
+import leo.base.reverse
+import leo.base.runIf
+import leo.base.runIfNotNull
+import leo.base.seq
+import leo.base.seqNode
 
 sealed class Value {
 	override fun toString() = string
@@ -287,6 +298,26 @@ val Value.isBooleanOrNull: Boolean?
 					else -> null
 				}
 			}
+		}
+
+val Value.isNegate: Value
+	get() =
+		isNegateOrNull.notNullOrThrow { value("negate") }
+
+val Value.isNegateOrNull: Value?
+	get() =
+		null
+			?: isYesNoNegateOrNull
+			?: isAnyNegateOrNull
+
+val Value.isYesNoNegateOrNull: Value?
+	get() =
+		isBooleanOrNull?.negate?.isValue
+
+val Value.isAnyNegateOrNull: Value?
+	get() =
+		resolveInfixOrNull(isName) { rhs ->
+			plus(isName fieldTo value(notName fieldTo rhs))
 		}
 
 val Value.isBoolean: Boolean
