@@ -171,12 +171,8 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 
 fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
-		//giveName -> plusApplyEvaluation(field.rhs)
-		//beName -> plusBeEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
-		//exampleName -> plusExampleEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
-		//takeName -> plusTakeEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
