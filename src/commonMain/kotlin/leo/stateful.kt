@@ -49,8 +49,8 @@ fun <S, T> Stateful<S, T>.catch(fn: (Throwable) -> Stateful<S, T>): Stateful<S, 
 	}
 
 fun <S, F, I> Stateful<S, F>.foldStateful(seq: Seq<I>, fn: F.(I) -> Stateful<S, F>): Stateful<S, F> =
-	bind { folded ->
-		fold(seq) { item ->
+	fold(seq) { item ->
+		bind { folded ->
 			folded.fn(item)
 		}
 	}

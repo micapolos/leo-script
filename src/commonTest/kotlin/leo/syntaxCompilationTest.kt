@@ -492,12 +492,15 @@ class SyntaxCompilationTest {
 	fun with() {
 		script(
 			line("point"),
-			withName lineTo script(line("center")))
+			withName lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one")))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(with(syntax(syntaxLine("center"))))
-				))
+					line(with(syntax(
+						"x" lineTo syntax("zero" lineTo syntax()),
+						"y" lineTo syntax("one" lineTo syntax()))))))
 	}
 }

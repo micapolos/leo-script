@@ -90,7 +90,7 @@ fun Dictionary.valueEvaluation(syntax: Syntax): Evaluation<Value> =
 	context.evaluator(value()).plusEvaluation(syntax).map { it.value }
 
 fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
-	evaluation.foldStateful(syntax.lineStack.seq.reverse) { plusEvaluation(it) }
+	evaluation.foldStateful(syntax.lineSeq) { plusEvaluation(it) }
 
 fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	when (line) {
@@ -161,8 +161,8 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 		traceName -> plusTraceOrNullEvaluation(scriptField.rhs)
 		tryName -> plusTryEvaluation(scriptField.rhs)
 		updateName -> plusUpdateEvaluation(scriptField.rhs)
-		useName -> plusUseEvaluation(scriptField.rhs)
-		withName -> plusWithEvaluation(scriptField.rhs)
+		useName -> plusEvaluation(scriptField.rhs.useCompilation.get)
+		withName -> plusEvaluation(scriptField.rhs.withCompilation.get)
 		else -> evaluation(null)
 	}
 
