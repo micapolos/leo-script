@@ -1,13 +1,13 @@
 package leo.parser
 
+import leo.ValueError
 import leo.base.assertEqualTo
-import leo.stack
 import leo.fieldTo
-import leo.lineTo
 import leo.line
+import leo.lineTo
 import leo.literal
 import leo.script
-import leo.ValueError
+import leo.stack
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 

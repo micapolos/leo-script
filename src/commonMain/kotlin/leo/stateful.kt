@@ -4,7 +4,6 @@ import leo.base.Effect
 import leo.base.Seq
 import leo.base.effect
 import leo.base.fold
-import kotlin.reflect.KProperty0
 
 data class Stateful<S, out V>(
 	val run: (S) -> Effect<S, V>

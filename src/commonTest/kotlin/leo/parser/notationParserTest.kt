@@ -1,11 +1,11 @@
 package leo.parser
 
+import leo.atom
 import leo.base.assertEqualTo
+import leo.chain
 import leo.lineTo
 import leo.literal
 import leo.script
-import leo.atom
-import leo.chain
 import kotlin.test.Test
 
 class NotationParserTest {
