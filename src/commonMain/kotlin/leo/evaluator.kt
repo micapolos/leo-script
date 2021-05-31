@@ -2,7 +2,6 @@ package leo
 
 import leo.base.fold
 import leo.base.negate
-import leo.base.orNullIf
 import leo.base.reverse
 import leo.base.runIf
 import leo.parser.scriptOrThrow
@@ -148,18 +147,22 @@ fun Evaluator.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evalua
 fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Evaluator?> =
 	when (scriptField.string) {
 		asName -> plusEvaluation(scriptField.rhs.asCompilation.get)
+		beName -> plusEvaluation(scriptField.rhs.beCompilation.get)
 		commentName -> plusEvaluation(scriptField.rhs.commentCompilation.get)
 		doName -> plusEvaluation(scriptField.rhs.doCompilation.get)
 		doingName -> plusDoingOrNullEvaluation(scriptField.rhs)
+		exampleName -> plusEvaluation(scriptField.rhs.exampleCompilation.get)
 		failName -> plusEvaluation(scriptField.rhs.failCompilation.get)
+		giveName -> plusEvaluation(scriptField.rhs.giveCompilation.get)
 		isName -> plusIsOrNullEvaluation(scriptField.rhs)
 		privateName -> plusEvaluation(scriptField.rhs.privateCompilation.get)
 		quoteName -> plusEvaluation(scriptField.rhs.quoteCompilation.get)
 		setName -> plusSetEvaluation(scriptField.rhs)
 		switchName -> plusSwitchEvaluation(scriptField.rhs)
+		takeName -> plusEvaluation(scriptField.rhs.takeCompilation.get)
 		testName -> plusTestEvaluation(scriptField.rhs)
 		traceName -> plusTraceOrNullEvaluation(scriptField.rhs)
-		tryName -> plusTryEvaluation(scriptField.rhs)
+		tryName -> plusEvaluation(scriptField.rhs.tryCompilation.get)
 		updateName -> plusUpdateEvaluation(scriptField.rhs)
 		useName -> plusEvaluation(scriptField.rhs.useCompilation.get)
 		withName -> plusEvaluation(scriptField.rhs.withCompilation.get)
@@ -168,12 +171,12 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 
 fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
-		giveName -> plusApplyEvaluation(field.rhs)
-		beName -> plusBeEvaluation(field.rhs)
+		//giveName -> plusApplyEvaluation(field.rhs)
+		//beName -> plusBeEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
-		exampleName -> plusExampleEvaluation(field.rhs)
+		//exampleName -> plusExampleEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
-		takeName -> plusTakeEvaluation(field.rhs)
+		//takeName -> plusTakeEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
