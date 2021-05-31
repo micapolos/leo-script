@@ -150,9 +150,9 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 		beName -> plusEvaluation(scriptField.rhs.beCompilation.get)
 		commentName -> plusEvaluation(scriptField.rhs.commentCompilation.get)
 		doName -> plusEvaluation(scriptField.rhs.doCompilation.get)
-		doingName -> // TODO: Is there a better way to avoid isEmpty check?
-			if (scriptField.rhs.isEmpty) evaluation(null)
-		  else plusEvaluation(scriptField.rhs.doingCompilation.get)
+		doingName -> scriptField.rhs.doingCompilationOrNull
+			?.let { plusEvaluation(it.get) }
+			?: evaluation(null)
 		exampleName -> plusEvaluation(scriptField.rhs.exampleCompilation.get)
 		failName -> plusEvaluation(scriptField.rhs.failCompilation.get)
 		giveName -> plusEvaluation(scriptField.rhs.giveCompilation.get)
