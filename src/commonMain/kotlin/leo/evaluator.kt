@@ -64,6 +64,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
+		is GiveSyntaxLine -> plusEvaluation(line.give)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
@@ -73,6 +74,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> plusEvaluation(line.set)
 		is SwitchSyntaxLine -> plusEvaluation(line.switch)
+		is TakeSyntaxLine -> plusEvaluation(line.take)
 		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
@@ -89,18 +91,18 @@ fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
 fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
-		giveName -> plusGiveEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
-		takeName -> plusTakeEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
 	}
 
-fun Evaluator.plusTakeEvaluation(rhs: Rhs): Evaluation<Evaluator> =
-	rhs.valueOrThrow.functionOrThrow.let { function ->
-		function.applyEvaluation(value).bind { output ->
-			setEvaluation(output)
+fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(take.syntax).bind { taken ->
+		taken.functionOrThrow.evaluation.bind { function ->
+			function.applyEvaluation(value).bind { output ->
+				setEvaluation(output)
+			}
 		}
 	}
 
@@ -155,14 +157,15 @@ fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	setEvaluation(value.apply(get))
 
-fun Evaluator.plusGiveEvaluation(rhs: Rhs): Evaluation<Evaluator> =
+fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
 	value.functionOrThrow.evaluation.bind { function ->
-		rhs.valueOrThrow.let { given ->
+		dictionary.valueEvaluation(give.syntax).bind { given ->
 			function.applyEvaluation(given).bind { output ->
 				setEvaluation(output)
 			}
 		}
 	}
+
 
 fun Evaluator.plusEvaluation(field: SyntaxField): Evaluation<Evaluator> =
 	dictionary.fieldEvaluation(field).bind { field ->
