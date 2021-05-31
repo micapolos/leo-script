@@ -1,6 +1,4 @@
-use library list
+use library number
 
-empty.list
-append item "Hello, "
-append item "world!"
-reverse
+pi.number
+times 10.squared

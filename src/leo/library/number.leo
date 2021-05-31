@@ -19,3 +19,11 @@ let
 test
   2.decrement
   is equal 1
+
+let
+  number any
+  squared
+  do
+    number
+    times number
+ 
