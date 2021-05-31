@@ -6,7 +6,7 @@ import kotlin.math.sin
 
 data class Number(val double: Double) {
 	override fun toString() =
-		if (double.toLong() == double.roundToLong()) double.toLong().toString()
+		if (double == double.roundToLong().toDouble()) double.toLong().toString()
 		else double.toString()
 }
 
