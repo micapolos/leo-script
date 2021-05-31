@@ -6,6 +6,7 @@ data class Syntax(val lineStack: Stack<SyntaxLine>)
 
 sealed class SyntaxLine
 data class AsSyntaxLine(val as_: As): SyntaxLine()
+data class BeSyntaxLine(val be: Be): SyntaxLine()
 data class CommentSyntaxLine(val comment: Comment): SyntaxLine()
 data class DoSyntaxLine(val do_: Do): SyntaxLine()
 data class DoingSyntaxLine(val doing: Doing): SyntaxLine()
@@ -86,6 +87,7 @@ infix fun String.caseDoing(block: Block) = Case(this, doing(block))
 infix fun String.caseDoing(syntax: Syntax) = this caseDoing block(null, syntax)
 
 fun line(as_: As): SyntaxLine = AsSyntaxLine(as_)
+fun line(be: Be): SyntaxLine = BeSyntaxLine(be)
 fun line(comment: Comment): SyntaxLine = CommentSyntaxLine(comment)
 fun line(do_: Do): SyntaxLine = DoSyntaxLine(do_)
 fun line(doing: Doing): SyntaxLine = DoingSyntaxLine(doing)

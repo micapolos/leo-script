@@ -9,6 +9,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 	when (this) {
 		is AtomSyntaxLine -> atom.scriptLine
 		is AsSyntaxLine -> asName lineTo as_.script
+		is BeSyntaxLine -> beName lineTo be.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
 		is DoSyntaxLine -> doName lineTo do_.script
 		is DoingSyntaxLine -> doingName lineTo doing.script
