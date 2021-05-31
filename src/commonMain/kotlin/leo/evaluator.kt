@@ -238,9 +238,7 @@ fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(example.syntax).bind { evaluation }
 
 fun Evaluator.plusFailEvaluation(rhs: Script): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, rhs).bind { value ->
-		evaluation.also { value.throwError() }
-	}
+	plusEvaluation(rhs.failCompilation.get)
 
 fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, fail.syntax).bind { value ->
