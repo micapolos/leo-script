@@ -160,9 +160,6 @@ val Script.matchingCompilation: Compilation<Matching> get() =
 val Script.equalCompilation: Compilation<Equal> get() =
 	syntaxCompilation.map(::equal)
 
-val Script.notCompilation: Compilation<Not> get() =
-	syntaxCompilation.map(::not)
-
 val Script.recurseCompilation: Compilation<Recurse> get() =
 	syntaxCompilation.map(::recurse)
 
@@ -174,11 +171,6 @@ val Script.quoteCompilation: Compilation<Quote> get() =
 
 val Script.setCompilation: Compilation<Set> get() =
 	lineStack.map { syntaxAtomCompilation }.flat.map(::Set)
-
-val Script.syntaxOrNotCompilation: Compilation<Or<Syntax, Not>> get() =
-	null
-		?: matchPrefix(notName) { rhs -> rhs.notCompilation.map { not -> Syntax::class.or(not) } }
-		?: syntaxCompilation.map { syntax -> syntax.or(Not::class) }
 
 val Script.takeCompilation: Compilation<Take> get() =
 	syntaxCompilation.map(::take)
