@@ -157,7 +157,7 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 		isName -> plusIsOrNullEvaluation(scriptField.rhs)
 		privateName -> plusEvaluation(scriptField.rhs.privateCompilation.get)
 		quoteName -> plusEvaluation(scriptField.rhs.quoteCompilation.get)
-		setName -> plusSetEvaluation(scriptField.rhs)
+		setName -> plusEvaluation(scriptField.rhs.setCompilation.get)
 		switchName -> plusSwitchEvaluation(scriptField.rhs)
 		takeName -> plusEvaluation(scriptField.rhs.takeCompilation.get)
 		testName -> plusTestEvaluation(scriptField.rhs)
