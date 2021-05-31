@@ -28,7 +28,6 @@ val ScriptLine.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {
 		asName -> rhs.asCompilation.map(::line)
-		beName -> rhs.beCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
 		doingName -> rhs.doingCompilationOrNull?.map(::line)

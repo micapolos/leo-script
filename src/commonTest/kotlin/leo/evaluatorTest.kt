@@ -160,23 +160,6 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun apply_error() {
-		script(
-			"foo" lineTo script(),
-			giveName lineTo script("bar")
-		)
-			.evaluate
-			.assertEqualTo(
-				script(
-					errorName lineTo script(
-						"foo" lineTo script(),
-						"not" lineTo script("function")
-					)
-				)
-			)
-	}
-
-	@Test
 	fun functionGet() {
 		script(
 			"map" lineTo script(doingName lineTo script("foo")),

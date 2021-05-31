@@ -30,19 +30,6 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun be() {
-		script(
-			line(literal("Hello, ")),
-			beName lineTo script(line(literal("world!"))))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine(literal("Hello, ")),
-					line(be(syntax(syntaxLine(literal("world!")))))
-				))
-	}
-
-	@Test
 	fun comment() {
 		script(
 			line(literal("Hello, world!")),
