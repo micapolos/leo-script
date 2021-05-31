@@ -102,6 +102,9 @@ val Script.commentCompilation: Compilation<Comment> get() =
 val Script.doCompilation: Compilation<Do> get() =
 	blockCompilation.map(::do_)
 
+val Script.doingCompilation: Compilation<Doing> get() =
+	blockCompilation.map(::doing)
+
 val Script.doingCompilationOrNull: Compilation<Doing>? get() =
 	notNullIf(!isEmpty) {
 		blockCompilation.map(::doing)
