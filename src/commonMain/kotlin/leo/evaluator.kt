@@ -86,9 +86,15 @@ fun Evaluator.plusEvaluation(script: Script): Evaluation<Evaluator> =
 	}
 
 fun Dictionary.valueEvaluation(syntax: Syntax): Evaluation<Value> =
+	valueEvaluation(syntax.script)
+
+fun Dictionary.valueDirectEvaluation(syntax: Syntax): Evaluation<Value> =
 	context.evaluator(value()).plusEvaluation(syntax).map { it.value }
 
 fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
+	plusEvaluation(syntax.script)
+
+fun Evaluator.plusDirectEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 	evaluation.foldStateful(syntax.lineSeq) { plusEvaluation(it) }
 
 fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
@@ -447,7 +453,9 @@ fun Evaluator.booleanEvaluation(rhs: IsRhs): Evaluation<Boolean> =
 	}
 
 fun Evaluator.booleanEvaluation(equal: Equal): Evaluation<Boolean> =
-	dictionary.valueEvaluation(equal.syntax).map { value == it }
+	dictionary.valueEvaluation(equal.syntax).map {
+		value == it
+	}
 
 fun Evaluator.booleanEvaluation(matching: Matching): Evaluation<Boolean> =
 	value.isMatching(matching.pattern).evaluation

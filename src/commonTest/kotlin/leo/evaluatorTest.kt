@@ -523,11 +523,21 @@ class EvaluatorTest {
 	@Test
 	fun getHash() {
 		script(
-			"foo" lineTo script(),
+			line(literal(10)),
 			hashName lineTo script()
 		)
 			.evaluate
-			.assertEqualTo(script(hashName lineTo script(literal(value("foo").hashCode()))))
+			.assertEqualTo(script(hashName lineTo script(literal(value(field(literal(10))).hashCode()))))
+	}
+
+	@Test
+	fun hashIsEqual() {
+		script(
+			line(literal(10)),
+			line(hashName),
+			isName lineTo script(equalName lineTo script(line(literal(10)), line(hashName))))
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
 	@Test

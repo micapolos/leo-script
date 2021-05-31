@@ -20,6 +20,14 @@ test
   is less than 5
 
 test
+  5
+  is not less than 5
+
+test
+  6
+  is not less than 5
+
+test
   pi.number
   is less than 4
 
