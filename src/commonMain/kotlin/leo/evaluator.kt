@@ -169,7 +169,7 @@ fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<E
 		setName -> plusEvaluation(scriptField.rhs.setCompilation.get)
 		switchName -> plusEvaluation(scriptField.rhs.switchCompilation.get)
 		takeName -> plusEvaluation(scriptField.rhs.takeCompilation.get)
-		testName -> plusTestEvaluation(scriptField.rhs)
+		testName -> plusEvaluation(scriptField.rhs.testCompilation.get)
 		traceName -> plusTraceOrNullEvaluation(scriptField.rhs)
 		tryName -> plusEvaluation(scriptField.rhs.tryCompilation.get)
 		updateName -> plusEvaluation(scriptField.rhs.updateCompilation.get)
@@ -293,37 +293,18 @@ fun Evaluator.plusTestEvaluation(test: Script): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
-	TODO()
-//	dictionary.valueEvaluation(test.syntax.plus(line(test.is_))).bind { result ->
-//		when (result) {
-//			true.isValue -> evaluation
-//			false.isValue ->
-//				dictionary.valueEvaluation(test.syntax).bind { lhs ->
-//					dictionary.valueEvaluation(test.is_.rhs.syntax).bind { rhs ->
-//						evaluation.also {
-//							value(testName fieldTo test.script.value)
-//								.plus(
-//									causeName fieldTo
-//											lhs.plus(isName fieldTo value(notName fieldTo rhs))
-//								).throwError()
-//						}
-//					}
-//				}
-//			else -> evaluation.also {
-//				value(
-//					testName fieldTo result.plus(
-//						isName fieldTo value(
-//							notName fieldTo value(
-//								matchingName fieldTo value(
-//									isName fieldTo value(anyName)
-//								)
-//							)
-//						)
-//					)
-//				).throwError()
-//			}
-//		}
-//	}
+	dictionary.valueEvaluation(test.syntax).bind { result ->
+		if (result.isBoolean) evaluation
+		else dictionary.valueEvaluation(test.lhsSyntax).bind { lhs ->
+			dictionary.fieldEvaluation(test.is_.negate).bind { isField ->
+				evaluation.also {
+					value(testName fieldTo test.script.value)
+						.plus(causeName fieldTo lhs.plus(isField))
+						.throwError()
+				}
+			}
+		}
+	}
 
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	setEvaluation(value.apply(get))

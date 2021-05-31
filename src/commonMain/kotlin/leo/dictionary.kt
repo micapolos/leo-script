@@ -317,3 +317,21 @@ fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 			plus(field)
 		}
 	}.map { value.setOrThrow(it) }
+
+fun Dictionary.fieldEvaluation(is_: Is): Evaluation<Field> =
+	valueEvaluation(is_.rhs).map { rhs ->
+		isName fieldTo rhs.runIf(is_.negated) { value(notName fieldTo this) }
+	}
+
+fun Dictionary.valueEvaluation(rhs: IsRhs): Evaluation<Value> =
+	when (rhs) {
+		is EqualIsRhs -> valueEvaluation(rhs.equal)
+		is MatchingIsRhs -> valueEvaluation(rhs.matching)
+		is SyntaxIsRhs -> valueEvaluation(rhs.syntax)
+	}
+
+fun Dictionary.valueEvaluation(equal: Equal): Evaluation<Value> =
+	valueEvaluation(equal.syntax).map { value(equalName fieldTo it) }
+
+fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
+	value(matchingName fieldTo matching.pattern.script.value).evaluation
