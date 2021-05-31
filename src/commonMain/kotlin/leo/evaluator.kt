@@ -148,7 +148,7 @@ fun Evaluator.plusDefinitionsOrNullLEvaluation(scriptField: ScriptField): Evalua
 fun Evaluator.plusStaticOrNullEvaluation(scriptField: ScriptField): Evaluation<Evaluator?> =
 	when (scriptField.string) {
 		asName -> plusAsEvaluation(scriptField.rhs)
-		commentName -> evaluation
+		commentName -> plusEvaluation(comment(scriptField.rhs))
 		doName -> plusDoEvaluation(scriptField.rhs)
 		doingName -> plusDoingOrNullEvaluation(scriptField.rhs)
 		failName -> plusFailEvaluation(scriptField.rhs)
@@ -221,7 +221,7 @@ fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
 	evaluation
 
 fun Evaluator.plusDoEvaluation(rhs: Script): Evaluation<Evaluator> =
-	dictionary.applyEvaluation(block(rhs), value).bind { setEvaluation(it) }
+	plusEvaluation(rhs.doCompilation.get)
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(do_.block.block, value).bind { setEvaluation(it) }

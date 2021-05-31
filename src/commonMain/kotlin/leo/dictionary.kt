@@ -309,7 +309,7 @@ fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
 	binding(function(body(do_.block.block))).evaluation
 
 val SyntaxBlock.block: Block get() =
-	Block(typeOrNull, expression(script))
+	Block(typeOrNull, expression(syntax.script))
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->
