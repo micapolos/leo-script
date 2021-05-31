@@ -11,3 +11,4 @@ val preludeDictionary: Dictionary
 		.plus(numberMinusNumberDefinition)
 		.plus(numberTimesNumberDefinition)
 		.plus(numberIsLessThanNumberDefinition)
+		.plus(piNumberDefinition)

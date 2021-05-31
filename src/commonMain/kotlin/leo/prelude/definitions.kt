@@ -24,6 +24,7 @@ import leo.textName
 import leo.textOrThrow
 import leo.times
 import leo.value
+import kotlin.math.PI
 
 val textAppendTextDefinition get() =
 	nativeDefinition(
@@ -97,4 +98,12 @@ val numberIsLessThanNumberDefinition get() =
 						.nativeValue(thanName)
 						.nativeValue(numberName)
 						.numberOrThrow).isValue
+	}
+
+val piNumberDefinition get() =
+	nativeDefinition(
+		script(
+			piName lineTo script(),
+			numberName lineTo script())) {
+		value(field(literal(PI)))
 	}

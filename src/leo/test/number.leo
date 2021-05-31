@@ -18,3 +18,11 @@ test
 test
   4
   is less than 5
+
+test
+  pi.number
+  is less than 4
+
+test
+  pi.number
+  is not less than 3
