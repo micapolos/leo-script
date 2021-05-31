@@ -420,7 +420,7 @@ fun Evaluator.plusEvaluation(field: Field): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusAsEvaluation(rhs: Script): Evaluation<Evaluator> =
-	plusEvaluation(as_(pattern(rhs)))
+	plusEvaluation(rhs.asCompilation.get)
 
 fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
 	setEvaluation(value.as_(as_.pattern))
