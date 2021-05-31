@@ -26,7 +26,7 @@ actual val nativeDictionary: Dictionary
 			.plus(textClassJavaDefinition)
 
 			.plus(javaClassFieldDefinition)
-			.plus(javaFieldGetDefinition)
+			.plus(javaFieldObjectDefinition)
 
 			.plus(javaClassMethodNameTextDefinition)
 			.plus(javaMethodInvokeDefinition)

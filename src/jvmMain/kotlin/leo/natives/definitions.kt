@@ -1,7 +1,18 @@
 package leo.natives
 
-import leo.*
 import leo.Number
+import leo.anyName
+import leo.field
+import leo.fieldTo
+import leo.line
+import leo.lineTo
+import leo.literal
+import leo.native
+import leo.numberName
+import leo.rhs
+import leo.script
+import leo.textName
+import leo.value
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
@@ -178,12 +189,12 @@ val javaClassFieldDefinition
 					.javaValue)
 		}
 
-val javaFieldGetDefinition
+val javaFieldObjectDefinition
 	get() =
 		nativeDefinition(
 			script(
 				fieldName lineTo script(javaName lineTo script(anyName)),
-				getName lineTo script(javaName lineTo script(anyName))
+				objectName lineTo script(javaName lineTo script(anyName))
 			)
 		) {
 			this
@@ -193,7 +204,7 @@ val javaFieldGetDefinition
 				.run { this as Field }
 				.get(
 					this
-						.nativeValue(getName)
+						.nativeValue(objectName)
 						.nativeValue(javaName)
 						.javaObject
 				)

@@ -503,6 +503,24 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun getExplicit() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one")),
+			getName lineTo script(
+				line("x"),
+				line("y"),
+				line("y")))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script("zero"),
+					"y" lineTo script("one"),
+					"y" lineTo script("one")))
+	}
+
+	@Test
 	fun getHash() {
 		script(
 			"foo" lineTo script(),

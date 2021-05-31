@@ -2,7 +2,16 @@ package leo.natives
 
 import leo.base.assertEqualTo
 import leo.base.assertNotNull
-import leo.*
+import leo.evaluate
+import leo.get
+import leo.line
+import leo.lineTo
+import leo.literal
+import leo.native
+import leo.nativeName
+import leo.numberName
+import leo.script
+import leo.textName
 import kotlin.test.Test
 
 class NativeEvaluatorTest {
@@ -148,7 +157,7 @@ class NativeEvaluatorTest {
 			javaName lineTo script(),
 			className lineTo script(),
 			fieldName lineTo script(literal("TYPE")),
-			getName lineTo script(line(nullName), line(javaName))
+			objectName lineTo script(line(nullName), line(javaName))
 		)
 			.evaluate
 			.assertEqualTo(
