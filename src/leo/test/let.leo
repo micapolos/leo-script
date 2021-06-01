@@ -19,3 +19,54 @@ test
   is equal
     x 10
     and y 20
+
+comment
+  tail recursive function
+  aka repeating function
+test
+  let
+    number any
+    times factorial number any
+    do repeating
+      times.factorial.number
+      is equal 1
+      switch
+        yes doing number
+        no doing
+          number
+          times times.factorial.number
+          repeat times
+            times.factorial.number
+            minus 1
+            factorial
+
+  comment final function
+  let
+    number any
+    factorial
+    do
+      1
+      times number.factorial
+
+  5.factorial
+  is equal 120
+
+comment recursive function
+test
+  let
+    number any
+    factorial
+    do recursing
+      number
+      is equal 1
+      switch
+        yes doing number
+        no doing
+          number
+          times
+            number
+            minus 1
+            recurse factorial
+
+  5.factorial
+  is equal 120
