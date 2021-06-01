@@ -341,16 +341,40 @@ class SyntaxCompilationTest {
 	fun recurse() {
 		script(
 			"foo" lineTo script(),
+			recurseName lineTo script())
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"foo" lineTo syntax(),
+					line(recurse(null))))
+	}
+
+	@Test
+	fun repeat() {
+		script(
+			"foo" lineTo script(),
+			repeatName lineTo script())
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"foo" lineTo syntax(),
+					line(repeat(null))))
+	}
+
+	@Test
+	fun recurseField() {
+		script(
+			"foo" lineTo script(),
 			recurseName lineTo script("bar" lineTo script()))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					"foo" lineTo syntax(),
-					line(recurse(syntax("bar" lineTo syntax())))))
+					line(recurse(atom("bar" fieldTo syntax())))))
 	}
 
 	@Test
-	fun repeat() {
+	fun repeatField() {
 		script(
 			"foo" lineTo script(),
 			repeatName lineTo script("bar" lineTo script()))
@@ -358,7 +382,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					"foo" lineTo syntax(),
-					line(repeat(syntax("bar" lineTo syntax())))))
+					line(repeat(atom("bar" fieldTo syntax())))))
 	}
 
 	@Test

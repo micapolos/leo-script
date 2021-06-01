@@ -247,13 +247,17 @@ fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(recurse.syntax).bind { repeatValue ->
-		plusResolveEvaluation(recurseName fieldTo repeatValue)
+	if (recurse.atomOrNull == null) plusResolveEvaluation(recurseName fieldTo value())
+	else dictionary.fieldEvaluation(recurse.atomOrNull).bind { repeatField ->
+		dictionary.resolveEvaluation(value.plus(repeatField).plus(recurseName fieldTo value())).bind {
+			setEvaluation(it)
+		}
 	}
 
 fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(repeat.syntax).bind { repeatValue ->
-		plusResolveEvaluation(repeatName fieldTo repeatValue)
+	if (repeat.atomOrNull == null) setEvaluation(value(repeatName fieldTo value))
+	else dictionary.fieldEvaluation(repeat.atomOrNull).bind { repeatField ->
+		setEvaluation(value(repeatName fieldTo value.plus(repeatField)))
 	}
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
