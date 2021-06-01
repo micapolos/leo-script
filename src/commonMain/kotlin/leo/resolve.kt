@@ -5,11 +5,9 @@ import leo.base.orNull
 import leo.base.reverse
 
 fun Dictionary.resolveEvaluation(value: Value): Evaluation<Value> =
-	value.tracedEvaluation.bind {
-		applyOrNullEvaluation(value).or {
-			value.resolveEvaluation
-		}
-	}
+	applyOrNullEvaluation(value)
+		.or { value.resolveEvaluation }
+		.tracing(value)
 
 fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
 	resolutionOrNull(value)?.bindingOrNull?.applyEvaluation(value) ?: evaluation(null)

@@ -14,7 +14,7 @@ val Throwable.valueOrNull: Value?
 
 val Throwable.value: Value
 	get() =
-		valueOrNull?.errorValue ?: javaValue.errorValue
+		valueOrNull ?: javaValue
 
 fun Throwable.causeStackTrace(value: Value): Value =
 	value(errorName fieldTo value.plus(causeValue))

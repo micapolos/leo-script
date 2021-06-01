@@ -169,7 +169,11 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 
 fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
-		is FnBody -> body.fn(set(given)).evaluation
+		is FnBody -> try {
+			body.fn(set(given)).evaluation
+		} catch (throwable: Throwable) {
+			throwable.value.failEvaluation()
+		}
 		is BlockBody -> applyEvaluation(body.block, given)
 	}
 

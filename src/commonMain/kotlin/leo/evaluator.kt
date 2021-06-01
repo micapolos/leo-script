@@ -134,7 +134,7 @@ fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, fail.syntax).bind { value ->
-		evaluation.also { value.throwError() }
+		value.failEvaluation()
 	}
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
@@ -197,7 +197,7 @@ fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(try_: Try): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, try_.syntax)
 		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
-		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value)) }
+		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value.errorValue)) }
 
 fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
 	dictionary.evaluation(value, update).bind { setEvaluation(it) }

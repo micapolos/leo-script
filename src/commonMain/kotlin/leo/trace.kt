@@ -7,8 +7,4 @@ fun Trace.push(value: Value) = Trace(valueStack.push(value))
 
 val Trace.value
 	get() =
-		value(
-			traceName fieldTo value(
-				*valueStack.map { resolveName fieldTo this }.array
-			)
-		)
+		value(*valueStack.reverse.map { causeName fieldTo this }.array)
