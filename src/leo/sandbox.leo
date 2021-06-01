@@ -11,10 +11,6 @@ let
   opis
   do
     "posiadasz jeden owoc: "
-    append
-      owoc
-      switch
-        jabłko doing jabłko.opis
-        gruszka doing gruszka.opis
+    append owoc.content.opis
 
 jabłko.owoc.opis

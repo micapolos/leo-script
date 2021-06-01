@@ -1,5 +1,6 @@
 package leo
 
+import leo.base.ifOrNull
 import leo.base.runIf
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
@@ -90,9 +91,11 @@ fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
 
 fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
-		contentName -> plusContentEvaluation(field.rhs)
+		contentName -> plusContentOrNullEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
+		headName -> plusHeadOrNullEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
+		tailName -> plusTailOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
@@ -125,9 +128,20 @@ fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(do_.block, value).bind { setEvaluation(it) }
 
-fun Evaluator.plusContentEvaluation(rhs: Rhs): Evaluation<Evaluator> =
-	if (!rhs.isEmpty) value.plus(contentName fieldTo rhs).failEvaluation()
-	else setEvaluation(value.structureOrThrow.value)
+fun Evaluator.plusContentOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
+	ifOrNull(rhs.isEmpty) {
+		value.structureOrNull?.value?.let { setEvaluation(it) }
+	} ?: evaluation(null)
+
+fun Evaluator.plusHeadOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
+	ifOrNull(rhs.isEmpty) {
+		value.linkOrNull?.field?.let { setEvaluation(value(it)) }
+	} ?: evaluation(null)
+
+fun Evaluator.plusTailOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
+	ifOrNull(rhs.isEmpty) {
+		value.linkOrNull?.value?.let { setEvaluation(it) }
+	} ?: evaluation(null)
 
 fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	dictionary.set(rhs.valueOrThrow).valueEvaluation(value.script.syntax).bind { evaluated ->

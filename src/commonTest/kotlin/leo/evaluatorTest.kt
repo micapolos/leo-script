@@ -825,10 +825,9 @@ class EvaluatorTest {
 
 	@Test
 	fun content_errors() {
-		script(contentName lineTo script())
+		script(contentName)
 			.evaluate
-			.assertEqualTo(
-				value().isNotValue("structure").errorValue.script)
+			.assertEqualTo(script(contentName))
 
 		script(
 			"x" lineTo script(line(literal(10))),
@@ -836,10 +835,10 @@ class EvaluatorTest {
 			contentName lineTo script())
 			.evaluate
 			.assertEqualTo(
-				value(
-					"x" fieldTo value(field(literal(10))),
-					"y" fieldTo value(field(literal(20))))
-					.isNotValue("structure").errorValue.script)
+				script(
+					contentName lineTo script(
+						"x" lineTo script(line(literal(10))),
+						"y" lineTo script(line(literal(20))))))
 
 		script(
 			"point" lineTo script(
@@ -847,13 +846,35 @@ class EvaluatorTest {
 				"y" lineTo script(line(literal(20)))),
 			contentName lineTo script("foo"))
 			.evaluate
+			.assertEqualTo(script(
+				"point" lineTo script(
+					"x" lineTo script(line(literal(10))),
+					"y" lineTo script(line(literal(20)))),
+				contentName lineTo script("foo")))
+	}
+
+	@Test
+	fun head() {
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			"z" lineTo script(line(literal(30))),
+			headName lineTo script())
+			.evaluate
+			.assertEqualTo(script("z" lineTo script(line(literal(30)))))
+	}
+
+	@Test
+	fun tail() {
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			"z" lineTo script(line(literal(30))),
+			tailName lineTo script())
+			.evaluate
 			.assertEqualTo(
-				value(
-					"point" fieldTo value(
-						"x" fieldTo value(field(literal(10))),
-						"y" fieldTo value(field(literal(20)))),
-					contentName fieldTo value(
-						"foo" fieldTo value()))
-					.errorValue.script)
+				script(
+					"x" lineTo script(line(literal(10))),
+					"y" lineTo script(line(literal(20)))))
 	}
 }
