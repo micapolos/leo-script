@@ -877,4 +877,38 @@ class EvaluatorTest {
 					"x" lineTo script(line(literal(10))),
 					"y" lineTo script(line(literal(20)))))
 	}
+
+	@Test
+	fun structure() {
+		script(structureName)
+			.evaluate
+			.assertEqualTo(script(structureName lineTo script(emptyName)))
+
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			"z" lineTo script(line(literal(30))),
+			structureName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				script(
+					structureName lineTo script(
+						linkName lineTo script(
+							"x" lineTo script(line(literal(10))),
+							"y" lineTo script(line(literal(20))),
+							"z" lineTo script(line(literal(30)))))))
+	}
+
+	@Test
+	fun doContent() {
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			doName lineTo script(contentName))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(line(literal(10))),
+					"y" lineTo script(line(literal(20)))))
+	}
 }

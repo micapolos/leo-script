@@ -53,7 +53,7 @@ val Resolution.dictionaryOrNull get() = (this as? ResolverResolution)?.dictionar
 val Resolution.bindingOrNull get() = (this as? BindingResolution)?.binding
 
 fun Dictionary.set(value: Value): Dictionary =
-	fold(value.fieldSeq.reverse) { set(it) }
+	plus(definition(pattern(script(contentName)), binding(value))).fold(value.fieldSeq.reverse) { set(it) }
 
 fun Dictionary.set(line: Field): Dictionary =
 	plus(

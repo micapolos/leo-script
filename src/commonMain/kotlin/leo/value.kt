@@ -398,3 +398,11 @@ fun Value.apply(get: Get): Value =
 			plus(target.get(name))
 		}
 	}
+
+val Value.structureValue: Value get() =
+	value(
+		"structure" fieldTo
+			when (this) {
+				EmptyValue -> value("empty")
+				is LinkValue -> value("link" fieldTo value(link))
+			})

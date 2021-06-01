@@ -95,6 +95,7 @@ fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> 
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
 		headName -> plusHeadOrNullEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
+		structureName -> plusStructureOrNullEvaluation(field.rhs)
 		tailName -> plusTailOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
@@ -203,6 +204,10 @@ fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 
 fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	if (rhs.valueOrNull?.isEmpty == true) setEvaluation(value.hashValue)
+	else evaluation(null)
+
+fun Evaluator.plusStructureOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
+	if (rhs.isEmpty) setEvaluation(value.structureValue)
 	else evaluation(null)
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
