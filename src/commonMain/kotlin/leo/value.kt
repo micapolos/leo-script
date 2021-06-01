@@ -89,7 +89,7 @@ val Value.structureOrNull: Structure?
 	}
 val Value.structureOrThrow: Structure
 	get() =
-		structureOrNull.notNullOrThrow { plus(notName fieldTo value("structure")) }
+		structureOrNull.notNullOrThrow { isNotValue("structure") }
 
 val Value.switchFieldOrThrow: Field
 	get() =

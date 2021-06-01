@@ -90,6 +90,7 @@ fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
 
 fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> =
 	when (field.name) {
+		contentName -> plusContentEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
@@ -123,6 +124,10 @@ fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(do_.block, value).bind { setEvaluation(it) }
+
+fun Evaluator.plusContentEvaluation(rhs: Rhs): Evaluation<Evaluator> =
+	if (!rhs.isEmpty) value.plus(contentName fieldTo rhs).failEvaluation()
+	else setEvaluation(value.structureOrThrow.value)
 
 fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
 	dictionary.set(rhs.valueOrThrow).valueEvaluation(value.script.syntax).bind { evaluated ->

@@ -1,19 +1,20 @@
 let
-  number any
-  negativation
+  jabłko.opis
+  be "piękne, czerwone jabłko"
+
+let
+  gruszka.opis
+  be "dorodna, słodziutka gruszka"
+
+let
+  owoc any
+  opis
   do
-    number zero
-    minus number
+    "posiadasz jeden owoc: "
+    append
+      owoc
+      switch
+        jabłko doing jabłko.opis
+        gruszka doing gruszka.opis
 
-let
-  number any
-  negacja
-  do number.negativation
-
-let
-  number any
-  negate
-  do number.negacja
-
-123
-plus 123.negate
+jabłko.owoc.opis

@@ -807,7 +807,53 @@ class EvaluatorTest {
 					)
 				)
 			)
+	}
 
+	@Test
+	fun content() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(line(literal(10))),
+				"y" lineTo script(line(literal(20)))),
+			contentName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(line(literal(10))),
+					"y" lineTo script(line(literal(20)))))
+	}
 
+	@Test
+	fun content_errors() {
+		script(contentName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				value().isNotValue("structure").errorValue.script)
+
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			contentName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				value(
+					"x" fieldTo value(field(literal(10))),
+					"y" fieldTo value(field(literal(20))))
+					.isNotValue("structure").errorValue.script)
+
+		script(
+			"point" lineTo script(
+				"x" lineTo script(line(literal(10))),
+				"y" lineTo script(line(literal(20)))),
+			contentName lineTo script("foo"))
+			.evaluate
+			.assertEqualTo(
+				value(
+					"point" fieldTo value(
+						"x" fieldTo value(field(literal(10))),
+						"y" fieldTo value(field(literal(20)))),
+					contentName fieldTo value(
+						"foo" fieldTo value()))
+					.errorValue.script)
 	}
 }
