@@ -170,7 +170,7 @@ class EvaluatorTest {
 				script(
 					errorName lineTo script(
 						"foo" lineTo script(),
-						"not" lineTo script("function")
+						isName lineTo script(notName lineTo script("function"))
 					)
 				)
 			)
