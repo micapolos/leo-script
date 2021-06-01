@@ -2,23 +2,25 @@ use library text
 
 let
   option any
-  map present doing any
-  do
+  map doing any
+  do option
     option
     switch
-      present doing take map.present.doing
-      absent doing option
+      present doing present
+        map.doing
+        give present.content
+      absent doing absent
 
 test
   option present "Hello, "
-  map present doing
-    present.text
+  map doing
+    text
     append "world!"
-  is equal "Hello, world!"
+  is equal option present "Hello, world!"
 
 test
   option absent
-  map present doing
-    present.text
+  map doing
+    text
     append "world!"
   is equal option absent
