@@ -1,32 +1,29 @@
+use library fold
+
 let
   script any
   text
   do recursing
     let
-      empty.text
-      be ""
-
-    let
-      string any
-      text
-      do
-        "\""
-        append string.text
-        append "\""
-
-    let
       literal any
       text
-      do literal.content.text
+      do
+        literal
+        switch
+          text doing
+            "\""
+            append text
+            append "\""
+          number doing number.text
 
     let
       field any
       text
       do
-        field.name.text
+        field.text
         append "("
         append
-          field.script
+          field.to.script
           recurse text
         append ")"
 
@@ -35,27 +32,26 @@ let
       text
       do line.content.text
 
-    let
-      link any
-      text
-      do
-        link.script
-        recurse text
-        append "."
-        append link.line.text
-
-    script.content.text
+    ""
+    fold
+      script.content.reverse
+      doing
+        content.tail
+        append content.head.text
 
 test
-  empty.script.text
+  script.text
   is equal ""
 
 test
-  script link
-    script empty
-    line field
-      name "foo"
-      script link
-
+  script line field
+    "point"
+    to script
+      line field
+        "x"
+        to script line literal 10
+      line field
+        "y"
+        to script line literal 20
   text
-  is equal ".foo()"
+  is equal "point(x(10)y(20))"

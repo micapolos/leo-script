@@ -20,6 +20,7 @@ import leo.numberName
 import leo.numberOrThrow
 import leo.plus
 import leo.script
+import leo.string
 import leo.textName
 import leo.textOrThrow
 import leo.times
@@ -42,6 +43,17 @@ val textAppendTextDefinition get() =
 						.nativeValue(textName)
 						.textOrThrow))
 		))
+	}
+
+val numberTextDefinition get() =
+	nativeDefinition(
+		script(
+			numberName lineTo script(anyName),
+			textName lineTo script())) {
+		value(field(literal(
+			nativeValue(numberName)
+				.numberOrThrow
+				.string)))
 	}
 
 val numberPlusNumberDefinition get() =

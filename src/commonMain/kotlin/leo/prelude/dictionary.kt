@@ -7,6 +7,7 @@ import leo.plus
 val preludeDictionary: Dictionary
 	get() = nativeDictionary
 		.plus(textAppendTextDefinition)
+		.plus(numberTextDefinition)
 		.plus(numberPlusNumberDefinition)
 		.plus(numberMinusNumberDefinition)
 		.plus(numberTimesNumberDefinition)
