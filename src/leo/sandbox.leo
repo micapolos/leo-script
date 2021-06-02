@@ -1,4 +1,7 @@
 x 10
 y 20
 z 30
-head
+list
+switch
+  empty doing empty
+  link doing link

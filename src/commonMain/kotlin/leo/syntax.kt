@@ -63,7 +63,7 @@ data class Take(val syntax: Syntax)
 data class Test(val lhsSyntax: Syntax, val is_: Is)
 data class Try(val syntax: Syntax)
 data class Update(val fieldStack: Stack<SyntaxField>)
-data class With(val syntax: Syntax)
+data class With(val atomStack: Stack<SyntaxAtom>)
 
 sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
@@ -144,7 +144,7 @@ fun take(syntax: Syntax) = Take(syntax)
 fun test(syntax: Syntax, is_: Is) = Test(syntax, is_)
 fun try_(syntax: Syntax) = Try(syntax)
 fun update(vararg fields: SyntaxField) = Update(stack(*fields))
-fun with(syntax: Syntax) = With(syntax)
+fun with(vararg atoms: SyntaxAtom) = With(stack(*atoms))
 
 fun atom(field: SyntaxField): SyntaxAtom = FieldSyntaxAtom(field)
 fun syntaxAtom(literal: Literal): SyntaxAtom = LiteralSyntaxAtom(literal)

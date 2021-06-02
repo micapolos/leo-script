@@ -702,20 +702,18 @@ class EvaluatorTest {
 	@Test
 	fun with() {
 		script(
-			"x" lineTo script("zero"),
+			line(literal(0)),
 			withName lineTo script(
-				"y" lineTo script("one"),
-				"z" lineTo script("two")
-			)
-		)
+				line(literal(10)),
+				plusName lineTo script(
+					line(literal(20)),
+					plusName lineTo script(line(literal(30))))))
 			.evaluate
 			.assertEqualTo(
 				script(
-					"x" lineTo script("zero"),
-					"y" lineTo script("one"),
-					"z" lineTo script("two")
-				)
-			)
+					line(literal(0)),
+					line(literal(10)),
+					plusName lineTo script(line(literal(50)))))
 	}
 
 	@Test
@@ -853,51 +851,51 @@ class EvaluatorTest {
 				contentName lineTo script("foo")))
 	}
 
-	@Test
-	fun head() {
-		script(
-			"x" lineTo script(line(literal(10))),
-			"y" lineTo script(line(literal(20))),
-			"z" lineTo script(line(literal(30))),
-			headName lineTo script())
-			.evaluate
-			.assertEqualTo(script("z" lineTo script(line(literal(30)))))
-	}
-
-	@Test
-	fun tail() {
-		script(
-			"x" lineTo script(line(literal(10))),
-			"y" lineTo script(line(literal(20))),
-			"z" lineTo script(line(literal(30))),
-			tailName lineTo script())
-			.evaluate
-			.assertEqualTo(
-				script(
-					"x" lineTo script(line(literal(10))),
-					"y" lineTo script(line(literal(20)))))
-	}
-
-	@Test
-	fun structure() {
-		script(structureName)
-			.evaluate
-			.assertEqualTo(script(structureName lineTo script(emptyName)))
-
-		script(
-			"x" lineTo script(line(literal(10))),
-			"y" lineTo script(line(literal(20))),
-			"z" lineTo script(line(literal(30))),
-			structureName lineTo script())
-			.evaluate
-			.assertEqualTo(
-				script(
-					structureName lineTo script(
-						linkName lineTo script(
-							"x" lineTo script(line(literal(10))),
-							"y" lineTo script(line(literal(20))),
-							"z" lineTo script(line(literal(30)))))))
-	}
+//	@Test
+//	fun head() {
+//		script(
+//			"x" lineTo script(line(literal(10))),
+//			"y" lineTo script(line(literal(20))),
+//			"z" lineTo script(line(literal(30))),
+//			headName lineTo script())
+//			.evaluate
+//			.assertEqualTo(script("z" lineTo script(line(literal(30)))))
+//	}
+//
+//	@Test
+//	fun tail() {
+//		script(
+//			"x" lineTo script(line(literal(10))),
+//			"y" lineTo script(line(literal(20))),
+//			"z" lineTo script(line(literal(30))),
+//			tailName lineTo script())
+//			.evaluate
+//			.assertEqualTo(
+//				script(
+//					"x" lineTo script(line(literal(10))),
+//					"y" lineTo script(line(literal(20)))))
+//	}
+//
+//	@Test
+//	fun structure() {
+//		script(structureName)
+//			.evaluate
+//			.assertEqualTo(script(structureName lineTo script(emptyName)))
+//
+//		script(
+//			"x" lineTo script(line(literal(10))),
+//			"y" lineTo script(line(literal(20))),
+//			"z" lineTo script(line(literal(30))),
+//			structureName lineTo script())
+//			.evaluate
+//			.assertEqualTo(
+//				script(
+//					structureName lineTo script(
+//						linkName lineTo script(
+//							"x" lineTo script(line(literal(10))),
+//							"y" lineTo script(line(literal(20))),
+//							"z" lineTo script(line(literal(30)))))))
+//	}
 
 	@Test
 	fun doContent() {
@@ -910,5 +908,34 @@ class EvaluatorTest {
 				script(
 					"x" lineTo script(line(literal(10))),
 					"y" lineTo script(line(literal(20)))))
+	}
+
+	@Test
+	fun listSwitch() {
+		script(
+			listName lineTo script(),
+			switchName lineTo script(
+				emptyName lineTo script(doingName lineTo script(emptyName)),
+				linkName lineTo script(doingName lineTo script(linkName))))
+			.evaluate
+			.assertEqualTo(script(emptyName))
+
+		script(
+			listName lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one"),
+				"z" lineTo script("two")),
+			switchName lineTo script(
+				emptyName lineTo script(doingName lineTo script(emptyName)),
+				linkName lineTo script(doingName lineTo script(linkName))))
+			.evaluate
+			.assertEqualTo(
+				script(
+					linkName lineTo script(
+						listName lineTo script(
+							"x" lineTo script("zero"),
+							"y" lineTo script("one")),
+						itemName lineTo script(
+							"z" lineTo script("two")))))
 	}
 }

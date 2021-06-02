@@ -206,4 +206,4 @@ val Script.useCompilation: Compilation<Use> get() =
 	useOrNull.notNullOrThrow { value(useName fieldTo value) }.compilation
 
 val Script.withCompilation: Compilation<With> get() =
-	syntaxCompilation.map(::with)
+	lineStack.map { syntaxAtomCompilation }.flat.map(::With)
