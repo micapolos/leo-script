@@ -23,6 +23,7 @@ val emptyType: Type = EmptyType
 val anyType: Type = AnyType
 fun Type.plus(field: TypeField): Type = LinkType(this linkTo field)
 infix fun Type.linkTo(field: TypeField) = TypeLink(this, field)
+fun type(link: TypeLink): Type = LinkType(link)
 fun type(vararg fields: TypeField) = emptyType.fold(fields) { plus(it) }
 fun anyType(vararg fields: TypeField) = anyType.fold(fields) { plus(it) }
 infix fun String.fieldTo(rhs: TypeRhs) = TypeField(this, rhs)
