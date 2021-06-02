@@ -13,6 +13,7 @@ use test is
 use test is all
 comment use test java all
 use test let
+use test list
 use test make
 use test number
 use test private
