@@ -11,12 +11,21 @@ val TypeLink.scriptLink: ScriptLink get() =
 	type.script linkTo field.scriptLine
 
 val TypeField.scriptLine: ScriptLine get() =
-	name lineTo rhs.script
+	null
+		?: textScriptLineOrNull
+		?: numberScriptLineOrNull
+		?: name lineTo rhs.script
+
+val TypeField.textScriptLineOrNull: ScriptLine? get() =
+	if (name == textName && rhs is NativeTypeRhs && rhs.native.any is String) line(literal(rhs.native.any))
+	else null
+
+val TypeField.numberScriptLineOrNull: ScriptLine? get() =
+	if (name == numberName && rhs is NativeTypeRhs && rhs.native.any is Number) line(literal(rhs.native.any))
+	else null
 
 val TypeRhs.script: Script get() =
 	when (this) {
-		is FunctionTypeRhs -> script("#function") // TODO: Fixit
-		is KClassTypeRhs -> script("#class") // TODO: Fixit
-		is NativeTypeRhs -> script("#native") // TODO: Fixit
+		is NativeTypeRhs -> native.script
 		is TypeTypeRhs -> type.script
 	}

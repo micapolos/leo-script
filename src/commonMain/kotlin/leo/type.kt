@@ -1,7 +1,6 @@
 package leo
 
 import leo.base.fold
-import kotlin.reflect.KClass
 
 sealed class Type
 object EmptyType: Type()
@@ -13,9 +12,7 @@ data class TypeField(val name: String, val rhs: TypeRhs)
 
 sealed class TypeRhs
 data class TypeTypeRhs(val type: Type): TypeRhs()
-data class FunctionTypeRhs(val function: TypeFunction): TypeRhs()
 data class NativeTypeRhs(val native: Native): TypeRhs()
-data class KClassTypeRhs(val kClass: KClass<*>): TypeRhs()
 
 object TypeFunction
 
@@ -30,9 +27,7 @@ infix fun String.fieldTo(rhs: TypeRhs) = TypeField(this, rhs)
 infix fun String.fieldTo(type: Type) = this fieldTo rhs(type)
 
 fun rhs(type: Type): TypeRhs = TypeTypeRhs(type)
-fun rhs(function: TypeFunction): TypeRhs = FunctionTypeRhs(function)
 fun typeRhs(native: Native): TypeRhs = NativeTypeRhs(native)
-fun rhs(kClass: KClass<*>): TypeRhs = KClassTypeRhs(kClass)
 
 val textTypeField get() = textName fieldTo anyType
 val numberTypeField get() = numberName fieldTo anyType
