@@ -1,9 +1,9 @@
 package leo.natives
 
-import leo.array
 import leo.Dictionary
 import leo.Number
 import leo.Value
+import leo.array
 import leo.base.map
 import leo.base.stack
 import leo.bindingOrNull
@@ -20,14 +20,13 @@ import leo.notName
 import leo.notNullOrThrow
 import leo.numberOrThrow
 import leo.plus
-import leo.resolutionOrNull
 import leo.rhs
 import leo.textOrThrow
 import leo.value
 import leo.valueOrNull
 
 fun Dictionary.nativeValue(name: String): Value =
-	resolutionOrNull(value(name))!!.bindingOrNull!!.valueOrNull!!
+	bindingOrNull(value(name))!!.valueOrNull!!
 
 fun Value.nativeValue(name: String): Value =
 	getOrNull(name)!!

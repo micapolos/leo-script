@@ -346,23 +346,9 @@ fun <R> Value.resolveOrNull(lhsName: String, rhsName: String, fn: Value.(Value) 
 fun Value.as_(pattern: Pattern): Value =
 	dictionary()
 		.plus(definition(pattern, binding(this)))
-		.resolutionOrNull(this)
-		?.bindingOrNull
+		.bindingOrNull(this)
 		?.let { this }
 		.notNullOrThrow { plus(value(asName fieldTo pattern.script.value)) }
-
-fun Value.isMatching(pattern: Pattern, negate: Boolean = false): Value =
-	dictionary()
-		.plus(definition(pattern, binding(this)))
-		.resolutionOrNull(this)
-		?.bindingOrNull
-		.let { (it != null).isValue(negate) }
-
-fun Value.isMatching(pattern: Pattern): Boolean =
-	dictionary()
-		.plus(definition(pattern, binding(this)))
-		.resolutionOrNull(this)
-		?.bindingOrNull != null
 
 val Value.resolveNameOrNull: Value?
 	get() =
