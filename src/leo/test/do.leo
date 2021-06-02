@@ -7,3 +7,11 @@ test
   is equal
     x 10
     and y 20
+
+test
+  x 10
+  y 20
+  do content
+  is equal
+    x 10
+    y 20

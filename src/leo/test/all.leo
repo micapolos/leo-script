@@ -1,6 +1,7 @@
 use test as
 use test be
 use test comment
+use test content
 use test do
 use test evaluate
 use test example

@@ -20,6 +20,18 @@ test
     x 10
     and y 20
 
+test
+  let
+    x any
+    y any
+    do content
+
+  x 10
+  y 20
+  is equal quote
+    x 10
+    y 20
+
 comment
   tail recursive function
   aka repeating function
