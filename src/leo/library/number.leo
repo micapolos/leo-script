@@ -34,8 +34,8 @@ let
     doing any
   do repeating
     use library list
-    item content.list.head
-    comment do
+    item content.list.tail
+    do
       iterate.times.number
       is less than 1
       switch

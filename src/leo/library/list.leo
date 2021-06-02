@@ -75,8 +75,10 @@ let
         empty doing folded.content
         link doing
           fold.doing
-          give soo
-          fold
+          give
+            folded.content
+            with link.item
+          repeat fold
             link.list
             with fold.doing
 
@@ -88,6 +90,6 @@ test
       "hell, "
       "heaven, "
     doing
-      "dupa"
-      append "asiu"
+      text
+      append item.text
   is equal "Hello, heaven, hell, world!"
