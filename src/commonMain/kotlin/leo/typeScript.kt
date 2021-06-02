@@ -8,7 +8,7 @@ val Type.script: Script get() =
 	}
 
 val TypeLink.scriptLink: ScriptLink get() =
-	type.script linkTo field.scriptLine
+	lhsType.script linkTo rhsField.scriptLine
 
 val TypeField.scriptLine: ScriptLine get() =
 	null

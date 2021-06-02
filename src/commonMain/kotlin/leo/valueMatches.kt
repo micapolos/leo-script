@@ -10,7 +10,7 @@ fun Value.matches(type: Type): Boolean =
 	}
 
 fun Link.matches(typeLink: TypeLink): Boolean =
-	field.matches(typeLink.field) && value.matches(typeLink.type)
+	field.matches(typeLink.rhsField) && value.matches(typeLink.lhsType)
 
 fun Field.matches(typeField: TypeField) =
 	name == typeField.name &&

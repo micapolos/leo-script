@@ -7,7 +7,7 @@ object EmptyType: Type()
 object AnyType: Type()
 data class LinkType(val link: TypeLink): Type()
 
-data class TypeLink(val type: Type, val field: TypeField)
+data class TypeLink(val lhsType: Type, val rhsField: TypeField)
 data class TypeField(val name: String, val rhs: TypeRhs)
 
 sealed class TypeRhs
