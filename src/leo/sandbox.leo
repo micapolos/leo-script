@@ -1,4 +1,11 @@
-x 10
-y 20
-z 30
-head
+let
+  fold
+    doing any
+  do
+    fold.doing
+    give soo
+
+fold
+  doing
+    "dupa"
+    append "asiu"

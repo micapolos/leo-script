@@ -93,10 +93,7 @@ fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> 
 	when (field.name) {
 		contentName -> plusContentOrNullEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
-		headName -> plusHeadOrNullEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
-		structureName -> plusStructureOrNullEvaluation(field.rhs)
-		tailName -> plusTailOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
@@ -123,7 +120,7 @@ fun Evaluator.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
 
-fun Evaluator.plusEvaluation(comment: Comment): Evaluation<Evaluator> =
+fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
@@ -132,16 +129,6 @@ fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 fun Evaluator.plusContentOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	ifOrNull(rhs.isEmpty) {
 		value.structureOrNull?.value?.let { setEvaluation(it) }
-	} ?: evaluation(null)
-
-fun Evaluator.plusHeadOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
-	ifOrNull(rhs.isEmpty) {
-		value.linkOrNull?.field?.let { setEvaluation(value(it)) }
-	} ?: evaluation(null)
-
-fun Evaluator.plusTailOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
-	ifOrNull(rhs.isEmpty) {
-		value.linkOrNull?.value?.let { setEvaluation(it) }
 	} ?: evaluation(null)
 
 fun Evaluator.plusEvaluateEvaluation(rhs: Rhs): Evaluation<Evaluator> =
@@ -187,8 +174,8 @@ fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
 	}
 
 
-fun Evaluator.plusEvaluation(field: SyntaxField): Evaluation<Evaluator> =
-	dictionary.fieldEvaluation(field).bind { field ->
+fun Evaluator.plusEvaluation(syntaxField: SyntaxField): Evaluation<Evaluator> =
+	dictionary.fieldEvaluation(syntaxField).bind { field ->
 		plusDynamicOrNullEvaluation(field).or {
 			plusResolveEvaluation(field)
 		}
@@ -204,10 +191,6 @@ fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 
 fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	if (rhs.valueOrNull?.isEmpty == true) setEvaluation(value.hashValue)
-	else evaluation(null)
-
-fun Evaluator.plusStructureOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
-	if (rhs.isEmpty) setEvaluation(value.structureValue)
 	else evaluation(null)
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =

@@ -12,8 +12,6 @@ val Dictionary.context
 	get() =
 		context(dictionary(), this)
 
-fun context() = context(dictionary(), dictionary())
-
 fun Context.plus(definition: Definition): Context =
 	context(publicDictionary.plus(definition), privateDictionary.plus(definition))
 

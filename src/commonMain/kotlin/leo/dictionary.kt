@@ -74,7 +74,7 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 	}
 
 fun Dictionary.plus(script: Script, body: Body): Dictionary =
-	plus(definition(pattern(script), binding(dictionary().function(body))))
+	plus(definition(pattern(script), binding(function(body))))
 
 fun Dictionary.update(script: Script, fn: Dictionary.() -> Resolution): Dictionary =
 	null
