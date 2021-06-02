@@ -93,7 +93,7 @@ val Value.structureOrThrow: Structure
 
 val Value.switchFieldOrThrow: Field
 	get() =
-		structureOrThrow.value.fieldOrNull.notNullOrThrow { plus(switchName fieldTo value()) }
+		switchFieldOrNull.notNullOrThrow { plus(switchName fieldTo value()) }
 
 val Value.resolveEvaluation: Evaluation<Value>
 	get() =
@@ -406,3 +406,19 @@ val Value.structureValue: Value get() =
 				EmptyValue -> value("empty")
 				is LinkValue -> value("link" fieldTo value(link))
 			})
+
+val Value.switchFieldOrNull: Field? get() =
+	fieldOrNull?.switchFieldOrNull
+
+val Field.switchFieldOrNull: Field? get() =
+	when (name) {
+		listName -> valueOrNull?.let { value ->
+			when (value) {
+				EmptyValue -> emptyName fieldTo value()
+				is LinkValue -> linkName fieldTo value(
+					listName fieldTo value.link.value,
+					itemName fieldTo value(value.link.field))
+			}
+		}
+		else -> valueOrNull?.fieldOrNull
+	}

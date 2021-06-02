@@ -213,4 +213,25 @@ class ValueTest {
 				.apply(get("z"))
 		}
 	}
+
+	@Test
+	fun switchFieldOrNull_list() {
+		value(listName fieldTo value())
+			.switchFieldOrNull
+			.assertEqualTo(emptyName fieldTo value())
+
+		value(
+			listName fieldTo value(
+				"x" fieldTo value("zero"),
+				"y" fieldTo value("one"),
+				"z" fieldTo value("two")))
+			.switchFieldOrNull
+			.assertEqualTo(
+				linkName fieldTo value(
+					listName fieldTo value(
+						"x" fieldTo value("zero"),
+						"y" fieldTo value("one")),
+					itemName fieldTo value(
+						"z" fieldTo value("two"))))
+	}
 }
