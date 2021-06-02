@@ -1,21 +1,21 @@
 use library fold
 
 let
+  literal any
+  text
+  do
+    literal
+    switch
+      text doing
+        "\""
+        append text
+        append "\""
+      number doing number.text
+
+let
   script any
   text
   do recursing
-    let
-      literal any
-      text
-      do
-        literal
-        switch
-          text doing
-            "\""
-            append text
-            append "\""
-          number doing number.text
-
     let
       field any
       text
