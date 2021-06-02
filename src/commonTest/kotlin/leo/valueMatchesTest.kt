@@ -17,17 +17,6 @@ class ValueMatchesTest {
 	}
 
 	@Test
-	fun nativeMatchesKClass() {
-		value(textName fieldTo rhs(native("Hello, world!")))
-			.matches(type(textName fieldTo rhs(String::class)))
-			.assertTrue
-
-		value(textName fieldTo rhs(native("Hello, world!")))
-			.matches(type(textName fieldTo rhs(Number::class)))
-			.assertFalse
-	}
-
-	@Test
 	fun anyMatches() {
 		value("foo")
 			.matches(anyType())
@@ -49,13 +38,6 @@ class ValueMatchesTest {
 			field(literal(10)),
 			plusName fieldTo value(field(literal(20))))
 			.matches(anyType(plusName fieldTo anyType))
-			.assertTrue
-	}
-
-	@Test
-	fun matchesFunction() {
-		value(doingName fieldTo rhs(dictionary().function(body(block(syntax())))))
-			.matches(type(doingName fieldTo rhs(TypeFunction)))
 			.assertTrue
 	}
 }

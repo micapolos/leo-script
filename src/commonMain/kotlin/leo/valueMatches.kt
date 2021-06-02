@@ -18,8 +18,6 @@ fun Field.matches(typeField: TypeField) =
 
 fun Rhs.matches(typeRhs: TypeRhs) =
 	typeRhs.isAny || when (typeRhs) {
-		is FunctionTypeRhs -> (this is FunctionRhs) && function.matches(typeRhs.function)
-		is KClassTypeRhs -> (this is NativeRhs) && native.matches(typeRhs.kClass)
 		is NativeTypeRhs -> (this is NativeRhs) && native == typeRhs.native
 		is TypeTypeRhs -> (this is ValueRhs) && value.matches(typeRhs.type)
 	}
