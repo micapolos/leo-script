@@ -518,17 +518,13 @@ class SyntaxCompilationTest {
 			line("point"),
 			withName lineTo script(
 				"x" lineTo script("zero"),
-				"y" lineTo script("one"),
-				line(literal("hello")),
-				line(literal(10))))
+				"y" lineTo script("one")))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(with(
-						atom("x" fieldTo syntax("zero" lineTo syntax())),
-						atom("y" fieldTo syntax("one" lineTo syntax())),
-						syntaxAtom(literal("hello")),
-						syntaxAtom(literal(10))))))
+					line(with(syntax(
+						"x" lineTo syntax("zero" lineTo syntax()),
+						"y" lineTo syntax("one" lineTo syntax()))))))
 	}
 }

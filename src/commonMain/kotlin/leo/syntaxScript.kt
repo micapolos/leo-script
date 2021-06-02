@@ -55,7 +55,7 @@ val Test.script get() = lhsSyntax.script.plus(isName lineTo is_.script)
 val Try.script get() = syntax.script
 val Update.script get() = script(fieldStack.map { scriptLine })
 val Use.script get() = script().fold(stack(nameStackLink)) { script(it lineTo this) }
-val With.script get() = script(atomStack.map { scriptLine })
+val With.script get() = syntax.script
 
 val Recurse.script get() = atomOrNull?.scriptLine?.script ?: script()
 val Repeat.script get() = atomOrNull?.scriptLine?.script ?: script()

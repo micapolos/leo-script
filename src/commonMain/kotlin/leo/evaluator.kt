@@ -1,7 +1,6 @@
 package leo
 
 import leo.base.ifOrNull
-import leo.base.reverse
 import leo.base.runIf
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
@@ -94,10 +93,10 @@ fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> 
 	when (field.name) {
 		contentName -> plusContentOrNullEvaluation(field.rhs)
 		evaluateName -> plusEvaluateEvaluation(field.rhs)
-//		headName -> plusHeadOrNullEvaluation(field.rhs)
+		headName -> plusHeadOrNullEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
-//		structureName -> plusStructureOrNullEvaluation(field.rhs)
-//		tailName -> plusTailOrNullEvaluation(field.rhs)
+		structureName -> plusStructureOrNullEvaluation(field.rhs)
+		tailName -> plusTailOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
 		else -> evaluation(null)
@@ -296,11 +295,9 @@ fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 
 
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
-	value.evaluation.foldStateful(with.atomStack.seq.reverse) { atom ->
-		dictionary.fieldEvaluation(atom).map { field ->
-			plus(field)
-		}
-	}.bind { setEvaluation(it) }
+	dictionary.valueEvaluation(with.syntax).bind { rhsValue ->
+		setEvaluation(value + rhsValue)
+	}
 
 val Evaluator.dictionary
 	get() =
