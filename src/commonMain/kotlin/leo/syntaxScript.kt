@@ -34,7 +34,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is WithSyntaxLine -> withName lineTo with.script
 	}
 
-val As.script get() = pattern.script
+val As.script get() = type.script
 val Be.script get() = syntax.script
 val Do.script get() = block.script
 val Doing.script get() = block.script
@@ -44,8 +44,8 @@ val Fail.script get() = syntax.script
 val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
 val Give.script get() = syntax.script
 val Not.script get() = syntax.script
-val Let.script get() = pattern.script.plus(rhs.scriptLine)
-val Matching.script get() = pattern.script
+val Let.script get() = type.script.plus(rhs.scriptLine)
+val Matching.script get() = type.script
 val Private.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })

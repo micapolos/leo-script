@@ -8,7 +8,7 @@ import leo.body
 import leo.definition
 import leo.dictionary
 import leo.function
-import leo.pattern
+import leo.type
 
 fun nativeDefinition(script: Script, fn: Dictionary.() -> Value) =
-	definition(pattern(script), binding(dictionary().function(body(fn))))
+	definition(script.type, binding(dictionary().function(body(fn))))

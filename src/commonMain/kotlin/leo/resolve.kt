@@ -12,12 +12,12 @@ fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
 	bindingOrNull(value)?.applyEvaluation(value) ?: evaluation(null)
 
 fun Dictionary.set(value: Value): Dictionary =
-	plus(definition(pattern(script(contentName)), binding(value))).fold(value.fieldSeq.reverse) { set(it) }
+	plus(definition(script(contentName).type, binding(value))).fold(value.fieldSeq.reverse) { set(it) }
 
 fun Dictionary.set(line: Field): Dictionary =
 	plus(
 		definition(
-			pattern(script(line.name)),
+			script(line.name).type,
 			binding(value(line))
 		)
 	)

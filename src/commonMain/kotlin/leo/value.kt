@@ -32,12 +32,12 @@ sealed class Rhs
 data class ValueRhs(val value: Value) : Rhs()
 data class FunctionRhs(val function: Function) : Rhs()
 data class NativeRhs(val native: Native) : Rhs()
-data class PatternRhs(val pattern: Pattern) : Rhs()
+data class PatternRhs(val pattern: Type) : Rhs()
 
 fun rhs(value: Value): Rhs = ValueRhs(value)
 fun rhs(function: Function): Rhs = FunctionRhs(function)
 fun rhs(native: Native): Rhs = NativeRhs(native)
-fun rhs(pattern: Pattern): Rhs = PatternRhs(pattern)
+fun valueRhs(pattern: Type): Rhs = PatternRhs(pattern)
 
 val Rhs.valueOrNull: Value? get() = (this as? ValueRhs)?.value
 val Rhs.valueOrThrow: Value
@@ -343,12 +343,12 @@ fun <R> Value.resolveOrNull(lhsName: String, rhsName: String, fn: Value.(Value) 
 		}
 	}
 
-fun Value.as_(pattern: Pattern): Value =
+fun Value.as_(type: Type): Value =
 	dictionary()
-		.plus(definition(pattern, binding(this)))
+		.plus(definition(type, binding(this)))
 		.bindingOrNull(this)
 		?.let { this }
-		.notNullOrThrow { plus(value(asName fieldTo pattern.script.value)) }
+		.notNullOrThrow { plus(value(asName fieldTo type.script.value)) }
 
 val Value.resolveNameOrNull: Value?
 	get() =

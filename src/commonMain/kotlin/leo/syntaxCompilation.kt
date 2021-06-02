@@ -80,7 +80,7 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 	}
 
 val Script.asCompilation: Compilation<As> get() =
-	patternCompilation.map(::as_)
+	scriptTypeCompilation.map(::as_)
 
 val Script.beCompilation: Compilation<Be> get() =
 	syntaxCompilation.map(::be)
@@ -124,7 +124,7 @@ val Script.giveCompilation: Compilation<Give> get() =
 
 val Script.letCompilation: Compilation<Let> get() =
 	matchInfix { lhs, name, rhs ->
-		lhs.patternCompilation.bind { pattern ->
+		lhs.scriptTypeCompilation.bind { pattern ->
 			when (name) {
 				beName -> rhs.beCompilation.map { be ->
 					let(pattern, be)
@@ -137,8 +137,8 @@ val Script.letCompilation: Compilation<Let> get() =
 		}
 	}?:value().throwError()
 
-val Script.patternCompilation: Compilation<Pattern> get() =
-	pattern(this).compilation // TODO: Implement properly
+val Script.scriptTypeCompilation: Compilation<Type> get() =
+	type.compilation
 
 val Script.privateCompilation: Compilation<Private> get() =
 	syntaxCompilation.map(::private)
@@ -161,7 +161,7 @@ val Script.isRhsCompilation: Compilation<IsRhs> get() =
 	} ?: syntaxCompilation.map(::isRhs)
 
 val Script.matchingCompilation: Compilation<Matching> get() =
-	patternCompilation.map(::matching)
+	scriptTypeCompilation.map(::matching)
 
 val Script.equalCompilation: Compilation<Equal> get() =
 	syntaxCompilation.map(::equal)

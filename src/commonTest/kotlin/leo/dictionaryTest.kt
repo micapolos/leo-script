@@ -9,7 +9,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script("ping")),
+					script("ping").type,
 					binding(value("pong"))
 				)
 			)
@@ -23,7 +23,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script("name" lineTo script(anyName))),
+					script("name" lineTo script(anyName)).type,
 					binding(value("ok"))
 				)
 			)
@@ -39,7 +39,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(anyName)),
+					script(anyName).type,
 					binding(value("pong"))
 				)
 			)
@@ -54,7 +54,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(anyName lineTo script(), "plus" lineTo script(anyName))),
+					script(anyName lineTo script(), "plus" lineTo script(anyName)).type,
 					binding(value("ok"))
 				)
 			)
@@ -70,7 +70,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(textName lineTo script(anyName))),
+					script(textName lineTo script(anyName)).type,
 					binding(value("ok"))
 				)
 			)
@@ -81,7 +81,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(literal("foo"))),
+					script(literal("foo")).type,
 					binding(value("ok"))
 				)
 			)
@@ -92,7 +92,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(literal("foo"))),
+					script(literal("foo")).type,
 					binding(value("ok"))
 				)
 			)
@@ -103,7 +103,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(literal(123))),
+					script(literal(123)).type,
 					binding(value("ok"))
 				)
 			)
@@ -114,7 +114,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					pattern(script(literal(123))),
+					script(literal(123)).type,
 					binding(value("ok"))
 				)
 			)

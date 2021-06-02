@@ -145,7 +145,7 @@ fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
-	plusResolveEvaluation(matchingName fieldTo rhs(matching.pattern))
+	plusResolveEvaluation(matchingName fieldTo valueRhs(matching.type))
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(test.syntax).bind { result ->
@@ -183,7 +183,7 @@ fun Evaluator.plusEvaluation(syntaxField: SyntaxField): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 	dictionary.bindingEvaluation(let.rhs).bind { binding ->
-		set(context.plus(definition(let.pattern, binding))).evaluation
+		set(context.plus(definition(let.type, binding))).evaluation
 	}
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
@@ -221,7 +221,7 @@ fun Evaluator.plusResolveEvaluation(field: Field): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
-	setEvaluation(value.as_(as_.pattern))
+	setEvaluation(value.as_(as_.type))
 
 fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
 	isValueEvaluation(is_.rhs).bind { isValue ->
@@ -241,7 +241,7 @@ fun Evaluator.isValueEvaluation(equal: Equal): Evaluation<Value> =
 	}
 
 fun Evaluator.isValueEvaluation(matching: Matching): Evaluation<Value> =
-	value.isMatching(matching.pattern).isValue.evaluation
+	value.matches(matching.type).isValue.evaluation
 
 fun Evaluator.isValueEvaluation(syntax: Syntax): Evaluation<Value> =
 	dictionary.valueEvaluation(syntax).bind { rhsValue ->

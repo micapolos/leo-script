@@ -34,5 +34,5 @@ fun rhs(function: TypeFunction): TypeRhs = FunctionTypeRhs(function)
 fun typeRhs(native: Native): TypeRhs = NativeTypeRhs(native)
 fun rhs(kClass: KClass<*>): TypeRhs = KClassTypeRhs(kClass)
 
-val textTypeField get() = textName fieldTo rhs(String::class)
-val numberTypeField get() = numberName fieldTo rhs(Number::class)
+val textTypeField get() = textName fieldTo anyType
+val numberTypeField get() = numberName fieldTo anyType

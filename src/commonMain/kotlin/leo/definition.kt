@@ -3,14 +3,14 @@ package leo
 import leo.base.Seq
 import leo.base.map
 
-data class Definition(val pattern: Pattern, val binding: Binding)
+data class Definition(val type: Type, val binding: Binding)
 
-fun definition(pattern: Pattern, binding: Binding) = Definition(pattern, binding)
+fun definition(pattern: Type, binding: Binding) = Definition(pattern, binding)
 
 val Field.setDefinition
 	get() =
 		definition(
-			pattern(script(name)),
+			script(name).type,
 			binding(value(this))
 		)
 

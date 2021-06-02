@@ -15,14 +15,14 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 	Dictionary(definitionStack.push(definition))
 
 fun Dictionary.plus(script: Script, body: Body): Dictionary =
-	plus(definition(pattern(script), binding(function(body))))
+	plus(definition(script.type, binding(function(body))))
 
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
 fun Dictionary.bindingOrNull(value: Value): Binding? =
 	definitionStack
-		.first { definition -> value.isMatching(definition.pattern) }
+		.first { definition -> value.matches(definition.type) }
 		?.binding
 
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
@@ -82,12 +82,10 @@ fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
-			pattern(
-				script(
-					anyName lineTo script(),
-					recurseName lineTo script()
-				)
-			),
+			script(
+				anyName lineTo script(),
+				recurseName lineTo script()
+			).type,
 			binding(function(body(BlockType.RECURSIVELY.block(syntax))))
 		)
 	)
@@ -156,4 +154,4 @@ fun Dictionary.valueEvaluation(equal: Equal): Evaluation<Value> =
 	valueEvaluation(equal.syntax).map { value(equalName fieldTo it) }
 
 fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
-	value(matchingName fieldTo matching.pattern.script.value).evaluation
+	value(matchingName fieldTo matching.type.script.value).evaluation
