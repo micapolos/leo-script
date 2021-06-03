@@ -79,8 +79,8 @@ val ScriptLine.caseCompilation: Compilation<Case> get() =
 	}
 
 val ScriptField.caseCompilation: Compilation<Case> get() =
-	rhs.rhsOrNull(doingName).notNullOrThrow { value("case") }.doingCompilationOrThrow.bind { doing ->
-		Case(string, doing).compilation
+	rhs.syntaxCompilation.map { syntax ->
+		string caseTo syntax
 	}
 
 val Script.anySyntaxLineCompilation: Compilation<SyntaxLine> get() =

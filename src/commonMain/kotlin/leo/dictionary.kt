@@ -45,7 +45,7 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 	value.switchFieldOrThrow.let { field ->
 		nullOf<Value>().evaluation.foldStateful(switch.caseSeq) { case ->
 			if (this != null || field.name != case.name) evaluation
-			else applyEvaluation(case.doing.block, value(field))
+			else valueEvaluation(value(field), case.syntax)
 		}.map { valueOrNull ->
 			valueOrNull.notNullOrThrow { value(switchName) }
 		}
@@ -70,14 +70,14 @@ fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 
 fun Dictionary.applyRepeatingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
 	given.evaluation.valueBindRepeating { repeatingGiven ->
-		bind(repeatingGiven).valueEvaluation(syntax)
+		valueEvaluation(repeatingGiven, syntax)
 	}
 
 fun Dictionary.applyRecursingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	bind(given).plusRecurse(syntax).valueEvaluation(syntax)
+	plusRecurse(syntax).valueEvaluation(given, syntax)
 
 fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	bind(given).valueEvaluation(syntax)
+	valueEvaluation(given, syntax)
 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(

@@ -40,7 +40,7 @@ data class FieldSyntaxAtom(val field: SyntaxField): SyntaxAtom()
 data class LiteralSyntaxAtom(val literal: Literal): SyntaxAtom()
 
 data class Switch(val caseStack: Stack<Case>)
-data class Case(val name: String, val doing: Doing)
+data class Case(val name: String, val syntax: Syntax)
 
 object SyntaxAny
 data class As(val syntax: Syntax)
@@ -91,8 +91,7 @@ fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
 fun syntaxLine(name: String) = name lineTo syntax()
 infix fun String.lineTo(syntax: Syntax) = line(atom(this fieldTo syntax))
 infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, syntax)
-infix fun String.caseDoing(block: Block) = Case(this, doing(block))
-infix fun String.caseDoing(syntax: Syntax) = this caseDoing block(null, syntax)
+infix fun String.caseTo(syntax: Syntax) = Case(this, syntax)
 
 fun line(as_: As): SyntaxLine = AsSyntaxLine(as_)
 fun line(any: SyntaxAny): SyntaxLine = AnySyntaxLine(any)

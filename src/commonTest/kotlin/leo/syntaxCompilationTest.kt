@@ -311,17 +311,15 @@ class SyntaxCompilationTest {
 		script(
 			line(literal("Hello, world!")),
 			switchName lineTo script(
-				textName lineTo script(
-					doingName lineTo script(line(literal("text")))),
-				numberName lineTo script(
-					doingName lineTo script(line(literal("number"))))))
+				textName lineTo script("foo"),
+				numberName lineTo script("bar")))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
 					line(switch(
-						textName caseDoing syntax(syntaxLine(literal("text"))),
-						numberName caseDoing syntax(syntaxLine(literal("number")))))
+						textName caseTo syntax("foo" lineTo syntax()),
+						numberName caseTo syntax("bar" lineTo syntax())))
 				))
 	}
 
@@ -403,8 +401,8 @@ class SyntaxCompilationTest {
 			script(
 				line(literal("Hello, world!")),
 				switchName lineTo script(
-					textName lineTo script("foo"),
-					numberName lineTo script("bar")))
+					line(literal("foo")),
+					line(literal(20))))
 				.syntax
 		}
 	}

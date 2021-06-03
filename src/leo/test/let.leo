@@ -6,29 +6,15 @@ test
   ping
   is equal pong
 
-test
+comment test
   let
     x any
     y any
-    do
-      x
-      and y
+    do it
 
   x 10
   y 20
-  is equal
-    x 10
-    and y 20
-
-test
-  let
-    x any
-    y any
-    do content
-
-  x 10
-  y 20
-  is equal quote
+  is equal it
     x 10
     y 20
 
@@ -39,12 +25,12 @@ test
   let
     any.number
     times any.number.factorial
-    do repeating
+    do repeating bind
       times.factorial.number
       is equal 1
       switch
-        yes doing number
-        no doing
+        yes doing be number
+        no doing be
           number
           times times.factorial.number
           repeat times

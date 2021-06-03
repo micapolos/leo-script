@@ -6,8 +6,8 @@ import kotlin.test.Test
 class FunctionTest {
 	@Test
 	fun apply() {
-		dictionary().function(body(script("name")))
-			.applyEvaluation(value("name" fieldTo value("foo"))).get
-			.assertEqualTo(value("name" fieldTo value("foo")))
+		dictionary().function(body(script("ok")))
+			.applyEvaluation(value("foo")).get
+			.assertEqualTo(value("ok" fieldTo value("foo")))
 	}
 }

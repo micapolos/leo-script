@@ -83,12 +83,12 @@ class ValueTest {
 	@Test
 	fun resolveFunctionApply() {
 		value(
-			field(dictionary().function(body(script("name")))),
-			giveName fieldTo value("name" fieldTo value("foo"))
+			field(dictionary().function(body(script("ok")))),
+			giveName fieldTo value("foo")
 		)
 			.resolveFunctionApplyOrNullEvaluation
 			.get
-			.assertEqualTo(value("name" fieldTo value("foo")))
+			.assertEqualTo(value("ok" fieldTo value("foo")))
 	}
 
 	@Test

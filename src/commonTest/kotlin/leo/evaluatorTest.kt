@@ -2,6 +2,7 @@ package leo
 
 import leo.base.assertEqualTo
 import leo.base.assertNotNull
+import leo.natives.appendName
 import leo.natives.minusName
 import kotlin.math.PI
 import kotlin.test.Test
@@ -141,23 +142,23 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun apply() {
+	fun give() {
 		script(
-			doingName lineTo script("name"),
-			giveName lineTo script("name" lineTo script("foo"))
+			doingName lineTo script("ok"),
+			giveName lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("name" lineTo script("foo")))
+			.assertEqualTo(script("ok" lineTo script("foo")))
 	}
 
 	@Test
 	fun take() {
 		script(
-			"name" lineTo script("foo"),
-			takeName lineTo script(doingName lineTo script("name"))
+			line("foo"),
+			takeName lineTo script(doingName lineTo script("ok"))
 		)
 			.evaluate
-			.assertEqualTo(script("name" lineTo script("foo")))
+			.assertEqualTo(script("ok" lineTo script("foo")))
 	}
 
 	@Test
@@ -202,12 +203,12 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(anyName),
-				doName lineTo script("name" lineTo script())
+				doName lineTo script("ok")
 			),
 			"name" lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("name" lineTo script("foo")))
+			.assertEqualTo(script("ok" lineTo script("name" lineTo script("foo"))))
 	}
 
 	@Test
@@ -230,7 +231,6 @@ class EvaluatorTest {
 				numberName lineTo script(anyName),
 				"increment" lineTo script(),
 				doName lineTo script(
-					"increment" lineTo script(),
 					numberName lineTo script(),
 					"plus" lineTo script("one")
 				)
@@ -250,10 +250,10 @@ class EvaluatorTest {
 	@Test
 	fun switch() {
 		script(
-			"the" lineTo script(literal("Hello, world!")),
+			"the" lineTo script(literal("Hello, ")),
 			switchName lineTo script(
-				textName lineTo script(doingName lineTo script(textName lineTo script())),
-				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
+				textName lineTo script(appendName lineTo script(line(literal("world!")))),
+				numberName lineTo script(plusName lineTo script(line(literal(2))))
 			)
 		)
 			.evaluate
@@ -262,27 +262,24 @@ class EvaluatorTest {
 		script(
 			"the" lineTo script(literal(1)),
 			switchName lineTo script(
-				textName lineTo script(doingName lineTo script(textName lineTo script())),
-				numberName lineTo script(doingName lineTo script(numberName lineTo script()))
+				textName lineTo script(appendName lineTo script(line(literal("world!")))),
+				numberName lineTo script(plusName lineTo script(line(literal(2))))
 			)
 		)
 			.evaluate
-			.assertEqualTo(script(literal(1)))
+			.assertEqualTo(script(literal(3)))
 	}
 
 	@Test
 	fun doRepeating() {
 		script(
-			"number" lineTo script("one"),
+			numberName lineTo script("one"),
 			doName lineTo script(
 				repeatingName lineTo script(
-					numberName lineTo script(),
 					switchName lineTo script(
-						"zero" lineTo script(
-							doingName lineTo script(line(literal("OK")))
-						),
+						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
 						"one" lineTo script(
-							doingName lineTo script(
+							beName lineTo script(
 								numberName lineTo script("zero"),
 								repeatName lineTo script(),
 							)
@@ -301,15 +298,17 @@ class EvaluatorTest {
 			line(literal(10000)),
 			doName lineTo script(
 				repeatingName lineTo script(
-					numberName lineTo script(),
-					isName lineTo script(equalName lineTo script(line(literal(0)))),
-					switchName lineTo script(
-						yesName lineTo script(doingName lineTo script(line(literal("OK")))),
-						noName lineTo script(
-							doingName lineTo script(
-								numberName lineTo script(),
-								minusName lineTo script(line(literal(1))),
-								repeatName lineTo script(),
+					bindName lineTo script(
+						numberName lineTo script(),
+						isName lineTo script(equalName lineTo script(line(literal(0)))),
+						switchName lineTo script(
+							yesName lineTo script(beName lineTo script(line(literal("OK")))),
+							noName lineTo script(
+								beName lineTo script(
+									numberName lineTo script(),
+									minusName lineTo script(line(literal(1))),
+									repeatName lineTo script(),
+								)
 							)
 						)
 					)
@@ -326,15 +325,15 @@ class EvaluatorTest {
 			"number" lineTo script("one"),
 			doName lineTo script(
 				recursingName lineTo script(
-					numberName lineTo script(),
-					switchName lineTo script(
-						"zero" lineTo script(
-							doingName lineTo script(line(literal("OK")))
-						),
-						"one" lineTo script(
-							doingName lineTo script(
-								numberName lineTo script("zero"),
-								recurseName lineTo script()
+					bindName lineTo script(
+						numberName lineTo script(),
+						switchName lineTo script(
+							"zero" lineTo script(beName lineTo script(line(literal("OK")))),
+							"one" lineTo script(
+								beName lineTo script(
+									numberName lineTo script("zero"),
+									recurseName lineTo script()
+								)
 							)
 						)
 					)
@@ -423,7 +422,7 @@ class EvaluatorTest {
 			privateName lineTo script(
 				letName lineTo script(
 					"ping" lineTo script(),
-					doName lineTo script("pong")
+					doName lineTo script(beName lineTo script("pong"))
 				)
 			),
 			"ping" lineTo script()
@@ -871,7 +870,7 @@ class EvaluatorTest {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			doName lineTo script(contentName))
+			doName lineTo script())
 			.evaluate
 			.assertEqualTo(
 				script(
