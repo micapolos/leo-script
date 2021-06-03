@@ -60,6 +60,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is AnySyntaxLine -> plusEvaluation(line.any)
 		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
+		is BindSyntaxLine -> plusEvaluation(line.bind)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
@@ -120,6 +121,9 @@ fun Evaluator.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 
 fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
+	dictionary.bind(value).valueEvaluation(bind.syntax).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation

@@ -3,6 +3,7 @@ package leo
 val anyName = "any"
 val asName = "as"
 val beName = "be"
+val bindName = "bind"
 val causeName = "cause"
 val commentName = "comment"
 val contentName = "content"

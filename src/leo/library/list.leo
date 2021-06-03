@@ -66,7 +66,7 @@ let
           fold.doing
           give
             folded.content
-            with link.item
+            with link.item.content.other
           repeat fold
             link.list
             with fold.doing
@@ -80,5 +80,5 @@ test
       "heaven, "
     doing
       text
-      append item.text
+      append other.text
   is equal "Hello, heaven, hell, world!"

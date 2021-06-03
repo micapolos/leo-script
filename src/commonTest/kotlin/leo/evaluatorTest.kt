@@ -880,6 +880,25 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun bind() {
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			bindName lineTo script(
+				"first" lineTo script("x"),
+				"second" lineTo script("y"),
+				"third" lineTo script("content")))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"first" lineTo script("x" lineTo script(line(literal(10)))),
+					"second" lineTo script("y" lineTo script(line(literal(20)))),
+					"third" lineTo script(
+						"x" lineTo script(line(literal(10))),
+						"y" lineTo script(line(literal(20))))))
+	}
+
+	@Test
 	fun pi() {
 		script(line("pi"), line("number"))
 			.evaluate

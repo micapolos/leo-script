@@ -54,7 +54,7 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
 		is FnBody -> try {
-			body.fn(set(given)).evaluation
+			body.fn(bind(given)).evaluation
 		} catch (throwable: Throwable) {
 			throwable.value.failEvaluation()
 		}
@@ -70,14 +70,14 @@ fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 
 fun Dictionary.applyRepeatingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
 	given.evaluation.valueBindRepeating { repeatingGiven ->
-		set(repeatingGiven).valueEvaluation(syntax)
+		bind(repeatingGiven).valueEvaluation(syntax)
 	}
 
 fun Dictionary.applyRecursingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	set(given).plusRecurse(syntax).valueEvaluation(syntax)
+	bind(given).plusRecurse(syntax).valueEvaluation(syntax)
 
 fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	set(given).valueEvaluation(syntax)
+	bind(given).valueEvaluation(syntax)
 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(

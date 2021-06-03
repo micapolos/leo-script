@@ -1,5 +1,6 @@
 use test as
 use test be
+use test bind
 use test comment
 use test content
 use test do

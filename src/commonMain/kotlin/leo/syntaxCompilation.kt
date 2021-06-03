@@ -32,6 +32,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		anyName -> rhs.anySyntaxLineCompilation
 		asName -> rhs.asCompilation.map(::line)
 		beName -> rhs.beCompilation.map(::line)
+		bindName -> rhs.bindCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
 		doingName -> rhs.doingCompilationOrNull?.map(::line)
@@ -91,6 +92,9 @@ val Script.asCompilation: Compilation<As> get() =
 
 val Script.beCompilation: Compilation<Be> get() =
 	syntaxCompilation.map(::be)
+
+val Script.bindCompilation: Compilation<Bind> get() =
+	syntaxCompilation.map(::bind)
 
 val Script.blockCompilation: Compilation<Block> get() =
 	matchPrefix { name, rhs ->
