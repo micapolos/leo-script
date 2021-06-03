@@ -240,7 +240,7 @@ fun Evaluator.plusResolveEvaluation(field: Field): Evaluation<Evaluator> =
 		setEvaluation(it)
 	}
 
-fun Evaluator.plusEvaluation(any: SyntaxAny): Evaluation<Evaluator> =
+fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") any: SyntaxAny): Evaluation<Evaluator> =
 	value.evaluation.bind { value ->
 		if (!value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
 		else setEvaluation(anyValue)

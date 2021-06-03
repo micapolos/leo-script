@@ -199,6 +199,7 @@ val javaFieldObjectDefinition
 				.javaValue
 		}
 
+@Suppress("UNCHECKED_CAST")
 val javaClassMethodNameTextDefinition
 	get() =
 		nativeDefinition(
