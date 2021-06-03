@@ -47,8 +47,8 @@ data class As(val syntax: Syntax)
 data class Be(val syntax: Syntax)
 data class Bind(val syntax: Syntax)
 data class Comment(val script: Script)
-data class Do(val code: Code)
-data class Doing(val code: Code)
+data class Do(val block: Block)
+data class Doing(val block: Block)
 data class Equal(val syntax: Syntax)
 data class Example(val syntax: Syntax)
 data class Fail(val syntax: Syntax)
@@ -75,10 +75,10 @@ sealed class LetRhs
 data class BeLetRhs(val be: Be): LetRhs()
 data class DoLetRhs(val do_: Do): LetRhs()
 
-sealed class Code
-data class SyntaxCode(val syntax: Syntax): Code()
-data class RepeatingCode(val repeating: Repeating): Code()
-data class RecursingCode(val recursing: Recursing): Code()
+sealed class Block
+data class SyntaxBlock(val syntax: Syntax): Block()
+data class RepeatingBlock(val repeating: Repeating): Block()
+data class RecursingBlock(val recursing: Recursing): Block()
 
 sealed class IsRhs
 data class SyntaxIsRhs(val syntax: Syntax): IsRhs()
@@ -134,11 +134,9 @@ fun as_(syntax: Syntax) = As(syntax)
 fun any() = SyntaxAny
 fun be(syntax: Syntax) = Be(syntax)
 fun bind(syntax: Syntax) = Bind(syntax)
-fun block(typeOrNull: BlockType?, syntax: Syntax) = Block(typeOrNull, syntax)
-fun block(syntax: Syntax) = block(null, syntax)
 fun comment(script: Script) = Comment(script)
-fun do_(code: Code) = Do(code)
-fun doing(code: Code) = Doing(code)
+fun do_(block: Block) = Do(block)
+fun doing(block: Block) = Doing(block)
 fun equal(syntax: Syntax) = Equal(syntax)
 fun example(syntax: Syntax) = Example(syntax)
 fun fail(syntax: Syntax) = Fail(syntax)
@@ -169,9 +167,9 @@ fun isRhs(syntax: Syntax): IsRhs = SyntaxIsRhs(syntax)
 fun isRhs(equal: Equal): IsRhs = EqualIsRhs(equal)
 fun isRhs(matching: Matching): IsRhs = MatchingIsRhs(matching)
 
-fun code(syntax: Syntax): Code = SyntaxCode(syntax)
-fun code(repeating: Repeating): Code = RepeatingCode(repeating)
-fun code(recursing: Recursing): Code = RecursingCode(recursing)
+fun block(syntax: Syntax): Block = SyntaxBlock(syntax)
+fun block(repeating: Repeating): Block = RepeatingBlock(repeating)
+fun block(recursing: Recursing): Block = RecursingBlock(recursing)
 
 val Is.negate get() = copy(negated = negated.negate)
 

@@ -129,7 +129,7 @@ fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Ev
 	evaluation
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
-	dictionary.applyEvaluation(do_.code, value).bind { setEvaluation(it) }
+	dictionary.applyEvaluation(do_.block, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusContentOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.run {
@@ -208,7 +208,7 @@ fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
-	plusResolveEvaluation(field(dictionary.function(body(doing.code))))
+	plusResolveEvaluation(field(dictionary.function(body(doing.block))))
 
 fun Evaluator.plusHashOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {

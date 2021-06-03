@@ -96,11 +96,11 @@ val Script.beCompilation: Compilation<Be> get() =
 val Script.bindCompilation: Compilation<Bind> get() =
 	syntaxCompilation.map(::bind)
 
-val Script.codeCompilation: Compilation<Code> get() =
+val Script.blockCompilation: Compilation<Block> get() =
 	null
-		?: repeatingCompilationOrNull?.map(::code)
-		?: recursingCompilationOrNull?.map(::code)
-		?: syntaxCompilation.map(::code)
+		?: repeatingCompilationOrNull?.map(::block)
+		?: recursingCompilationOrNull?.map(::block)
+		?: syntaxCompilation.map(::block)
 
 val Script.repeatingCompilationOrNull: Compilation<Repeating>? get() =
 	matchPrefix(repeatingName) { rhs ->
@@ -116,11 +116,11 @@ val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
 
 val Script.doCompilation: Compilation<Do> get() =
-	codeCompilation.map(::do_)
+	blockCompilation.map(::do_)
 
 val Script.doingCompilationOrNull: Compilation<Doing>? get() =
 	notNullIf(!isEmpty && !equals(script(anyName))) {
-		codeCompilation.map(::doing)
+		blockCompilation.map(::doing)
 	}
 
 val Script.exampleCompilation: Compilation<Example> get() =

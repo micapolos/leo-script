@@ -58,14 +58,14 @@ fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 		} catch (throwable: Throwable) {
 			throwable.value.failEvaluation()
 		}
-		is CodeBody -> applyEvaluation(body.code, given)
+		is CodeBody -> applyEvaluation(body.block, given)
 	}
 
-fun Dictionary.applyEvaluation(code: Code, given: Value): Evaluation<Value> =
-	when (code) {
-		is RecursingCode -> applyEvaluation(code.recursing, given)
-		is RepeatingCode -> applyEvaluation(code.repeating, given)
-		is SyntaxCode -> applyEvaluation(code.syntax, given)
+fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
+	when (block) {
+		is RecursingBlock -> applyEvaluation(block.recursing, given)
+		is RepeatingBlock -> applyEvaluation(block.repeating, given)
+		is SyntaxBlock -> applyEvaluation(block.syntax, given)
 	}
 
 fun Dictionary.applyEvaluation(repeating: Repeating, given: Value): Evaluation<Value> =
@@ -83,7 +83,7 @@ fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			anyValue.plus(recurseName fieldTo value()),
-			binding(function(body(code(recursing(syntax)))))
+			binding(function(body(block(recursing(syntax)))))
 		)
 	)
 
@@ -126,7 +126,7 @@ fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 	valueEvaluation(be.syntax).map(::binding)
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	binding(function(body(do_.code))).evaluation
+	binding(function(body(do_.block))).evaluation
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->

@@ -42,16 +42,8 @@ val Body.script: Script
 	get() =
 		when (this) {
 			is FnBody -> script("native")
-			is CodeBody -> code.script
+			is CodeBody -> block.script
 		}
-
-val Block.script: Script
-	get() =
-		typedScriptOrNull ?: syntax.script
-
-val Block.typedScriptOrNull: Script?
-	get() =
-		typeOrNull?.scriptName?.let { script(it lineTo syntax.script) }
 
 val Native.script: Script
 	get() =

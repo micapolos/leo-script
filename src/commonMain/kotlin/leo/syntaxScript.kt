@@ -39,8 +39,8 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
 val Bind.script get() = syntax.script
-val Do.script get() = code.script
-val Doing.script get() = code.script
+val Do.script get() = block.script
+val Doing.script get() = block.script
 val Equal.script get() = syntax.script
 val Example.script get() = syntax.script
 val Fail.script get() = syntax.script
@@ -71,11 +71,11 @@ val LetRhs.scriptLine get() =
 		is DoLetRhs -> doName lineTo do_.script
 	}
 
-val Code.script get() =
+val Block.script get() =
 	when (this) {
-		is RecursingCode -> script(recursingName lineTo recursing.script)
-		is RepeatingCode -> script(repeatingName lineTo repeating.script)
-		is SyntaxCode -> syntax.script
+		is RecursingBlock -> script(recursingName lineTo recursing.script)
+		is RepeatingBlock -> script(repeatingName lineTo repeating.script)
+		is SyntaxBlock -> syntax.script
 	}
 
 val Recursing.script get() = syntax.script
