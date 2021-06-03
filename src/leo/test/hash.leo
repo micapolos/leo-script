@@ -1,6 +1,6 @@
 test
   10.hash
-  is matching hash number any
+  is matching quote hash number any
 
 test
   10.hash

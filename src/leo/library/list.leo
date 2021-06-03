@@ -1,17 +1,17 @@
 let
   list any
-  with head
+  head
   do
-    list
+    head.list
     switch
       empty doing fail
       link doing link.item.content
 
 let
   list any
-  with tail
+  tail
   do
-    list
+    tail.list
     switch
       empty doing fail
       link doing link.list.content
@@ -41,15 +41,6 @@ let
   do list
     list.content
     with append.content
-
-test
-  list
-    x 10
-    y 20
-  append
-  is equal list
-    x 10
-    y 20
 
 test
   list

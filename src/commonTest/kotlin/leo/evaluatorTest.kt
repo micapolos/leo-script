@@ -3,6 +3,7 @@ package leo
 import leo.base.assertEqualTo
 import leo.base.assertNotNull
 import leo.natives.minusName
+import kotlin.math.PI
 import kotlin.test.Test
 
 class EvaluatorTest {
@@ -227,8 +228,9 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				numberName lineTo script(anyName),
-				withName lineTo script("increment" lineTo script()),
+				"increment" lineTo script(),
 				doName lineTo script(
+					"increment" lineTo script(),
 					numberName lineTo script(),
 					"plus" lineTo script("one")
 				)
@@ -378,7 +380,11 @@ class EvaluatorTest {
 			evaluateName lineTo script(literal("world!"))
 		)
 			.evaluate
-			.assertEqualTo(script("ok" lineTo script(literal("Hello, world!"))))
+			.assertEqualTo(
+				script(
+					line(literal("Hello, world!")),
+					"ok" lineTo script(),
+					evaluateName lineTo script(literal("world!"))))
 	}
 
 	@Test
@@ -871,5 +877,12 @@ class EvaluatorTest {
 				script(
 					"x" lineTo script(line(literal(10))),
 					"y" lineTo script(line(literal(20)))))
+	}
+
+	@Test
+	fun pi() {
+		script(line("pi"), line("number"))
+			.evaluate
+			.assertEqualTo(script(line(literal(PI))))
 	}
 }

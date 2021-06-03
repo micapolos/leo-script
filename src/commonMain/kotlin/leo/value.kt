@@ -70,7 +70,7 @@ val Native.numberOrNull: Number? get() = any as? Number
 operator fun Value.plus(field: Field): Value = value(this linkTo field)
 operator fun Value.plus(value: Value): Value = fold(value.fieldSeq.reverse) { plus(it) }
 val emptyValue: Value get() = EmptyValue
-val anyValue: Value get() = value(anyName)
+val anyValue: Value get() = value(anyField)
 val anyField: Field get() = anyName fieldTo value()
 fun value(vararg fields: Field) = emptyValue.fold(fields) { plus(it) }
 fun value(name: String) = value(name fieldTo value())
@@ -352,10 +352,8 @@ fun Value.as_(value: Value): Value =
 
 val Value.resolveNameOrNull: Value?
 	get() =
-		linkOrNull?.run {
-			field.onlyNameOrNull?.let { name ->
-				value.resolveOrNull(name)
-			}
+		fieldOrNull?.let { field ->
+			field.rhs.valueOrNull?.resolveOrNull(field.name)
 		}
 
 fun Value.setOrThrow(value: Value): Value =

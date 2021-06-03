@@ -114,8 +114,6 @@ val numberIsLessThanNumberDefinition get() =
 
 val piNumberDefinition get() =
 	nativeDefinition(
-		value(
-			piName fieldTo value(),
-			numberName fieldTo value())) {
+		value(numberName fieldTo value(piName))) {
 		value(field(literal(PI)))
 	}

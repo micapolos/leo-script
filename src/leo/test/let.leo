@@ -55,10 +55,10 @@ test
   comment final function
   let
     number any
-    with factorial
+    factorial
     do
       1
-      times number.factorial
+      times factorial.number.factorial
 
   5.factorial
   is equal 120
@@ -67,18 +67,19 @@ comment recursive function
 test
   let
     number any
-    with factorial
+    factorial
     do recursing
-      number
+      factorial.number
       is equal 1
       switch
-        yes doing number
+        yes doing factorial.number
         no doing
-          number
+          factorial.number
           times
-            number
+            factorial.number
             minus 1
-            recurse factorial
+            factorial
+            recurse
 
   5.factorial
   is equal 120

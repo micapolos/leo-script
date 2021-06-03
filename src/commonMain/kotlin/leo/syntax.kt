@@ -160,3 +160,5 @@ fun isRhs(matching: Matching): IsRhs = MatchingIsRhs(matching)
 val Is.negate get() = copy(negated = negated.negate)
 
 val Test.syntax get() = lhsSyntax.plus(line(is_))
+
+val Syntax.isEmpty get() = lineStack.isEmpty

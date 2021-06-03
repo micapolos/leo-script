@@ -49,16 +49,6 @@ class NativeEvaluatorTest {
 	}
 
 	@Test
-	fun textJava() {
-		script(
-			line(literal("Hello, world!")),
-			javaName lineTo script()
-		)
-			.evaluate
-			.assertEqualTo(script(javaName lineTo native("Hello, world!")))
-	}
-
-	@Test
 	fun javaText() {
 		script(
 			line(literal("Hello, world!")),
@@ -67,6 +57,26 @@ class NativeEvaluatorTest {
 		)
 			.evaluate
 			.assertEqualTo(script(literal("Hello, world!")))
+	}
+
+	@Test
+	fun numberJava() {
+		script(
+			line(literal(123)),
+			javaName lineTo script()
+		)
+			.evaluate
+			.assertEqualTo(script(javaName lineTo native(123)))
+	}
+
+	@Test
+	fun textJava() {
+		script(
+			line(literal("Hello, world!")),
+			javaName lineTo script()
+		)
+			.evaluate
+			.assertEqualTo(script(javaName lineTo native("Hello, world!")))
 	}
 
 	@Test

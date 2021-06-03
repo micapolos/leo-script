@@ -1,12 +1,11 @@
 package leo
 
 import leo.base.notNullIf
+import leo.base.reverse
 import leo.natives.getName
 
-val Script.syntax get() = syntaxCompilation.get
-
 val Script.syntaxCompilation: Compilation<Syntax> get() =
-	lineStack.map { syntaxLineCompilation }.flat.map(::Syntax)
+	syntax().compilation.foldStateful(lineSeq.reverse) { plusCompilation(it) }
 
 val ScriptLine.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (this) {
@@ -24,6 +23,9 @@ val ScriptLine.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 	fieldOrNull
 		.notNullOrThrow { script(this, notName lineTo script("field")).value }
 		.syntaxFieldCompilation
+
+fun Syntax.plusCompilation(scriptLine: ScriptLine): Compilation<Syntax> =
+	scriptLine.syntaxLineCompilation.map { plus(it) }
 
 val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {

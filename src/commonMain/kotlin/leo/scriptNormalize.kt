@@ -7,8 +7,8 @@ val Script.normalize: Script get() =
 	}
 
 val ScriptLink.normalize: ScriptLink get() =
-	line.fieldOrNull?.onlyStringOrNull?.let { script() linkTo line(it fieldTo lhs) }
-		?: lhs linkTo line.normalize
+	line.fieldOrNull?.onlyStringOrNull?.let { script() linkTo line(it fieldTo lhs.normalize) }
+		?: lhs.normalize linkTo line.normalize
 
 val ScriptLine.normalize: ScriptLine get() =
 	when (this) {

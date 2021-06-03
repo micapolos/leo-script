@@ -6,6 +6,15 @@ import kotlin.test.Test
 
 class ScriptSyntaxTest {
 	@Test
+	fun noNormalization() {
+		script(
+			"foo" lineTo script(),
+			"bar" lineTo script())
+			.syntax
+			.assertEqualTo(syntax("foo" lineTo syntax(), "bar" lineTo syntax()))
+	}
+
+	@Test
 	fun fields() {
 		val script = script(
 			"point" lineTo script(
@@ -16,11 +25,11 @@ class ScriptSyntaxTest {
 			"point" lineTo script(
 				"x" lineTo script(line(literal(30))),
 				"y" lineTo script(line(literal(20)))),
-			doName lineTo script(line("one"), line("two")),
+			doName lineTo script("one" lineTo script("two")),
 			"point" lineTo script(
 				"x" lineTo script(line(literal(50))),
 				"y" lineTo script(line(literal(60)))),
-			doName lineTo script(line("three"), line("four")),
+			doName lineTo script("three" lineTo script("four")),
 		)
 
 		script.syntax.script.assertEqualTo(script)
@@ -40,7 +49,7 @@ class ScriptSyntaxTest {
 							doingName lineTo script(
 								numberName lineTo script(),
 								minusName lineTo script(line(literal(1))),
-								repeatName lineTo script(),
+								withName lineTo script(repeatName lineTo script()),
 							)
 						)
 					)

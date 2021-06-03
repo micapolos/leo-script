@@ -1,8 +1,8 @@
 let
   number any
-  with increment
+  increment
   do
-    number
+    increment.number
     plus 1
 
 test
@@ -11,9 +11,9 @@ test
 
 let
   number any
-  with decrement
+  decrement
   do
-    number
+    decrement.number
     minus 1
 
 test
