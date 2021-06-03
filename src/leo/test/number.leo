@@ -36,5 +36,17 @@ test
   is not less than 3
 
 test
+  0.sinus
+  is equal 0
+ 
+test
+  0.cosinus
+  is equal 1
+
+test
+  25.root
+  is equal 5
+
+test
   123.text
   is equal "123"

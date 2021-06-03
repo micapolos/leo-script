@@ -1,6 +1,7 @@
 package leo.prelude
 
 import leo.compareTo
+import leo.cosinus
 import leo.field
 import leo.fieldTo
 import leo.isName
@@ -16,9 +17,11 @@ import leo.natives.plusName
 import leo.natives.thanName
 import leo.natives.timesName
 import leo.numberAnyField
+import leo.numberAnyValue
 import leo.numberName
 import leo.numberOrThrow
 import leo.plus
+import leo.sinus
 import leo.string
 import leo.textAnyField
 import leo.textAnyValue
@@ -27,6 +30,7 @@ import leo.textOrThrow
 import leo.times
 import leo.value
 import kotlin.math.PI
+import kotlin.math.sqrt
 
 val textAppendTextDefinition get() =
 	nativeDefinition(
@@ -111,6 +115,40 @@ val numberIsLessThanNumberDefinition get() =
 						.nativeValue(thanName)
 						.nativeValue(numberName)
 						.numberOrThrow).isValue
+	}
+
+val numberSinusDefinition get() =
+	nativeDefinition(
+		value(sinusName fieldTo numberAnyValue)) {
+		value(field(literal(
+			this
+				.nativeValue(sinusName)
+				.nativeValue(numberName)
+				.numberOrThrow
+				.sinus)))
+	}
+
+val numberCosinusDefinition get() =
+	nativeDefinition(
+		value(cosinusName fieldTo numberAnyValue)) {
+		value(field(literal(
+			this
+				.nativeValue(cosinusName)
+				.nativeValue(numberName)
+				.numberOrThrow
+				.cosinus)))
+	}
+
+val numberRootDefinition get() =
+	nativeDefinition(
+		value(rootName fieldTo numberAnyValue)) {
+		value(field(literal(
+			this
+				.nativeValue(rootName)
+				.nativeValue(numberName)
+				.numberOrThrow
+				.double
+				.let(::sqrt))))
 	}
 
 val piNumberDefinition get() =

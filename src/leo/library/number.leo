@@ -29,7 +29,7 @@ let
 test
   10.squared
   is equal 100
- 
+
 let
   any
   iterate

@@ -12,4 +12,7 @@ val preludeDictionary: Dictionary
 		.plus(numberMinusNumberDefinition)
 		.plus(numberTimesNumberDefinition)
 		.plus(numberIsLessThanNumberDefinition)
+		.plus(numberSinusDefinition)
+		.plus(numberCosinusDefinition)
+		.plus(numberRootDefinition)
 		.plus(piNumberDefinition)
