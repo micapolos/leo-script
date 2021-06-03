@@ -53,8 +53,8 @@ let
             with iterate.doing
 
 test
-  ""
+  "Hello, world"
   iterate
     5.times
     doing append "!"
-  is equal "!!!!!"
+  is equal "Hello, world!!!!!"
