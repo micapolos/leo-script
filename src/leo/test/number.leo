@@ -34,3 +34,7 @@ test
 test
   pi.number
   is not less than 3
+
+test
+  123.text
+  is equal "123"

@@ -48,10 +48,11 @@ val textAppendTextDefinition get() =
 val numberTextDefinition get() =
 	nativeDefinition(
 		value(
-			numberAnyField,
 			textName fieldTo value(numberAnyField))) {
 		value(field(literal(
-			nativeValue(numberName)
+			this
+				.nativeValue(textName)
+				.nativeValue(numberName)
 				.numberOrThrow
 				.string)))
 	}
