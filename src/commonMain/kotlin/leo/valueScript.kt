@@ -29,7 +29,6 @@ val Rhs.script: Script
 			is FunctionRhs -> function.script
 			is NativeRhs -> native.script
 			is ValueRhs -> value.script
-			is PatternRhs -> pattern.script
 		}
 
 val Field.scriptField: ScriptField

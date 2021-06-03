@@ -25,7 +25,7 @@ class SyntaxCompilationTest {
 		  .assertEqualTo(
 			  syntax(
 				  syntaxLine(literal("Hello, world!")),
-				  line(as_(type(textTypeField)))))
+				  line(as_(syntax(textName lineTo syntax(line(any())))))))
 	}
 
 	@Test
@@ -200,7 +200,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(is_(isRhs(matching(type("ok" fieldTo type())))))))
+					line(is_(isRhs(matching(syntax("ok" lineTo syntax())))))))
 	}
 
 	@Test
@@ -212,7 +212,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(is_(isRhs(matching(type("ok" fieldTo type())))).negate)))
+					line(is_(isRhs(matching(syntax("ok" lineTo syntax())))).negate)))
 	}
 
 	@Test
@@ -226,7 +226,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(type("ping" fieldTo type()), be(syntax("pong" lineTo syntax()))))
+					line(let(syntax("ping" lineTo syntax()), be(syntax("pong" lineTo syntax()))))
 				))
 	}
 
@@ -241,7 +241,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(type("ping" fieldTo type()), do_(block(syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(block(syntax("pong" lineTo syntax())))))
 				))
 	}
 
@@ -256,7 +256,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(type("ping" fieldTo type()), do_(block(BlockType.RECURSIVELY, syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(block(BlockType.RECURSIVELY, syntax("pong" lineTo syntax())))))
 				))
 	}
 
@@ -271,7 +271,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(type("ping" fieldTo type()), do_(block(BlockType.REPEATEDLY, syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(block(BlockType.REPEATEDLY, syntax("pong" lineTo syntax())))))
 				))
 	}
 
@@ -301,7 +301,7 @@ class SyntaxCompilationTest {
 				.assertEqualTo(
 					syntax(
 						syntaxLine(literal("Hello, world!")),
-						line(matching(type(textName fieldTo type())))
+						line(matching(syntax(textName lineTo syntax())))
 					))
 	}
 
@@ -525,5 +525,10 @@ class SyntaxCompilationTest {
 					line(with(syntax(
 						"x" lineTo syntax("zero" lineTo syntax()),
 						"y" lineTo syntax("one" lineTo syntax()))))))
+	}
+
+	@Test
+	fun _any() {
+		script(anyName).syntax.assertEqualTo(syntax(line(any())))
 	}
 }

@@ -1,6 +1,6 @@
 let
   list any
-  head
+  with head
   do
     list
     switch
@@ -9,7 +9,7 @@ let
 
 let
   list any
-  tail
+  with tail
   do
     list
     switch

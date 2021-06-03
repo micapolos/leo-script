@@ -94,7 +94,7 @@ class ValueTest {
 	@Test
 	fun matching_ok() {
 		value(field(literal("foo")))
-			.as_(type(textTypeField))
+			.as_(textAnyValue)
 			.assertEqualTo(value(field(literal("foo"))))
 	}
 
@@ -102,7 +102,7 @@ class ValueTest {
 	fun matching_fail() {
 		assertFailsWith<ValueError> {
 			value(field(literal(1)))
-				.as_(type(textTypeField))
+				.as_(textAnyValue)
 		}
 	}
 

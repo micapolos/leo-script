@@ -27,7 +27,7 @@ val ScriptLine.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 
 val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {
-		anyName -> rhs.anyCompilation.map(::line)
+		anyName -> rhs.anySyntaxLineCompilation
 		asName -> rhs.asCompilation.map(::line)
 		beName -> rhs.beCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
@@ -80,12 +80,12 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 		Case(string, doing).compilation
 	}
 
-val Script.anyCompilation: Compilation<SyntaxAny> get() =
-	if (isEmpty) any().compilation
-	else value.throwError()
+val Script.anySyntaxLineCompilation: Compilation<SyntaxLine> get() =
+	if (isEmpty) line(any()).compilation
+	else syntaxCompilation.map { anyName lineTo it }
 
 val Script.asCompilation: Compilation<As> get() =
-	scriptTypeCompilation.map(::as_)
+	syntaxCompilation.map(::as_)
 
 val Script.beCompilation: Compilation<Be> get() =
 	syntaxCompilation.map(::be)
@@ -108,7 +108,7 @@ val Script.doCompilation: Compilation<Do> get() =
 	blockCompilation.map(::do_)
 
 val Script.doingCompilationOrNull: Compilation<Doing>? get() =
-	notNullIf(!isEmpty) {
+	notNullIf(!isEmpty && !equals(script(anyName))) {
 		blockCompilation.map(::doing)
 	}
 
@@ -129,21 +129,18 @@ val Script.giveCompilation: Compilation<Give> get() =
 
 val Script.letCompilation: Compilation<Let> get() =
 	matchInfix { lhs, name, rhs ->
-		lhs.scriptTypeCompilation.bind { pattern ->
+		lhs.syntaxCompilation.bind { lhsValue ->
 			when (name) {
 				beName -> rhs.beCompilation.map { be ->
-					let(pattern, be)
+					let(lhsValue, be)
 				}
 				doName -> rhs.doCompilation.map { do_ ->
-					let(pattern, do_)
+					let(lhsValue, do_)
 				}
-				else -> value().throwError()
+				else -> value(syntaxName fieldTo value(letName fieldTo value)).throwError()
 			}
 		}
-	}?:value().throwError()
-
-val Script.scriptTypeCompilation: Compilation<Type> get() =
-	type.compilation
+	}?:value(syntaxName fieldTo value(letName fieldTo value)).throwError()
 
 val Script.privateCompilation: Compilation<Private> get() =
 	syntaxCompilation.map(::private)
@@ -166,7 +163,7 @@ val Script.isRhsCompilation: Compilation<IsRhs> get() =
 	} ?: syntaxCompilation.map(::isRhs)
 
 val Script.matchingCompilation: Compilation<Matching> get() =
-	scriptTypeCompilation.map(::matching)
+	syntaxCompilation.map(::matching)
 
 val Script.equalCompilation: Compilation<Equal> get() =
 	syntaxCompilation.map(::equal)

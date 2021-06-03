@@ -146,7 +146,9 @@ fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
-	plusResolveEvaluation(matchingName fieldTo valueRhs(matching.type))
+	dictionary.valueEvaluation(matching.syntax).bind { matchingValue ->
+		plusResolveEvaluation(matchingName fieldTo rhs(matchingValue))
+	}
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(test.syntax).bind { result ->
@@ -183,8 +185,10 @@ fun Evaluator.plusEvaluation(syntaxField: SyntaxField): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
-	dictionary.bindingEvaluation(let.rhs).bind { binding ->
-		set(context.plus(definition(let.type, binding))).evaluation
+	dictionary.valueEvaluation(let.syntax).bind { letValue ->
+		dictionary.bindingEvaluation(let.rhs).bind { binding ->
+			set(context.plus(definition(letValue, binding))).evaluation
+		}
 	}
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
@@ -223,12 +227,14 @@ fun Evaluator.plusResolveEvaluation(field: Field): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(any: SyntaxAny): Evaluation<Evaluator> =
 	value.evaluation.bind { value ->
-		if (value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
+		if (!value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
 		else setEvaluation(anyValue)
 	}
 
 fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
-	setEvaluation(value.as_(as_.type))
+	dictionary.valueEvaluation(as_.syntax).bind { asValue ->
+		setEvaluation(value.as_(asValue))
+	}
 
 fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
 	isValueEvaluation(is_.rhs).bind { isValue ->
@@ -248,7 +254,9 @@ fun Evaluator.isValueEvaluation(equal: Equal): Evaluation<Value> =
 	}
 
 fun Evaluator.isValueEvaluation(matching: Matching): Evaluation<Value> =
-	value.matches(matching.type).isValue.evaluation
+	dictionary.valueEvaluation(matching.syntax).bind { matchingValue ->
+		value.matches(matchingValue).isValue.evaluation
+	}
 
 fun Evaluator.isValueEvaluation(syntax: Syntax): Evaluation<Value> =
 	dictionary.valueEvaluation(syntax).bind { rhsValue ->

@@ -193,7 +193,7 @@ class EvaluatorTest {
 			letName lineTo script("bar")
 		)
 			.evaluate
-			.assertEqualTo(script("error"))
+			.assertEqualTo(script(errorName lineTo script(syntaxName lineTo script(letName lineTo script("bar")))))
 	}
 
 	@Test
@@ -227,7 +227,7 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				numberName lineTo script(anyName),
-				"increment" lineTo script(),
+				withName lineTo script("increment" lineTo script()),
 				doName lineTo script(
 					numberName lineTo script(),
 					"plus" lineTo script("one")
@@ -651,6 +651,13 @@ class EvaluatorTest {
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
+
+		script(
+			doingName lineTo script("foo"),
+			isName lineTo script(matchingName lineTo script(doingName lineTo script(anyName)))
+		)
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
 
 	@Test

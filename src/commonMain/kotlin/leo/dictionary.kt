@@ -14,21 +14,20 @@ fun dictionary(vararg definitions: Definition): Dictionary =
 fun Dictionary.plus(definition: Definition): Dictionary =
 	Dictionary(definitionStack.push(definition))
 
-fun Dictionary.plus(script: Script, body: Body): Dictionary =
-	plus(definition(script.type, binding(function(body))))
+//fun Dictionary.plus(script: Script, body: Body): Dictionary =
+//	plus(definition(script.type, binding(function(body))))
 
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
 fun Dictionary.bindingOrNull(value: Value): Binding? =
 	definitionStack
-		.first { definition -> value.matches(definition.type) }
+		.first { definition -> value.matches(definition.value) }
 		?.binding
 
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(switchName).throwError()
-		AnyValue -> value(switchName).throwError()
 		is LinkValue -> switchEvaluation(field, cases.link)
 	}
 
@@ -83,10 +82,7 @@ fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
-			script(
-				anyName lineTo script(),
-				recurseName lineTo script()
-			).type,
+			anyValue.plus(recurseName fieldTo value()),
 			binding(function(body(BlockType.RECURSIVELY.block(syntax))))
 		)
 	)
@@ -108,7 +104,6 @@ fun Dictionary.structureEvaluation(value: Value, update: Update): Evaluation<Val
 fun Dictionary.structureEvaluation(value: Value, syntaxField: SyntaxField): Evaluation<Value> =
 	when (value) {
 		EmptyValue -> value("no" fieldTo value("field" fieldTo value(syntaxField.name))).throwError()
-		AnyValue -> value("no" fieldTo value("field" fieldTo value(syntaxField.name))).throwError()
 		is LinkValue -> structureEvaluation(value.link, syntaxField).map { value(it) }
 	}
 
@@ -156,4 +151,4 @@ fun Dictionary.valueEvaluation(equal: Equal): Evaluation<Value> =
 	valueEvaluation(equal.syntax).map { value(equalName fieldTo it) }
 
 fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
-	value(matchingName fieldTo matching.type.script.value).evaluation
+	value(matchingName fieldTo matching.syntax.script.value).evaluation

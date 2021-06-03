@@ -20,8 +20,6 @@ sealed class Value {
 
 object EmptyValue : Value()
 
-object AnyValue: Value()
-
 data class LinkValue(val link: Link) : Value() {
 	override fun toString() = super.toString()
 }
@@ -34,12 +32,10 @@ sealed class Rhs
 data class ValueRhs(val value: Value) : Rhs()
 data class FunctionRhs(val function: Function) : Rhs()
 data class NativeRhs(val native: Native) : Rhs()
-data class PatternRhs(val pattern: Type) : Rhs()
 
 fun rhs(value: Value): Rhs = ValueRhs(value)
 fun rhs(function: Function): Rhs = FunctionRhs(function)
 fun rhs(native: Native): Rhs = NativeRhs(native)
-fun valueRhs(pattern: Type): Rhs = PatternRhs(pattern)
 
 val Rhs.valueOrNull: Value? get() = (this as? ValueRhs)?.value
 val Rhs.valueOrThrow: Value
@@ -74,7 +70,8 @@ val Native.numberOrNull: Number? get() = any as? Number
 operator fun Value.plus(field: Field): Value = value(this linkTo field)
 operator fun Value.plus(value: Value): Value = fold(value.fieldSeq.reverse) { plus(it) }
 val emptyValue: Value get() = EmptyValue
-val anyValue: Value get() = AnyValue
+val anyValue: Value get() = value(anyName)
+val anyField: Field get() = anyName fieldTo value()
 fun value(vararg fields: Field) = emptyValue.fold(fields) { plus(it) }
 fun value(name: String) = value(name fieldTo value())
 fun value(link: Link): Value = LinkValue(link)
@@ -346,12 +343,12 @@ fun <R> Value.resolveOrNull(lhsName: String, rhsName: String, fn: Value.(Value) 
 		}
 	}
 
-fun Value.as_(type: Type): Value =
+fun Value.as_(value: Value): Value =
 	dictionary()
-		.plus(definition(type, binding(this)))
+		.plus(definition(value, binding(this)))
 		.bindingOrNull(this)
 		?.let { this }
-		.notNullOrThrow { plus(value(asName fieldTo type.script.value)) }
+		.notNullOrThrow { plus(value(asName fieldTo value)) }
 
 val Value.resolveNameOrNull: Value?
 	get() =
@@ -371,7 +368,6 @@ fun Value.setOrThrow(value: Value): Value =
 fun Value.replaceOrThrow(field: Field): Value =
 	when (this) {
 		EmptyValue -> value("no" fieldTo value("field" fieldTo value(field.name))).throwError()
-		AnyValue -> value("no" fieldTo value("field" fieldTo value(field.name))).throwError()
 		is LinkValue -> link.replaceOrThrow(field).let { value(it) }
 	}
 
@@ -389,15 +385,6 @@ fun Value.apply(get: Get): Value =
 		}
 	}
 
-val Value.structureValue: Value get() =
-	value(
-		"structure" fieldTo
-			when (this) {
-				EmptyValue -> value("empty")
-				AnyValue -> value("any")
-				is LinkValue -> value("link" fieldTo value(link))
-			})
-
 val Value.switchFieldOrNull: Field? get() =
 	fieldOrNull?.switchFieldOrNull
 
@@ -406,7 +393,6 @@ val Field.switchFieldOrNull: Field? get() =
 		listName -> valueOrNull?.let { value ->
 			when (value) {
 				EmptyValue -> emptyName fieldTo value()
-				AnyValue -> anyName fieldTo value()
 				is LinkValue -> linkName fieldTo value(
 					listName fieldTo value.link.value,
 					itemName fieldTo value(value.link.field))
@@ -414,3 +400,9 @@ val Field.switchFieldOrNull: Field? get() =
 		}
 		else -> valueOrNull?.fieldOrNull
 	}
+
+val textAnyField = textName fieldTo anyValue
+val numberAnyField = numberName fieldTo anyValue
+
+val textAnyValue = value(textAnyField)
+val numberAnyValue = value(numberAnyField)

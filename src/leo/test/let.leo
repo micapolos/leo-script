@@ -55,7 +55,7 @@ test
   comment final function
   let
     number any
-    factorial
+    with factorial
     do
       1
       times number.factorial
@@ -67,7 +67,7 @@ comment recursive function
 test
   let
     number any
-    factorial
+    with factorial
     do recursing
       number
       is equal 1
@@ -82,3 +82,4 @@ test
 
   5.factorial
   is equal 120
+

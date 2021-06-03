@@ -1,6 +1,6 @@
 let
   number any
-  increment
+  with increment
   do
     number
     plus 1
@@ -11,7 +11,7 @@ test
 
 let
   number any
-  decrement
+  with decrement
   do
     number
     minus 1
@@ -22,7 +22,7 @@ test
 
 let
   number any
-  squared
+  with squared
   do
     number
     times number
