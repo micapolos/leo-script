@@ -132,7 +132,7 @@ val numberCosinusDefinition get() =
 		value(cosinusName fieldTo numberAnyValue)) {
 		value(field(literal(
 			it
-				.nativeValue(sinusName)
+				.nativeValue(cosinusName)
 				.nativeValue(numberName)
 				.numberOrThrow
 				.cosinus)))
