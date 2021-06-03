@@ -49,7 +49,7 @@ val javaObjectClassDefinition
 			value(className fieldTo value(objectName fieldTo value(javaName fieldTo anyValue)))) {
 			value(
 				className fieldTo
-					this
+					it
 						.nativeValue(className)
 						.nativeValue(objectName)
 						.nativeValue(javaName)
@@ -64,7 +64,7 @@ val textJavaDefinition
 		nativeDefinition(
 			value(javaName fieldTo value(textAnyField))
 		) {
-			this
+			it
 				.nativeValue(javaName)
 				.nativeValue(textName)
 				.nativeText
@@ -76,7 +76,7 @@ val javaTextDefinition
 		nativeDefinition(
 			value(textName fieldTo value(javaName fieldTo anyValue))
 		) {
-			value(field(literal(nativeValue(textName).nativeValue(javaName).javaObject as String)))
+			value(field(literal(it.nativeValue(textName).nativeValue(javaName).javaObject as String)))
 		}
 
 val numberJavaDefinition
@@ -86,7 +86,7 @@ val numberJavaDefinition
 				javaName fieldTo numberAnyValue
 			)
 		) {
-			nativeValue(javaName).nativeValue(numberName).nativeNumber.javaValue
+			it.nativeValue(javaName).nativeValue(numberName).nativeNumber.javaValue
 		}
 
 val javaNumberDefinition
@@ -96,7 +96,7 @@ val javaNumberDefinition
 				numberName fieldTo value(javaName fieldTo anyValue)
 			)
 		) {
-			value(field(literal(nativeValue(numberName).nativeValue(javaName).javaObject as Number)))
+			value(field(literal(it.nativeValue(numberName).nativeValue(javaName).javaObject as Number)))
 		}
 
 val numberIntegerObjectJavaDefinition
@@ -106,7 +106,7 @@ val numberIntegerObjectJavaDefinition
 				javaName fieldTo value(integerName fieldTo value(numberAnyField))
 			)
 		) {
-			this
+			it
 				.nativeValue(javaName)
 				.nativeValue(integerName)
 				.nativeValue(numberName)
@@ -123,7 +123,7 @@ val javaObjectIntegerNumberDefinition
 				numberName fieldTo value(integerName fieldTo value(javaName fieldTo anyValue)),
 			)
 		) {
-			value(field(literal(nativeValue(numberName).nativeValue(integerName).nativeValue(javaName).javaObject as Int)))
+			value(field(literal(it.nativeValue(numberName).nativeValue(integerName).nativeValue(javaName).javaObject as Int)))
 		}
 
 val arrayJavaDefinition
@@ -133,7 +133,7 @@ val arrayJavaDefinition
 				javaName fieldTo value(arrayName fieldTo anyValue),
 			)
 		) {
-			nativeValue(javaName).nativeValue(arrayName).nativeArray.javaValue
+			it.nativeValue(javaName).nativeValue(arrayName).nativeArray.javaValue
 		}
 
 val textClassJavaDefinition
@@ -143,7 +143,7 @@ val textClassJavaDefinition
 				javaName fieldTo value(className fieldTo value(textAnyField))
 			)
 		) {
-			this
+			it
 				.nativeValue(javaName)
 				.nativeValue(className)
 				.nativeValue(textName)
@@ -163,13 +163,13 @@ val javaClassFieldDefinition
 			)
 		) {
 			value(
-				fieldName fieldTo this
+				fieldName fieldTo it
 					.nativeValue(className)
 					.nativeValue(javaName)
 					.javaObject
 					.run { this as Class<*> }
 					.getField(
-						this
+						it
 							.nativeValue(fieldName)
 							.nativeValue(textName)
 							.nativeText
@@ -185,13 +185,13 @@ val javaFieldObjectDefinition
 				objectName fieldTo value(javaName fieldTo anyValue)
 			)
 		) {
-			this
+			it
 				.nativeValue(fieldName)
 				.nativeValue(javaName)
 				.javaObject
 				.run { this as Field }
 				.get(
-					this
+					it
 						.nativeValue(objectName)
 						.nativeValue(javaName)
 						.javaObject
@@ -216,17 +216,17 @@ val javaClassMethodNameTextDefinition
 			)
 		) {
 			value(
-				methodName fieldTo this
+				methodName fieldTo it
 					.nativeValue(className)
 					.nativeValue(javaName)
 					.javaObject
 					.run { this as Class<*> }
 					.getMethod(
-						this
+						it
 							.nativeValue(methodName)
 							.nativeValue(textName)
 							.nativeText,
-						*this
+						*it
 							.nativeValue(methodName)
 							.nativeValue(argsName)
 							.nativeValue(javaName)
@@ -252,17 +252,17 @@ val javaMethodInvokeDefinition
 			value(
 				javaName fieldTo rhs(
 					native(
-						this
+						it
 							.nativeValue(methodName)
 							.nativeValue(javaName)
 							.javaObject
 							.run { this as Method }
 							.invoke(
-								this
+								it
 									.nativeValue(invokeName)
 									.nativeValue(javaName)
 									.javaObject,
-								*this
+								*it
 									.nativeValue(invokeName)
 									.nativeValue(argsName)
 									.nativeValue(javaName)

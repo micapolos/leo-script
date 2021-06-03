@@ -38,12 +38,11 @@ val textAppendTextDefinition get() =
 			textAnyField,
 			appendName fieldTo textAnyValue)
 	) {
-		value(field(
-			literal(
-			nativeValue(textName)
+		value(field(literal(
+			it.nativeValue(textName)
 				.textOrThrow
 				.plus(
-					nativeValue(appendName)
+					it.nativeValue(appendName)
 						.nativeValue(textName)
 						.textOrThrow))
 		))
@@ -54,7 +53,7 @@ val numberTextDefinition get() =
 		value(
 			textName fieldTo value(numberAnyField))) {
 		value(field(literal(
-			this
+			it
 				.nativeValue(textName)
 				.nativeValue(numberName)
 				.numberOrThrow
@@ -67,10 +66,10 @@ val numberPlusNumberDefinition get() =
 			numberAnyField,
 			plusName fieldTo value(numberAnyField))) {
 		value(field(literal(
-			nativeValue(numberName)
+			it.nativeValue(numberName)
 				.numberOrThrow
 				.plus(
-					nativeValue(plusName)
+					it.nativeValue(plusName)
 						.nativeValue(numberName)
 						.numberOrThrow))))
 	}
@@ -81,10 +80,10 @@ val numberMinusNumberDefinition get() =
 			numberAnyField,
 			minusName fieldTo value(numberAnyField))) {
 		value(field(literal(
-			nativeValue(numberName)
+			it.nativeValue(numberName)
 				.numberOrThrow
 				.minus(
-					nativeValue(minusName)
+					it.nativeValue(minusName)
 						.nativeValue(numberName)
 						.numberOrThrow))))
 	}
@@ -95,10 +94,10 @@ val numberTimesNumberDefinition get() =
 			numberAnyField,
 			timesName fieldTo value(numberAnyField))) {
 		value(field(literal(
-			nativeValue(numberName)
+			it.nativeValue(numberName)
 				.numberOrThrow
 				.times(
-					nativeValue(timesName)
+					it.nativeValue(timesName)
 						.nativeValue(numberName)
 						.numberOrThrow))))
 	}
@@ -108,9 +107,9 @@ val numberIsLessThanNumberDefinition get() =
 		value(
 			numberAnyField,
 			isName fieldTo value(lessName fieldTo value(thanName fieldTo value(numberAnyField))))) {
-			(nativeValue(numberName)
+			(it.nativeValue(numberName)
 				.numberOrThrow <
-					nativeValue(isName)
+					it.nativeValue(isName)
 						.nativeValue(lessName)
 						.nativeValue(thanName)
 						.nativeValue(numberName)
@@ -121,7 +120,7 @@ val numberSinusDefinition get() =
 	nativeDefinition(
 		value(sinusName fieldTo numberAnyValue)) {
 		value(field(literal(
-			this
+			it
 				.nativeValue(sinusName)
 				.nativeValue(numberName)
 				.numberOrThrow
@@ -132,8 +131,8 @@ val numberCosinusDefinition get() =
 	nativeDefinition(
 		value(cosinusName fieldTo numberAnyValue)) {
 		value(field(literal(
-			this
-				.nativeValue(cosinusName)
+			it
+				.nativeValue(sinusName)
 				.nativeValue(numberName)
 				.numberOrThrow
 				.cosinus)))
@@ -143,7 +142,7 @@ val numberRootDefinition get() =
 	nativeDefinition(
 		value(rootName fieldTo numberAnyValue)) {
 		value(field(literal(
-			this
+			it
 				.nativeValue(rootName)
 				.nativeValue(numberName)
 				.numberOrThrow

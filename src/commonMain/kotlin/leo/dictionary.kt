@@ -54,7 +54,7 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
 		is FnBody -> try {
-			body.fn(bind(given)).evaluation
+			body.fn(value("the" fieldTo given)).evaluation
 		} catch (throwable: Throwable) {
 			throwable.value.failEvaluation()
 		}
