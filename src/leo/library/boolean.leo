@@ -1,8 +1,7 @@
 let
-  boolean any
-  negate
+  any.boolean.negate
   do
-    boolean
+    negate.boolean
     switch
       false doing true.boolean
       true doing false.boolean
@@ -16,8 +15,8 @@ test
   is equal false.boolean
 
 let
-  boolean any
-  and boolean any
+  any.boolean
+  and any.boolean
   do
     boolean
     switch
@@ -45,8 +44,8 @@ test
   is equal true.boolean
 
 let
-  boolean any
-  or boolean any
+  any.boolean
+  or any.boolean
   do
     boolean
     switch

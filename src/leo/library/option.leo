@@ -1,8 +1,8 @@
 use library text
 
 let
-  option any
-  map doing any
+  any.option
+  map any.doing
   do
     option
     switch

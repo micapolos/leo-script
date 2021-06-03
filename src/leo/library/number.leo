@@ -1,6 +1,5 @@
 let
-  number any
-  increment
+  any.number.increment
   do
     increment.number
     plus 1
@@ -10,8 +9,7 @@ test
   is equal 3
 
 let
-  number any
-  decrement
+  any.number.decrement
   do
     decrement.number
     minus 1
@@ -21,11 +19,14 @@ test
   is equal 1
 
 let
-  number any
-  with squared
+  any.number.squared
   do
-    number
-    times number
+    squared.number
+    times squared.number
+
+test
+  10.squared
+  is equal 100
  
 let
   any

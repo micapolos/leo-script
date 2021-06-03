@@ -1,8 +1,8 @@
 use library number
 
 let
-  vector any
-  plus vector any
+  any.vector
+  plus any.vector
   do vector
     x
       vector.x.number

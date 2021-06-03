@@ -1,12 +1,12 @@
 test
   "Hello, world!"
-  as text any
+  as any.text
   is equal "Hello, world!"
 
 test
   try 
     "Hello, world!"
-    as number any
+    as any.number
   is equal quote try error
     "Hello, world!"
     as number any
@@ -23,7 +23,7 @@ test
   point
     x 10
     y 20
-  as point any
+  as any.point
   is equal point
     x 10
     y 20

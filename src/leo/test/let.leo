@@ -37,8 +37,8 @@ comment
   aka repeating function
 test
   let
-    number any
-    times factorial number any
+    any.number
+    times any.number.factorial
     do repeating
       times.factorial.number
       is equal 1
@@ -54,8 +54,7 @@ test
 
   comment final function
   let
-    number any
-    factorial
+    any.number.factorial
     do
       1
       times factorial.number.factorial
@@ -66,8 +65,7 @@ test
 comment recursive function
 test
   let
-    number any
-    factorial
+    any.number.factorial
     do recursing
       factorial.number
       is equal 1

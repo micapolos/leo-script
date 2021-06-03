@@ -1,6 +1,5 @@
 let
-  list any
-  head
+  any.list.head
   do
     head.list
     switch
@@ -8,8 +7,7 @@ let
       link doing link.item.content
 
 let
-  list any
-  tail
+  any.list.tail
   do
     tail.list
     switch
