@@ -8,6 +8,7 @@ val Syntax.script: Script get() =
 val SyntaxLine.scriptLine: ScriptLine get() =
 	when (this) {
 		is AtomSyntaxLine -> atom.scriptLine
+		is AnySyntaxLine -> anyName lineTo any.script
 		is AsSyntaxLine -> asName lineTo as_.script
 		is BeSyntaxLine -> beName lineTo be.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
@@ -77,6 +78,10 @@ val IsRhs.script get() =
 		is MatchingIsRhs -> script(matchingName lineTo matching.script)
 		is SyntaxIsRhs -> syntax.script
 	}
+
+@Suppress("unused")
+val SyntaxAny.script get() =
+	script()
 
 val SyntaxAtom.scriptLine get() =
 	when (this) {

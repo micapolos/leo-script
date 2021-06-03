@@ -20,6 +20,8 @@ sealed class Value {
 
 object EmptyValue : Value()
 
+object AnyValue: Value()
+
 data class LinkValue(val link: Link) : Value() {
 	override fun toString() = super.toString()
 }
@@ -72,6 +74,7 @@ val Native.numberOrNull: Number? get() = any as? Number
 operator fun Value.plus(field: Field): Value = value(this linkTo field)
 operator fun Value.plus(value: Value): Value = fold(value.fieldSeq.reverse) { plus(it) }
 val emptyValue: Value get() = EmptyValue
+val anyValue: Value get() = AnyValue
 fun value(vararg fields: Field) = emptyValue.fold(fields) { plus(it) }
 fun value(name: String) = value(name fieldTo value())
 fun value(link: Link): Value = LinkValue(link)
@@ -368,6 +371,7 @@ fun Value.setOrThrow(value: Value): Value =
 fun Value.replaceOrThrow(field: Field): Value =
 	when (this) {
 		EmptyValue -> value("no" fieldTo value("field" fieldTo value(field.name))).throwError()
+		AnyValue -> value("no" fieldTo value("field" fieldTo value(field.name))).throwError()
 		is LinkValue -> link.replaceOrThrow(field).let { value(it) }
 	}
 
@@ -390,6 +394,7 @@ val Value.structureValue: Value get() =
 		"structure" fieldTo
 			when (this) {
 				EmptyValue -> value("empty")
+				AnyValue -> value("any")
 				is LinkValue -> value("link" fieldTo value(link))
 			})
 
@@ -401,6 +406,7 @@ val Field.switchFieldOrNull: Field? get() =
 		listName -> valueOrNull?.let { value ->
 			when (value) {
 				EmptyValue -> emptyName fieldTo value()
+				AnyValue -> anyName fieldTo value()
 				is LinkValue -> linkName fieldTo value(
 					listName fieldTo value.link.value,
 					itemName fieldTo value(value.link.field))

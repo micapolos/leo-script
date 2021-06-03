@@ -57,6 +57,7 @@ fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	when (line) {
 		is AsSyntaxLine -> plusEvaluation(line.as_)
+		is AnySyntaxLine -> plusEvaluation(line.any)
 		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
@@ -218,6 +219,12 @@ fun Evaluator.plusEvaluation(literal: Literal): Evaluation<Evaluator> =
 fun Evaluator.plusResolveEvaluation(field: Field): Evaluation<Evaluator> =
 	dictionary.resolveEvaluation(value.plus(field)).bind {
 		setEvaluation(it)
+	}
+
+fun Evaluator.plusEvaluation(any: SyntaxAny): Evaluation<Evaluator> =
+	value.evaluation.bind { value ->
+		if (value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
+		else setEvaluation(anyValue)
 	}
 
 fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =

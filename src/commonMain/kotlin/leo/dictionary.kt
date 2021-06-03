@@ -28,6 +28,7 @@ fun Dictionary.bindingOrNull(value: Value): Binding? =
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(switchName).throwError()
+		AnyValue -> value(switchName).throwError()
 		is LinkValue -> switchEvaluation(field, cases.link)
 	}
 
@@ -107,6 +108,7 @@ fun Dictionary.structureEvaluation(value: Value, update: Update): Evaluation<Val
 fun Dictionary.structureEvaluation(value: Value, syntaxField: SyntaxField): Evaluation<Value> =
 	when (value) {
 		EmptyValue -> value("no" fieldTo value("field" fieldTo value(syntaxField.name))).throwError()
+		AnyValue -> value("no" fieldTo value("field" fieldTo value(syntaxField.name))).throwError()
 		is LinkValue -> structureEvaluation(value.link, syntaxField).map { value(it) }
 	}
 

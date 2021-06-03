@@ -27,6 +27,7 @@ val ScriptLine.syntaxFieldCompilation: Compilation<SyntaxField> get() =
 
 val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {
+		anyName -> rhs.anyCompilation.map(::line)
 		asName -> rhs.asCompilation.map(::line)
 		beName -> rhs.beCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
@@ -78,6 +79,10 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 	rhs.rhsOrNull(doingName).notNullOrThrow { value("case") }.doingCompilationOrThrow.bind { doing ->
 		Case(string, doing).compilation
 	}
+
+val Script.anyCompilation: Compilation<SyntaxAny> get() =
+	if (isEmpty) any().compilation
+	else value.throwError()
 
 val Script.asCompilation: Compilation<As> get() =
 	scriptTypeCompilation.map(::as_)
