@@ -28,7 +28,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is RepeatSyntaxLine -> repeatName lineTo repeat.script
 		is SetSyntaxLine -> setName lineTo set.script
 		is SwitchSyntaxLine -> switchName lineTo switch.script
-		is TakeSyntaxLine -> giveName lineTo take.script
+		is TakeSyntaxLine -> takeName lineTo take.script
 		is TestSyntaxLine -> testName lineTo test.script
 		is TrySyntaxLine -> tryName lineTo try_.script
 		is UpdateSyntaxLine -> updateName lineTo update.script
@@ -39,8 +39,8 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
 val Bind.script get() = syntax.script
-val Do.script get() = block.script
-val Doing.script get() = block.script
+val Do.script get() = code.script
+val Doing.script get() = code.script
 val Equal.script get() = syntax.script
 val Example.script get() = syntax.script
 val Fail.script get() = syntax.script
@@ -70,6 +70,16 @@ val LetRhs.scriptLine get() =
 		is BeLetRhs -> beName lineTo be.script
 		is DoLetRhs -> doName lineTo do_.script
 	}
+
+val Code.script get() =
+	when (this) {
+		is RecursingCode -> script(recursingName lineTo recursing.script)
+		is RepeatingCode -> script(repeatingName lineTo repeating.script)
+		is SyntaxCode -> syntax.script
+	}
+
+val Recursing.script get() = syntax.script
+val Repeating.script get() = syntax.script
 
 val Is.script get() =
 	rhs.script.runIf(negated) { script(notName lineTo this) }

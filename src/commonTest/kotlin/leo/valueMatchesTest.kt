@@ -42,7 +42,7 @@ class ValueMatchesTest {
 			.matches(value(numberName fieldTo anyValue))
 			.assertTrue
 
-		value(doingName fieldTo rhs(dictionary().function(body(block(syntax())))))
+		value(doingName fieldTo rhs(dictionary().function(body(code(syntax())))))
 			.matches(value(doingName fieldTo anyValue))
 			.assertTrue
 

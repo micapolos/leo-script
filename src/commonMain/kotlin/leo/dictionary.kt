@@ -58,32 +58,32 @@ fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 		} catch (throwable: Throwable) {
 			throwable.value.failEvaluation()
 		}
-		is BlockBody -> applyEvaluation(body.block, given)
+		is CodeBody -> applyEvaluation(body.code, given)
 	}
 
-fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
-	when (block.typeOrNull) {
-		BlockType.REPEATEDLY -> applyRepeatingEvaluation(block.syntax, given)
-		BlockType.RECURSIVELY -> applyRecursingEvaluation(block.syntax, given)
-		null -> applyUntypedEvaluation(block.syntax, given)
+fun Dictionary.applyEvaluation(code: Code, given: Value): Evaluation<Value> =
+	when (code) {
+		is RecursingCode -> applyEvaluation(code.recursing, given)
+		is RepeatingCode -> applyEvaluation(code.repeating, given)
+		is SyntaxCode -> applyEvaluation(code.syntax, given)
 	}
 
-fun Dictionary.applyRepeatingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
+fun Dictionary.applyEvaluation(repeating: Repeating, given: Value): Evaluation<Value> =
 	given.evaluation.valueBindRepeating { repeatingGiven ->
-		valueEvaluation(repeatingGiven, syntax)
+		valueEvaluation(repeatingGiven, repeating.syntax)
 	}
 
-fun Dictionary.applyRecursingEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	plusRecurse(syntax).valueEvaluation(given, syntax)
+fun Dictionary.applyEvaluation(recursing: Recursing, given: Value): Evaluation<Value> =
+	plusRecurse(recursing.syntax).valueEvaluation(given, recursing.syntax)
 
-fun Dictionary.applyUntypedEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
+fun Dictionary.applyEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
 	valueEvaluation(given, syntax)
 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			anyValue.plus(recurseName fieldTo value()),
-			binding(function(body(BlockType.RECURSIVELY.block(syntax))))
+			binding(function(body(code(recursing(syntax)))))
 		)
 	)
 
@@ -126,7 +126,7 @@ fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 	valueEvaluation(be.syntax).map(::binding)
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	binding(function(body(do_.block))).evaluation
+	binding(function(body(do_.code))).evaluation
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->

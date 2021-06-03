@@ -76,7 +76,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(do_(block(syntax("length" lineTo syntax()))))
+					line(do_(code(syntax("length" lineTo syntax()))))
 				))
 	}
 
@@ -89,7 +89,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(doing(block(syntax("length" lineTo syntax()))))
+					line(doing(code(syntax("length" lineTo syntax()))))
 				))
 	}
 
@@ -242,7 +242,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(syntax("ping" lineTo syntax()), do_(block(syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(code(syntax("pong" lineTo syntax())))))
 				))
 	}
 
@@ -257,7 +257,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(syntax("ping" lineTo syntax()), do_(block(BlockType.RECURSIVELY, syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(code(recursing(syntax("pong" lineTo syntax()))))))
 				))
 	}
 
@@ -272,7 +272,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(let(syntax("ping" lineTo syntax()), do_(block(BlockType.REPEATEDLY, syntax("pong" lineTo syntax())))))
+					line(let(syntax("ping" lineTo syntax()), do_(code(repeating(syntax("pong" lineTo syntax()))))))
 				))
 	}
 

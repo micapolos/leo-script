@@ -21,7 +21,7 @@ comment test
 comment
   tail recursive function
   aka repeating function
-test
+comment test
   let
     any.number
     times any.number.factorial
@@ -29,11 +29,11 @@ test
       times.factorial.number
       is equal 1
       switch
-        yes doing be number
-        no doing be
+        yes be number
+        no be
           number
           times times.factorial.number
-          repeat times
+          times
             times.factorial.number
             minus 1
             factorial
@@ -52,12 +52,12 @@ comment recursive function
 test
   let
     any.number.factorial
-    do recursing
+    do recursing bind
       factorial.number
       is equal 1
       switch
-        yes doing factorial.number
-        no doing
+        yes be factorial.number
+        no be
           factorial.number
           times
             factorial.number

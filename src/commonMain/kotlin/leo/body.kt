@@ -1,9 +1,9 @@
 package leo
 
 sealed class Body
-data class BlockBody(val block: Block) : Body()
+data class CodeBody(val code: Code) : Body()
 data class FnBody(val fn: (Dictionary) -> Value) : Body()
 
-fun body(block: Block): Body = BlockBody(block)
+fun body(code: Code): Body = CodeBody(code)
 fun body(fn: Dictionary.() -> Value): Body = FnBody(fn)
-fun body(script: Script): Body = body(block(script.syntax))
+fun body(script: Script): Body = body(code(script.syntax))

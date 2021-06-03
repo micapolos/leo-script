@@ -5,12 +5,12 @@ comment
 
 test
   16
-  do recursing
+  do recursing bind
     number
     is less than 2
     switch
-      yes doing number
-      no doing
+      yes be number
+      no be
         number.decrement.decrement.recurse
         plus number.decrement.recurse
   is equal 987

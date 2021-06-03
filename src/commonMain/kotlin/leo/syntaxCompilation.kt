@@ -96,30 +96,32 @@ val Script.beCompilation: Compilation<Be> get() =
 val Script.bindCompilation: Compilation<Bind> get() =
 	syntaxCompilation.map(::bind)
 
-val Script.blockCompilation: Compilation<Block> get() =
-	matchPrefix { name, rhs ->
-		name
-			.blockTypeOrNull
-			?.let { blockType ->
-				rhs.syntaxCompilation.map { syntax ->
-					block(blockType, syntax)
-				}
-			}
-	} ?: syntaxCompilation.map(::block)
+val Script.codeCompilation: Compilation<Code> get() =
+	null
+		?: repeatingCompilationOrNull?.map(::code)
+		?: recursingCompilationOrNull?.map(::code)
+		?: syntaxCompilation.map(::code)
+
+val Script.repeatingCompilationOrNull: Compilation<Repeating>? get() =
+	matchPrefix(repeatingName) { rhs ->
+		rhs.syntaxCompilation.map(::repeating)
+	}
+
+val Script.recursingCompilationOrNull: Compilation<Recursing>? get() =
+	matchPrefix(recursingName) { rhs ->
+		rhs.syntaxCompilation.map(::recursing)
+	}
 
 val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
 
 val Script.doCompilation: Compilation<Do> get() =
-	blockCompilation.map(::do_)
+	codeCompilation.map(::do_)
 
 val Script.doingCompilationOrNull: Compilation<Doing>? get() =
 	notNullIf(!isEmpty && !equals(script(anyName))) {
-		blockCompilation.map(::doing)
+		codeCompilation.map(::doing)
 	}
-
-val Script.doingCompilationOrThrow: Compilation<Doing> get() =
-	doingCompilationOrNull.notNullOrThrow { value(doingName) }
 
 val Script.exampleCompilation: Compilation<Example> get() =
 	syntaxCompilation.map(::example)
@@ -137,12 +139,8 @@ val Script.letCompilation: Compilation<Let> get() =
 	matchInfix { lhs, name, rhs ->
 		lhs.syntaxCompilation.bind { lhsValue ->
 			when (name) {
-				beName -> rhs.beCompilation.map { be ->
-					let(lhsValue, be)
-				}
-				doName -> rhs.doCompilation.map { do_ ->
-					let(lhsValue, do_)
-				}
+				beName -> rhs.beCompilation.map { let(lhsValue, it) }
+				doName -> rhs.doCompilation.map { let(lhsValue, it) }
 				else -> value(syntaxName fieldTo value(letName fieldTo value)).throwError()
 			}
 		}

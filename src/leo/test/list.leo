@@ -1,8 +1,8 @@
 test
   list
   switch
-    empty doing empty
-    link doing link
+    empty
+    link
   is equal empty
 
 test
@@ -11,8 +11,8 @@ test
     y 20
     z 30
   switch
-    empty doing empty
-    link doing link
+    empty
+    link
   is equal
     link
       list

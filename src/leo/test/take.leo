@@ -1,9 +1,7 @@
 test
   x 10
   y 20
-  take doing
-    x
-    and y
-  is equal
+  take doing it
+  is equal it
     x 10
-    and y 20
+    y 20

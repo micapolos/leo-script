@@ -1,18 +1,10 @@
 let
   any.list.head
   do
-    head.list
+    list
     switch
-      empty doing fail
-      link doing link.item.content
-
-let
-  any.list.tail
-  do
-    tail.list
-    switch
-      empty doing fail
-      link doing link.list.content
+      empty fail
+      link item.content
 
 test
   list
@@ -22,6 +14,14 @@ test
   head
   is equal
     z 30
+
+let
+  any.list.tail
+  do
+    list
+    switch
+      empty fail
+      link list.content
 
 test
   list
@@ -36,7 +36,7 @@ test
 let
   list any
   append any
-  do list
+  do bind list
     list.content
     with append.content
 
@@ -56,13 +56,13 @@ let
   fold
     list any
     doing any
-  do repeating
+  do repeating bind
     folded content.list.tail
-    do
+    bind
       fold.list
       switch
-        empty doing folded.content
-        link doing
+        empty be folded.content
+        link bind
           fold.doing
           give
             folded.content
@@ -78,7 +78,7 @@ test
       "world!"
       "hell, "
       "heaven, "
-    doing
+    doing bind
       text
       append other.text
   is equal "Hello, heaven, hell, world!"

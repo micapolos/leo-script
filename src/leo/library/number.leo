@@ -1,7 +1,7 @@
 let
   any.number.increment
   do
-    increment.number
+    number
     plus 1
 
 test
@@ -11,7 +11,7 @@ test
 let
   any.number.decrement
   do
-    decrement.number
+    number
     minus 1
 
 test
@@ -20,9 +20,11 @@ test
 
 let
   any.number.squared
-  do
-    squared.number
-    times squared.number
+  do 
+    number
+    bind
+      number
+      times number
 
 test
   10.squared
@@ -33,15 +35,15 @@ let
   iterate
     times number any
     doing any
-  do repeating
+  do repeating bind
     use library list
     item content.list.tail
-    do
+    bind
       iterate.times.number
       is less than 1
       switch
-        yes doing item.content
-        no doing
+        yes be item.content
+        no be
           item.content
           take iterate.doing
           repeat iterate
@@ -54,7 +56,5 @@ test
   ""
   iterate
     5.times
-    doing
-      text
-      append "!"
+    doing append "!"
   is equal "!!!!!"

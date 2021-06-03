@@ -7,18 +7,17 @@ test
   16
   first 0
   second 1
-  do repeating
+  do repeating bind
     number
     is equal 0
     switch
-      yes doing first.number
-      no doing
+      yes be first.number
+      no be
         number
         is equal 1
         switch
-          yes doing
-            second.number
-          no doing
+          yes be second.number
+          no be
             number.decrement
             first second.number
             second

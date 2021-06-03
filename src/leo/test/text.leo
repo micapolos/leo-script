@@ -1,5 +1,3 @@
-use library text
-
 test
   "Hello, "
   append "world!"

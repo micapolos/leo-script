@@ -1,10 +1,10 @@
 let
   any.boolean.negate
   do
-    negate.boolean
+    boolean
     switch
-      false doing true.boolean
-      true doing false.boolean
+      false be true.boolean
+      true be false.boolean
 
 test
   false.boolean.negate
@@ -17,11 +17,11 @@ test
 let
   any.boolean
   and any.boolean
-  do
+  do bind
     boolean
     switch
-      true doing and.boolean
-      false doing false.boolean
+      true be and.boolean
+      false be false.boolean
 
 test
   false.boolean
@@ -46,11 +46,11 @@ test
 let
   any.boolean
   or any.boolean
-  do
+  do bind
     boolean
     switch
-      false doing or.boolean
-      true doing true.boolean
+      false be or.boolean
+      true be true.boolean
 
 test
   false.boolean
