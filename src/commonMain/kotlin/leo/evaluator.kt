@@ -43,7 +43,7 @@ val Script.dictionary: Dictionary
 
 val Syntax.dictionary: Dictionary
 	get() =
-		preludeDictionary.context.evaluator().plusEvaluation(this).get.context.publicDictionary
+		dictionaryEvaluation.get
 
 val Syntax.dictionaryEvaluation: Evaluation<Dictionary>
 	get() =
