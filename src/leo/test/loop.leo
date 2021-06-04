@@ -1,11 +1,10 @@
+use library number
+
 test
   0
-  loop bind
-    number
-    is equal 10000
+  loop
+    check equal 10000
     switch
-      yes be number.break
-      no be
-        number
-        plus 1
+      yes number.break
+      no number.increment
   is equal 10000
