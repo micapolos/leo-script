@@ -5,31 +5,26 @@ import leo.natives.minusName
 import kotlin.test.Test
 
 class PerformanceTest {
-	// Last results: 380ms
+	// Last results: 370ms
 	@Test
 	fun doRepeatingLong() {
 		script(
 			line(literal(10000)),
-			doName lineTo script(
-				repeatingName lineTo script(
-					bindName lineTo script(
+			loopName lineTo script(
+				checkName lineTo script(
+					equalName lineTo script(
+						line(literal(0)))),
+				switchName lineTo script(
+					yesName lineTo script(
 						numberName lineTo script(),
-						isName lineTo script(equalName lineTo script(line(literal(0)))),
-						switchName lineTo script(
-							yesName lineTo script(beName lineTo script(line(literal("OK")))),
-							noName lineTo script(
-								beName lineTo script(
-									numberName lineTo script(),
-									minusName lineTo script(line(literal(1))),
-								),
-								repeatName lineTo script()
-							)
-						)
+						breakName lineTo script()),
+					noName lineTo script(
+						numberName lineTo script(),
+						minusName lineTo script(line(literal(1))))
 					)
 				)
 			)
-		)
 			.evaluate
-			.assertEqualTo(script(line(literal("OK"))))
+			.assertEqualTo(script(line(literal(0))))
 	}
 }
