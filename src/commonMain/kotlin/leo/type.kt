@@ -10,6 +10,7 @@ data class TypeStructure(val lineStack: Stack<TypeLine>)
 sealed class TypeLine
 data class AtomTypeLine(val atom: TypeAtom): TypeLine()
 data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine()
+data class RecurseTypeLine(val recurse: TypeRecurse): TypeLine()
 
 sealed class TypeAtom
 data class FieldTypeAtom(val field: TypeField): TypeAtom()
@@ -26,10 +27,11 @@ data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 data class TypeDoing(val lhsType: Type, val rhsType: Type)
 data class TypeList(val itemAtom: TypeAtom)
 
-data class TypeRecursive(val atom: TypeAtom)
+data class TypeRecursive(val line: TypeLine)
 
 object TypeText
 object TypeNumber
+object TypeRecurse
 
 val Stack<TypeLine>.structure get() = TypeStructure(this)
 val Stack<TypeLine>.choice get() = TypeChoice(this)
@@ -45,6 +47,7 @@ infix fun String.fieldTo(type: Type) = TypeField(this, type)
 
 val typeText get() = TypeText
 val typeNumber get() = TypeNumber
+val typeRecurse get() = TypeRecurse
 
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
@@ -60,6 +63,9 @@ fun atom(list: TypeList): TypeAtom = ListTypeAtom(list)
 
 fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
+fun line(recurse: TypeRecurse): TypeLine = RecurseTypeLine(recurse)
+
+fun recursive(line: TypeLine) = TypeRecursive(line)
 
 infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
 

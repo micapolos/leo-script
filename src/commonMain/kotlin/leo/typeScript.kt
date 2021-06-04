@@ -16,6 +16,7 @@ val TypeLine.scriptLine: ScriptLine get() =
 	when (this) {
 		is AtomTypeLine -> atom.scriptLine
 		is RecursiveTypeLine -> recursive.scriptLine
+		is RecurseTypeLine -> recurse.scriptLine
 	}
 
 val TypeAtom.scriptLine: ScriptLine get() =
@@ -42,4 +43,8 @@ val TypeDoing.scriptLine: ScriptLine get() =
 	doingName lineTo lhsType.script.plus(toName lineTo rhsType.script)
 
 val TypeRecursive.scriptLine: ScriptLine get() =
-	recursiveName lineTo script(atom.scriptLine)
+	recursiveName lineTo script(line.scriptLine)
+
+@Suppress("unused")
+val TypeRecurse.scriptLine: ScriptLine get() =
+	recurseName lineTo script()

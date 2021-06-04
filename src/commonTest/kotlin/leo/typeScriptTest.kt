@@ -32,4 +32,25 @@ class TypeScriptTest {
 							yesName lineTo script(),
 							noName lineTo script()))))
 	}
+
+	@Test
+	fun recursive() {
+		type(
+			line(recursive(
+				"stack" lineTo type(choice(
+					"empty" lineTo type(),
+					"link" lineTo type(
+						line(typeRecurse),
+						numberTypeLine))))))
+			.script
+			.assertEqualTo(
+				script(
+					recursiveName lineTo script(
+						"stack" lineTo script(
+							choiceName lineTo script(
+								"empty" lineTo script(),
+								"link" lineTo script(
+									recurseName lineTo script(),
+									numberName lineTo script()))))))
+	}
 }
