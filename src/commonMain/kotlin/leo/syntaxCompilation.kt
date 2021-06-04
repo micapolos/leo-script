@@ -33,6 +33,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		asName -> rhs.asCompilation.map(::line)
 		beName -> rhs.beCompilation.map(::line)
 		bindName -> rhs.bindCompilation.map(::line)
+		breakName -> rhs.breakCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
 		doingName -> rhs.doingCompilationOrNull?.map(::line)
@@ -43,6 +44,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		isName -> rhs.isCompilation.map(::line)
 		matchingName -> rhs.matchingCompilation.map(::line)
 		letName -> rhs.letCompilation.map(::line)
+		loopName -> rhs.loopCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)
 		recurseName -> rhs.recurseCompilation.map(::line)
 		repeatName -> rhs.repeatCompilation.map(::line)
@@ -96,6 +98,9 @@ val Script.beCompilation: Compilation<Be> get() =
 val Script.bindCompilation: Compilation<Bind> get() =
 	syntaxCompilation.map(::bind)
 
+val Script.breakCompilation: Compilation<Break> get() =
+	syntaxCompilation.map(::break_)
+
 val Script.blockCompilation: Compilation<Block> get() =
 	null
 		?: repeatingCompilationOrNull?.map(::block)
@@ -145,6 +150,9 @@ val Script.letCompilation: Compilation<Let> get() =
 			}
 		}
 	}?:value(syntaxName fieldTo value(letName fieldTo value)).throwError()
+
+val Script.loopCompilation: Compilation<Loop> get() =
+	syntaxCompilation.map(::loop)
 
 val Script.privateCompilation: Compilation<Private> get() =
 	syntaxCompilation.map(::private)

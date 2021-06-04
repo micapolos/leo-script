@@ -903,4 +903,32 @@ class EvaluatorTest {
 			.evaluate
 			.assertEqualTo(script(line(literal(PI))))
 	}
+
+	@Test
+	fun break_() {
+		script(
+			"x" lineTo script("zero"),
+			breakName lineTo script("y" lineTo script("one")))
+			.evaluate
+			.assertEqualTo(
+				script(
+					breakName lineTo script(
+						"x" lineTo script("zero"),
+						"y" lineTo script("one"))))
+	}
+
+	@Test
+	fun loop() {
+		script(
+			"the" lineTo script("continue"),
+			loopName lineTo script(
+				switchName lineTo script(
+					"finish" lineTo script(
+						breakName lineTo script("done")),
+					"continue" lineTo script(
+						beName lineTo script(
+							"the" lineTo script("finish"))))))
+			.evaluate
+			.assertEqualTo(script("done" lineTo script("finish")))
+	}
 }

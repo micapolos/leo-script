@@ -11,6 +11,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is AnySyntaxLine -> anyName lineTo any.script
 		is AsSyntaxLine -> asName lineTo as_.script
 		is BeSyntaxLine -> beName lineTo be.script
+		is BreakSyntaxLine -> breakName lineTo break_.script
 		is BindSyntaxLine -> bindName lineTo bind.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
 		is DoSyntaxLine -> doName lineTo do_.script
@@ -21,6 +22,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is GiveSyntaxLine -> giveName lineTo give.script
 		is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
+		is LoopSyntaxLine -> loopName lineTo loop.script
 		is MatchingSyntaxLine -> matchingName lineTo matching.script
 		is PrivateSyntaxLine -> privateName lineTo private.script
 		is QuoteSyntaxLine -> quoteName lineTo quote.script
@@ -36,6 +38,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is WithSyntaxLine -> withName lineTo with.script
 	}
 
+val Break.script get() = syntax.script
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
 val Bind.script get() = syntax.script
@@ -48,6 +51,7 @@ val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
 val Give.script get() = syntax.script
 val Not.script get() = syntax.script
 val Let.script get() = syntax.script.plus(rhs.scriptLine)
+val Loop.script get() = syntax.script
 val Matching.script get() = syntax.script
 val Private.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })

@@ -530,4 +530,13 @@ class SyntaxCompilationTest {
 	fun _any() {
 		script(anyName).syntax.assertEqualTo(syntax(line(any())))
 	}
+
+	@Test
+	fun loopBreak() {
+		script(loopName lineTo script(breakName lineTo script("foo")))
+			.syntax
+			.assertEqualTo(
+				syntax(line(loop(syntax(line(break_(syntax("foo")))))))
+			)
+	}
 }

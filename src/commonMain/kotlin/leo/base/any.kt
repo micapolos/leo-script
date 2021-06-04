@@ -134,9 +134,9 @@ inline fun <L, R : Any, O : Any> L.applyOrNull(rhs: R?, fn: L.(R) -> O?): O? =
 	if (rhs != null) fn(rhs)
 	else null
 
-tailrec fun <T: Any> T.iterateUntilNull(fn: T.() -> T?): T {
+tailrec fun <T: Any> T.repeatUntilNull(fn: T.() -> T?): T {
 	val iterated = fn()
 	@Suppress("IfThenToElvis") // Needed for tail-rec
 	return if (iterated == null) this
-	else iterated.iterateUntilNull(fn)
+	else iterated.repeatUntilNull(fn)
 }

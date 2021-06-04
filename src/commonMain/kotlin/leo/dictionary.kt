@@ -73,6 +73,15 @@ fun Dictionary.applyEvaluation(repeating: Repeating, given: Value): Evaluation<V
 		valueEvaluation(repeatingGiven, repeating.syntax)
 	}
 
+fun Dictionary.applyEvaluation(loop: Loop, given: Value): Evaluation<Value> =
+	given.evaluation.loop { repeatingGiven ->
+		valueEvaluation(repeatingGiven, loop.syntax).bind { value ->
+			value
+				.resolvePrefixOrNull(breakName) { it.breakable(true).evaluation }
+				?: value.breakable(false).evaluation
+		}
+	}
+
 fun Dictionary.applyEvaluation(recursing: Recursing, given: Value): Evaluation<Value> =
 	plusRecurse(recursing.syntax).valueEvaluation(given, recursing.syntax)
 

@@ -67,6 +67,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is BindSyntaxLine -> plusEvaluation(line.bind)
+		is BreakSyntaxLine -> plusEvaluation(line.break_)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
@@ -76,6 +77,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is GiveSyntaxLine -> plusEvaluation(line.give)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
+		is LoopSyntaxLine -> plusEvaluation(line.loop)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> plusEvaluation(line.recurse)
@@ -130,6 +132,11 @@ fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
 	dictionary.bind(value).valueEvaluation(bind.syntax).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(break_: Break): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, break_.syntax).bind {
+		setEvaluation(value(breakName fieldTo it))
+	}
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation
@@ -212,6 +219,9 @@ fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 			set(context.plus(definition(letValue, binding))).evaluation
 		}
 	}
+
+fun Evaluator.plusEvaluation(loop: Loop): Evaluation<Evaluator> =
+	dictionary.applyEvaluation(loop, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 	plusResolveEvaluation(field(dictionary.function(body(doing.block))))

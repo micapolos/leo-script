@@ -15,9 +15,9 @@ class AnyTest {
 	}
 
 	@Test
-	fun iterateUntilNull() {
+	fun repeatUntilNull() {
 		1.0
-			.iterateUntilNull { notNullIf(this < times) { plus(abs(sin(this))).inc() } }
+			.repeatUntilNull { notNullIf(this < times) { plus(abs(sin(this))).inc() } }
 			.assert { this >= times }
 	}
 }
