@@ -1,45 +1,47 @@
 package leo
 
-data class Type(val choiceStack: Stack<TypeChoice>)
+sealed class Type
+data class StructureType(val structure: TypeStructure): Type()
+data class ChoiceType(val choice: TypeChoice): Type()
 
 data class TypeChoice(val lineStack: Stack<TypeLine>)
+data class TypeStructure(val lineStack: Stack<TypeLine>)
 
 sealed class TypeLine
-data class FieldTypeLine(val field: TypeField): TypeLine()
-data class LiteralTypeLine(val text: TypeLiteral): TypeLine()
-data class DoingTypeLine(val doing: TypeDoing): TypeLine()
-data class ListTypeLine(val list: TypeList): TypeLine()
+data class AtomTypeLine(val atom: TypeAtom): TypeLine()
+data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine()
 
-data class TypeField(val name: String, val typeRhs: TypeRhs)
+sealed class TypeAtom
+data class FieldTypeAtom(val field: TypeField): TypeAtom()
+data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom()
+data class DoingTypeAtom(val doing: TypeDoing): TypeAtom()
+data class ListTypeAtom(val list: TypeList): TypeAtom()
 
-sealed class TypeRhs
-data class TypeTypeRhs(val type: Type): TypeRhs()
-data class RecursiveTypeRhs(val recursive: TypeRecursive): TypeRhs()
+data class TypeField(val name: String, val type: Type)
 
 sealed class TypeLiteral
 data class TextTypeLiteral(val text: TypeText): TypeLiteral()
 data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 
 data class TypeDoing(val lhsType: Type, val rhsType: Type)
-data class TypeList(val itemLine: TypeLine)
+data class TypeList(val itemAtom: TypeAtom)
 
-data class TypeRecursive(val line: TypeLine)
+data class TypeRecursive(val atom: TypeAtom)
 
 object TypeText
 object TypeNumber
 
-val Stack<TypeChoice>.type get() = Type(this)
+val Stack<TypeLine>.structure get() = TypeStructure(this)
 val Stack<TypeLine>.choice get() = TypeChoice(this)
 
-fun type(vararg choices: TypeChoice) = stack(*choices).type
-fun choice(vararg lines: TypeLine) = stack(*lines).choice
-fun type(line: TypeLine, vararg lines: TypeLine) = stack(stackLink(line, *lines).map { choice(this) }).type
+fun type(structure: TypeStructure): Type = StructureType(structure)
+fun type(choice: TypeChoice): Type = ChoiceType(choice)
 
-fun rhs(type: Type): TypeRhs = TypeTypeRhs(type)
-fun rhs(recursive: TypeRecursive): TypeRhs = RecursiveTypeRhs(recursive)
+fun structure(vararg lines: TypeLine): TypeStructure = stack(*lines).structure
+fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
+fun type(vararg lines: TypeLine): Type = type(structure(*lines))
 
-infix fun String.fieldTo(rhs: TypeRhs) = TypeField(this, rhs)
-infix fun String.fieldTo(type: Type) = this fieldTo rhs(type)
+infix fun String.fieldTo(type: Type) = TypeField(this, type)
 
 val typeText get() = TypeText
 val typeNumber get() = TypeNumber
@@ -49,12 +51,17 @@ fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
 infix fun Type.doing(type: Type) = TypeDoing(this, type)
 
-fun list(line: TypeLine) = TypeList(line)
+fun list(atom: TypeAtom) = TypeList(atom)
 
-fun line(field: TypeField): TypeLine = FieldTypeLine(field)
-fun line(literal: TypeLiteral): TypeLine = LiteralTypeLine(literal)
-fun line(doing: TypeDoing): TypeLine = DoingTypeLine(doing)
-fun line(list: TypeList): TypeLine = ListTypeLine(list)
+fun atom(field: TypeField): TypeAtom = FieldTypeAtom(field)
+fun atom(literal: TypeLiteral): TypeAtom = LiteralTypeAtom(literal)
+fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
+fun atom(list: TypeList): TypeAtom = ListTypeAtom(list)
 
-infix fun String.lineTo(rhs: TypeRhs) = line(this fieldTo rhs)
-infix fun String.lineTo(type: Type) = this lineTo rhs(type)
+fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
+fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
+
+infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
+
+val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
+val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
