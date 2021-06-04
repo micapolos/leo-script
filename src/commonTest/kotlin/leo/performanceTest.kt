@@ -32,5 +32,4 @@ class PerformanceTest {
 			.evaluate
 			.assertEqualTo(script(line(literal("OK"))))
 	}
-
 }
