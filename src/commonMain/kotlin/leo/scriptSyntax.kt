@@ -1,4 +1,6 @@
 package leo
 
-val Script.syntax get() = syntaxCompilation.get
+val Script.syntax get() = syntaxEvaluation.get
 
+val Script.syntaxEvaluation: Evaluation<Syntax> get() =
+	evaluation.map { syntaxCompilation.get }

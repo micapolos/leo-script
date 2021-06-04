@@ -321,7 +321,7 @@ val Evaluator.dictionary
 		context.privateDictionary
 
 fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
-	Evaluation { it.libraryEffect(use) }.map { use(it) }
+	Evaluation { it.dictionaryEffect(use) }.map { use(it) }
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))

@@ -10,7 +10,7 @@ data class Environment(
 fun environment(fileLibraryMap: Dict<Use, Dictionary> = dict()) =
 	Environment(fileLibraryMap, emptyTrace)
 
-fun Environment.libraryEffect(use: Use): Effect<Environment, Dictionary> =
+fun Environment.dictionaryEffect(use: Use): Effect<Environment, Dictionary> =
 	fileLibraryMap.get(use)
 		?.let { this effect it }
 		?: use.dictionary.let { dictionary ->
