@@ -163,7 +163,7 @@ fun Dictionary.valueEvaluation(value: Value, recurse: Recurse): Evaluation<Value
 
 fun Dictionary.valueEvaluation(value: Value, try_: Try): Evaluation<Value> =
 	valueEvaluation(value, try_.syntax)
-		.bind { value -> value(tryName fieldTo value(successName fieldTo value)).evaluation }
+		.bind { triedValue -> value(tryName fieldTo value(successName fieldTo triedValue)).evaluation }
 		.catch { throwable -> value(tryName fieldTo throwable.value.errorValue).evaluation }
 
 fun Dictionary.valueEvaluation(value: Value, fail: Fail): Evaluation<Value> =
@@ -171,7 +171,7 @@ fun Dictionary.valueEvaluation(value: Value, fail: Fail): Evaluation<Value> =
 		it.failEvaluation()
 	}
 
-fun Dictionary.fieldEvaluation(value: Value, matching: Matching): Evaluation<Field> =
+fun Dictionary.fieldEvaluation(matching: Matching): Evaluation<Field> =
 	valueEvaluation(matching.syntax).map {
 		matchingName fieldTo rhs(it)
 	}
@@ -217,11 +217,9 @@ fun Dictionary.valueEvaluation(value: Value, with: With): Evaluation<Value> =
 fun Dictionary.valueEvaluation(value: Value, as_: As): Evaluation<Value> =
 	valueEvaluation(as_.syntax).map { value.as_(it) }
 
+@Suppress("unused")
 fun Dictionary.valueEvaluation(value: Value, @Suppress("UNUSED_PARAMETER") any: SyntaxAny): Evaluation<Value> =
-	value.evaluation.bind { value ->
-		if (!value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
-		else anyValue.evaluation
-	}
+	value.plus(anyField).evaluation
 
 fun Dictionary.valueEvaluation(value: Value, bind: Bind): Evaluation<Value> =
 	bind(value).valueEvaluation(bind.syntax)

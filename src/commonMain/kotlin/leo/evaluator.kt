@@ -168,7 +168,7 @@ fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, fail).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
-	dictionary.fieldEvaluation(value, matching).bind { plusResolveEvaluation(it) }
+	dictionary.fieldEvaluation(matching).bind { plusResolveEvaluation(it) }
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 	dictionary.unitEvaluation(test).map { this }

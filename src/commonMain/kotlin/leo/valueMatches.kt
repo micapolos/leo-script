@@ -20,6 +20,6 @@ fun Rhs.matches(rhs: Rhs) =
 		is ValueRhs -> (this is ValueRhs) && value.matches(rhs.value)
 	}
 
-val Rhs.isAny get() =
-	(this is ValueRhs) && (value == anyValue)
+val Value.isAny get() = this == anyValue
+val Rhs.isAny get() = (this is ValueRhs) && value.isAny
 
