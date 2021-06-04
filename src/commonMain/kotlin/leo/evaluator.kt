@@ -136,12 +136,10 @@ fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
-	dictionary.bind(value).valueEvaluation(bind.syntax).bind { setEvaluation(it) }
+	dictionary.valueEvaluation(value, bind).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(break_: Break): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, break_.syntax).bind {
-		setEvaluation(value(breakName fieldTo it))
-	}
+	dictionary.valueEvaluation(value, break_).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
 	valueEvaluation(check.is_).bind { isRhsValue ->
@@ -174,40 +172,19 @@ fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(example.syntax).bind { evaluation }
 
 fun Evaluator.plusEvaluation(fail: Fail): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, fail.syntax).bind { value ->
-		value.failEvaluation()
-	}
+	dictionary.valueEvaluation(value, fail).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(matching.syntax).bind { matchingValue ->
-		plusResolveEvaluation(matchingName fieldTo rhs(matchingValue))
-	}
+	dictionary.fieldEvaluation(value, matching).bind { plusResolveEvaluation(it) }
 
 fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(test.syntax).bind { result ->
-		if (result.isBoolean) evaluation
-		else dictionary.valueEvaluation(test.lhsSyntax).bind { lhs ->
-			dictionary.fieldEvaluation(test.is_.negate).bind { isField ->
-				evaluation.also {
-					value(testName fieldTo test.script.value)
-						.plus(causeName fieldTo lhs.plus(isField))
-						.throwError()
-				}
-			}
-		}
-	}
+	dictionary.unitEvaluation(test).map { this }
 
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	setEvaluation(value.apply(get))
 
 fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
-	value.functionOrThrow.evaluation.bind { function ->
-		dictionary.valueEvaluation(give.syntax).bind { given ->
-			function.applyEvaluation(given).bind { output ->
-				setEvaluation(output)
-			}
-		}
-	}
+	dictionary.valueEvaluation(value, give).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(syntaxField: SyntaxField): Evaluation<Evaluator> =
 	if (syntaxField.rhsSyntax.isEmpty)
@@ -224,10 +201,8 @@ fun Evaluator.plusEvaluation(field: Field): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(let.syntax).bind { letValue ->
-		dictionary.bindingEvaluation(let.rhs).bind { binding ->
-			set(context.plus(definition(letValue, binding))).evaluation
-		}
+	dictionary.definitionEvaluation(let).bind {
+		set(context.plus(it)).evaluation
 	}
 
 fun Evaluator.plusEvaluation(loop: Loop): Evaluation<Evaluator> =
@@ -247,14 +222,10 @@ fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
 	setEvaluation(value.plus(quote.script.value))
 
 fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
-	dictionary.evaluation(value, switch).bind {
-		setEvaluation(it)
-	}
+	dictionary.evaluation(value, switch).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(try_: Try): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, try_.syntax)
-		.bind { value -> setEvaluation(value(tryName fieldTo value(successName fieldTo value))) }
-		.catch { throwable -> setEvaluation(value(tryName fieldTo throwable.value.errorValue)) }
+	dictionary.valueEvaluation(value, try_).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
 	dictionary.evaluation(value, update).bind { setEvaluation(it) }
@@ -270,16 +241,11 @@ fun Evaluator.plusResolveEvaluation(field: Field): Evaluation<Evaluator> =
 		setEvaluation(it)
 	}
 
-fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") any: SyntaxAny): Evaluation<Evaluator> =
-	value.evaluation.bind { value ->
-		if (!value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
-		else setEvaluation(anyValue)
-	}
+fun Evaluator.plusEvaluation(any: SyntaxAny): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, any).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(as_.syntax).bind { asValue ->
-		setEvaluation(value.as_(asValue))
-	}
+	dictionary.valueEvaluation(value, as_).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
 	valueEvaluation(is_).bind { setEvaluation(it) }
@@ -315,16 +281,10 @@ fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, recurse.syntax).bind { recursedValue ->
-		dictionary.resolveEvaluation(value(recurseName fieldTo recursedValue)).bind {
-			setEvaluation(it)
-		}
-	}
+	dictionary.valueEvaluation(value, recurse).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, repeat.syntax).bind { repeatedValue ->
-		setEvaluation(value(repeatName fieldTo repeatedValue))
-	}
+	dictionary.valueEvaluation(value, repeat).bind { setEvaluation(it) }
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {
@@ -335,11 +295,8 @@ fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 		.evaluation
 		.nullableBind { setEvaluation(it) }
 
-
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(with.syntax).bind { rhsValue ->
-		setEvaluation(value + rhsValue)
-	}
+	dictionary.valueEvaluation(value, with).bind { setEvaluation(it) }
 
 val Evaluator.dictionary
 	get() =

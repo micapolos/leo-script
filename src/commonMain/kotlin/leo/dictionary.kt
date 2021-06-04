@@ -164,3 +164,76 @@ fun Dictionary.valueEvaluation(equal: Equal): Evaluation<Value> =
 
 fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
 	value(matchingName fieldTo matching.syntax.script.value).evaluation
+
+fun Dictionary.valueEvaluation(value: Value, recurse: Recurse): Evaluation<Value> =
+	valueEvaluation(value, recurse.syntax).bind { recursedValue ->
+		resolveEvaluation(value(recurseName fieldTo recursedValue))
+	}
+
+fun Dictionary.valueEvaluation(value: Value, repeat: Repeat): Evaluation<Value> =
+	valueEvaluation(value, repeat.syntax).map { repeatedValue ->
+		value(repeatName fieldTo repeatedValue)
+	}
+
+fun Dictionary.valueEvaluation(value: Value, try_: Try): Evaluation<Value> =
+	valueEvaluation(value, try_.syntax)
+		.bind { value -> value(tryName fieldTo value(successName fieldTo value)).evaluation }
+		.catch { throwable -> value(tryName fieldTo throwable.value.errorValue).evaluation }
+
+fun Dictionary.valueEvaluation(value: Value, fail: Fail): Evaluation<Value> =
+	valueEvaluation(value, fail.syntax).bind {
+		it.failEvaluation()
+	}
+
+fun Dictionary.fieldEvaluation(value: Value, matching: Matching): Evaluation<Field> =
+	valueEvaluation(matching.syntax).map {
+		matchingName fieldTo rhs(it)
+	}
+
+fun Dictionary.unitEvaluation(test: Test): Evaluation<Unit> =
+	valueEvaluation(test.syntax).bind { result ->
+		if (result.isBoolean) Unit.evaluation
+		else valueEvaluation(test.lhsSyntax).bind { lhs ->
+			fieldEvaluation(test.is_.negate).bind { isField ->
+				Unit.evaluation.also {
+					value(testName fieldTo test.script.value)
+						.plus(causeName fieldTo lhs.plus(isField))
+						.throwError()
+				}
+			}
+		}
+	}
+
+fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
+	value.functionOrThrow.evaluation.bind { function ->
+		valueEvaluation(give.syntax).bind { given ->
+			function.applyEvaluation(given)
+		}
+	}
+
+fun Dictionary.definitionEvaluation(let: Let): Evaluation<Definition> =
+	valueEvaluation(let.syntax).bind { letValue ->
+		bindingEvaluation(let.rhs).map { binding ->
+			definition(letValue, binding)
+		}
+	}
+
+fun Dictionary.valueEvaluation(value: Value, with: With): Evaluation<Value> =
+	valueEvaluation(with.syntax).map { value + it }
+
+fun Dictionary.valueEvaluation(value: Value, as_: As): Evaluation<Value> =
+	valueEvaluation(as_.syntax).map { value.as_(it) }
+
+fun Dictionary.valueEvaluation(value: Value, @Suppress("UNUSED_PARAMETER") any: SyntaxAny): Evaluation<Value> =
+	value.evaluation.bind { value ->
+		if (!value.isEmpty) value.plus(anyName fieldTo value()).failEvaluation()
+		else anyValue.evaluation
+	}
+
+fun Dictionary.valueEvaluation(value: Value, bind: Bind): Evaluation<Value> =
+	bind(value).valueEvaluation(bind.syntax)
+
+fun Dictionary.valueEvaluation(value: Value, break_: Break): Evaluation<Value> =
+	valueEvaluation(value, break_.syntax).map {
+		value(breakName fieldTo it)
+	}
