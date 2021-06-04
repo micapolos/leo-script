@@ -48,7 +48,6 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		loopName -> rhs.loopCompilation.map(::line)
 		privateName -> rhs.privateCompilation.map(::line)
 		recurseName -> rhs.recurseCompilation.map(::line)
-		repeatName -> rhs.repeatCompilation.map(::line)
 		quoteName -> rhs.quoteCompilation.map(::line)
 		setName -> rhs.setCompilation.map(::line)
 		switchName -> rhs.switchCompilation.map(::line)
@@ -104,14 +103,8 @@ val Script.breakCompilation: Compilation<Break> get() =
 
 val Script.blockCompilation: Compilation<Block> get() =
 	null
-		?: repeatingCompilationOrNull?.map(::block)
 		?: recursingCompilationOrNull?.map(::block)
 		?: syntaxCompilation.map(::block)
-
-val Script.repeatingCompilationOrNull: Compilation<Repeating>? get() =
-	matchPrefix(repeatingName) { rhs ->
-		rhs.syntaxCompilation.map(::repeating)
-	}
 
 val Script.recursingCompilationOrNull: Compilation<Recursing>? get() =
 	matchPrefix(recursingName) { rhs ->
@@ -186,9 +179,6 @@ val Script.equalCompilation: Compilation<Equal> get() =
 
 val Script.recurseCompilation: Compilation<Recurse> get() =
 	syntaxCompilation.map(::recurse)
-
-val Script.repeatCompilation: Compilation<Repeat> get() =
-	syntaxCompilation.map(::repeat)
 
 val Script.quoteCompilation: Compilation<Quote> get() =
 	quote(this).compilation

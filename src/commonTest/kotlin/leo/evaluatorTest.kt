@@ -3,7 +3,6 @@ package leo
 import leo.base.assertEqualTo
 import leo.base.assertNotNull
 import leo.natives.appendName
-import leo.natives.minusName
 import kotlin.math.PI
 import kotlin.test.Test
 
@@ -268,55 +267,6 @@ class EvaluatorTest {
 		)
 			.evaluate
 			.assertEqualTo(script(literal(3)))
-	}
-
-	@Test
-	fun doRepeating() {
-		script(
-			numberName lineTo script("one"),
-			doName lineTo script(
-				repeatingName lineTo script(
-					switchName lineTo script(
-						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
-						"one" lineTo script(
-							beName lineTo script(
-								numberName lineTo script("zero"),
-								repeatName lineTo script(),
-							)
-						)
-					)
-				)
-			)
-		)
-			.evaluate
-			.assertEqualTo(script(line(literal("OK"))))
-	}
-
-	@Test
-	fun doRepeatingLong() {
-		script(
-			line(literal(10000)),
-			doName lineTo script(
-				repeatingName lineTo script(
-					bindName lineTo script(
-						numberName lineTo script(),
-						isName lineTo script(equalName lineTo script(line(literal(0)))),
-						switchName lineTo script(
-							yesName lineTo script(beName lineTo script(line(literal("OK")))),
-							noName lineTo script(
-								beName lineTo script(
-									numberName lineTo script(),
-									minusName lineTo script(line(literal(1))),
-									repeatName lineTo script(),
-								)
-							)
-						)
-					)
-				)
-			)
-		)
-			.evaluate
-			.assertEqualTo(script(line(literal("OK"))))
 	}
 
 	@Test

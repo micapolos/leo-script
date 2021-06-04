@@ -262,21 +262,6 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun letDoRepeating() {
-		script(
-			line(literal("Hello, world!")),
-			letName lineTo script(
-				line("ping"),
-				doName lineTo script(repeatingName lineTo script("pong"))))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine(literal("Hello, world!")),
-					line(let(syntax("ping" lineTo syntax()), do_(block(repeating(syntax("pong" lineTo syntax()))))))
-				))
-	}
-
-	@Test
 	fun letError() {
 		assertFailsWith<ValueError> {
 			script(
@@ -345,18 +330,6 @@ class SyntaxCompilationTest {
 				syntax(
 					"foo" lineTo syntax(),
 					line(recurse(syntax("bar")))))
-	}
-
-	@Test
-	fun repeat() {
-		script(
-			"foo" lineTo script(),
-			repeatName lineTo script("bar"))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					"foo" lineTo syntax(),
-					line(repeat(syntax("bar")))))
 	}
 
 	@Test

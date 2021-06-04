@@ -82,7 +82,6 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> plusEvaluation(line.recurse)
-		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> plusEvaluation(line.set)
 		is SwitchSyntaxLine -> plusEvaluation(line.switch)
@@ -276,9 +275,6 @@ fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, recurse).bind { setEvaluation(it) }
-
-fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, repeat).bind { setEvaluation(it) }
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {

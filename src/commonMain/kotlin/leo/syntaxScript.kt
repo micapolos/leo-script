@@ -28,7 +28,6 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is PrivateSyntaxLine -> privateName lineTo private.script
 		is QuoteSyntaxLine -> quoteName lineTo quote.script
 		is RecurseSyntaxLine -> recurseName lineTo recurse.script
-		is RepeatSyntaxLine -> repeatName lineTo repeat.script
 		is SetSyntaxLine -> setName lineTo set.script
 		is SwitchSyntaxLine -> switchName lineTo switch.script
 		is TakeSyntaxLine -> takeName lineTo take.script
@@ -57,7 +56,6 @@ val Loop.script get() = syntax.script
 val Matching.script get() = syntax.script
 val Private.script get() = syntax.script
 val Recurse.script get() = syntax.script
-val Repeat.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })
 val Case.scriptLine get() = name lineTo syntax.script
@@ -79,12 +77,10 @@ val LetRhs.scriptLine get() =
 val Block.script get() =
 	when (this) {
 		is RecursingBlock -> script(recursingName lineTo recursing.script)
-		is RepeatingBlock -> script(repeatingName lineTo repeating.script)
 		is SyntaxBlock -> syntax.script
 	}
 
 val Recursing.script get() = syntax.script
-val Repeating.script get() = syntax.script
 
 val Is.script get() =
 	rhs.script.runIf(negated) { script(notName lineTo this) }

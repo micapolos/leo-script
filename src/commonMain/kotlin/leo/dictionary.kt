@@ -64,13 +64,7 @@ fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 	when (block) {
 		is RecursingBlock -> applyEvaluation(block.recursing, given)
-		is RepeatingBlock -> applyEvaluation(block.repeating, given)
 		is SyntaxBlock -> applyEvaluation(block.syntax, given)
-	}
-
-fun Dictionary.applyEvaluation(repeating: Repeating, given: Value): Evaluation<Value> =
-	given.evaluation.valueBindRepeating { repeatingGiven ->
-		valueEvaluation(repeatingGiven, repeating.syntax)
 	}
 
 fun Dictionary.applyEvaluation(loop: Loop, given: Value): Evaluation<Value> =
@@ -168,11 +162,6 @@ fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
 fun Dictionary.valueEvaluation(value: Value, recurse: Recurse): Evaluation<Value> =
 	valueEvaluation(value, recurse.syntax).bind { recursedValue ->
 		resolveEvaluation(value(recurseName fieldTo recursedValue))
-	}
-
-fun Dictionary.valueEvaluation(value: Value, repeat: Repeat): Evaluation<Value> =
-	valueEvaluation(value, repeat.syntax).map { repeatedValue ->
-		value(repeatName fieldTo repeatedValue)
 	}
 
 fun Dictionary.valueEvaluation(value: Value, try_: Try): Evaluation<Value> =
