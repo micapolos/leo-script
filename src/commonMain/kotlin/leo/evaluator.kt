@@ -68,6 +68,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is BindSyntaxLine -> plusEvaluation(line.bind)
 		is BreakSyntaxLine -> plusEvaluation(line.break_)
+		is CheckSyntaxLine -> plusEvaluation(line.check)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
@@ -136,6 +137,11 @@ fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(break_: Break): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, break_.syntax).bind {
 		setEvaluation(value(breakName fieldTo it))
+	}
+
+fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
+	isValueEvaluation(check.is_.rhs).bind { isRhsValue ->
+		setEvaluation(value.checkValue(isRhsValue.isBoolean))
 	}
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =

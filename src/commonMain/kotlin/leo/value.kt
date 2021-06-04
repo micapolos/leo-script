@@ -283,7 +283,15 @@ fun <T: Any> Value.resolveEmptyOrNull(fn: () -> T?): T? =
 
 val Boolean.isValue
 	get() =
-		value(isName fieldTo value(if (this) yesName else noName))
+		value(isName fieldTo yesNoValue)
+
+val Boolean.yesNoValue
+	get() =
+		value(yesNoName)
+
+val Boolean.yesNoName
+	get() =
+		if (this) yesName else noName
 
 val Value.isBooleanOrNull: Boolean?
 	get() =
@@ -404,3 +412,6 @@ val numberAnyField = numberName fieldTo anyValue
 
 val textAnyValue = value(textAnyField)
 val numberAnyValue = value(numberAnyField)
+
+fun Value.checkValue(boolean: Boolean): Value =
+	value(checkName fieldTo value(boolean.yesNoName fieldTo this))

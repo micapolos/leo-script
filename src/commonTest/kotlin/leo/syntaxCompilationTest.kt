@@ -539,4 +539,16 @@ class SyntaxCompilationTest {
 				syntax(line(loop(syntax(line(break_(syntax("foo")))))))
 			)
 	}
+
+	@Test
+	fun check() {
+		script(
+			line("foo"),
+			checkName lineTo script("bar"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"foo" lineTo syntax(),
+					line(check(is_(isRhs(syntax("bar")))))))
+	}
 }

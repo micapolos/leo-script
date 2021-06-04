@@ -931,4 +931,19 @@ class EvaluatorTest {
 			.evaluate
 			.assertEqualTo(script("done" lineTo script("finish")))
 	}
+
+	@Test
+	fun check() {
+		script(
+			line(literal(123)),
+			checkName lineTo script(equalName lineTo script(line(literal(123)))))
+			.evaluate
+			.assertEqualTo(script(checkName lineTo script(yesName lineTo script(line(literal(123))))))
+
+		script(
+			line(literal(123)),
+			checkName lineTo script(equalName lineTo script(line(literal(124)))))
+			.evaluate
+			.assertEqualTo(script(checkName lineTo script(noName lineTo script(line(literal(123))))))
+	}
 }

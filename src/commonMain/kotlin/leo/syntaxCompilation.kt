@@ -34,6 +34,7 @@ val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 		beName -> rhs.beCompilation.map(::line)
 		bindName -> rhs.bindCompilation.map(::line)
 		breakName -> rhs.breakCompilation.map(::line)
+		checkName -> rhs.checkCompilation.map(::line)
 		commentName -> rhs.commentCompilation.map(::line)
 		doName -> rhs.doCompilation.map(::line)
 		doingName -> rhs.doingCompilationOrNull?.map(::line)
@@ -116,6 +117,9 @@ val Script.recursingCompilationOrNull: Compilation<Recursing>? get() =
 	matchPrefix(recursingName) { rhs ->
 		rhs.syntaxCompilation.map(::recursing)
 	}
+
+val Script.checkCompilation: Compilation<Check> get() =
+	isCompilation.map(::check)
 
 val Script.commentCompilation: Compilation<Comment> get() =
 	comment(this).compilation
