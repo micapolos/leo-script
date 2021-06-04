@@ -217,10 +217,6 @@ fun Dictionary.valueEvaluation(value: Value, with: With): Evaluation<Value> =
 fun Dictionary.valueEvaluation(value: Value, as_: As): Evaluation<Value> =
 	valueEvaluation(as_.syntax).map { value.as_(it) }
 
-@Suppress("unused")
-fun Dictionary.valueEvaluation(value: Value, @Suppress("UNUSED_PARAMETER") any: SyntaxAny): Evaluation<Value> =
-	value.plus(anyField).evaluation
-
 fun Dictionary.valueEvaluation(value: Value, bind: Bind): Evaluation<Value> =
 	bind(value).valueEvaluation(bind.syntax)
 

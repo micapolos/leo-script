@@ -8,7 +8,6 @@ val Syntax.expression: Expression get() = Expression(reverse)
 val Syntax.reverse: Syntax get() = Syntax(lineStack.map { reverse }.reverse)
 val SyntaxLine.reverse: SyntaxLine get() =
 	when (this) {
-		is AnySyntaxLine -> any.reverse.let(::line)
 		is AsSyntaxLine -> as_.reverse.let(::line)
 		is AtomSyntaxLine -> atom.reverse.let(::line)
 		is BeSyntaxLine -> be.reverse.let(::line)
@@ -39,7 +38,6 @@ val SyntaxLine.reverse: SyntaxLine get() =
 		is WithSyntaxLine -> with.reverse.let(::line)
 	}
 
-val SyntaxAny.reverse get() = this
 val As.reverse get() = as_(syntax.reverse)
 val Be.reverse get() = be(syntax.reverse)
 val Bind.reverse get() = bind(syntax.reverse)

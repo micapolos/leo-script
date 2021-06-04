@@ -5,7 +5,6 @@ import leo.base.negate
 data class Syntax(val lineStack: Stack<SyntaxLine>)
 
 sealed class SyntaxLine
-data class AnySyntaxLine(val any: SyntaxAny): SyntaxLine()
 data class AsSyntaxLine(val as_: As): SyntaxLine()
 data class BeSyntaxLine(val be: Be): SyntaxLine()
 data class BindSyntaxLine(val bind: Bind): SyntaxLine()
@@ -44,7 +43,6 @@ data class LiteralSyntaxAtom(val literal: Literal): SyntaxAtom()
 data class Switch(val caseStack: Stack<Case>)
 data class Case(val name: String, val syntax: Syntax)
 
-object SyntaxAny
 data class As(val syntax: Syntax)
 data class Be(val syntax: Syntax)
 data class Bind(val syntax: Syntax)
@@ -104,7 +102,6 @@ infix fun String.fieldTo(syntax: Syntax) = SyntaxField(this, syntax)
 infix fun String.caseTo(syntax: Syntax) = Case(this, syntax)
 
 fun line(as_: As): SyntaxLine = AsSyntaxLine(as_)
-fun line(any: SyntaxAny): SyntaxLine = AnySyntaxLine(any)
 fun line(be: Be): SyntaxLine = BeSyntaxLine(be)
 fun line(bind: Bind): SyntaxLine = BindSyntaxLine(bind)
 fun line(end_: End): SyntaxLine = EndSyntaxLine(end_)
@@ -139,7 +136,6 @@ fun letRhs(be: Be): LetRhs = BeLetRhs(be)
 fun letRhs(do_: Do): LetRhs = DoLetRhs(do_)
 
 fun as_(syntax: Syntax) = As(syntax)
-fun any() = SyntaxAny
 fun be(syntax: Syntax) = Be(syntax)
 fun bind(syntax: Syntax) = Bind(syntax)
 fun end(syntax: Syntax) = End(syntax)

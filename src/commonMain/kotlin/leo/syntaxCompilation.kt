@@ -29,7 +29,6 @@ fun Syntax.plusCompilation(scriptLine: ScriptLine): Compilation<Syntax> =
 
 val ScriptField.syntaxLineCompilation: Compilation<SyntaxLine> get() =
 	when (string) {
-		anyName -> rhs.anySyntaxLineCompilation
 		asName -> rhs.asCompilation.map(::line)
 		beName -> rhs.beCompilation.map(::line)
 		bindName -> rhs.bindCompilation.map(::line)
@@ -84,10 +83,6 @@ val ScriptField.caseCompilation: Compilation<Case> get() =
 	rhs.syntaxCompilation.map { syntax ->
 		string caseTo syntax
 	}
-
-val Script.anySyntaxLineCompilation: Compilation<SyntaxLine> get() =
-	if (isEmpty) line(any()).compilation
-	else syntaxCompilation.map { anyName lineTo it }
 
 val Script.asCompilation: Compilation<As> get() =
 	syntaxCompilation.map(::as_)

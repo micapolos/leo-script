@@ -25,7 +25,7 @@ class SyntaxCompilationTest {
 		  .assertEqualTo(
 			  syntax(
 				  syntaxLine(literal("Hello, world!")),
-				  line(as_(syntax(textName lineTo syntax(line(any())))))))
+				  line(as_(syntax(textName lineTo syntax(anyName))))))
 	}
 
 	@Test
@@ -473,11 +473,6 @@ class SyntaxCompilationTest {
 					line(with(syntax(
 						"x" lineTo syntax("zero" lineTo syntax()),
 						"y" lineTo syntax("one" lineTo syntax()))))))
-	}
-
-	@Test
-	fun _any() {
-		script(anyName).syntax.assertEqualTo(syntax(line(any())))
 	}
 
 	@Test

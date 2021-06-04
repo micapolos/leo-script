@@ -12,8 +12,6 @@ let
 
 let
   any option of any
-  do bind option choice
-    present any.option.of.content
-    absent any.option.of.content
+  do bind dupa
 
-any option of text
+any option of any text
