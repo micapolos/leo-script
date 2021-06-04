@@ -13,6 +13,6 @@ fun environment(fileLibraryMap: Dict<Use, Dictionary> = dict()) =
 fun Environment.dictionaryEffect(use: Use): Effect<Environment, Dictionary> =
 	fileLibraryMap.get(use)
 		?.let { this effect it }
-		?: use.dictionary.let { dictionary ->
-			copy(fileLibraryMap = fileLibraryMap.put(use to dictionary)) effect dictionary
+		?: use.dictionaryEvaluation.run(this).let { effect ->
+			effect.state.copy(fileLibraryMap = fileLibraryMap.put(use to effect.value)) effect effect.value
 		}

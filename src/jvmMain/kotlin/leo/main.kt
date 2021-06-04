@@ -19,5 +19,5 @@ fun readText(args: Array<String>) =
 	else try {
 		File(args[0]).readText()
 	} catch (e: Exception) {
-		use(args[0], *args.copyOfRange(1, args.size)).fileString.fileText
+		use(args[0], *args.copyOfRange(1, args.size)).fileNameString.fileText
 	}

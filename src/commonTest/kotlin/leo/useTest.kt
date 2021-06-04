@@ -13,6 +13,6 @@ class UseTest {
 
 	@Test
 	fun fileString() {
-		use("test", "all").fileString.assertEqualTo("test/all.leo")
+		use("test", "all").fileNameString.assertEqualTo("test/all.leo")
 	}
 }

@@ -45,6 +45,12 @@ val Syntax.dictionary: Dictionary
 	get() =
 		preludeDictionary.context.evaluator().plusEvaluation(this).get.context.publicDictionary
 
+val Syntax.dictionaryEvaluation: Evaluation<Dictionary>
+	get() =
+		preludeDictionary.context.evaluator()
+			.plusEvaluation(this)
+			.map { it.context.publicDictionary }
+
 fun Context.evaluatorEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 	evaluator().plusEvaluation(syntax)
 
@@ -321,7 +327,10 @@ val Evaluator.dictionary
 		context.privateDictionary
 
 fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
-	Evaluation { it.dictionaryEffect(use) }.map { use(it) }
+	use
+		.dictionaryEvaluation
+		//.tracing(value(useName fieldTo use.script.value))
+		.map { use(it) }
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))

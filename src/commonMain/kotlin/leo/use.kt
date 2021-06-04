@@ -1,7 +1,7 @@
 package leo
 
 import leo.natives.fileText
-import leo.parser.scriptOrThrow
+import leo.parser.scriptEvaluation
 
 data class Use(val nameStackLink: StackLink<String>)
 
@@ -13,19 +13,22 @@ val Script.useOrNull: Use?
 			Use(nameStackLink)
 		}
 
-val Use.fileString: String
+val Use.fileNameString: String
 	get() =
 		stack(nameStackLink).array.joinToString("/")+".leo"
 
-val Use.dictionary: Dictionary
+val String.fileNameStringEvaluation: Evaluation<String> get() =
+	evaluation
+		.map { it.fileText }
+		//.tracing(value("load" fieldTo value(field(literal(this)))))
+		.catch { value(field(literal(it.message ?: it.toString()))).throwError() }
+
+val Use.stringEvaluation: Evaluation<String> get() =
+	fileNameString.fileNameStringEvaluation
+
+val Use.dictionaryEvaluation: Evaluation<Dictionary>
 	get() =
-		try {
-			fileString.fileText.scriptOrThrow
-		} catch (valueError: ValueError) {
-			value(
-				"path" fieldTo value(field(literal(fileString.fileText))),
-				"location" fieldTo valueError.value
-			).throwError<Script>()
-		} catch (ioException: Exception) {
-			value(field(literal(ioException.message ?: ioException.toString()))).throwError<Script>()
-		}.dictionary
+		stringEvaluation
+			.bind { it.scriptEvaluation }
+			.bind { it.syntaxEvaluation }
+			.bind { it.dictionaryEvaluation }
