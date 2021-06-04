@@ -140,7 +140,7 @@ fun Evaluator.plusEvaluation(break_: Break): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
-	isValueEvaluation(check.is_.rhs).bind { isRhsValue ->
+	valueEvaluation(check.is_).bind { isRhsValue ->
 		setEvaluation(value.checkValue(isRhsValue.isBoolean))
 	}
 
@@ -278,9 +278,10 @@ fun Evaluator.plusEvaluation(as_: As): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(is_: Is): Evaluation<Evaluator> =
-	isValueEvaluation(is_.rhs).bind { isValue ->
-		setEvaluation(isValue.runIf(is_.negated) { isNegate })
-	}
+	valueEvaluation(is_).bind { setEvaluation(it) }
+
+fun Evaluator.valueEvaluation(is_: Is): Evaluation<Value> =
+	isValueEvaluation(is_.rhs).map { it.runIf(is_.negated) { isNegate } }
 
 fun Evaluator.isValueEvaluation(rhs: IsRhs): Evaluation<Value> =
 	when (rhs) {
