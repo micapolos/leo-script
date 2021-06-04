@@ -64,18 +64,18 @@ let
   fold
     list any
     doing any
-  do repeating bind
+  do repeat bind
     folded content.list.tail
     bind
       fold.list
       switch
-        empty be folded.content
+        empty be folded.content.break
         link bind
           fold.doing
           give
             folded.content
             with link.item.content.other
-          repeat fold
+          fold
             link.list
             with fold.doing
 

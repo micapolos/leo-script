@@ -29,32 +29,3 @@ let
 test
   10.squared
   is equal 100
-
-let
-  any
-  iterate
-    times number any
-    doing any
-  do repeating bind
-    use library list
-    item content.list.tail
-    bind
-      iterate.times.number
-      is less than 1
-      switch
-        yes be item.content
-        no be
-          item.content
-          take iterate.doing
-          repeat iterate
-            iterate.times.number
-            minus 1
-            times
-            with iterate.doing
-
-test
-  "Hello, world"
-  iterate
-    5.times
-    doing append "!"
-  is equal "Hello, world!!!!!"
