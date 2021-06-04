@@ -76,8 +76,8 @@ fun Dictionary.applyEvaluation(repeat: Repeat, given: Value): Evaluation<Value> 
 		}
 	}
 
-fun Dictionary.applyEvaluation(recursing: Recursing, given: Value): Evaluation<Value> =
-	plusRecurse(recursing.syntax).valueEvaluation(given, recursing.syntax)
+fun Dictionary.applyEvaluation(recursing: Recursing, value: Value): Evaluation<Value> =
+	plusRecurse(recursing.syntax).valueEvaluation(value, recursing.syntax)
 
 fun Dictionary.applyEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
 	valueEvaluation(given, syntax)
@@ -86,10 +86,7 @@ fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			value(recurseName fieldTo anyValue),
-			binding(function(body(block(recursing(
-				// TODO: This is terrible!!! Fix it.
-				Syntax(stack(contentName lineTo syntax()).pushAll(syntax.lineStack)))
-			))))
+			recurseBinding(function(body(block(recursing(syntax)))))
 		)
 	)
 

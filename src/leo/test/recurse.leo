@@ -1,16 +1,18 @@
-use library number
-
 comment
   recursive fibonacci
 
 test
   16
-  do recursing bind
-    number
-    is less than 2
+  do recursing
+    check less than 2
     switch
-      yes be number
-      no be
-        number.decrement.decrement.recurse
-        plus number.decrement.recurse
+      yes number
+      no bind
+        no.number
+        minus 2
+        recurse
+        plus
+          no.number
+          minus 1
+          recurse
   is equal 987
