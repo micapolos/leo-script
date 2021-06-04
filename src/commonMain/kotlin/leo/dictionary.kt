@@ -67,12 +67,12 @@ fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
 		is SyntaxBlock -> applyEvaluation(block.syntax, given)
 	}
 
-fun Dictionary.applyEvaluation(loop: Loop, given: Value): Evaluation<Value> =
-	given.evaluation.loop { repeatingGiven ->
-		valueEvaluation(repeatingGiven, loop.syntax).bind { value ->
+fun Dictionary.applyEvaluation(repeat: Repeat, given: Value): Evaluation<Value> =
+	given.evaluation.repeat { repeatingGiven ->
+		valueEvaluation(repeatingGiven, repeat.syntax).bind { value ->
 			value
-				.resolvePrefixOrNull(breakName) { it.breakable(true).evaluation }
-				?: value.breakable(false).evaluation
+				.resolvePrefixOrNull(endName) { it.endable(true).evaluation }
+				?: value.endable(false).evaluation
 		}
 	}
 
@@ -229,7 +229,7 @@ fun Dictionary.valueEvaluation(value: Value, @Suppress("UNUSED_PARAMETER") any: 
 fun Dictionary.valueEvaluation(value: Value, bind: Bind): Evaluation<Value> =
 	bind(value).valueEvaluation(bind.syntax)
 
-fun Dictionary.valueEvaluation(value: Value, break_: Break): Evaluation<Value> =
-	valueEvaluation(value, break_.syntax).map {
-		value(breakName fieldTo it)
+fun Dictionary.valueEvaluation(value: Value, end_: End): Evaluation<Value> =
+	valueEvaluation(value, end_.syntax).map {
+		value(endName fieldTo it)
 	}

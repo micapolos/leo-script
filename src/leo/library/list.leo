@@ -69,7 +69,7 @@ let
     bind
       fold.list
       switch
-        empty be folded.content.break
+        empty be folded.content.end
         link bind
           fold.doing
           give

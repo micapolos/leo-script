@@ -866,14 +866,14 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun break_() {
+	fun end() {
 		script(
 			"x" lineTo script("zero"),
-			breakName lineTo script("y" lineTo script("one")))
+			endName lineTo script("y" lineTo script("one")))
 			.evaluate
 			.assertEqualTo(
 				script(
-					breakName lineTo script(
+					endName lineTo script(
 						"x" lineTo script("zero"),
 						"y" lineTo script("one"))))
 	}
@@ -882,10 +882,10 @@ class EvaluatorTest {
 	fun loop() {
 		script(
 			"the" lineTo script("continue"),
-			loopName lineTo script(
+			repeatName lineTo script(
 				switchName lineTo script(
 					"finish" lineTo script(
-						breakName lineTo script("done")),
+						endName lineTo script("done")),
 					"continue" lineTo script(
 						beName lineTo script(
 							"the" lineTo script("finish"))))))

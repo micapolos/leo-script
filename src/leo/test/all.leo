@@ -16,7 +16,7 @@ use test is all
 comment use test java all
 use test let
 use test list
-use test loop
+use test repeat
 use test make
 use test name
 use test number

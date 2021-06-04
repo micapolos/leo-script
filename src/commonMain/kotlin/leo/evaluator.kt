@@ -67,7 +67,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is BindSyntaxLine -> plusEvaluation(line.bind)
-		is BreakSyntaxLine -> plusEvaluation(line.break_)
+		is EndSyntaxLine -> plusEvaluation(line.end)
 		is CheckSyntaxLine -> plusEvaluation(line.check)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
@@ -78,7 +78,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is GiveSyntaxLine -> plusEvaluation(line.give)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
-		is LoopSyntaxLine -> plusEvaluation(line.loop)
+		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
 		is RecurseSyntaxLine -> plusEvaluation(line.recurse)
@@ -131,8 +131,8 @@ fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, bind).bind { setEvaluation(it) }
 
-fun Evaluator.plusEvaluation(break_: Break): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, break_).bind { setEvaluation(it) }
+fun Evaluator.plusEvaluation(end_: End): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, end_).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
 	valueEvaluation(check.is_).bind { isRhsValue ->
@@ -198,8 +198,8 @@ fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 		set(context.plus(it)).evaluation
 	}
 
-fun Evaluator.plusEvaluation(loop: Loop): Evaluation<Evaluator> =
-	dictionary.applyEvaluation(loop, value).bind { setEvaluation(it) }
+fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
+	dictionary.applyEvaluation(repeat, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 	plusResolveEvaluation(field(dictionary.function(body(doing.block))))

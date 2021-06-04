@@ -481,11 +481,11 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun loopBreak() {
-		script(loopName lineTo script(breakName lineTo script("foo")))
+	fun repeatEnd() {
+		script(repeatName lineTo script(endName lineTo script("foo")))
 			.syntax
 			.assertEqualTo(
-				syntax(line(loop(syntax(line(break_(syntax("foo")))))))
+				syntax(line(repeat(syntax(line(end(syntax("foo")))))))
 			)
 	}
 

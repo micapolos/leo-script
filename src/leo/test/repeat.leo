@@ -2,9 +2,9 @@ use library number
 
 test
   10000
-  loop
+  repeat
     check equal 0
     switch
-      yes number.break
+      yes number.end
       no number.decrement
   is equal 0

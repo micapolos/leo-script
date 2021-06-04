@@ -1,7 +1,6 @@
 package leo
 
 import leo.base.assertEqualTo
-import leo.natives.minusName
 import kotlin.test.Test
 
 class ScriptSyntaxTest {
@@ -31,29 +30,6 @@ class ScriptSyntaxTest {
 				"y" lineTo script(line(literal(60)))),
 			doName lineTo script("three" lineTo script("four")),
 		)
-
-		script.syntax.script.assertEqualTo(script)
-	}
-
-	@Test
-	fun repeating() {
-		val script = script(
-			line(literal(10000)),
-			doName lineTo script(
-				repeatingName lineTo script(
-					numberName lineTo script(),
-					isName lineTo script(equalName lineTo script(line(literal(0)))),
-					switchName lineTo script(
-						yesName lineTo script(doingName lineTo script(line(literal("OK")))),
-						noName lineTo script(
-							doingName lineTo script(
-								numberName lineTo script(),
-								minusName lineTo script(line(literal(1))),
-								withName lineTo script(repeatName lineTo script()),
-							)
-						)
-					)
-				)))
 
 		script.syntax.script.assertEqualTo(script)
 	}
