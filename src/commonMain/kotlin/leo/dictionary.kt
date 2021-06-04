@@ -86,7 +86,7 @@ fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			value(recurseName fieldTo anyValue),
-			recurseBinding(function(body(block(recursing(syntax)))))
+			binding(recurse(function(body(block(recursing(syntax))))))
 		)
 	)
 
