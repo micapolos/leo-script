@@ -94,7 +94,7 @@ fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 			value(recurseName fieldTo anyValue),
 			binding(function(body(block(recursing(
 				// TODO: This is terrible!!! Fix it.
-				Syntax(stack(contentName lineTo syntax()).pushAll(syntax.lineStack.reverse)))
+				Syntax(stack(contentName lineTo syntax()).pushAll(syntax.lineStack)))
 			))))
 		)
 	)
