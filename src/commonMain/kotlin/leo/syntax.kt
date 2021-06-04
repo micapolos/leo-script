@@ -135,6 +135,9 @@ fun line(update: Update): SyntaxLine = UpdateSyntaxLine(update)
 fun line(use: Use): SyntaxLine = UseSyntaxLine(use)
 fun line(with: With): SyntaxLine = WithSyntaxLine(with)
 
+fun letRhs(be: Be): LetRhs = BeLetRhs(be)
+fun letRhs(do_: Do): LetRhs = DoLetRhs(do_)
+
 fun as_(syntax: Syntax) = As(syntax)
 fun any() = SyntaxAny
 fun be(syntax: Syntax) = Be(syntax)
@@ -152,6 +155,7 @@ fun give(syntax: Syntax) = Give(syntax)
 fun is_(rhs: IsRhs) = Is(rhs, negated = false)
 fun matching(syntax: Syntax) = Matching(syntax)
 fun not(syntax: Syntax) = Not(syntax)
+fun let(syntax: Syntax, rhs: LetRhs) = Let(syntax, rhs)
 fun let(syntax: Syntax, be: Be) = Let(syntax, BeLetRhs(be))
 fun let(syntax: Syntax, do_: Do) = Let(syntax, DoLetRhs(do_))
 fun repeat(syntax: Syntax) = Repeat(syntax)

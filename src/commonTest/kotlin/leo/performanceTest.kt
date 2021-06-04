@@ -5,7 +5,7 @@ import leo.natives.minusName
 import kotlin.test.Test
 
 class PerformanceTest {
-	// Last results: 370ms
+	// Last results: 360ms
 	@Test
 	fun doRepeatingLong() {
 		script(
