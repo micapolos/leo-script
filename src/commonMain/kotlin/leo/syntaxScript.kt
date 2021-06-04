@@ -56,6 +56,8 @@ val Let.script get() = syntax.script.plus(rhs.scriptLine)
 val Loop.script get() = syntax.script
 val Matching.script get() = syntax.script
 val Private.script get() = syntax.script
+val Recurse.script get() = syntax.script
+val Repeat.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })
 val Case.scriptLine get() = name lineTo syntax.script
@@ -65,9 +67,6 @@ val Try.script get() = syntax.script
 val Update.script get() = script(fieldStack.map { scriptLine })
 val Use.script get() = script().fold(stack(nameStackLink)) { script(it lineTo this) }
 val With.script get() = syntax.script
-
-val Recurse.script get() = atomOrNull?.scriptLine?.script ?: script()
-val Repeat.script get() = atomOrNull?.scriptLine?.script ?: script()
 
 val SyntaxField.scriptLine get() = name lineTo rhsSyntax.script
 

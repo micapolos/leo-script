@@ -185,16 +185,10 @@ val Script.equalCompilation: Compilation<Equal> get() =
 	syntaxCompilation.map(::equal)
 
 val Script.recurseCompilation: Compilation<Recurse> get() =
-	if (isEmpty) recurse(null).compilation
-	else onlyLineOrNull
-		.notNullOrThrow { value(recurseName fieldTo value) }
-		.syntaxAtomCompilation.map(::recurse)
+	syntaxCompilation.map(::recurse)
 
 val Script.repeatCompilation: Compilation<Repeat> get() =
-	if (isEmpty) repeat(null).compilation
-	else onlyLineOrNull
-		.notNullOrThrow { value(repeatName fieldTo value) }
-		.syntaxAtomCompilation.map(::repeat)
+	syntaxCompilation.map(::repeat)
 
 val Script.quoteCompilation: Compilation<Quote> get() =
 	quote(this).compilation

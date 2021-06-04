@@ -1,7 +1,7 @@
 test
   x 10
   y 20
-  do it
-  is equal it
+  do point
+  is equal point
     x 10
     y 20

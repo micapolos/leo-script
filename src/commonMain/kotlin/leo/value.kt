@@ -244,6 +244,15 @@ val Value.nameOrNull: String?
 	get() =
 		fieldOrNull?.onlyNameOrNull
 
+fun <T: Any> Value.resolveInfixOrNull(fn: Value.(String, Value) -> T?): T? =
+	linkOrNull?.run {
+		value.let { lhs ->
+			field.rhs.valueOrNull?.let { value ->
+				lhs.fn(field.name, value)
+			}
+		}
+	}
+
 fun <T: Any> Value.resolveInfixOrNull(name: String, fn: Value.(Value) -> T?): T? =
 	linkOrNull?.run {
 		value.let { lhs ->
@@ -257,6 +266,13 @@ fun <T: Any> Value.resolvePrefixOrNull(name: String, fn: (Value) -> T?): T? =
 	resolveInfixOrNull(name) { rhs ->
 		resolveEmptyOrNull {
 			fn(rhs)
+		}
+	}
+
+fun <T: Any> Value.resolvePrefixOrNull(fn: (String, Value) -> T?): T? =
+	resolveInfixOrNull { name, rhs ->
+		resolveEmptyOrNull {
+			fn(name, rhs)
 		}
 	}
 

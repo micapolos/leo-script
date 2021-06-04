@@ -702,6 +702,17 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun nameText() {
+		script(
+			"foo" lineTo script("bar"),
+			line(nameName),
+			line(textName)
+		)
+			.evaluate
+			.assertEqualTo(script(literal("foo")))
+	}
+
+	@Test
 	fun textValue() {
 		script(
 			line(literal("foo bar\n")),

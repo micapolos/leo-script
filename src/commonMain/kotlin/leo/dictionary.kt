@@ -91,8 +91,11 @@ fun Dictionary.applyEvaluation(syntax: Syntax, given: Value): Evaluation<Value> 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
-			anyValue.plus(recurseName fieldTo value()),
-			binding(function(body(block(recursing(syntax)))))
+			value(recurseName fieldTo anyValue),
+			binding(function(body(block(recursing(
+				// TODO: This is terrible!!! Fix it.
+				Syntax(stack(contentName lineTo syntax()).pushAll(syntax.lineStack.reverse)))
+			))))
 		)
 	)
 

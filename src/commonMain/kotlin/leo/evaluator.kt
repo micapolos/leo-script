@@ -121,8 +121,12 @@ fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
 
 fun Evaluator.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }.let {
-		rhs.valueOrNull?.resolvePrefixOrNull(valueName) {
-			value(field(literal(it.string)))
+		rhs.valueOrNull?.resolvePrefixOrNull { name, content ->
+			when (name) {
+				valueName -> value(field(literal(content.string)))
+				nameName -> content.fieldOrNull?.name?.let { value(field(literal(it))) }
+				else -> null
+			}
 		}
 	}
 		.evaluation
@@ -311,17 +315,15 @@ fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
-	if (recurse.atomOrNull == null) plusResolveEvaluation(recurseName fieldTo value())
-	else dictionary.fieldEvaluation(recurse.atomOrNull).bind { repeatField ->
-		dictionary.resolveEvaluation(value.plus(repeatField).plus(recurseName fieldTo value())).bind {
+	dictionary.valueEvaluation(value, recurse.syntax).bind { recursedValue ->
+		dictionary.resolveEvaluation(value(recurseName fieldTo recursedValue)).bind {
 			setEvaluation(it)
 		}
 	}
 
 fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
-	if (repeat.atomOrNull == null) setEvaluation(value(repeatName fieldTo value))
-	else dictionary.fieldEvaluation(repeat.atomOrNull).bind { repeatField ->
-		setEvaluation(value(repeatName fieldTo value.plus(repeatField)))
+	dictionary.valueEvaluation(value, repeat.syntax).bind { repeatedValue ->
+		setEvaluation(value(repeatName fieldTo repeatedValue))
 	}
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
