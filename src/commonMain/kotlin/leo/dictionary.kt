@@ -211,6 +211,13 @@ fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
 		}
 	}
 
+fun Dictionary.valueEvaluation(value: Value, take: Take): Evaluation<Value> =
+	valueEvaluation(take.syntax).bind { taken ->
+		taken.functionOrThrow.evaluation.bind { function ->
+			function.applyEvaluation(value)
+		}
+	}
+
 fun Dictionary.definitionEvaluation(let: Let): Evaluation<Definition> =
 	valueEvaluation(let.syntax).bind { letValue ->
 		bindingEvaluation(let.rhs).map { binding ->

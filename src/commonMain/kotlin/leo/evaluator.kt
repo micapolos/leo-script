@@ -111,13 +111,7 @@ fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> 
 	}
 
 fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(take.syntax).bind { taken ->
-		taken.functionOrThrow.evaluation.bind { function ->
-			function.applyEvaluation(value).bind { output ->
-				setEvaluation(output)
-			}
-		}
-	}
+	dictionary.valueEvaluation(value, take).bind { setEvaluation(it) }
 
 fun Evaluator.plusTextOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }.let {
@@ -303,10 +297,7 @@ val Evaluator.dictionary
 		context.privateDictionary
 
 fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
-	use
-		.dictionaryEvaluation
-		//.tracing(value(useName fieldTo use.script.value))
-		.map { use(it) }
+	use.dictionaryEvaluation.map { use(it) }
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))
