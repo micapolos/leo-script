@@ -1,18 +1,14 @@
 package leo.natives
 
-import leo.Dictionary
 import leo.Number
 import leo.Value
 import leo.array
 import leo.base.map
 import leo.base.stack
-import leo.bindingOrNull
-import leo.field
 import leo.fieldOrNull
 import leo.fieldSeq
 import leo.fieldTo
 import leo.getOrNull
-import leo.literal
 import leo.native
 import leo.nativeName
 import leo.nativeOrNull
@@ -24,9 +20,6 @@ import leo.rhs
 import leo.textOrThrow
 import leo.value
 import leo.valueOrNull
-
-fun Dictionary.nativeValue(name: String): Value =
-	bindingOrNull(value(name))!!.valueOrNull!!
 
 fun Value.nativeValue(name: String): Value =
 	getOrNull(name)!!
@@ -41,9 +34,6 @@ val Value.nativeObject: Any?
 			)
 		)
 	}.any
-
-val String.nativeValue get() = value(field(literal(this)))
-val Number.nativeValue get() = value(field(literal(this)))
 
 val Value.nativeArray: Array<Any?>
 	get() =

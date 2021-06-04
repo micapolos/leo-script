@@ -8,35 +8,35 @@ val Syntax.expression: Expression get() = Expression(reverse)
 val Syntax.reverse: Syntax get() = Syntax(lineStack.map { reverse }.reverse)
 val SyntaxLine.reverse: SyntaxLine get() =
 	when (this) {
-		is AnySyntaxLine -> this
-		is AsSyntaxLine -> TODO()
-		is AtomSyntaxLine -> TODO()
-		is BeSyntaxLine -> TODO()
-		is BindSyntaxLine -> TODO()
-		is CheckSyntaxLine -> TODO()
-		is CommentSyntaxLine -> TODO()
-		is DoSyntaxLine -> TODO()
-		is DoingSyntaxLine -> TODO()
-		is EndSyntaxLine -> TODO()
-		is ExampleSyntaxLine -> TODO()
-		is FailSyntaxLine -> TODO()
-		is GetSyntaxLine -> TODO()
-		is GiveSyntaxLine -> TODO()
-		is IsSyntaxLine -> TODO()
-		is LetSyntaxLine -> TODO()
-		is MatchingSyntaxLine -> TODO()
-		is PrivateSyntaxLine -> TODO()
-		is QuoteSyntaxLine -> TODO()
-		is RecurseSyntaxLine -> TODO()
-		is RepeatSyntaxLine -> TODO()
-		is SetSyntaxLine -> TODO()
-		is SwitchSyntaxLine -> TODO()
-		is TakeSyntaxLine -> TODO()
-		is TestSyntaxLine -> TODO()
-		is TrySyntaxLine -> TODO()
-		is UpdateSyntaxLine -> TODO()
-		is UseSyntaxLine -> TODO()
-		is WithSyntaxLine -> TODO()
+		is AnySyntaxLine -> any.reverse.let(::line)
+		is AsSyntaxLine -> as_.reverse.let(::line)
+		is AtomSyntaxLine -> atom.reverse.let(::line)
+		is BeSyntaxLine -> be.reverse.let(::line)
+		is BindSyntaxLine -> bind.reverse.let(::line)
+		is CheckSyntaxLine -> check.reverse.let(::line)
+		is CommentSyntaxLine -> comment.reverse.let(::line)
+		is DoSyntaxLine -> do_.reverse.let(::line)
+		is DoingSyntaxLine -> doing.reverse.let(::line)
+		is EndSyntaxLine -> end.reverse.let(::line)
+		is ExampleSyntaxLine -> example.reverse.let(::line)
+		is FailSyntaxLine -> fail.reverse.let(::line)
+		is GetSyntaxLine -> get.reverse.let(::line)
+		is GiveSyntaxLine -> give.reverse.let(::line)
+		is IsSyntaxLine -> is_.reverse.let(::line)
+		is LetSyntaxLine -> let.reverse.let(::line)
+		is MatchingSyntaxLine -> matching.reverse.let(::line)
+		is PrivateSyntaxLine -> private.reverse.let(::line)
+		is QuoteSyntaxLine -> quote.reverse.let(::line)
+		is RecurseSyntaxLine -> recurse.reverse.let(::line)
+		is RepeatSyntaxLine -> repeat.reverse.let(::line)
+		is SetSyntaxLine -> set.reverse.let(::line)
+		is SwitchSyntaxLine -> switch.reverse.let(::line)
+		is TakeSyntaxLine -> take.reverse.let(::line)
+		is TestSyntaxLine -> test.reverse.let(::line)
+		is TrySyntaxLine -> try_.reverse.let(::line)
+		is UpdateSyntaxLine -> update.reverse.let(::line)
+		is UseSyntaxLine -> use.reverse.let(::line)
+		is WithSyntaxLine -> with.reverse.let(::line)
 	}
 
 val SyntaxAny.reverse get() = this
@@ -53,7 +53,7 @@ val Example.reverse get() = example(syntax.reverse)
 val Fail.reverse get() = fail(syntax.reverse)
 val Get.reverse get() = Get(nameStack.reverse)
 val Give.reverse get() = give(syntax.reverse)
-val Is.reverse get() = is_(rhs.reverse)
+val Is.reverse get() = is_(rhs.reverse, negated)
 val Let.reverse get() = let(syntax.reverse, rhs.reverse)
 val Matching.reverse get() = matching(syntax.reverse)
 val Private.reverse get() = private(syntax.reverse)
@@ -70,11 +70,14 @@ val Update.reverse get() = Update(fieldStack.reverse)
 val Use.reverse get() = this
 val With.reverse get() = with(syntax.reverse)
 
-val Atom.reverse get() =
+val SyntaxAtom.reverse get() =
 	when (this) {
-		is LiteralAtom -> this
-		is NameAtom -> this
+		is FieldSyntaxAtom -> atom(field.reverse)
+		is LiteralSyntaxAtom -> this
 	}
+
+val SyntaxField.reverse get() =
+	name fieldTo rhsSyntax.reverse
 
 val IsRhs.reverse get() =
 	when (this) {
