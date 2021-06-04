@@ -1,10 +1,10 @@
 use library number
 
 test
-  0
+  10000
   loop
-    check equal 10000
+    check equal 0
     switch
       yes number.break
-      no number.increment
-  is equal 10000
+      no number.decrement
+  is equal 0
