@@ -72,3 +72,11 @@ infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
 
 val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
 val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
+
+fun TypeStructure.plus(line: TypeLine): TypeStructure = TypeStructure(lineStack.push(line))
+
+val Literal.typeLine get() =
+	when (this) {
+		is NumberLiteral -> numberTypeLine
+		is StringLiteral -> textTypeLine
+	}

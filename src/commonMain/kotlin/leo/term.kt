@@ -22,4 +22,8 @@ fun <T> varTerm(index: Int): Term<T> = term(variable(index))
 fun <T> lambda(term: Term<T>): Term<T> = term(TermAbstraction(term))
 operator fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
 
-fun <T> idTerm(): Term<T> = lambda(varTerm(0))
+fun <T> emptyTerm(): Term<T> = lambda(varTerm(0))
+
+infix fun <T> Term<T>.plus(term: Term<T>): Term<T> = TODO()
+val <T> Term<T>.pairFirst: Term<T> get() = TODO()
+val <T> Term<T>.pairSecond: Term<T> get() = TODO()
