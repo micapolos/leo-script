@@ -25,7 +25,7 @@ data class TextTypeLiteral(val text: TypeText): TypeLiteral()
 data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 
 data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine)
-data class TypeList(val itemAtom: TypeAtom)
+data class TypeList(val itemLine: TypeLine)
 
 data class TypeRecursive(val line: TypeLine)
 
@@ -55,7 +55,7 @@ fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 infix fun TypeStructure.doing(line: TypeLine) = TypeDoing(this, line)
 infix fun TypeStructure.doingLineTo(line: TypeLine) = line(atom(this doing line))
 
-fun list(atom: TypeAtom) = TypeList(atom)
+fun list(line: TypeLine) = TypeList(line)
 
 fun atom(field: TypeField): TypeAtom = FieldTypeAtom(field)
 fun atom(literal: TypeLiteral): TypeAtom = LiteralTypeAtom(literal)

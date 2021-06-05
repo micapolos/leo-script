@@ -1,6 +1,8 @@
 package leo
 
+import leo.base.Effect
 import leo.base.Seq
+import leo.base.effect
 import leo.base.notNullIf
 import leo.base.orIfNull
 
@@ -36,3 +38,5 @@ val <K, V> Stack<Pair<K, V>>.dict get() = Dict(this)
 val <K, V> Dict<K, V>.pairSeq: Seq<Pair<K, V>> get() = stack.seq
 fun <K, V> Dict<K, V>.getOr(key: K, value: V): V = get(key) ?: value
 
+fun <K, V: Any> Dict<K, V>.updateAndGetEffect(key: K, fn: (V?) -> V): Effect<Dict<K, V>, V> =
+	fn(get(key)).let { put(key to it) effect it }

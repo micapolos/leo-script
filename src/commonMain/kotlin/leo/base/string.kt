@@ -49,3 +49,9 @@ val Int.indentString: String
 		"  ".repeat(this)
 
 val bomString = "\uFEFF"
+
+val String.titleCase: String get() =
+	if (isEmpty()) this
+	else substring(0..0).uppercase() + substring(1 until length)
+
+fun lines(vararg strings: String): String = strings.joinToString("\n")

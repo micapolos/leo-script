@@ -31,7 +31,7 @@ val TypeField.scriptLine: ScriptLine get() =
 	name lineTo type.script
 
 val TypeList.scriptLine: ScriptLine get() =
-	listName lineTo script(itemAtom.scriptLine)
+	listName lineTo script(itemLine.scriptLine)
 
 val TypeLiteral.scriptLine: ScriptLine get() =
 	when (this) {
