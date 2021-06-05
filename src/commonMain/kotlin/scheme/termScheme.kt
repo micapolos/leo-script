@@ -9,10 +9,15 @@ import leo.TermAbstraction
 import leo.TermApplication
 import leo.TermVariable
 import leo.VariableTerm
+import leo.array
+import leo.base.iterate
 import leo.bind
+import leo.flat
 import leo.getStateful
 import leo.map
+import leo.push
 import leo.ret
+import leo.stack
 import leo.updateStateful
 
 private data class State(val depth: Int)
@@ -31,18 +36,19 @@ private val Term<Scheme>.schemeTask: Task<Scheme> get() =
 	}
 
 private val TermAbstraction<Scheme>.schemeTask: Task<Scheme> get() =
-	variableSchemeTask.bind { variableScheme ->
-		pushTask.bind {
-			term.schemeTask.bind { termScheme ->
-				"(lambda ${variableScheme.string} ${termScheme.string})".scheme.ret()
-			}
+	pushVariablesSchemeTask(variableCount).bind { variablesScheme ->
+		term.schemeTask.bind { termScheme ->
+			"(lambda ${variablesScheme.string} ${termScheme.string})".scheme.ret()
 		}
 	}
 
 private val TermApplication<Scheme>.schemeTask: Task<Scheme> get() =
 	lhs.schemeTask.bind { lhsScheme ->
-		rhs.schemeTask.bind { rhsScheme ->
-			"(${lhsScheme.string} ${rhsScheme.string})".scheme.ret()
+		rhsStack
+			.map { schemeTask }
+			.flat
+			.bind { rhsSchemes ->
+			"(${lhsScheme.string} ${rhsSchemes.flatScheme.string})".scheme.ret()
 		}
 	}
 
@@ -55,6 +61,16 @@ private val variableSchemeTask: Task<Scheme> get() =
 	getStateful<State>().map { state ->
 		state.depth.variableScheme
 	}
+
+private fun pushVariablesSchemeTask(count: Int): Task<Scheme> =
+	stack<Unit>()
+		.iterate(count) { push(Unit) }
+		.map { variableSchemeTask.bind { variableScheme -> pushTask.map { variableScheme } } }
+		.flat
+		.map { it.map { string } }
+		.map { it.array.joinToString(" ") }
+		.map { "($it)" }
+		.map { it.scheme }
 
 private val pushTask: Task<Unit> get() =
 	updateStateful { it.push }

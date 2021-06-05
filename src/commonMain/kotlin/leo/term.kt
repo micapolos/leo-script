@@ -7,8 +7,8 @@ data class ApplicationTerm<T>(val application: TermApplication<T>): Term<T>()
 data class VariableTerm<T>(val variable: TermVariable): Term<T>()
 
 data class TermVariable(val index: Int)
-data class TermAbstraction<out T>(val term: Term<T>)
-data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>)
+data class TermAbstraction<out T>(val variableCount: Int, val term: Term<T>)
+data class TermApplication<out T>(val lhs: Term<T>, val rhsStack: Stack<Term<T>>)
 
 fun <T> term(value: T): Term<T> = NativeTerm(value)
 fun <T> term(abstraction: TermAbstraction<T>): Term<T> = AbstractionTerm(abstraction)
@@ -19,10 +19,10 @@ fun variable(index: Int) = TermVariable(index)
 
 // DSL
 fun <T> varTerm(index: Int): Term<T> = term(variable(index))
-fun <T> lambda(term: Term<T>): Term<T> = term(TermAbstraction(term))
-operator fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
+fun <T> lambda(variableCount: Int, term: Term<T>): Term<T> = term(TermAbstraction(variableCount, term))
+fun <T> Term<T>.invoke(vararg terms: Term<T>): Term<T> = term(TermApplication(this, stack(*terms)))
 
-fun <T> emptyTerm(): Term<T> = lambda(varTerm(0))
+fun <T> emptyTerm(): Term<T> = lambda(1, varTerm(0))
 
 infix fun <T> Term<T>.plus(term: Term<T>): Term<T> = TODO()
 val <T> Term<T>.pairFirst: Term<T> get() = TODO()
