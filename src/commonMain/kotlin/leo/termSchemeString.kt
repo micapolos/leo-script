@@ -17,7 +17,7 @@ private val Term.schemeStringTask: Task<String> get() =
 
 private val TermAbstraction.schemeStringTask: Task<String> get() =
 	variableSchemeStringTask.bind { variableString ->
-		updateStateful<State> { it.push }.bind {
+		pushTask.bind {
 			term.schemeStringTask.bind { termString ->
 				"(lambda $variableString $termString)".ret()
 			}
@@ -43,5 +43,8 @@ private val variableSchemeStringTask: Task<String> get() =
 	getStateful<State>().map { state ->
 		state.depth.variableSchemeString
 	}
+
+private val pushTask: Task<Unit> get() =
+	updateStateful { it.push }
 
 private val Int.variableSchemeString: String get() = "v${this}"
