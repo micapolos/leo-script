@@ -1,5 +1,7 @@
 package leo
 
+data class Typed(val expression: Expression, val type: Type)
+
 data class Expression(val lineStack: Stack<ExpressionLine>)
 
 sealed class ExpressionLine
