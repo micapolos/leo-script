@@ -1,25 +1,12 @@
 package leo.kotlin
 
-import leo.AtomTypeLine
 import leo.ChoiceType
-import leo.DoingTypeAtom
-import leo.FieldTypeAtom
-import leo.ListTypeAtom
-import leo.LiteralTypeAtom
-import leo.NumberTypeLiteral
-import leo.RecurseTypeLine
-import leo.RecursiveTypeLine
 import leo.Stateful
 import leo.StructureType
-import leo.TextTypeLiteral
 import leo.Type
-import leo.TypeAtom
 import leo.TypeChoice
-import leo.TypeDoing
 import leo.TypeField
 import leo.TypeLine
-import leo.TypeList
-import leo.TypeLiteral
 import leo.TypeStructure
 import leo.array
 import leo.base.effect
@@ -55,45 +42,6 @@ val TypeLine.valGeneration: Generation<String> get() =
 		}
 	}
 
-val TypeLine.typeNameGeneration: Generation<String> get() =
-	when (this) {
-		is AtomTypeLine -> atom.typeNameGeneration
-		is RecurseTypeLine -> TODO()
-		is RecursiveTypeLine -> TODO()
-	}
-
-val TypeAtom.typeNameGeneration: Generation<String> get() =
-	when (this) {
-		is DoingTypeAtom -> doing.typeNameGeneration
-		is FieldTypeAtom -> field.typeNameGeneration
-		is ListTypeAtom -> list.typeNameGeneration
-		is LiteralTypeAtom -> literal.typeNameGeneration
-	}
-
-val TypeDoing.typeNameGeneration: Generation<String> get() =
-	lhsTypeStructure.lineStack
-		.map { typeNameGeneration }
-		.flat
-		.bind { lhsTypeNameStack ->
-			rhsTypeLine.typeNameGeneration.bind { rhsTypeName ->
-				"(${lhsTypeNameStack.array.joinToString(", ")}) -> $rhsTypeName".generation
-			}
-		}
-
-val TypeList.typeNameGeneration: Generation<String> get() =
-	itemLine.typeNameGeneration.bind { itemTypeName ->
-		"Stack<$itemTypeName>".generation
-	}
-
-val TypeLiteral.typeNameGeneration: Generation<String> get() =
-	when (this) {
-		is NumberTypeLiteral -> "Double".generation
-		is TextTypeLiteral -> "String".generation
-	}
-
-val TypeField.typeNameGeneration: Generation<String> get() =
-	nameGeneration.map { it.kotlinClassName }
-
 val TypeField.nameGeneration: Generation<Name> get() =
 	nameOrNullGeneration.bind { nameOrNull ->
 		if (nameOrNull != null) nameOrNull.generation
@@ -128,13 +76,13 @@ fun TypeStructure.declarationGeneration(name: Name): Generation<String> =
 		}
 
 fun TypeChoice.declarationGeneration(name: Name): Generation<String> =
-	sealedDeclarationGeneration(name).bind { sealedDeclaration ->
+	sealedClassDeclarationGeneration(name).bind { sealedDeclaration ->
 		casesDeclarationGeneration(name).bind { casesDeclaration ->
 			lines(sealedDeclaration, casesDeclaration).generation
 		}
 	}
 
-fun TypeChoice.sealedDeclarationGeneration(name: Name): Generation<String> =
+fun sealedClassDeclarationGeneration(name: Name): Generation<String> =
 	"sealed class ${name.kotlinClassName}".generation
 
 fun TypeChoice.casesDeclarationGeneration(name: Name): Generation<String> =
@@ -153,27 +101,6 @@ fun TypeLine.caseDeclarationGeneration(sealedClassName: Name): Generation<String
 val TypeLine.kotlinGeneration: Generation<Kotlin> get() =
 	typeNameGeneration.bind { unusedName ->
 		typesGeneration.map { it.kotlin }
-	}
-
-val TypeLine.fieldNameGeneration: Generation<String> get() =
-	when (this) {
-		is AtomTypeLine -> atom.fieldNameGeneration
-		is RecurseTypeLine -> TODO()
-		is RecursiveTypeLine -> TODO()
-	}
-
-val TypeAtom.fieldNameGeneration: Generation<String> get() =
-	when (this) {
-		is DoingTypeAtom -> "doing".generation
-		is FieldTypeAtom -> field.name.generation
-		is ListTypeAtom -> "list".generation
-		is LiteralTypeAtom -> literal.fieldNameGeneration
-	}
-
-val TypeLiteral.fieldNameGeneration: Generation<String> get() =
-	when (this) {
-		is NumberTypeLiteral -> "number".generation
-		is TextTypeLiteral -> "text".generation
 	}
 
 val Type.kotlinGeneration: Generation<Kotlin> get() =

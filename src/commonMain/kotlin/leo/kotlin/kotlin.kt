@@ -1,4 +1,15 @@
 package leo.kotlin
 
+import leo.Type
+import leo.TypeLine
+import leo.get
+
 data class Kotlin(val string: String)
 fun kotlin(string: String) = Kotlin(string)
+val String.kotlin: Kotlin get() = kotlin(this)
+
+val TypeLine.kotlin: Kotlin get() =
+	kotlinGeneration.get(types())
+
+val Type.kotlin: Kotlin get() =
+	kotlinGeneration.get(types())
