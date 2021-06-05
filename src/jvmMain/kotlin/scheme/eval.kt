@@ -14,7 +14,7 @@ val Scheme.eval: Scheme
 		return file.run.scheme
 	}
 
-val File.run: String
+private val File.run: String
 	get() =
 		stack<String>()
 			.push("chez")
