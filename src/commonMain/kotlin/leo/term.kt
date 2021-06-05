@@ -17,6 +17,7 @@ fun <T> term(variable: TermVariable): Term<T> = VariableTerm(variable)
 
 fun variable(index: Int) = TermVariable(index)
 
-fun <T> v(index: Int): Term<T> = term(variable(index))
+// DSL
+fun <T> varTerm(index: Int): Term<T> = term(variable(index))
 fun <T> lambda(term: Term<T>): Term<T> = term(TermAbstraction(term))
 operator fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
