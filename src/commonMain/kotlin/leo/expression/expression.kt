@@ -2,6 +2,8 @@ package leo.expression
 
 import leo.Literal
 import leo.Stack
+import leo.push
+import leo.stack
 
 sealed class Expression
 data class LiteralExpression(val literal: Literal): Expression()
@@ -31,3 +33,9 @@ object End
 
 data class Function(val expression: Expression, val isRecursive: Boolean)
 data class Invoke(val lhs: Expression, val rhs: Expression)
+
+fun expression(): Expression = VectorExpression(Vector(stack()))
+fun expression(literal: Literal): Expression = LiteralExpression(literal)
+
+fun vector(vararg expressions: Expression) = Vector(stack(*expressions))
+fun Vector.plus(expression: Expression): Vector = Vector(expressionStack.push(expression))
