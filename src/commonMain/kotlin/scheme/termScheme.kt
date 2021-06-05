@@ -9,7 +9,6 @@ import leo.TermAbstraction
 import leo.TermApplication
 import leo.TermVariable
 import leo.VariableTerm
-import leo.array
 import leo.base.iterate
 import leo.bind
 import leo.flat
@@ -48,7 +47,7 @@ private val TermApplication<Scheme>.schemeTask: Task<Scheme> get() =
 			.map { schemeTask }
 			.flat
 			.bind { rhsSchemes ->
-			"(${lhsScheme.string} ${rhsSchemes.flatScheme.string})".scheme.ret()
+			"(${lhsScheme.string} ${rhsSchemes.schemeSpaced.string})".scheme.ret()
 		}
 	}
 
@@ -67,10 +66,7 @@ private fun pushVariablesSchemeTask(count: Int): Task<Scheme> =
 		.iterate(count) { push(Unit) }
 		.map { variableSchemeTask.bind { variableScheme -> pushTask.map { variableScheme } } }
 		.flat
-		.map { it.map { string } }
-		.map { it.array.joinToString(" ") }
-		.map { "($it)" }
-		.map { it.scheme }
+		.map { it.schemeSpaced.parenthesize }
 
 private val pushTask: Task<Unit> get() =
 	updateStateful { it.push }

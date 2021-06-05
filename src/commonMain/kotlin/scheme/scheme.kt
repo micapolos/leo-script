@@ -14,5 +14,8 @@ val Int.scheme: Scheme get() = toString().scheme
 val Double.scheme: Scheme get() = toString().scheme
 val Boolean.scheme: Scheme get() = if (this) "#t".scheme else "#f".scheme
 
-val Stack<Scheme>.flatScheme: Scheme get() =
+val Stack<Scheme>.schemeSpaced: Scheme get() =
 	map { string }.array.joinToString(" ").scheme
+
+val Scheme.parenthesize: Scheme get() =
+	"($string)".scheme
