@@ -13,6 +13,11 @@ fun <S, T> Stateful<S, T>.get(state: S): T =
 	run(state).value
 
 fun <S, V> V.stateful() = Stateful<S, V> { map -> map effect this }
+fun <S, V> V.ret() = stateful<S, V>()
+
+fun <S> getStateful(): Stateful<S, S> = Stateful { it effect it }
+fun <S> setStateful(state: S): Stateful<S, Unit> = Stateful { state effect Unit }
+fun <S> updateStateful(fn: (S) -> S): Stateful<S, Unit> = Stateful { fn(it) effect Unit }
 
 fun <S, V, O> Stateful<S, V>.bind(fn: (V) -> Stateful<S, O>): Stateful<S, O> =
 	Stateful { map ->
