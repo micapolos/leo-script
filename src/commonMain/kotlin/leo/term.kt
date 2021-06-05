@@ -21,3 +21,5 @@ fun variable(index: Int) = TermVariable(index)
 fun <T> varTerm(index: Int): Term<T> = term(variable(index))
 fun <T> lambda(term: Term<T>): Term<T> = term(TermAbstraction(term))
 operator fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
+
+fun <T> idTerm(): Term<T> = lambda(varTerm(0))
