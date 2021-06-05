@@ -39,9 +39,9 @@ val Stack<TypeLine>.choice get() = TypeChoice(this)
 fun type(structure: TypeStructure): Type = StructureType(structure)
 fun type(choice: TypeChoice): Type = ChoiceType(choice)
 
-fun structure(vararg lines: TypeLine): TypeStructure = stack(*lines).structure
+fun typeStructure(vararg lines: TypeLine): TypeStructure = stack(*lines).structure
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
-fun type(vararg lines: TypeLine): Type = type(structure(*lines))
+fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
 
 infix fun String.fieldTo(type: Type) = TypeField(this, type)
 
@@ -75,8 +75,10 @@ val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
 
 fun TypeStructure.plus(line: TypeLine): TypeStructure = TypeStructure(lineStack.push(line))
 
-val Literal.typeLine get() =
+val Literal.typeLine: TypeLine get() = line(typeAtom)
+
+val Literal.typeAtom: TypeAtom get() =
 	when (this) {
-		is NumberLiteral -> numberTypeLine
-		is StringLiteral -> textTypeLine
+		is NumberLiteral -> atom(literal(typeNumber))
+		is StringLiteral -> atom(literal(typeText))
 	}
