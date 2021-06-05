@@ -1,25 +1,22 @@
 package leo
 
-sealed class Term
-data class LiteralTerm(val literal: Literal): Term()
-data class AbstractionTerm(val abstraction: TermAbstraction): Term()
-data class ApplicationTerm(val application: TermApplication): Term()
-data class VariableTerm(val variable: TermVariable): Term()
+sealed class Term<out T>
+data class NativeTerm<T>(val value: T): Term<T>()
+data class AbstractionTerm<T>(val abstraction: TermAbstraction<T>): Term<T>()
+data class ApplicationTerm<T>(val application: TermApplication<T>): Term<T>()
+data class VariableTerm<T>(val variable: TermVariable): Term<T>()
 
 data class TermVariable(val index: Int)
-data class TermAbstraction(val term: Term)
-data class TermApplication(val lhs: Term, val rhs: Term)
+data class TermAbstraction<out T>(val term: Term<T>)
+data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>)
 
-fun term(literal: Literal): Term = LiteralTerm(literal)
-fun term(abstraction: TermAbstraction): Term = AbstractionTerm(abstraction)
-fun term(application: TermApplication): Term = ApplicationTerm(application)
-fun term(variable: TermVariable): Term = VariableTerm(variable)
+fun <T> term(value: T): Term<T> = NativeTerm(value)
+fun <T> term(abstraction: TermAbstraction<T>): Term<T> = AbstractionTerm(abstraction)
+fun <T> term(application: TermApplication<T>): Term<T> = ApplicationTerm(application)
+fun <T> term(variable: TermVariable): Term<T> = VariableTerm(variable)
 
 fun variable(index: Int) = TermVariable(index)
 
-fun v(index: Int): Term = term(variable(index))
-fun lambda(term: Term): Term = term(TermAbstraction(term))
-operator fun Term.invoke(term: Term): Term = term(TermApplication(this, term))
-fun term(string: String): Term = term(literal(string))
-fun term(int: Int): Term = term(literal(int))
-fun term(double: Double): Term = term(literal(double))
+fun <T> v(index: Int): Term<T> = term(variable(index))
+fun <T> lambda(term: Term<T>): Term<T> = term(TermAbstraction(term))
+operator fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
