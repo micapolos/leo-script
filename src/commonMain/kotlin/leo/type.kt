@@ -24,7 +24,7 @@ sealed class TypeLiteral
 data class TextTypeLiteral(val text: TypeText): TypeLiteral()
 data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 
-data class TypeDoing(val lhsType: Type, val rhsType: Type)
+data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine)
 data class TypeList(val itemAtom: TypeAtom)
 
 data class TypeRecursive(val line: TypeLine)
@@ -52,8 +52,8 @@ val typeRecurse get() = TypeRecurse
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
-infix fun Type.doing(type: Type) = TypeDoing(this, type)
-infix fun Type.doingLineTo(type: Type) = line(atom(this doing type))
+infix fun TypeStructure.doing(line: TypeLine) = TypeDoing(this, line)
+infix fun TypeStructure.doingLineTo(line: TypeLine) = line(atom(this doing line))
 
 fun list(atom: TypeAtom) = TypeList(atom)
 

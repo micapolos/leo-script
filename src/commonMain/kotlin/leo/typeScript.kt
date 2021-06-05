@@ -40,7 +40,7 @@ val TypeLiteral.scriptLine: ScriptLine get() =
 	}
 
 val TypeDoing.scriptLine: ScriptLine get() =
-	doingName lineTo lhsType.script.plus(toName lineTo rhsType.script)
+	doingName lineTo lhsTypeStructure.script.plus(toName lineTo script(rhsTypeLine.scriptLine))
 
 val TypeRecursive.scriptLine: ScriptLine get() =
 	recursiveName lineTo script(line.scriptLine)
