@@ -21,9 +21,3 @@ fun variable(index: Int) = TermVariable(index)
 fun <T> varTerm(index: Int): Term<T> = term(variable(index))
 fun <T> lambda(variableCount: Int, term: Term<T>): Term<T> = term(TermAbstraction(variableCount, term))
 fun <T> Term<T>.invoke(vararg terms: Term<T>): Term<T> = term(TermApplication(this, stack(*terms)))
-
-fun <T> emptyTerm(): Term<T> = lambda(1, varTerm(0))
-
-infix fun <T> Term<T>.plus(term: Term<T>): Term<T> = TODO()
-val <T> Term<T>.pairFirst: Term<T> get() = TODO()
-val <T> Term<T>.pairSecond: Term<T> get() = TODO()

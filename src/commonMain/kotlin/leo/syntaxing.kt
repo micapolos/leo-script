@@ -1,5 +1,3 @@
-@file:JvmName("SyntaxingKt")
-
 package leo
 
 import leo.base.notNullIf

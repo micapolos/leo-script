@@ -10,7 +10,7 @@ import leo.flat
 import leo.map
 
 val TypeLine.kotlinGeneration: Generation<Kotlin> get() =
-	typeNameGeneration.bind { unusedName ->
+	typeNameGeneration.bind { _ ->
 		typesGeneration.map { it.kotlin }
 	}
 

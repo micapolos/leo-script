@@ -62,8 +62,6 @@ fun TypedStructure.plusTypedStructureCompilation(literal: Literal): Compilation<
 		.of(typeStructure.plus(literal.typeLine))
 		.ret()
 
-fun Typed.getTypedCompilation(name: String): Compilation<TypedLine> = TODO()
-
 fun <T> Script.failTypedCompilation(): Compilation<T> =
 	Compilation {
 		// TODO: Do it properly, capturing the stack trace.
