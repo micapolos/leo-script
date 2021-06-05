@@ -82,3 +82,24 @@ val Literal.typeAtom: TypeAtom get() =
 		is NumberLiteral -> atom(literal(typeNumber))
 		is StringLiteral -> atom(literal(typeText))
 	}
+
+val TypeLine.selectName: String get() =
+	when (this) {
+		is AtomTypeLine -> atom.selectName
+		is RecurseTypeLine -> TODO()
+		is RecursiveTypeLine -> recursive.line.selectName
+	}
+
+val TypeAtom.selectName: String get() =
+	when (this) {
+		is DoingTypeAtom -> doingName
+		is FieldTypeAtom -> field.name
+		is ListTypeAtom -> listName
+		is LiteralTypeAtom -> literal.selectName
+	}
+
+val TypeLiteral.selectName: String get() =
+	when (this) {
+		is NumberTypeLiteral -> numberName
+		is TextTypeLiteral -> textName
+	}

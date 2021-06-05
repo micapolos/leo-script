@@ -18,7 +18,7 @@ data class DoingExpressionAtom(val doing: ExpressionDoing): ExpressionAtom()
 data class ExpressionField(val name: String, val rhs: Typed)
 data class ExpressionDoing(val lhsType: TypeStructure, val rhsTyped: TypeLine)
 
-data class ExpressionGet(val name: String)
+data class ExpressionGet(val lhs: ExpressionLine, val name: String)
 
 infix fun Expression.of(type: Type) = Typed(this, type)
 infix fun Expression.of(type: TypeStructure) = TypedStructure(this, type)
@@ -29,7 +29,7 @@ val emptyTypedStructure: TypedStructure get() = expression().of(typeStructure())
 
 fun Expression.plus(line: ExpressionLine): Expression = Expression(lineStack.push(line))
 
-fun expressionGet(name: String) = ExpressionGet(name)
+fun ExpressionLine.get(name: String) = ExpressionGet(this, name)
 
 fun line(atom: ExpressionAtom): ExpressionLine = AtomExpressionLine(atom)
 fun line(get: ExpressionGet): ExpressionLine = GetExpressionLine(get)

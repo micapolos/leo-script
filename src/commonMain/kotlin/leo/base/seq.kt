@@ -288,3 +288,11 @@ operator fun <T : Any> Seq<T>.get(index: Int): T? =
 operator fun <T : Any> SeqNode<T>.get(index: Int): T? =
 	if (index == 0) first
 	else remaining[index.dec()]
+
+val <T> Seq<T>.mapIndexed: Seq<IndexedValue<T>> get() = mapIndexed(0)
+
+fun <T> Seq<T>.mapIndexed(index: Int): Seq<IndexedValue<T>> =
+	Seq { nodeOrNull?.mapIndexed(index) }
+
+fun <T> SeqNode<T>.mapIndexed(index: Int): SeqNode<IndexedValue<T>> =
+	IndexedValue(index, first).seqNode(remaining.mapIndexed(index.inc()))
