@@ -1,16 +1,16 @@
 package leo
 
-typealias TypedCompilation<T> = Stateful<TypedCompiler, T>
+typealias Compilation<T> = Stateful<Compiler, T>
 
-val Syntax.typedCompilation: TypedCompilation<Typed> get() =
-	typedStructureCompilation.map { it.typed }
+val Syntax.compilation: Compilation<Typed> get() =
+	structureCompilation.map { it.typed }
 
-val Syntax.typedStructureCompilation: TypedCompilation<TypedStructure> get() =
+val Syntax.structureCompilation: Compilation<TypedStructure> get() =
 	emptyTypedStructure
-		.stateful<TypedCompiler, TypedStructure>()
+		.stateful<Compiler, TypedStructure>()
 		.foldStateful(lineSeq) { plusTypedStructureCompilation(it) }
 
-fun TypedStructure.plusTypedStructureCompilation(line: SyntaxLine): TypedCompilation<TypedStructure> =
+fun TypedStructure.plusTypedStructureCompilation(line: SyntaxLine): Compilation<TypedStructure> =
 	when (line) {
 		is AsSyntaxLine -> TODO()
 		is AtomSyntaxLine -> plusTypedStructureCompilation(line.atom)
@@ -42,30 +42,30 @@ fun TypedStructure.plusTypedStructureCompilation(line: SyntaxLine): TypedCompila
 		is WithSyntaxLine -> TODO()
 	}
 
-fun TypedStructure.plusTypedStructureCompilation(atom: SyntaxAtom): TypedCompilation<TypedStructure> =
+fun TypedStructure.plusTypedStructureCompilation(atom: SyntaxAtom): Compilation<TypedStructure> =
 	when (atom) {
 		is FieldSyntaxAtom -> plusTypedStructureCompilation(atom.field)
 		is LiteralSyntaxAtom -> plusTypedStructureCompilation(atom.literal)
 	}
 
-fun TypedStructure.plusTypedStructureCompilation(field: SyntaxField): TypedCompilation<TypedStructure> =
-	field.rhsSyntax.typedCompilation.bind { rhsTyped ->
+fun TypedStructure.plusTypedStructureCompilation(field: SyntaxField): Compilation<TypedStructure> =
+	field.rhsSyntax.compilation.bind { rhsTyped ->
 		expression
 			.plus(line(atom(field.name fieldTo rhsTyped)))
 			.of(typeStructure.plus(line(atom(field.name fieldTo rhsTyped.type))))
 			.ret()
 	}
 
-fun TypedStructure.plusTypedStructureCompilation(literal: Literal): TypedCompilation<TypedStructure> =
+fun TypedStructure.plusTypedStructureCompilation(literal: Literal): Compilation<TypedStructure> =
 	expression
 		.plus(line(expressionAtom(literal)))
 		.of(typeStructure.plus(literal.typeLine))
 		.ret()
 
-fun Typed.getTypedCompilation(name: String): TypedCompilation<TypedLine> = TODO()
+fun Typed.getTypedCompilation(name: String): Compilation<TypedLine> = TODO()
 
-fun <T> Script.failTypedCompilation(): TypedCompilation<T> =
-	TypedCompilation {
+fun <T> Script.failTypedCompilation(): Compilation<T> =
+	Compilation {
 		// TODO: Do it properly, capturing the stack trace.
 		throw RuntimeException(script(errorName lineTo this).string)
 	}
