@@ -13,3 +13,5 @@ val TypeLine.kotlin: Kotlin get() =
 
 val Type.kotlin: Kotlin get() =
 	kotlinGeneration.get(types())
+
+operator fun Kotlin.plus(kotlin: Kotlin) = string.plus(kotlin.string).kotlin

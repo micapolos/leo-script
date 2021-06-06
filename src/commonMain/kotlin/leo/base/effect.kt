@@ -20,3 +20,4 @@ inline fun <S, V> Effect<S, V>.updateState(fn: S.() -> S): Effect<S, V> =
 	state.fn() effect value
 
 infix fun <S, V1, V2> Effect<S, V1>.set(value: V2): Effect<S, V2> = state effect value
+infix fun <S1, S2, V> Effect<S1, V>.setState(state: S2): Effect<S2, V> = state effect value
