@@ -3,9 +3,9 @@ package leo.expression
 import leo.Literal
 import leo.Stateful
 import leo.TypeField
-import leo.TypeLine
 import leo.array
 import leo.base.effect
+import leo.base.fold
 import leo.base.lines
 import leo.bind
 import leo.fieldTo
@@ -16,6 +16,8 @@ import leo.kotlin.constructorNameGeneration
 import leo.kotlin.kotlin
 import leo.kotlin.plus
 import leo.map
+import leo.name
+import leo.seq
 import leo.stateful
 import leo.type
 
@@ -40,7 +42,9 @@ val Expression.kotlinCompilation: Compilation<Kotlin> get() =
 	when (op) {
 		is GetOp -> op.get.kotlinCompilation
 		is LiteralOp -> op.literal.kotlinCompilation
-		is MakeOp -> op.make.kotlinCompilation(typeLine)
+		is MakeOp -> op.make.kotlinCompilation
+		is BindOp -> op.bind.kotlinCompilation
+		is VariableOp -> op.variable.kotlinCompilation
 	}
 
 val Literal.kotlinCompilation: Compilation<Kotlin> get() =
@@ -51,7 +55,7 @@ val Get.kotlinCompilation: Compilation<Kotlin> get() =
 		lhsKotlin + ".".kotlin + name.kotlin
 	}
 
-fun Make.kotlinCompilation(typeLine: TypeLine): Compilation<Kotlin> =
+val Make.kotlinCompilation: Compilation<Kotlin> get() =
 	lhsStructure
 		.expressionStack
 		.map { kotlinCompilation }
@@ -67,6 +71,21 @@ fun Make.kotlinCompilation(typeLine: TypeLine): Compilation<Kotlin> =
 						.plus(")".kotlin)
 				}
 		}
+
+val Bind.kotlinCompilation: Compilation<Kotlin> get() =
+	rhsExpression.kotlinCompilation.fold(lhsStructure.expressionStack.seq) { field ->
+		bind { kotlin ->
+			kotlin.letCompilation(field)
+		}
+	}
+
+fun Kotlin.letCompilation(expression: Expression): Compilation<Kotlin> =
+	expression.kotlinCompilation.map { rhsKotlin ->
+		kotlin(rhsKotlin.string + ".let { " + expression.typeLine.name + " -> " + string + " }")
+	}
+
+val Variable.kotlinCompilation: Compilation<Kotlin> get() =
+	name.kotlin.compilation
 
 val TypeField.constructorNameCompilation: Compilation<String> get() =
 	Compilation { compiler ->

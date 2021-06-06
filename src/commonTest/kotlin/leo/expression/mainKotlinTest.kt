@@ -9,8 +9,11 @@ class MainKotlinTest {
 	fun make() {
 		"Michał Pociecha-Łoś".expression
 			.structure
-			.make("name").expression
-			.structure.make("full").expression
+			.make("name")
+			.expression
+			.structure
+			.make("full")
+			.expression
 			.mainKotlin.string
 			.assertEqualTo(
 				lines(

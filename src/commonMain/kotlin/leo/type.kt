@@ -1,5 +1,7 @@
 package leo
 
+import leo.base.notNullOrError
+
 sealed class Type
 data class StructureType(val structure: TypeStructure): Type()
 data class ChoiceType(val choice: TypeChoice): Type()
@@ -108,3 +110,34 @@ val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
 val TypeLine.atomOrNull: TypeAtom? get() = (this as? AtomTypeLine)?.atom
+val TypeAtom.fieldOrNull: TypeField? get() = (this as? FieldTypeAtom)?.field
+val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.type?.structureOrNull
+fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
+
+val TypeLine.name: String get() =
+	when (this) {
+		is AtomTypeLine -> atom.name
+		is RecurseTypeLine -> TODO()
+		is RecursiveTypeLine -> TODO()
+	}
+
+val TypeAtom.name: String get() =
+	when (this) {
+		is DoingTypeAtom -> doingName
+		is FieldTypeAtom -> field.name
+		is ListTypeAtom -> listName
+		is LiteralTypeAtom -> literal.name
+	}
+
+val TypeLiteral.name: String get() =
+	when (this) {
+		is NumberTypeLiteral -> numberName
+		is TextTypeLiteral -> textName
+	}
+
+fun TypeLine.get(name: String): TypeLine =
+	structureOrNull
+		.notNullOrError("$this is not structure")
+		.lineOrNull(name)
+		.notNullOrError("$this does not have field: $name")
+
