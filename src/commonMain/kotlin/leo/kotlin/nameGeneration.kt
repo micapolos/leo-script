@@ -38,13 +38,13 @@ val TypeField.newNameGeneration: Generation<Name> get() =
 		}
 		.orIfNull { name.generation }
 		.bind { name ->
-			name.nameGeneration.bind { name ->
-				type.declarationGeneration(name).bind { declaration ->
+			name.nameGeneration.bind { generatedName ->
+				type.declarationGeneration(generatedName).bind { declaration ->
 					typesGeneration.bind { types ->
 						types
-							.plus(this, GeneratedType(name, kotlin(declaration)))
+							.plus(this, GeneratedType(generatedName, kotlin(declaration)))
 							.setGeneration
-							.map { name }
+							.map { generatedName }
 					}
 				}
 			}

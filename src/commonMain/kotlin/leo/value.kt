@@ -26,7 +26,7 @@ data class LinkValue(val link: Link) : Value() {
 
 data class Link(val value: Value, val field: Field)
 
-@JvmInline
+@kotlin.jvm.JvmInline
 value class Native(val any: Any?)
 
 sealed class Rhs

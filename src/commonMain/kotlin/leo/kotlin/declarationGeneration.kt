@@ -30,7 +30,7 @@ fun TypeStructure.declarationGeneration(name: Name): Generation<String> =
 		}
 
 val TypeStructure.classDeclarationPrefixString: String get() =
-	if (lineStack.isSingleton) "@JvmInline value"
+	if (lineStack.isSingleton) "@kotlin.jvm.JvmInline value"
 	else "data"
 
 fun TypeChoice.declarationGeneration(name: Name): Generation<String> =

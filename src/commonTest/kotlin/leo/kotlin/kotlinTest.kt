@@ -36,8 +36,8 @@ class KotlinTest {
 			.kotlin.string
 			.assertEqualTo(
 				lines(
-					"@JvmInline value class DoubleId(val number: Double)",
-					"@JvmInline value class StringId(val text: String)"))
+					"@kotlin.jvm.JvmInline value class DoubleId(val number: Double)",
+					"@kotlin.jvm.JvmInline value class StringId(val text: String)"))
 	}
 
 	@Test
@@ -46,7 +46,7 @@ class KotlinTest {
 			"id" lineTo type(numberTypeLine),
 			"id" lineTo type(numberTypeLine))
 			.kotlin.string
-			.assertEqualTo("@JvmInline value class DoubleId(val number: Double)")
+			.assertEqualTo("@kotlin.jvm.JvmInline value class DoubleId(val number: Double)")
 	}
 
 	@Test
@@ -63,11 +63,11 @@ class KotlinTest {
 			.kotlin.string
 			.assertEqualTo(
 				lines(
-					"@JvmInline value class DoubleX(val number: Double)",
-					"@JvmInline value class DoubleY(val number: Double)",
+					"@kotlin.jvm.JvmInline value class DoubleX(val number: Double)",
+					"@kotlin.jvm.JvmInline value class DoubleY(val number: Double)",
 					"data class Point(val x: DoubleX, val y: DoubleY)",
-					"@JvmInline value class DoubleLength(val number: Double)",
-					"@JvmInline value class Map(val doing: (DoubleX, DoubleY) -> DoubleLength)"))
+					"@kotlin.jvm.JvmInline value class DoubleLength(val number: Double)",
+					"@kotlin.jvm.JvmInline value class Map(val doing: (DoubleX, DoubleY) -> DoubleLength)"))
 
 	}
 

@@ -13,7 +13,7 @@ class MainKotlinTest {
 			.mainKotlin.string
 			.assertEqualTo(
 				lines(
-					"@JvmInline value class StringName(val text: String)",
+					"@kotlin.jvm.JvmInline value class StringName(val text: String)",
 					"fun main() = println(StringName(\"foo\"))")
 			)
 	}

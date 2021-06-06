@@ -3,7 +3,7 @@ package leo
 import leo.natives.fileText
 import leo.parser.scriptEvaluation
 
-@JvmInline value class Use(val nameStackLink: StackLink<String>)
+@kotlin.jvm.JvmInline value class Use(val nameStackLink: StackLink<String>)
 
 fun use(name: String, vararg names: String) = Use(stackLink(name, *names))
 

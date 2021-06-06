@@ -5,7 +5,7 @@ import leo.base.Seq
 import leo.base.effect
 import leo.base.fold
 
-@JvmInline value class Stateful<S, out V>(
+@kotlin.jvm.JvmInline value class Stateful<S, out V>(
 	val run: (S) -> Effect<S, V>
 )
 

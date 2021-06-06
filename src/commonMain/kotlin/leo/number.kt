@@ -4,7 +4,8 @@ import kotlin.math.cos
 import kotlin.math.roundToLong
 import kotlin.math.sin
 
-@JvmInline value class Number(val double: Double) {
+@kotlin.jvm.JvmInline
+value class Number(val double: Double) {
 	override fun toString() =
 		if (double == double.roundToLong().toDouble()) double.toLong().toString()
 		else double.toString()

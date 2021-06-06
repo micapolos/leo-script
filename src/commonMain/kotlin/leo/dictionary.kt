@@ -6,7 +6,8 @@ import leo.base.nullOf
 import leo.base.runIf
 import leo.natives.nativeValue
 
-@JvmInline value class Dictionary(val definitionStack: Stack<Definition>)
+@kotlin.jvm.JvmInline
+value class Dictionary(val definitionStack: Stack<Definition>)
 
 fun dictionary(vararg definitions: Definition): Dictionary =
 	Dictionary(stack(*definitions))
