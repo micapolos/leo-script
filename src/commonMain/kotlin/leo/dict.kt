@@ -8,7 +8,7 @@ import leo.base.orIfNull
 
 // TODO: Replace with high-performance persistent implementation (ie: using Trie).
 
-data class Dict<K, V>(val stack: Stack<Pair<K, V>>) {
+@JvmInline value class Dict<K, V>(val stack: Stack<Pair<K, V>>) {
 	fun put(pair: Pair<K, V>): Dict<K, V> =
 		stack
 			.updateFirstOrNull {

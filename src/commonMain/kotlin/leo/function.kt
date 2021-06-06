@@ -1,7 +1,7 @@
 package leo
 
 data class Function(val dictionary: Dictionary, val body: Body)
-data class FunctionRecurse(val function: Function)
+@JvmInline value class FunctionRecurse(val function: Function)
 
 fun Dictionary.function(body: Body): Function = Function(this, body)
 fun recurse(function: Function) = FunctionRecurse(function)
