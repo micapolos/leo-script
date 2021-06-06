@@ -4,14 +4,17 @@ import leo.Literal
 import leo.Stack
 import leo.TypeLine
 import leo.TypeStructure
+import leo.isEmpty
 import leo.lineTo
 import leo.literal
 import leo.map
 import leo.numberTypeLine
+import leo.onlyOrNull
 import leo.push
 import leo.stack
 import leo.textTypeLine
 import leo.type
+import leo.typeLine
 
 data class Expression(val op: Op, val typeLine: TypeLine)
 
@@ -28,6 +31,8 @@ data class Get(val lhsExpression: Expression, val name: String)
 data class Make(val lhsStructure: Structure, val name: String)
 data class Bind(val lhsStructure: Structure, val rhsExpression: Expression)
 data class Binding(val name: String)
+data class Switch(val lhsExpression: Expression, val caseStack: Stack<Case>)
+data class Case(val expression: Expression)
 
 infix fun Op.of(typeLine: TypeLine) = Expression(this, typeLine)
 
@@ -48,8 +53,11 @@ val String.binding get() = Binding(this)
 fun structure(vararg expressions: Expression) = Structure(stack(*expressions))
 operator fun Structure.plus(expression: Expression) = Structure(expressionStack.push(expression))
 
+fun Expression.switch(vararg cases: Case): Switch = Switch(this, stack(*cases))
+
 val String.expression: Expression get() = op(literal(this)).of(textTypeLine)
-val Int.expression: Expression get() = op(literal(this)).of(numberTypeLine)
+val Double.expression: Expression get() = op(literal(this)).of(numberTypeLine)
+val Int.expression: Expression get() = toDouble().expression
 
 val Make.expression: Expression get() = op.of(name lineTo type(lhsStructure.typeStructure))
 val Bind.expression: Expression get() = op.of(rhsExpression.typeLine)
@@ -57,3 +65,10 @@ val Bind.expression: Expression get() = op.of(rhsExpression.typeLine)
 val Expression.structure: Structure get() = structure(this)
 
 val Structure.typeStructure: TypeStructure get() = TypeStructure(expressionStack.map { typeLine })
+val Structure.isEmpty: Boolean get() = expressionStack.isEmpty
+
+val String.structure: Structure get() = structure().make(this).op.of(this lineTo type()).structure
+
+val Structure.expressionOrNull: Expression? get() = expressionStack.onlyOrNull
+
+val Literal.expression: Expression get() = op of typeLine

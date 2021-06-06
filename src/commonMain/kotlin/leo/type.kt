@@ -141,3 +141,5 @@ fun TypeLine.get(name: String): TypeLine =
 		.lineOrNull(name)
 		.notNullOrError("$this does not have field: $name")
 
+val String.typeStructure: TypeStructure get() =
+	typeStructure(this lineTo type())
