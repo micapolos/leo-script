@@ -11,6 +11,7 @@ import leo.base.reverse
 import leo.beName
 import leo.bind
 import leo.bindName
+import leo.commentName
 import leo.expression.Expression
 import leo.expression.Structure
 import leo.expression.applyBind
@@ -65,6 +66,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 	else when (scriptField.string) {
 		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
+		commentName -> compilation
 		letName -> plusLetCompilation(scriptField.rhs)
 		else -> null
 	}

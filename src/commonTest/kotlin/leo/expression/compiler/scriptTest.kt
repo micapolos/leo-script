@@ -3,6 +3,7 @@ package leo.expression.compiler
 import leo.base.assertEqualTo
 import leo.beName
 import leo.bindName
+import leo.commentName
 import leo.expression.applyBind
 import leo.expression.expressionTo
 import leo.expression.of
@@ -64,6 +65,16 @@ class ScriptTest {
 			beName lineTo script("pretty"))
 			.structure
 			.assertEqualTo(structure("pretty" expressionTo structure()))
+	}
+
+	@Test
+	fun comment() {
+		script(
+			"red" lineTo script(),
+			commentName lineTo script("foo"),
+			"color" lineTo script())
+			.structure
+			.assertEqualTo(structure("color" expressionTo structure("red")))
 	}
 
 	@Test

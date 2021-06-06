@@ -73,3 +73,5 @@ val Literal.structure: Structure get() = expression.structure
 
 infix fun String.expressionTo(structure: Structure): Expression =
 	structure.make(this).op of (this lineTo type(structure.typeStructure))
+fun expression(name: String) = name expressionTo structure()
+fun structure(name: String) = structure(expression(name))
