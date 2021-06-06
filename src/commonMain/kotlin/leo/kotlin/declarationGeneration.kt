@@ -11,6 +11,7 @@ import leo.base.lines
 import leo.bind
 import leo.flat
 import leo.isEmpty
+import leo.isSingleton
 import leo.map
 
 fun Type.declarationGeneration(name: Name): Generation<String> =
@@ -25,8 +26,12 @@ fun TypeStructure.declarationGeneration(name: Name): Generation<String> =
 		.flat
 		.map { valStack ->
 			if (valStack.isEmpty) "object ${name.kotlinClassName}"
-			else "data class ${name.kotlinClassName}(${valStack.array.joinToString(", ")})"
+			else "$classDeclarationPrefixString class ${name.kotlinClassName}(${valStack.array.joinToString(", ")})"
 		}
+
+val TypeStructure.classDeclarationPrefixString: String get() =
+	if (lineStack.isSingleton) "@JvmInline value"
+	else "data"
 
 fun TypeChoice.declarationGeneration(name: Name): Generation<String> =
 	sealedClassDeclarationGeneration(name).bind { sealedDeclaration ->
