@@ -2,19 +2,22 @@ package leo.expression
 
 import leo.Literal
 import leo.Stateful
+import leo.TypeField
 import leo.TypeLine
 import leo.array
 import leo.base.effect
 import leo.base.lines
 import leo.bind
+import leo.fieldTo
 import leo.flat
 import leo.getStateful
 import leo.kotlin.Kotlin
+import leo.kotlin.constructorNameGeneration
 import leo.kotlin.kotlin
 import leo.kotlin.plus
-import leo.kotlin.typeNameGeneration
 import leo.map
 import leo.stateful
+import leo.type
 
 typealias Compilation<T> = Stateful<Compiler, T>
 val <T> T.compilation: Compilation<T> get() = stateful()
@@ -49,15 +52,25 @@ val Get.kotlinCompilation: Compilation<Kotlin> get() =
 	}
 
 fun Make.kotlinCompilation(typeLine: TypeLine): Compilation<Kotlin> =
-	lhsStructure.expressionStack.map { kotlinCompilation }.flat.bind { kotlinStack ->
-		typeLine.typeNameKotlinCompilation.map { typeNameKotlin ->
-			typeNameKotlin + "(".kotlin + kotlinStack.map { string }.array.joinToString(", ").kotlin + ")".kotlin
+	lhsStructure
+		.expressionStack
+		.map { kotlinCompilation }
+		.flat
+		.bind { kotlinStack ->
+			name
+				.fieldTo(type(lhsStructure.typeStructure))
+				.constructorNameCompilation
+				.map { constructorName ->
+					constructorName.kotlin
+						.plus("(".kotlin)
+						.plus(kotlinStack.map { string }.array.joinToString(", ").kotlin)
+						.plus(")".kotlin)
+				}
 		}
-	}
 
-val TypeLine.typeNameKotlinCompilation: Compilation<Kotlin> get() =
+val TypeField.constructorNameCompilation: Compilation<String> get() =
 	Compilation { compiler ->
-		typeNameGeneration.run(compiler.types).let { effect ->
-			compiler.copy(types = effect.state) effect effect.value.kotlin
+		constructorNameGeneration.run(compiler.types).let { effect ->
+			compiler.copy(types = effect.state) effect effect.value
 		}
 	}

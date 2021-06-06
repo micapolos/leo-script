@@ -7,8 +7,11 @@ import leo.array
 import leo.base.map
 import leo.base.stack
 import leo.dict
+import leo.filter
 import leo.pairSeq
 import leo.plus
+import leo.stack
+import leo.string
 import leo.text
 
 data class GeneratedType(
@@ -29,4 +32,8 @@ fun Types.plusMethods(text: Text): Types =
 	copy(methodsText = methodsText.plus(text))
 
 val Types.kotlin: Kotlin get() =
-	kotlin(generatedTypes.pairSeq.map { second.kotlin.string }.stack.array.joinToString("\n"))
+	generatedTypes.pairSeq.map { second.kotlin.string }.stack.array.joinToString("\n").let { types ->
+		methodsText.string.let { methods ->
+			stack(types, methods).filter { !isEmpty() }.array.joinToString("\n").kotlin
+		}
+	}

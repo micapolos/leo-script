@@ -47,4 +47,3 @@ fun TypeLine.caseConstructorGeneration(methodName: String, sealedClassName: Name
 			}
 		}
 	}
-
