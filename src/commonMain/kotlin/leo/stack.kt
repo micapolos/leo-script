@@ -45,6 +45,7 @@ fun <T> Stack<T>.push(value: T) = stack(link(this, value))
 infix fun <T> Stack<T>.linkTo(value: T) = link(this, value)
 fun <T> Stack<T>.pushAll(vararg values: T): Stack<T> = fold(values) { push(it) }
 fun <T> Stack<T>.pushAll(stack: Stack<T>): Stack<T> = fold(stack.reverse) { push(it) }
+fun <T> Stack<T>.pushAllReversed(stack: Stack<T>): Stack<T> = fold(stack) { push(it) }
 fun <T> StackLink<T>.push(value: T) = link(stack(this), value)
 val <T> Stack<T>.emptyOrNull get() = (this as? EmptyStack)?.empty
 val <T> Stack<T>.linkOrNull get() = (this as? LinkStack)?.link
@@ -310,6 +311,9 @@ fun <V> Stack<V>.toList(): List<V> =
 inline val <reified V> Stack<V>.array: Array<V>
 	get() =
 		toList().toTypedArray()
+
+val Stack<String>.stringJoin: String get() =
+	array.joinToString("")
 
 val Stack<*>.size
 	get() =
