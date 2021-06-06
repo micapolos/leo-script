@@ -7,11 +7,13 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
+import leo.base.notNullIf
 import leo.base.reverse
 import leo.beName
 import leo.bind
 import leo.bindName
 import leo.commentName
+import leo.exampleName
 import leo.expression.Expression
 import leo.expression.Structure
 import leo.expression.applyBind
@@ -62,13 +64,13 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 		?: plusDynamicCompilation(scriptField)
 
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
-	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.string)
-	else when (scriptField.string) {
+	when (scriptField.string) {
 		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
 		commentName -> compilation
+		exampleName -> plusExampleCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
-		else -> null
+		else -> notNullIf(scriptField.rhs.isEmpty) { plusCompilation(scriptField.string) }
 	}
 
 fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
@@ -78,6 +80,9 @@ fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
 	context.bind(structure.typeStructure).expressionCompilation(script).map { expression ->
 		set(structure.applyBind(expression))
 	}
+
+fun Compiler.plusExampleCompilation(script: Script): Compilation<Compiler> =
+	context.structureCompilation(script).map { this }
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	TODO()

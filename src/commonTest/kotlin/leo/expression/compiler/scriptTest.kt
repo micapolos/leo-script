@@ -4,6 +4,7 @@ import leo.base.assertEqualTo
 import leo.beName
 import leo.bindName
 import leo.commentName
+import leo.exampleName
 import leo.expression.applyBind
 import leo.expression.expressionTo
 import leo.expression.of
@@ -12,12 +13,14 @@ import leo.expression.plus
 import leo.expression.resolveMake
 import leo.expression.structure
 import leo.expression.variable
+import leo.letName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
 import leo.script
 import leo.type
 import kotlin.test.Test
+import kotlin.test.assertFails
 
 class ScriptTest {
 	@Test
@@ -71,10 +74,33 @@ class ScriptTest {
 	fun comment() {
 		script(
 			"red" lineTo script(),
-			commentName lineTo script("foo"),
+			commentName lineTo script(letName), // Empty "let" is syntax error, so compilation should succeed
 			"color" lineTo script())
 			.structure
 			.assertEqualTo(structure("color" expressionTo structure("red")))
+	}
+
+	@Test
+	fun example_compiles() {
+		script(
+			"red" lineTo script(),
+			exampleName lineTo script("foo"),
+			"color" lineTo script())
+			.structure
+			.assertEqualTo(structure("color" expressionTo structure("red")))
+	}
+
+	@Test
+	fun example_fails() {
+		// Empty "let" should produce compile-error.
+		assertFails {
+			script(
+				"red" lineTo script(),
+				exampleName lineTo script(letName),
+				"color" lineTo script()
+			)
+				.structure
+		}
 	}
 
 	@Test
@@ -117,5 +143,15 @@ class ScriptTest {
 					.plus("x" expressionTo 10.literal.structure)
 					.plus("y" expressionTo 20.literal.structure)
 					.applyBind("z" expressionTo structure()))
+	}
+
+	@Test
+	fun let() {
+		// TODO: Wait until implemented
+		assertFails {
+			script(letName)
+				.structure
+				.assertEqualTo(null)
+		}
 	}
 }
