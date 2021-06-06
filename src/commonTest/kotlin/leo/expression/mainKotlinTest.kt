@@ -2,12 +2,13 @@ package leo.expression
 
 import leo.base.assertEqualTo
 import leo.base.lines
+import leo.literal
 import kotlin.test.Test
 
 class MainKotlinTest {
 	@Test
 	fun make() {
-		"Michał Pociecha-Łoś".expression
+		"Michał Pociecha-Łoś".literal.expression
 			.structure
 			.make("name")
 			.expression

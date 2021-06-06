@@ -13,7 +13,6 @@ import leo.bindName
 import leo.expression.Expression
 import leo.expression.Structure
 import leo.expression.applyBind
-import leo.expression.binding
 import leo.expression.dsl.expression
 import leo.expression.expression
 import leo.expression.expressionTo
@@ -24,6 +23,8 @@ import leo.expression.plus
 import leo.expression.resolveGetOrNull
 import leo.expression.resolveMake
 import leo.expression.structure
+import leo.expression.typeStructure
+import leo.expression.variable
 import leo.foldStateful
 import leo.getStateful
 import leo.isEmpty
@@ -65,7 +66,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 	}
 
 fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
-	context.bind(structure).expressionCompilation(script).map { expression ->
+	context.bind(structure.typeStructure).expressionCompilation(script).map { expression ->
 		set(structure.applyBind(expression))
 	}
 
@@ -104,7 +105,7 @@ fun Dictionary.dynamicStructureCompilationOrNull(name: String): Compilation<Stru
 	bindingOrNull(name.typeStructure)
 		?.let { binding ->
 			if (binding.isFunction) TODO()
-			else name.binding.op.of(binding.typeLine).structure.compilation
+			else name.variable.op.of(binding.typeLine).structure.compilation
 		}
 
 fun Dictionary.staticStructureCompilationOrNull(name: String): Compilation<Structure>? =
