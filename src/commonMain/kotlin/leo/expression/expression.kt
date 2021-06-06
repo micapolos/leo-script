@@ -21,6 +21,7 @@ data class GetOp(val get: Get): Op()
 data class MakeOp(val make: Make): Op()
 data class BindOp(val bind: Bind): Op()
 data class VariableOp(val variable: Variable): Op()
+data class InvokeOp(val invoke: Invoke): Op()
 
 data class Structure(val expressionStack: Stack<Expression>)
 
@@ -30,6 +31,7 @@ data class Bind(val lhsStructure: Structure, val rhsExpression: Expression)
 data class Variable(val name: String)
 data class Switch(val lhsExpression: Expression, val caseStack: Stack<Case>)
 data class Case(val expression: Expression)
+data class Invoke(val structure: Structure)
 
 infix fun Op.of(typeLine: TypeLine) = Expression(this, typeLine)
 
@@ -41,10 +43,12 @@ val Get.op: Op get() = GetOp(this)
 val Make.op: Op get() = MakeOp(this)
 val Bind.op: Op get() = BindOp(this)
 val Variable.op: Op get() = VariableOp(this)
+val Invoke.op: Op get() = InvokeOp(this)
 
 fun Expression.get(name: String) = Get(this, name)
 fun Structure.make(name: String) = Make(this, name)
 fun Structure.bind(expression: Expression) = Bind(this, expression)
+val Structure.invoke get() = Invoke(this)
 val String.variable get() = Variable(this)
 
 fun structure(vararg expressions: Expression) = Structure(stack(*expressions))

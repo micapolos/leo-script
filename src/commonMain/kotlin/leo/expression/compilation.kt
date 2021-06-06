@@ -45,6 +45,7 @@ val Expression.kotlinCompilation: Compilation<Kotlin> get() =
 		is MakeOp -> op.make.kotlinCompilation
 		is BindOp -> op.bind.kotlinCompilation
 		is VariableOp -> op.variable.kotlinCompilation
+		is InvokeOp -> op.invoke.kotlinCompilation
 	}
 
 val Literal.kotlinCompilation: Compilation<Kotlin> get() =
@@ -86,6 +87,9 @@ fun Kotlin.letCompilation(expression: Expression): Compilation<Kotlin> =
 
 val Variable.kotlinCompilation: Compilation<Kotlin> get() =
 	name.kotlin.compilation
+
+val Invoke.kotlinCompilation: Compilation<Kotlin> get() =
+	TODO()
 
 val TypeField.constructorNameCompilation: Compilation<String> get() =
 	Compilation { compiler ->
