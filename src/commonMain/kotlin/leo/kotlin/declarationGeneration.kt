@@ -35,6 +35,12 @@ val TypeStructure.valsGeneration: Generation<String> get() =
 		.flat
 		.map { valStack -> "${valStack.array.joinToString(", ")}" }
 
+val TypeStructure.paramsDeclarationGeneration: Generation<String> get() =
+	lineStack
+		.map { paramDeclarationGeneration }
+		.flat
+		.map { fieldNameStack -> "${fieldNameStack.array.joinToString(", ")}" }
+
 val TypeStructure.paramsGeneration: Generation<String> get() =
 	lineStack
 		.map { fieldNameGeneration }

@@ -28,7 +28,7 @@ class ConstructorGenerationTest {
 					"x" lineTo type(numberTypeLine),
 					"y" lineTo type(numberTypeLine)))
 			.constructorString
-			.assertEqualTo("fun point(val x: DoubleX, val y: DoubleY) = Point(x, y)")
+			.assertEqualTo("fun point(x: DoubleX, y: DoubleY) = Point(x, y)")
 	}
 
 	@Test

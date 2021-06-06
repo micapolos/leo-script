@@ -26,10 +26,10 @@ val TypeField.constructorGeneration: Generation<String> get() =
 	}
 
 fun TypeStructure.prefixConstructorGeneration(methodName: String, typeName: Name): Generation<String> =
-	valsGeneration.bind { vals ->
+	paramsDeclarationGeneration.bind { paramsDeclaration ->
 		paramsGeneration.map { params ->
-			if (vals.isEmpty()) "fun $methodName() = ${typeName.kotlinClassName}"
-			else "fun $methodName($vals) = ${typeName.kotlinClassName}($params)"
+			if (paramsDeclaration.isEmpty()) "fun $methodName() = ${typeName.kotlinClassName}"
+			else "fun $methodName($paramsDeclaration) = ${typeName.kotlinClassName}($params)"
 		}
 	}
 

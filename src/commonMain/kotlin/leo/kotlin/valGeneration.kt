@@ -10,3 +10,10 @@ val TypeLine.valGeneration: Generation<String> get() =
 		}
 	}
 
+val TypeLine.paramDeclarationGeneration: Generation<String> get() =
+	fieldNameGeneration.bind { fieldName ->
+		typeNameGeneration.bind { typeName ->
+			"$fieldName: $typeName".generation
+		}
+	}
+

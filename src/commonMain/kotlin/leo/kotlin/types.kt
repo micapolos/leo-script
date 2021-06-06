@@ -1,6 +1,7 @@
 package leo.kotlin
 
 import leo.Dict
+import leo.Stack
 import leo.Text
 import leo.TypeField
 import leo.array
@@ -8,11 +9,11 @@ import leo.base.map
 import leo.base.stack
 import leo.dict
 import leo.filter
+import leo.map
 import leo.pairSeq
-import leo.plus
+import leo.push
 import leo.stack
 import leo.string
-import leo.text
 
 data class GeneratedType(
 	val name: Name,
@@ -20,20 +21,20 @@ data class GeneratedType(
 
 data class Types(
 	val generatedTypes: Dict<TypeField, GeneratedType>,
-	val methodsText: Text,
+	val methodTextStack: Stack<Text>,
 	val nameCounts: Dict<String, Int>)
 
-fun types() = Types(dict(), text(), dict())
+fun types() = Types(dict(), stack(), dict())
 
 fun Types.plus(typeField: TypeField, generatedType: GeneratedType): Types =
 	copy(generatedTypes = generatedTypes.put(typeField to generatedType))
 
 fun Types.plusMethods(text: Text): Types =
-	copy(methodsText = methodsText.plus(text))
+	copy(methodTextStack = methodTextStack.push(text))
 
 val Types.kotlin: Kotlin get() =
 	generatedTypes.pairSeq.map { second.kotlin.string }.stack.array.joinToString("\n").let { types ->
-		methodsText.string.let { methods ->
+		methodTextStack.map { string }.array.joinToString("\n").let { methods ->
 			stack(types, methods).filter { !isEmpty() }.array.joinToString("\n").kotlin
 		}
 	}
