@@ -1,6 +1,7 @@
 package leo.expression.compiler
 
 import leo.base.assertEqualTo
+import leo.beName
 import leo.bindName
 import leo.expression.applyBind
 import leo.expression.expressionTo
@@ -54,6 +55,15 @@ class ScriptTest {
 				structure()
 					.plus("x" expressionTo 10.literal.structure)
 					.plus("y" expressionTo 20.literal.structure))
+	}
+
+	@Test
+	fun be() {
+		script(
+			"ugly" lineTo script(),
+			beName lineTo script("pretty"))
+			.structure
+			.assertEqualTo(structure("pretty" expressionTo structure()))
 	}
 
 	@Test

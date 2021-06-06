@@ -8,6 +8,7 @@ import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
 import leo.base.reverse
+import leo.beName
 import leo.bind
 import leo.bindName
 import leo.expression.Expression
@@ -28,6 +29,7 @@ import leo.expression.variable
 import leo.foldStateful
 import leo.getStateful
 import leo.isEmpty
+import leo.letName
 import leo.lineSeq
 import leo.map
 import leo.stateful
@@ -61,14 +63,22 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.string)
 	else when (scriptField.string) {
+		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
+		letName -> plusLetCompilation(scriptField.rhs)
 		else -> null
 	}
+
+fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
+	context.structureCompilation(script).map { set(it) }
 
 fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
 	context.bind(structure.typeStructure).expressionCompilation(script).map { expression ->
 		set(structure.applyBind(expression))
 	}
+
+fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
+	TODO()
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	context.structureCompilation(scriptField.rhs).bind { rhsStructure ->
