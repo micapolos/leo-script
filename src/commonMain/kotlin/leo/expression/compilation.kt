@@ -44,7 +44,7 @@ val Expression.kotlinCompilation: Compilation<Kotlin> get() =
 		is LiteralOp -> op.literal.kotlinCompilation
 		is MakeOp -> op.make.kotlinCompilation
 		is BindOp -> op.bind.kotlinCompilation
-		is VariableOp -> op.variable.kotlinCompilation
+		is VariableOp -> op.binding.kotlinCompilation
 	}
 
 val Literal.kotlinCompilation: Compilation<Kotlin> get() =
@@ -84,7 +84,7 @@ fun Kotlin.letCompilation(expression: Expression): Compilation<Kotlin> =
 		kotlin(rhsKotlin.string + ".let { " + expression.typeLine.name + " -> " + string + " }")
 	}
 
-val Variable.kotlinCompilation: Compilation<Kotlin> get() =
+val Binding.kotlinCompilation: Compilation<Kotlin> get() =
 	name.kotlin.compilation
 
 val TypeField.constructorNameCompilation: Compilation<String> get() =

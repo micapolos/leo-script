@@ -36,7 +36,7 @@ class ExpressionKotlinTest {
 		structure(
 			"x" fieldTo 10.number,
 			"y" fieldTo 20.number)
-			.bind("x".variable.op.of("x" lineTo type(numberTypeLine)))
+			.bind("x".binding.op.of("x" lineTo type(numberTypeLine)))
 			.expression
 			.kotlin.string
 			.assertEqualTo("x(10).let { x -> y(20).let { y -> x } }")
