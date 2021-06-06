@@ -2,9 +2,13 @@ package leo.kotlin
 
 import leo.ChoiceType
 import leo.StructureType
+import leo.TypeChoice
 import leo.TypeField
+import leo.TypeLine
 import leo.TypeStructure
+import leo.array
 import leo.bind
+import leo.flat
 import leo.get
 import leo.map
 
@@ -13,20 +17,34 @@ val TypeField.constructorString: String get() =
 
 val TypeField.constructorGeneration: Generation<String> get() =
 	when (type) {
-		is ChoiceType -> TODO()
+		is ChoiceType -> nameGeneration.bind { typeName ->
+			type.choice.prefixConstructorGeneration(name, typeName)
+		}
 		is StructureType -> nameGeneration.bind { typeName ->
-			type.structure.constructorGeneration(name, typeName)
+			type.structure.prefixConstructorGeneration(name, typeName)
 		}
 	}
 
-fun TypeStructure.constructorGeneration(methodName: String, typeName: Name): Generation<String> =
+fun TypeStructure.prefixConstructorGeneration(methodName: String, typeName: Name): Generation<String> =
 	valsGeneration.bind { vals ->
 		paramsGeneration.map { params ->
-			"fun $methodName($vals) = ${typeName.kotlinClassName}($params)"
+			if (vals.isEmpty()) "fun $methodName() = ${typeName.kotlinClassName}"
+			else "fun $methodName($vals) = ${typeName.kotlinClassName}($params)"
 		}
 	}
 
-fun TypeField.postfixConstructorGeneration(methodName: String, typeName: Name): Generation<String> =
-	nameGeneration.bind { name ->
-		"val ${name.kotlinClassName}.$methodName get() = $methodName(this)".generation
+fun TypeChoice.prefixConstructorGeneration(methodName: String, typeName: Name): Generation<String> =
+	lineStack
+		.map { caseConstructorGeneration(methodName, typeName) }
+		.flat
+		.map { it.array.joinToString("\n") }
+
+fun TypeLine.caseConstructorGeneration(methodName: String, sealedClassName: Name): Generation<String> =
+	classNameGeneration.bind { caseClassName ->
+		typeNameGeneration.bind { typeName ->
+			fieldNameGeneration.map { fieldName ->
+				"fun $methodName($fieldName: $typeName): ${sealedClassName.kotlinClassName} = $caseClassName${sealedClassName.kotlinClassName}($fieldName)"
+			}
+		}
 	}
+
