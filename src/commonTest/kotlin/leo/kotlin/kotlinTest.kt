@@ -36,8 +36,8 @@ class KotlinTest {
 			.kotlin.string
 			.assertEqualTo(
 				lines(
-					"data class Id(val number: Double)",
-					"data class Id2(val text: String)"))
+					"data class DoubleId(val number: Double)",
+					"data class StringId(val text: String)"))
 	}
 
 	@Test
@@ -46,7 +46,7 @@ class KotlinTest {
 			"id" lineTo type(numberTypeLine),
 			"id" lineTo type(numberTypeLine))
 			.kotlin.string
-			.assertEqualTo("data class Id(val number: Double)")
+			.assertEqualTo("data class DoubleId(val number: Double)")
 	}
 
 	@Test
@@ -63,11 +63,11 @@ class KotlinTest {
 			.kotlin.string
 			.assertEqualTo(
 				lines(
-					"data class X(val number: Double)",
-					"data class Y(val number: Double)",
-					"data class Point(val x: X, val y: Y)",
-					"data class Length(val number: Double)",
-					"data class Map(val doing: (X, Y) -> Length)"))
+					"data class DoubleX(val number: Double)",
+					"data class DoubleY(val number: Double)",
+					"data class Point(val x: DoubleX, val y: DoubleY)",
+					"data class DoubleLength(val number: Double)",
+					"data class Map(val doing: (DoubleX, DoubleY) -> DoubleLeŻngth)"))
 
 	}
 

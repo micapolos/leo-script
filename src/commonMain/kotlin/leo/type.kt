@@ -103,3 +103,8 @@ val TypeLiteral.selectName: String get() =
 		is NumberTypeLiteral -> numberName
 		is TextTypeLiteral -> textName
 	}
+
+val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
+val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
+val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
+val TypeLine.atomOrNull: TypeAtom? get() = (this as? AtomTypeLine)?.atom

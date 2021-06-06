@@ -1,10 +1,18 @@
 package leo.kotlin
 
+import leo.FieldTypeAtom
+import leo.LiteralTypeAtom
+import leo.Type
 import leo.TypeField
+import leo.TypeLine
+import leo.atomOrNull
 import leo.base.effect
 import leo.base.orIfNull
+import leo.base.orNullIf
+import leo.base.titleCase
 import leo.bind
 import leo.map
+import leo.onlyLineOrNull
 import leo.updateAndGetEffect
 
 val String.nameGeneration: Generation<Name> get() =
@@ -18,18 +26,32 @@ val String.nameGeneration: Generation<Name> get() =
 val TypeField.nameGeneration: Generation<Name> get() =
 	nameOrNullGeneration.bind { nameOrNull ->
 		if (nameOrNull != null) nameOrNull.generation
-		else name.nameGeneration.bind { name ->
-			type.declarationGeneration(name).bind { declaration ->
-				typesGeneration.bind { types ->
-					types
-						.plus(this, GeneratedType(name, kotlin(declaration)))
-						.setGeneration
-						.map { name }
+		else newNameGeneration
+	}
+
+val TypeField.newNameGeneration: Generation<Name> get() =
+	type.onlyLineForNameOrNull
+		?.let {
+			it.typeNameGeneration.map {
+				it.plus(name.titleCase)
+			}
+		}
+		.orIfNull { name.generation }
+		.bind { name ->
+			name.nameGeneration.bind { name ->
+				type.declarationGeneration(name).bind { declaration ->
+					typesGeneration.bind { types ->
+						types
+							.plus(this, GeneratedType(name, kotlin(declaration)))
+							.setGeneration
+							.map { name }
+					}
 				}
 			}
 		}
-	}
 
 val TypeField.nameOrNullGeneration: Generation<Name?> get() =
 	Generation { it effect it.generatedTypes.get(this)?.name }
 
+val Type.onlyLineForNameOrNull: TypeLine? get() =
+	onlyLineOrNull?.orNullIf { atomOrNull !is FieldTypeAtom && atomOrNull !is LiteralTypeAtom }

@@ -13,8 +13,8 @@ class MainKotlinTest {
 			.mainKotlin.string
 			.assertEqualTo(
 				lines(
-					"data class Name(val text: String)",
-					"fun main() = println(Name(\"foo\"))")
+					"data class StringName(val text: String)",
+					"fun main() = println(StringName(\"foo\"))")
 			)
 	}
 }
