@@ -28,7 +28,7 @@ class ConstructorGenerationTest {
 					"x" lineTo type(numberTypeLine),
 					"y" lineTo type(numberTypeLine)))
 			.constructorString
-			.assertEqualTo("fun point(x: DoubleX, y: DoubleY) = Point(x, y)")
+			.assertEqualTo("inline fun point(x: DoubleX, y: DoubleY) = Point(x, y)")
 	}
 
 	@Test
@@ -42,8 +42,8 @@ class ConstructorGenerationTest {
 			.constructorString
 			.assertEqualTo(
 				lines(
-					"fun id(number: Double): Id = NumberId(number)",
-					"fun id(text: String): Id = TextId(text)"
+					"inline fun id(number: Double): Id = NumberId(number)",
+					"inline fun id(text: String): Id = TextId(text)"
 				)
 			)
 	}
@@ -55,7 +55,7 @@ class ConstructorGenerationTest {
 				typeStructure(numberTypeLine) doingLineTo textTypeLine)))
 			.constructorString
 			.assertEqualTo(
-				lines("fun id(doing: (Double) -> String): Id = DoingId(doing)"))
+				lines("inline fun id(doing: (Double) -> String): Id = DoingId(doing)"))
 	}
 
 	@Test
@@ -64,6 +64,6 @@ class ConstructorGenerationTest {
 			.fieldTo(type(choice(line(atom(list(numberTypeLine))))))
 			.constructorString
 			.assertEqualTo(
-				lines("fun id(list: Stack<Double>): Id = ListId(list)"))
+				lines("inline fun id(list: Stack<Double>): Id = ListId(list)"))
 	}
 }

@@ -10,6 +10,7 @@ import leo.expression.dsl.structure
 import leo.expression.dsl.text
 import leo.lineTo
 import leo.numberTypeLine
+import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
 
@@ -40,5 +41,15 @@ class ExpressionKotlinTest {
 			.expression
 			.kotlin.string
 			.assertEqualTo("x(10).let { x -> y(20).let { y -> x } }")
+	}
+
+	@Test
+	fun invoke() {
+		structure(
+			"x" fieldTo 10.number,
+			"y" fieldTo 20.number)
+			.invoke.op.of(textTypeLine)
+			.kotlin.string
+			.assertEqualTo("_invoke(x(10), y(20))")
 	}
 }

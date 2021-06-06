@@ -29,7 +29,7 @@ fun TypeStructure.prefixConstructorGeneration(methodName: String, typeName: Name
 	paramsDeclarationGeneration.bind { paramsDeclaration ->
 		paramsGeneration.map { params ->
 			if (paramsDeclaration.isEmpty()) "fun $methodName() = ${typeName.kotlinClassName}"
-			else "fun $methodName($paramsDeclaration) = ${typeName.kotlinClassName}($params)"
+			else "inline fun $methodName($paramsDeclaration) = ${typeName.kotlinClassName}($params)"
 		}
 	}
 
@@ -43,7 +43,7 @@ fun TypeLine.caseConstructorGeneration(methodName: String, sealedClassName: Name
 	classNameGeneration.bind { caseClassName ->
 		typeNameGeneration.bind { typeName ->
 			fieldNameGeneration.map { fieldName ->
-				"fun $methodName($fieldName: $typeName): ${sealedClassName.kotlinClassName} = $caseClassName${sealedClassName.kotlinClassName}($fieldName)"
+				"inline fun $methodName($fieldName: $typeName): ${sealedClassName.kotlinClassName} = $caseClassName${sealedClassName.kotlinClassName}($fieldName)"
 			}
 		}
 	}

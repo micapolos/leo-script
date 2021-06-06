@@ -89,7 +89,15 @@ val Variable.kotlinCompilation: Compilation<Kotlin> get() =
 	name.kotlin.compilation
 
 val Invoke.kotlinCompilation: Compilation<Kotlin> get() =
-	TODO()
+	structure.paramsCompilation.map { params ->
+		"_invoke($params)".kotlin
+	}
+
+val Structure.paramsCompilation: Compilation<String> get() =
+	expressionStack
+		.map { kotlinCompilation }
+		.flat
+		.map { kotlinStack -> kotlinStack.map { string }.array.joinToString(", ") }
 
 val TypeField.constructorNameCompilation: Compilation<String> get() =
 	Compilation { compiler ->

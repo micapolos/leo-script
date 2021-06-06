@@ -20,8 +20,8 @@ class MainKotlinTest {
 				lines(
 					"@kotlin.jvm.JvmInline value class StringName(val text: String)",
 					"@kotlin.jvm.JvmInline value class StringNameFull(val name: StringName)",
-					"fun name(text: String) = StringName(text)",
-					"fun full(name: StringName) = StringNameFull(name)",
+					"inline fun name(text: String) = StringName(text)",
+					"inline fun full(name: StringName) = StringNameFull(name)",
 					"fun main() = println(full(name(\"Michał Pociecha-Łoś\")))"))
 	}
 }
