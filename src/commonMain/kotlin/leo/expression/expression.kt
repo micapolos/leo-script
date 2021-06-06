@@ -72,3 +72,6 @@ val String.structure: Structure get() = structure().make(this).op.of(this lineTo
 val Structure.expressionOrNull: Expression? get() = expressionStack.onlyOrNull
 
 val Literal.expression: Expression get() = op of typeLine
+
+infix fun String.expressionTo(structure: Structure): Expression =
+	structure.make(this).op of (this lineTo type(expression.typeLine))

@@ -9,10 +9,14 @@ import leo.ScriptLine
 import leo.Stateful
 import leo.base.reverse
 import leo.bind
+import leo.bindName
+import leo.expression.Expression
 import leo.expression.Structure
+import leo.expression.applyBind
 import leo.expression.binding
 import leo.expression.dsl.expression
 import leo.expression.expression
+import leo.expression.expressionTo
 import leo.expression.isEmpty
 import leo.expression.of
 import leo.expression.op
@@ -36,6 +40,9 @@ val contextCompilation: Compilation<Context> get() = getStateful()
 fun Context.structureCompilation(script: Script): Compilation<Structure> =
 	Compiler(this, structure()).plusCompilation(script).map { it.structure }
 
+fun Context.expressionCompilation(script: Script): Compilation<Expression> =
+	structureCompilation(script).map { it.expression }
+
 fun Compiler.plusCompilation(script: Script): Compilation<Compiler> =
 	compilation.foldStateful(script.lineSeq.reverse) { plusCompilation(it) }
 
@@ -53,12 +60,18 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.string)
 	else when (scriptField.string) {
+		bindName -> plusBindCompilation(scriptField.rhs)
 		else -> null
+	}
+
+fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
+	context.bind(structure).expressionCompilation(script).map { expression ->
+		set(structure.applyBind(expression))
 	}
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	context.structureCompilation(scriptField.rhs).bind { rhsStructure ->
-		set(structure.plus(rhsStructure.expression)).resolveCompilation
+		set(structure.plus(scriptField.string expressionTo rhsStructure)).resolveCompilation
 	}
 
 fun Compiler.plusCompilation(literal: Literal): Compilation<Compiler> =

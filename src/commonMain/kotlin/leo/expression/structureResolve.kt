@@ -14,3 +14,6 @@ fun Structure.resolveGetOrNull(name: String): Structure? =
 
 fun Structure.resolveMake(name: String): Structure =
 	structure(make(name).op of (name lineTo type(typeStructure)))
+
+fun Structure.applyBind(expression: Expression): Structure =
+	structure(bind(expression).op of expression.typeLine)

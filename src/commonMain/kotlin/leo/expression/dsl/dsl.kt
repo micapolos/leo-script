@@ -40,7 +40,7 @@ fun Structure.bind(structure: Structure): Structure =
 	}
 
 val Structure.expression: Expression get() =
-	expressionStack.onlyOrNull.notNullOrError("$this not a structure")
+	expressionStack.onlyOrNull.notNullOrError("$this not an expression")
 
 val Structure.kotlin: Kotlin get() = expression.kotlin
 
