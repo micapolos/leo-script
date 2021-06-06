@@ -29,6 +29,18 @@ fun TypeStructure.declarationGeneration(name: Name): Generation<String> =
 			else "$classDeclarationPrefixString class ${name.kotlinClassName}(${valStack.array.joinToString(", ")})"
 		}
 
+val TypeStructure.valsGeneration: Generation<String> get() =
+	lineStack
+		.map { valGeneration }
+		.flat
+		.map { valStack -> "${valStack.array.joinToString(", ")}" }
+
+val TypeStructure.paramsGeneration: Generation<String> get() =
+	lineStack
+		.map { fieldNameGeneration }
+		.flat
+		.map { fieldNameStack -> "${fieldNameStack.array.joinToString(", ")}" }
+
 val TypeStructure.classDeclarationPrefixString: String get() =
 	if (lineStack.isSingleton) "@kotlin.jvm.JvmInline value"
 	else "data"
