@@ -6,5 +6,5 @@ import leo.kotlin.Kotlin
 val Expression.kotlin: Kotlin get() =
 	kotlinCompilation.get(compiler())
 
-val Expression.fullKotlin: Kotlin get() =
-	fullKotlinCompilation.get(compiler())
+val Expression.mainKotlin: Kotlin get() =
+	mainKotlinCompilation.get(compiler())

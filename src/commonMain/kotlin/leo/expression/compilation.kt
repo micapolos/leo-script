@@ -21,12 +21,14 @@ val <T> T.compilation: Compilation<T> get() = stateful()
 
 val compilerCompilation: Compilation<Compiler> get() = getStateful()
 
-val Expression.fullKotlinCompilation: Compilation<Kotlin> get() =
+val Expression.mainKotlinCompilation: Compilation<Kotlin> get() =
 	kotlinCompilation.bind { kotlin ->
 		compilerCompilation.map { compiler ->
 			compiler.types.kotlin.string.let { typesString ->
-				if (typesString.isEmpty()) kotlin
-				else lines(typesString, kotlin.string).kotlin
+				"fun main() = println(${kotlin.string})".let { mainString ->
+					if (typesString.isEmpty()) mainString.kotlin
+					else lines(typesString, mainString).kotlin
+				}
 			}
 		}
 	}
