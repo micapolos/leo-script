@@ -11,9 +11,9 @@ class RopeTest {
 		stack(1, 2, 3)
 			.mapRope {
 				0
-					.plus(it.previousOrNull?.current.orIfNull { 0 })
+					.plus(it.previousOrNull.orIfNull { 0 })
 					.plus(it.current)
-					.plus(it.nextOrNull?.current.orIfNull { 0 })
+					.plus(it.nextOrNull.orIfNull { 0 })
 			}
 			.assertEqualTo(stack(3, 6, 5))
 	}
