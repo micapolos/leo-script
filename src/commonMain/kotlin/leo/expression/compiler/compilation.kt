@@ -37,7 +37,9 @@ import leo.isName
 import leo.letName
 import leo.lineSeq
 import leo.map
+import leo.matchPrefix
 import leo.noName
+import leo.notName
 import leo.script
 import leo.stateful
 import leo.typeStructure
@@ -107,6 +109,11 @@ fun Compiler.plusIsExpressionCompilationOrNull(script: Script): Compilation<Comp
 		context.expressionCompilation(script).map { rhsExpression ->
 			set(lhsExpression.resolveEqual(rhsExpression).structure)
 		}
+	}
+
+fun Compiler.plusIsNotExpressionCompilationOrNull(script: Script): Compilation<Compiler>? =
+	script.matchPrefix(notName) { rhs ->
+		TODO()
 	}
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
