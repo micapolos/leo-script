@@ -26,8 +26,24 @@ val <T> Rope<T>.nextOrNull: Rope<T>? get() =
 val <T> Rope<T>.stackLink: StackLink<T> get() =
 	(tail linkTo current).fold(head) { push(it) }
 
-val <T> Rope<T>.stack: Stack<T> get() =
-	stackLink.stack
+val <T> Rope<T>?.orNullStack: Stack<T> get() =
+	this?.stackLink?.stack ?: stack()
 
 fun <T, O> Rope<T>.map(fn: (T) -> O): Rope<O> =
 	Rope(tail.map(fn), fn(current), head.map(fn))
+
+tailrec fun <F, V> F.fold(rope: Rope<V>, fn: F.(Rope<V>) -> F): F {
+	val folded = fn(rope)
+	val previousOrNull = rope.previousOrNull
+	return if (previousOrNull == null) folded
+	else folded.fold(previousOrNull, fn)
+}
+
+fun <V, O> Stack<V>.mapRope(fn: (Rope<V>) -> O): Stack<O> =
+	ropeOrNull
+		?.let { rope ->
+			stack<O>()
+				.fold(rope) { value -> push(fn(value)) }
+				.reverse
+		}
+		?: stack()
