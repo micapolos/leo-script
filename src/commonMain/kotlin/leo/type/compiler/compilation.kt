@@ -8,14 +8,16 @@ import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
 import leo.Type
+import leo.TypeLine
 import leo.base.reverse
 import leo.expression.compiler.resolve
 import leo.foldStateful
 import leo.isEmpty
-import leo.letName
 import leo.lineSeq
 import leo.lineTo
 import leo.map
+import leo.orName
+import leo.plus
 import leo.stateful
 import leo.type
 
@@ -26,6 +28,9 @@ fun TypeContext.typeCompilation(script: Script): TypeCompilation<Type> =
 	TypeCompiler(this, type()).plusCompilation(script).map { compiler ->
 		compiler.type
 	}
+
+fun TypeContext.lineCompilation(script: Script): TypeCompilation<TypeLine> =
+	typeCompilation(script).map { it.compileLine }
 
 fun TypeCompiler.plusCompilation(script: Script): TypeCompilation<TypeCompiler> =
 	typeCompilation.foldStateful(script.lineSeq.reverse) { plusCompilation(it) }
@@ -47,8 +52,15 @@ fun TypeCompiler.plusFieldCompilation(scriptField: ScriptField): TypeCompilation
 
 fun TypeCompiler.plusStaticCompilationOrNull(scriptField: ScriptField): TypeCompilation<TypeCompiler>? =
 	when (scriptField.name) {
-		letName -> TODO()
+		orName -> plusOrCompilation(scriptField.rhs)
 		else -> null
+	}
+
+fun TypeCompiler.plusOrCompilation(script: Script): TypeCompilation<TypeCompiler> =
+	type.compileChoice.let { choice ->
+		context.lineCompilation(script).map { line ->
+			set(choice.plus(line).type)
+		}
 	}
 
 fun TypeCompiler.plusCompilation(name: String): TypeCompilation<TypeCompiler> =

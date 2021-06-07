@@ -81,6 +81,7 @@ val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
 val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
 
 fun TypeStructure.plus(line: TypeLine): TypeStructure = TypeStructure(lineStack.push(line))
+fun TypeChoice.plus(line: TypeLine): TypeChoice = TypeChoice(lineStack.push(line))
 
 val Literal.typeLine: TypeLine get() = line(typeAtom)
 
