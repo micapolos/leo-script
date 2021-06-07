@@ -28,7 +28,7 @@ val TypeAtom.scriptLine: ScriptLine get() =
 	}
 
 val TypeField.scriptLine: ScriptLine get() =
-	name lineTo type.script
+	name lineTo rhsType.script
 
 val TypeList.scriptLine: ScriptLine get() =
 	listName lineTo script(itemLine.scriptLine)

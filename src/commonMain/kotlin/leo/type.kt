@@ -21,7 +21,7 @@ data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom()
 data class DoingTypeAtom(val doing: TypeDoing): TypeAtom()
 data class ListTypeAtom(val list: TypeList): TypeAtom()
 
-data class TypeField(val name: String, val type: Type)
+data class TypeField(val name: String, val rhsType: Type)
 
 sealed class TypeLiteral
 data class TextTypeLiteral(val text: TypeText): TypeLiteral()
@@ -95,7 +95,7 @@ val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.struc
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
 val TypeLine.atomOrNull: TypeAtom? get() = (this as? AtomTypeLine)?.atom
 val TypeAtom.fieldOrNull: TypeField? get() = (this as? FieldTypeAtom)?.field
-val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.type?.structureOrNull
+val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rhsType?.structureOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
 
 fun TypeLine.get(name: String): TypeLine =
@@ -134,7 +134,7 @@ val TypeStructure.isEmpty: Boolean get() = lineStack.isEmpty
 val Type.isEmpty: Boolean get() = structureOrNull?.isEmpty ?: false
 
 val TypeStructure.nameOrNull: String? get() =
-	onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !type.isEmpty }?.name
+	onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !rhsType.isEmpty }?.name
 
 val Type.nameOrNull: String? get() =
 	structureOrNull?.nameOrNull

@@ -13,21 +13,21 @@ class TypeNameTest {
 		line(recursive(atom("foo" fieldTo type("bar" lineTo type(line(typeRecurse))))))
 			.atomRecursion
 			.map { it.fieldOrNull!! }
-			.map { it.type.structureOrNull!!.onlyLineOrNull!! }
+			.map { it.rhsType.structureOrNull!!.onlyLineOrNull!! }
 			.bind { it.nameRecursion }
 			.get(null)
 			.assertEqualTo("bar")
 
 		line(recursive(atom("foo" fieldTo type("bar" lineTo type(line(typeRecurse))))))
 			.atomRecursion
-			.bind { it.fieldOrNull!!.type.structureOrNull!!.onlyLineOrNull!!.nameRecursion }
+			.bind { it.fieldOrNull!!.rhsType.structureOrNull!!.onlyLineOrNull!!.nameRecursion }
 			.get(null)
 			.assertEqualTo("bar")
 
 		line(recursive(atom("foo" fieldTo type("bar" lineTo type(line(typeRecurse))))))
 			.atomRecursion
-			.bind { it.fieldOrNull!!.type.structureOrNull!!.onlyLineOrNull!!.atomRecursion }
-			.bind { it.fieldOrNull!!.type.structureOrNull!!.onlyLineOrNull!!.nameRecursion }
+			.bind { it.fieldOrNull!!.rhsType.structureOrNull!!.onlyLineOrNull!!.atomRecursion }
+			.bind { it.fieldOrNull!!.rhsType.structureOrNull!!.onlyLineOrNull!!.nameRecursion }
 			.get(null)
 			.assertEqualTo("foo")
 	}

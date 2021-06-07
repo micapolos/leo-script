@@ -30,7 +30,7 @@ val TypeField.nameGeneration: Generation<Name> get() =
 	}
 
 val TypeField.newNameGeneration: Generation<Name> get() =
-	type.onlyLineForNameOrNull
+	rhsType.onlyLineForNameOrNull
 		?.let {
 			it.typeNameGeneration.map {
 				it.plus(name.titleCase)
@@ -39,7 +39,7 @@ val TypeField.newNameGeneration: Generation<Name> get() =
 		.orIfNull { name.generation }
 		.bind { name ->
 			name.nameGeneration.bind { generatedName ->
-				type.declarationGeneration(generatedName).bind { declaration ->
+				rhsType.declarationGeneration(generatedName).bind { declaration ->
 					typesGeneration.bind { types ->
 						types
 							.plus(this, GeneratedType(generatedName, kotlin(declaration)))

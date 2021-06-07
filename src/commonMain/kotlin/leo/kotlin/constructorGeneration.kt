@@ -16,12 +16,12 @@ val TypeField.constructorString: String get() =
 	constructorGeneration.get(types())
 
 val TypeField.constructorGeneration: Generation<String> get() =
-	when (type) {
+	when (rhsType) {
 		is ChoiceType -> nameGeneration.bind { typeName ->
-			type.choice.prefixConstructorGeneration(name, typeName)
+			rhsType.choice.prefixConstructorGeneration(name, typeName)
 		}
 		is StructureType -> nameGeneration.bind { typeName ->
-			type.structure.prefixConstructorGeneration(name, typeName)
+			rhsType.structure.prefixConstructorGeneration(name, typeName)
 		}
 	}
 

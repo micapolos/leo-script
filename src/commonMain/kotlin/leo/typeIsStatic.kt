@@ -24,7 +24,7 @@ val TypeAtom.isStatic: Boolean get() =
 		is LiteralTypeAtom -> literal.isStatic
 	}
 
-val TypeField.isStatic: Boolean get() = type.isStatic
+val TypeField.isStatic: Boolean get() = rhsType.isStatic
 val TypeList.isStatic: Boolean get() = false
 val TypeLiteral.isStatic: Boolean get() = false
 val TypeRecurse.isStatic: Boolean get() = false
