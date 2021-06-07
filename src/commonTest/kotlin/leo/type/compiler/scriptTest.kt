@@ -1,5 +1,6 @@
 package leo.type.compiler
 
+import leo.anyName
 import leo.base.assertEqualTo
 import leo.choice
 import leo.lineTo
@@ -74,20 +75,18 @@ class ScriptTest {
 
 	@Test
 	fun literal() {
-		script(textName)
+		script(
+			textName lineTo script(anyName),
+			numberName lineTo script(anyName))
 			.type
-			.assertEqualTo(type(textTypeLine))
-
-		script(numberName)
-			.type
-			.assertEqualTo(type(numberTypeLine))
+			.assertEqualTo(type(textTypeLine, numberTypeLine))
 	}
 
 	@Test
 	fun or_prefix() {
 		script(
-			orName lineTo script(textName),
-			orName lineTo script(numberName),
+			orName lineTo script(textTypeScriptLine),
+			orName lineTo script(numberTypeScriptLine),
 			orName lineTo script("foo"))
 			.type
 			.assertEqualTo(
@@ -97,8 +96,8 @@ class ScriptTest {
 	@Test
 	fun or_infix() {
 		script(
-			textName lineTo script(),
-			orName lineTo script(numberName),
+			textTypeScriptLine,
+			orName lineTo script(numberTypeScriptLine),
 			orName lineTo script("foo"))
 			.type
 			.assertEqualTo(

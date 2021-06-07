@@ -11,10 +11,5 @@ fun context() = TypeContext(typeDictionary())
 fun TypeContext.type(script: Script): Type =
 	typeCompilation(script).get(this)
 
-fun TypeContext.typeOrNull(structure: Type): Type? =
-	dictionary.typeOrNull(structure)
-
-fun TypeContext.type(name: String): Type =
-	null
-		?: dictionary.typeOrNull(name)
-		?: name.nameResolveType
+fun TypeContext.resolveTypeOrNull(type: Type): Type? =
+	dictionary.typeOrNull(type)
