@@ -74,19 +74,19 @@ val Structure.expressionOrNull: Expression? get() = expressionStack.onlyOrNull
 val Literal.expression: Expression get() = op of typeLine
 val Literal.structure: Structure get() = expression.structure
 
-val Boolean.structure: Structure get() = structure(isName expressionTo structure(yesNoName))
 
 infix fun String.expressionTo(structure: Structure): Expression =
 	structure.make(this).op of (this lineTo type(structure.typeStructure))
 fun expression(name: String) = name expressionTo structure()
 fun structure(name: String) = structure(expression(name))
 
-val Boolean.isExpression: Expression get() =
+val Boolean.expression: Expression get() =
 	structure(yesNoName expressionTo structure()).make(isName).op.of(isTypeLine)
+val Boolean.structure: Structure get() = structure(expression)
 
-val Expression.isBooleanOrNull: Boolean? get() =
+val Expression.booleanOrNull: Boolean? get() =
 	when (this) {
-		false.isExpression -> false
-		true.isExpression -> true
+		false.expression -> false
+		true.expression -> true
 		else -> null
 	}

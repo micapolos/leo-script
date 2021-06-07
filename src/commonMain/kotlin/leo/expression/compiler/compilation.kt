@@ -36,8 +36,11 @@ import leo.isName
 import leo.letName
 import leo.lineSeq
 import leo.map
+import leo.noName
+import leo.script
 import leo.stateful
 import leo.typeStructure
+import leo.yesName
 
 typealias Compilation<T> = Stateful<Context, T>
 val <T> T.compilation: Compilation<T> get() = stateful()
@@ -87,9 +90,13 @@ fun Compiler.plusExampleCompilation(script: Script): Compilation<Compiler> =
 	context.structureCompilation(script).map { this }
 
 fun Compiler.plusIsCompilation(script: Script): Compilation<Compiler> =
-	structure.expression.let { lhsExpression ->
-		context.expressionCompilation(script).map { rhsExpression ->
-			set((lhsExpression == rhsExpression).structure)
+	when (script) {
+		script(yesName) -> set(true.structure).compilation
+		script(noName) -> set(false.structure).compilation
+		else -> structure.expression.let { lhsExpression ->
+			context.expressionCompilation(script).map { rhsExpression ->
+				set((lhsExpression == rhsExpression).structure)
+			}
 		}
 	}
 
@@ -115,7 +122,9 @@ fun Compiler.plusCompilation(name: String): Compilation<Compiler> =
 			?: set(structure.resolveMake(name)).resolveCompilation
 
 val Compiler.resolveCompilation: Compilation<Compiler> get() =
-	context.structureCompilationOrNull(structure)?.map { set(it) } ?: compilation
+	null
+		?: context.structureCompilationOrNull(structure)?.map { set(it) }
+		?: compilation
 
 fun Context.structureCompilationOrNull(structure: Structure): Compilation<Structure>? =
 	null

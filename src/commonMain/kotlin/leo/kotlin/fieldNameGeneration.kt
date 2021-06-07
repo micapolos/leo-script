@@ -25,7 +25,7 @@ val TypeLine.fieldNameGeneration: Generation<String> get() =
 val TypeAtom.fieldNameGeneration: Generation<String> get() =
 	when (this) {
 		is DoingTypeAtom -> "doing".generation
-		is FieldTypeAtom -> field.name.generation
+		is FieldTypeAtom -> field.name.nameKotlin.string.generation
 		is ListTypeAtom -> "list".generation
 		is LiteralTypeAtom -> literal.fieldNameGeneration
 	}

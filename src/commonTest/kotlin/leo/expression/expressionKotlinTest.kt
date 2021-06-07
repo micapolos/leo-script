@@ -55,11 +55,11 @@ class ExpressionKotlinTest {
 
 	@Test
 	fun isExpression() {
-		structure(false.isExpression)
+		structure(false.expression)
 			.kotlin.string
 			.assertEqualTo("false")
 
-		structure(true.isExpression)
+		structure(true.expression)
 			.kotlin.string
 			.assertEqualTo("true")
 	}
