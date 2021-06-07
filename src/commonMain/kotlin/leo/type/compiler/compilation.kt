@@ -12,6 +12,7 @@ import leo.base.reverse
 import leo.expression.compiler.resolve
 import leo.foldStateful
 import leo.isEmpty
+import leo.letName
 import leo.lineSeq
 import leo.lineTo
 import leo.map
@@ -48,6 +49,7 @@ fun TypeCompiler.plusFieldCompilation(scriptField: ScriptField): TypeCompilation
 
 fun TypeCompiler.plusStaticCompilationOrNull(scriptField: ScriptField): TypeCompilation<TypeCompiler>? =
 	when (scriptField.name) {
+		letName -> TODO()
 		else -> null
 	}
 
