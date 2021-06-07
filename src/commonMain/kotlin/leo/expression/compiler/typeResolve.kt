@@ -1,5 +1,6 @@
 package leo.expression.compiler
 
+import leo.Type
 import leo.TypeStructure
 import leo.atomOrNull
 import leo.fieldOrNull
@@ -33,3 +34,6 @@ val TypeStructure.resolveOrNull: TypeStructure? get() =
 
 val TypeStructure.resolve: TypeStructure get() =
 	resolveOrNull ?: this
+
+val Type.resolve: Type get() =
+	structureOrNull?.resolve?.type ?: this

@@ -1,7 +1,7 @@
 package leo.type.compiler
 
 import leo.Script
-import leo.TypeStructure
+import leo.Type
 
-val Script.typeStructure: TypeStructure get() =
-	context().structure(this)
+val Script.type: Type get() =
+	context().type(this)

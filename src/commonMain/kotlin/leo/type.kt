@@ -47,6 +47,9 @@ fun structure(line: TypeLine, vararg lines: TypeLine): TypeStructure = stack(lin
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
 fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
 
+val TypeStructure.type: Type get() = type(this)
+val TypeChoice.type: Type get() = type(this)
+
 infix fun String.fieldTo(type: Type) = TypeField(this, type)
 
 val typeText get() = TypeText

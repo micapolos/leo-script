@@ -7,7 +7,7 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
-import leo.TypeStructure
+import leo.Type
 import leo.base.reverse
 import leo.expression.compiler.resolve
 import leo.foldStateful
@@ -16,17 +16,16 @@ import leo.letName
 import leo.lineSeq
 import leo.lineTo
 import leo.map
-import leo.plus
 import leo.stateful
+import leo.structureOrNull
 import leo.type
-import leo.typeStructure
 
 typealias TypeCompilation<T> = Stateful<TypeContext, T>
 val <T> T.typeCompilation: TypeCompilation<T> get() = stateful()
 
-fun TypeContext.structureCompilation(script: Script): TypeCompilation<TypeStructure> =
-	TypeCompiler(this, typeStructure()).plusCompilation(script).map { compiler ->
-		compiler.structure
+fun TypeContext.typeCompilation(script: Script): TypeCompilation<Type> =
+	TypeCompiler(this, type()).plusCompilation(script).map { compiler ->
+		compiler.type
 	}
 
 fun TypeCompiler.plusCompilation(script: Script): TypeCompilation<TypeCompiler> =
@@ -54,17 +53,19 @@ fun TypeCompiler.plusStaticCompilationOrNull(scriptField: ScriptField): TypeComp
 	}
 
 fun TypeCompiler.plusCompilation(name: String): TypeCompilation<TypeCompiler> =
-	set(typeStructure(name lineTo type(structure))).resolveCompilation
+	set(type(name lineTo type)).resolveCompilation
 
 fun TypeCompiler.plusDynamicCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
-	context.structureCompilation(scriptField.rhs).map { rhsStructure ->
-		set(structure.plus(scriptField.name lineTo type(rhsStructure)))
+	context.typeCompilation(scriptField.rhs).map { rhsType ->
+		set(type.compilePlus(scriptField.name lineTo rhsType))
 	}
 
 val TypeCompiler.resolveCompilation: TypeCompilation<TypeCompiler> get() =
-	null
-		?: context.structureOrNull(structure)?.let { set(it).typeCompilation }
-		?: set(structure.resolve).typeCompilation
+	type.structureOrNull
+		?.let { structure ->
+			context.structureOrNull(structure)?.let { set(it.type).typeCompilation }
+		}
+		?:set(type.resolve).typeCompilation
 
 @Suppress("unused")
 fun TypeCompiler.plusCompilation(literal: Literal): TypeCompilation<TypeCompiler> =

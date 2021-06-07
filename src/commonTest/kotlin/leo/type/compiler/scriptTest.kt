@@ -5,22 +5,20 @@ import leo.lineTo
 import leo.numberName
 import leo.numberTypeLine
 import leo.script
-import leo.structure
 import leo.textName
 import leo.textTypeLine
 import leo.type
-import leo.typeStructure
 import kotlin.test.Test
 
 class ScriptTest {
 	@Test
 	fun empty() {
-		script().typeStructure.assertEqualTo(typeStructure())
+		script().type.assertEqualTo(type())
 	}
 
 	@Test
 	fun name() {
-		script("foo").typeStructure.assertEqualTo(structure("foo" lineTo type()))
+		script("foo").type.assertEqualTo(type("foo" lineTo type()))
 	}
 
 	@Test
@@ -28,15 +26,15 @@ class ScriptTest {
 		script(
 			"foo" lineTo script(),
 			"bar" lineTo script())
-			.typeStructure
-			.assertEqualTo(structure("bar" lineTo type("foo" lineTo type())))
+			.type
+			.assertEqualTo(type("bar" lineTo type("foo" lineTo type())))
 	}
 
 	@Test
 	fun field() {
 		script("foo" lineTo script("bar"))
-			.typeStructure
-			.assertEqualTo(structure("foo" lineTo type("bar" lineTo type())))
+			.type
+			.assertEqualTo(type("foo" lineTo type("bar" lineTo type())))
 	}
 
 	@Test
@@ -44,9 +42,9 @@ class ScriptTest {
 		script(
 			"foo" lineTo script("bar"),
 			"zoo" lineTo script("zar"))
-			.typeStructure
+			.type
 			.assertEqualTo(
-				structure(
+				type(
 					"foo" lineTo type("bar" lineTo type()),
 					"zoo" lineTo type("zar" lineTo type()))
 			)
@@ -59,26 +57,26 @@ class ScriptTest {
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")),
 			"x" lineTo script())
-			.typeStructure
-			.assertEqualTo(structure("x" lineTo type("zero" lineTo type())))
+			.type
+			.assertEqualTo(type("x" lineTo type("zero" lineTo type())))
 
 		script(
 			"point" lineTo script(
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")),
 			"y" lineTo script())
-			.typeStructure
-			.assertEqualTo(structure("y" lineTo type("one" lineTo type())))
+			.type
+			.assertEqualTo(type("y" lineTo type("one" lineTo type())))
 	}
 
 	@Test
 	fun literal() {
 		script(textName)
-			.typeStructure
-			.assertEqualTo(structure(textTypeLine))
+			.type
+			.assertEqualTo(type(textTypeLine))
 
 		script(numberName)
-			.typeStructure
-			.assertEqualTo(structure(numberTypeLine))
+			.type
+			.assertEqualTo(type(numberTypeLine))
 	}
 }
