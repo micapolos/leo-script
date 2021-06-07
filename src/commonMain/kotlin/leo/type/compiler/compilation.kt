@@ -39,7 +39,17 @@ fun TypeCompiler.plusCompilation(scriptLine: ScriptLine): TypeCompilation<TypeCo
 
 fun TypeCompiler.plusCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
 	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.string)
-	else plusDynamicCompilation(scriptField)
+	else plusFieldCompilation(scriptField)
+
+fun TypeCompiler.plusFieldCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
+	null
+		?: plusStaticCompilationOrNull(scriptField)
+		?: plusDynamicCompilation(scriptField)
+
+fun TypeCompiler.plusStaticCompilationOrNull(scriptField: ScriptField): TypeCompilation<TypeCompiler>? =
+	when (scriptField.string) {
+		else -> null
+	}
 
 fun TypeCompiler.plusCompilation(name: String): TypeCompilation<TypeCompiler> =
 	set(typeStructure(name lineTo type(structure))).resolveCompilation
