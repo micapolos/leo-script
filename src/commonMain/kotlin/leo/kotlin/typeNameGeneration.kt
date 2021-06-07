@@ -19,6 +19,7 @@ import leo.array
 import leo.bind
 import leo.flat
 import leo.get
+import leo.isTypeField
 import leo.map
 
 val TypeLine.typeName: String get() =
@@ -61,4 +62,5 @@ val TypeLiteral.typeNameGeneration: Generation<String> get() =
 	}
 
 val TypeField.typeNameGeneration: Generation<String> get() =
-	nameGeneration.map { it.kotlinClassName }
+	if (this == isTypeField) "Boolean".generation
+	else nameGeneration.map { it.kotlinClassName }

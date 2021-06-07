@@ -5,6 +5,8 @@ import leo.Stack
 import leo.TypeLine
 import leo.TypeStructure
 import leo.isEmpty
+import leo.isName
+import leo.isTypeLine
 import leo.lineTo
 import leo.map
 import leo.onlyOrNull
@@ -12,6 +14,7 @@ import leo.push
 import leo.stack
 import leo.type
 import leo.typeLine
+import leo.yesNoName
 
 data class Expression(val op: Op, val typeLine: TypeLine)
 
@@ -71,7 +74,19 @@ val Structure.expressionOrNull: Expression? get() = expressionStack.onlyOrNull
 val Literal.expression: Expression get() = op of typeLine
 val Literal.structure: Structure get() = expression.structure
 
+val Boolean.structure: Structure get() = structure(isName expressionTo structure(yesNoName))
+
 infix fun String.expressionTo(structure: Structure): Expression =
 	structure.make(this).op of (this lineTo type(structure.typeStructure))
 fun expression(name: String) = name expressionTo structure()
 fun structure(name: String) = structure(expression(name))
+
+val Boolean.isExpression: Expression get() =
+	structure(yesNoName expressionTo structure()).make(isName).op.of(isTypeLine)
+
+val Expression.isBooleanOrNull: Boolean? get() =
+	when (this) {
+		false.isExpression -> false
+		true.isExpression -> true
+		else -> null
+	}

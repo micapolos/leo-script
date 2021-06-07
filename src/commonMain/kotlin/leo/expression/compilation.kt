@@ -39,14 +39,27 @@ val Expression.mainKotlinCompilation: Compilation<Kotlin> get() =
 	}
 
 val Expression.kotlinCompilation: Compilation<Kotlin> get() =
-	when (op) {
-		is GetOp -> op.get.kotlinCompilation
-		is LiteralOp -> op.literal.kotlinCompilation
-		is MakeOp -> op.make.kotlinCompilation
-		is BindOp -> op.bind.kotlinCompilation
-		is VariableOp -> op.variable.kotlinCompilation
-		is InvokeOp -> op.invoke.kotlinCompilation
-	}
+	null
+		?: staticKotlinCompilationOrNull
+		?: dynamicKotlinCompilation
+
+val Expression.staticKotlinCompilationOrNull: Compilation<Kotlin>? get() =
+	null
+		?: booleanKotlinCompilationOrNull
+
+val Expression.dynamicKotlinCompilation: Compilation<Kotlin> get() =
+	booleanKotlinCompilationOrNull
+		?: when (op) {
+			is GetOp -> op.get.kotlinCompilation
+			is LiteralOp -> op.literal.kotlinCompilation
+			is MakeOp -> op.make.kotlinCompilation
+			is BindOp -> op.bind.kotlinCompilation
+			is VariableOp -> op.variable.kotlinCompilation
+			is InvokeOp -> op.invoke.kotlinCompilation
+		}
+
+val Expression.booleanKotlinCompilationOrNull: Compilation<Kotlin>? get() =
+	isBooleanOrNull?.kotlin?.compilation
 
 val Literal.kotlinCompilation: Compilation<Kotlin> get() =
 	toString().kotlin.compilation

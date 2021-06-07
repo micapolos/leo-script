@@ -3,6 +3,7 @@ package leo.kotlin
 import leo.atom
 import leo.base.assertEqualTo
 import leo.doing
+import leo.isTypeLine
 import leo.line
 import leo.list
 import leo.numberTypeLine
@@ -29,5 +30,10 @@ class TypeNameTest {
 	fun literalTypeName() {
 		numberTypeLine.typeName.assertEqualTo("Double")
 		textTypeLine.typeName.assertEqualTo("String")
+	}
+
+	@Test
+	fun isTypeName() {
+		isTypeLine.typeName.assertEqualTo("Boolean")
 	}
 }

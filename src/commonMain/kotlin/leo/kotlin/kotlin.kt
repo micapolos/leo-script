@@ -15,3 +15,5 @@ val Type.kotlin: Kotlin get() =
 	kotlinGeneration.get(types())
 
 operator fun Kotlin.plus(kotlin: Kotlin) = string.plus(kotlin.string).kotlin
+
+val Boolean.kotlin get() = kotlin(if (this) "true" else "false")

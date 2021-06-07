@@ -6,6 +6,7 @@ import leo.base.lines
 import leo.choice
 import leo.doing
 import leo.fieldTo
+import leo.isTypeLine
 import leo.line
 import leo.lineTo
 import leo.list
@@ -87,5 +88,12 @@ class KotlinTest {
 					"data class YesBool(val yes: Yes): Bool()",
 					"data class NoBool(val no: No): Bool()"))
 
+	}
+
+	@Test
+	fun isType() {
+		type(isTypeLine)
+			.kotlin.string
+			.assertEqualTo("") // No code should be generated, as it's built-in.
 	}
 }

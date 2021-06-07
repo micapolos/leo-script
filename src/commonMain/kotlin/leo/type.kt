@@ -143,3 +143,12 @@ fun TypeLine.get(name: String): TypeLine =
 
 val String.typeStructure: TypeStructure get() =
 	typeStructure(this lineTo type())
+
+val isTypeLine: TypeLine get() =
+	line(atom(isTypeField))
+
+val isTypeField: TypeField get() =
+	isName fieldTo type(
+		choice(
+			noName lineTo type(),
+			yesName lineTo type()))

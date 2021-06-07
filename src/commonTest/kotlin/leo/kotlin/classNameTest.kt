@@ -3,6 +3,7 @@ package leo.kotlin
 import leo.atom
 import leo.base.assertEqualTo
 import leo.doingLineTo
+import leo.isTypeLine
 import leo.line
 import leo.lineTo
 import leo.list
@@ -60,5 +61,12 @@ class ClassNameTest {
 		textTypeLine
 			.className
 			.assertEqualTo("Text")
+	}
+
+	@Test
+	fun isTypeLine() {
+		isTypeLine
+			.className
+			.assertEqualTo("Boolean")
 	}
 }

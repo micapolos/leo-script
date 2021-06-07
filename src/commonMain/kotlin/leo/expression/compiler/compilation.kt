@@ -32,6 +32,7 @@ import leo.expression.variable
 import leo.foldStateful
 import leo.getStateful
 import leo.isEmpty
+import leo.isName
 import leo.letName
 import leo.lineSeq
 import leo.map
@@ -69,6 +70,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		bindName -> plusBindCompilation(scriptField.rhs)
 		commentName -> compilation
 		exampleName -> plusExampleCompilation(scriptField.rhs)
+		isName -> plusIsCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		else -> notNullIf(scriptField.rhs.isEmpty) { plusCompilation(scriptField.string) }
 	}
@@ -83,6 +85,13 @@ fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
 
 fun Compiler.plusExampleCompilation(script: Script): Compilation<Compiler> =
 	context.structureCompilation(script).map { this }
+
+fun Compiler.plusIsCompilation(script: Script): Compilation<Compiler> =
+	structure.expression.let { lhsExpression ->
+		context.expressionCompilation(script).map { rhsExpression ->
+			set((lhsExpression == rhsExpression).structure)
+		}
+	}
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	TODO()

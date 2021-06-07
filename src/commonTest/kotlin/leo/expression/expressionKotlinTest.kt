@@ -52,4 +52,15 @@ class ExpressionKotlinTest {
 			.kotlin.string
 			.assertEqualTo("_invoke(x(10), y(20))")
 	}
+
+	@Test
+	fun isExpression() {
+		structure(false.isExpression)
+			.kotlin.string
+			.assertEqualTo("false")
+
+		structure(true.isExpression)
+			.kotlin.string
+			.assertEqualTo("true")
+	}
 }
