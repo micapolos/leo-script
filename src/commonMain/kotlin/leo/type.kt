@@ -42,6 +42,7 @@ fun type(structure: TypeStructure): Type = StructureType(structure)
 fun type(choice: TypeChoice): Type = ChoiceType(choice)
 
 fun typeStructure(vararg lines: TypeLine): TypeStructure = stack(*lines).structure
+fun structure(line: TypeLine, vararg lines: TypeLine): TypeStructure = stack(line, *lines).structure
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
 fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
 
@@ -158,3 +159,8 @@ val negateIsTypeLine: TypeLine get() =
 
 val negateIsTypeField: TypeField get() =
 	negateName fieldTo type(isTypeLine)
+
+val TypeLine.structure: TypeStructure get() = typeStructure(this)
+
+fun TypeStructure.getOrNull(name: String): TypeStructure? =
+	onlyLineOrNull?.structureOrNull?.lineOrNull(name)?.structure
