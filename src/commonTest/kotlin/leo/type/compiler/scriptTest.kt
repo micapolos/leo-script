@@ -56,5 +56,13 @@ class ScriptTest {
 			"x" lineTo script())
 			.typeStructure
 			.assertEqualTo(structure("x" lineTo type("zero" lineTo type())))
+
+		script(
+			"point" lineTo script(
+				"x" lineTo script("zero"),
+				"y" lineTo script("one")),
+			"y" lineTo script())
+			.typeStructure
+			.assertEqualTo(structure("y" lineTo type("one" lineTo type())))
 	}
 }
