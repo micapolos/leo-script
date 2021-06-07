@@ -1,13 +1,13 @@
 package leo.type.compiler
 
+import leo.Type
 import leo.TypeLine
-import leo.TypeStructure
 import leo.numberName
 import leo.numberTypeLine
 import leo.structureOrNull
 import leo.textName
 import leo.textTypeLine
-import leo.typeStructure
+import leo.type
 
 val String.literalTypeLineOrNull: TypeLine? get() =
 	when (this) {
@@ -16,10 +16,10 @@ val String.literalTypeLineOrNull: TypeLine? get() =
 		else -> null
 	}
 
-val String.nameResolveTypeStructureOrNull: TypeStructure? get() =
-	literalTypeLineOrNull?.structureOrNull
+val String.nameResolveTypeOrNull: Type? get() =
+	literalTypeLineOrNull?.structureOrNull?.type
 
-val String.nameResolveTypeStructure: TypeStructure get() =
+val String.nameResolveType: Type get() =
 	null
-		?: nameResolveTypeStructureOrNull
-		?: typeStructure
+		?: nameResolveTypeOrNull
+		?: type

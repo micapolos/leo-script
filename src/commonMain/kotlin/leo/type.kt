@@ -149,6 +149,9 @@ fun TypeLine.get(name: String): TypeLine =
 val String.typeStructure: TypeStructure get() =
 	typeStructure(this lineTo type())
 
+val String.type: Type get() =
+	typeStructure.type
+
 val isTypeLine: TypeLine get() =
 	line(atom(isTypeField))
 
@@ -174,3 +177,6 @@ val Type.isEmpty: Boolean get() = structureOrNull?.isEmpty ?: false
 
 val TypeStructure.nameOrNull: String? get() =
 	onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !type.isEmpty }?.name
+
+val Type.nameOrNull: String? get() =
+	structureOrNull?.nameOrNull

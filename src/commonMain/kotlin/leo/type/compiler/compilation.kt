@@ -17,7 +17,6 @@ import leo.lineSeq
 import leo.lineTo
 import leo.map
 import leo.stateful
-import leo.structureOrNull
 import leo.type
 
 typealias TypeCompilation<T> = Stateful<TypeContext, T>
@@ -61,11 +60,9 @@ fun TypeCompiler.plusDynamicCompilation(scriptField: ScriptField): TypeCompilati
 	}
 
 val TypeCompiler.resolveCompilation: TypeCompilation<TypeCompiler> get() =
-	type.structureOrNull
-		?.let { structure ->
-			context.structureOrNull(structure)?.let { set(it.type).typeCompilation }
-		}
-		?:set(type.resolve).typeCompilation
+	null
+		?: context.typeOrNull(type)?.let { set(it).typeCompilation }
+		?: set(type.resolve).typeCompilation
 
 @Suppress("unused")
 fun TypeCompiler.plusCompilation(literal: Literal): TypeCompilation<TypeCompiler> =
