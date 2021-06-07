@@ -9,7 +9,7 @@ import leo.textName
 import leo.textTypeLine
 import leo.typeStructure
 
-val String.nameTypeLineOrNull: TypeLine? get() =
+val String.literalTypeLineOrNull: TypeLine? get() =
 	when (this) {
 		textName -> textTypeLine
 		numberName -> numberTypeLine
@@ -17,7 +17,7 @@ val String.nameTypeLineOrNull: TypeLine? get() =
 	}
 
 val String.nameResolveTypeStructureOrNull: TypeStructure? get() =
-	nameTypeLineOrNull?.structureOrNull
+	literalTypeLineOrNull?.structureOrNull
 
 val String.nameResolveTypeStructure: TypeStructure get() =
 	null

@@ -72,7 +72,7 @@ class ScriptTest {
 	}
 
 	@Test
-	fun native() {
+	fun literal() {
 		script(textName)
 			.typeStructure
 			.assertEqualTo(structure(textTypeLine))
