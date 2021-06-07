@@ -117,7 +117,16 @@ class ScriptTest {
 	}
 
 	@Test
-	fun or_rhsNotLine() {
+	fun or_rhsIsEmpty() {
+		assertFails {
+			script(orName lineTo script())
+				.type
+				.assertEqualTo(null)
+		}
+	}
+
+	@Test
+	fun or_rhsIsMultiLine() {
 		assertFails {
 			script(
 				orName lineTo script(
