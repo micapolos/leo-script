@@ -9,7 +9,7 @@ import leo.ScriptLine
 import leo.Stateful
 import leo.TypeStructure
 import leo.base.reverse
-import leo.expression.compiler.resolveGetOrNull
+import leo.expression.compiler.resolve
 import leo.foldStateful
 import leo.isEmpty
 import leo.lineSeq
@@ -51,8 +51,8 @@ fun TypeCompiler.plusDynamicCompilation(scriptField: ScriptField): TypeCompilati
 
 val TypeCompiler.resolveCompilation: TypeCompilation<TypeCompiler> get() =
 	null
-		?: structure.resolveGetOrNull?.let { set(it).typeCompilation }
-		?: typeCompilation
+		?: context.structureOrNull(structure)?.let { set(it).typeCompilation }
+		?: set(structure.resolve).typeCompilation
 
 @Suppress("unused")
 fun TypeCompiler.plusCompilation(literal: Literal): TypeCompilation<TypeCompiler> =

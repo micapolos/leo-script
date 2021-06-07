@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.notNullOrError
+import leo.base.orNullIf
 
 sealed class Type
 data class StructureType(val structure: TypeStructure): Type()
@@ -164,3 +165,9 @@ val TypeLine.structure: TypeStructure get() = typeStructure(this)
 
 fun TypeStructure.getOrNull(name: String): TypeStructure? =
 	onlyLineOrNull?.structureOrNull?.lineOrNull(name)?.structure
+
+val TypeStructure.isEmpty: Boolean get() = lineStack.isEmpty
+val Type.isEmpty: Boolean get() = structureOrNull?.isEmpty ?: false
+
+val TypeStructure.nameOrNull: String? get() =
+	onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !type.isEmpty }?.name

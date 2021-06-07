@@ -2,8 +2,12 @@ package leo.type.compiler
 
 import leo.base.assertEqualTo
 import leo.lineTo
+import leo.numberName
+import leo.numberTypeLine
 import leo.script
 import leo.structure
+import leo.textName
+import leo.textTypeLine
 import leo.type
 import leo.typeStructure
 import kotlin.test.Test
@@ -44,7 +48,8 @@ class ScriptTest {
 			.assertEqualTo(
 				structure(
 					"foo" lineTo type("bar" lineTo type()),
-					"zoo" lineTo type("zar" lineTo type())))
+					"zoo" lineTo type("zar" lineTo type()))
+			)
 	}
 
 	@Test
@@ -64,5 +69,16 @@ class ScriptTest {
 			"y" lineTo script())
 			.typeStructure
 			.assertEqualTo(structure("y" lineTo type("one" lineTo type())))
+	}
+
+	@Test
+	fun native() {
+		script(textName)
+			.typeStructure
+			.assertEqualTo(structure(textTypeLine))
+
+		script(numberName)
+			.typeStructure
+			.assertEqualTo(structure(numberTypeLine))
 	}
 }
