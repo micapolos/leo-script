@@ -36,12 +36,12 @@ class TypeScriptTest {
 	@Test
 	fun recursive() {
 		type(
-			line(recursive(
-				"stack" lineTo type(choice(
+			line(recursive(atom(
+				"stack" fieldTo type(choice(
 					"empty" lineTo type(),
 					"link" lineTo type(
 						line(typeRecurse),
-						numberTypeLine))))))
+						numberTypeLine)))))))
 			.script
 			.assertEqualTo(
 				script(

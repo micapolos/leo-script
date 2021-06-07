@@ -43,7 +43,7 @@ val TypeDoing.scriptLine: ScriptLine get() =
 	doingName lineTo lhsTypeStructure.script.plus(toName lineTo script(rhsTypeLine.scriptLine))
 
 val TypeRecursive.scriptLine: ScriptLine get() =
-	recursiveName lineTo script(line.scriptLine)
+	recursiveName lineTo script(atom.scriptLine)
 
 @Suppress("unused")
 val TypeRecurse.scriptLine: ScriptLine get() =

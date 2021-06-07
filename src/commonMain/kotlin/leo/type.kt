@@ -30,7 +30,7 @@ data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine)
 data class TypeList(val itemLine: TypeLine)
 
-data class TypeRecursive(val line: TypeLine)
+data class TypeRecursive(val atom: TypeAtom)
 
 object TypeText
 object TypeNumber
@@ -73,7 +73,7 @@ fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
 fun line(recurse: TypeRecurse): TypeLine = RecurseTypeLine(recurse)
 
-fun recursive(line: TypeLine) = TypeRecursive(line)
+fun recursive(atom: TypeAtom) = TypeRecursive(atom)
 
 infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
 
@@ -90,28 +90,6 @@ val Literal.typeAtom: TypeAtom get() =
 		is NumberLiteral -> atom(literal(typeNumber))
 		is StringLiteral -> atom(literal(typeText))
 	}
-
-val TypeLine.selectName: String get() =
-	when (this) {
-		is AtomTypeLine -> atom.selectName
-		is RecurseTypeLine -> TODO()
-		is RecursiveTypeLine -> recursive.line.selectName
-	}
-
-val TypeAtom.selectName: String get() =
-	when (this) {
-		is DoingTypeAtom -> doingName
-		is FieldTypeAtom -> field.name
-		is ListTypeAtom -> listName
-		is LiteralTypeAtom -> literal.selectName
-	}
-
-val TypeLiteral.selectName: String get() =
-	when (this) {
-		is NumberTypeLiteral -> numberName
-		is TextTypeLiteral -> textName
-	}
-
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
@@ -119,27 +97,6 @@ val TypeLine.atomOrNull: TypeAtom? get() = (this as? AtomTypeLine)?.atom
 val TypeAtom.fieldOrNull: TypeField? get() = (this as? FieldTypeAtom)?.field
 val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.type?.structureOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
-
-val TypeLine.name: String get() =
-	when (this) {
-		is AtomTypeLine -> atom.name
-		is RecurseTypeLine -> TODO()
-		is RecursiveTypeLine -> TODO()
-	}
-
-val TypeAtom.name: String get() =
-	when (this) {
-		is DoingTypeAtom -> doingName
-		is FieldTypeAtom -> field.name
-		is ListTypeAtom -> listName
-		is LiteralTypeAtom -> literal.name
-	}
-
-val TypeLiteral.name: String get() =
-	when (this) {
-		is NumberTypeLiteral -> numberName
-		is TextTypeLiteral -> textName
-	}
 
 fun TypeLine.get(name: String): TypeLine =
 	structureOrNull
