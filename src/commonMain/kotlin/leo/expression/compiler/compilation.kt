@@ -90,13 +90,21 @@ fun Compiler.plusExampleCompilation(script: Script): Compilation<Compiler> =
 	context.structureCompilation(script).map { this }
 
 fun Compiler.plusIsCompilation(script: Script): Compilation<Compiler> =
+	null
+		?: plusIsBooleanCompilationOrNull(script)
+		?: plusIsExpressionCompilationOrNull(script)
+
+fun Compiler.plusIsBooleanCompilationOrNull(script: Script): Compilation<Compiler>? =
 	when (script) {
 		script(yesName) -> set(true.structure).compilation
 		script(noName) -> set(false.structure).compilation
-		else -> structure.expression.let { lhsExpression ->
-			context.expressionCompilation(script).map { rhsExpression ->
-				set((lhsExpression == rhsExpression).structure)
-			}
+		else -> null
+	}
+
+fun Compiler.plusIsExpressionCompilationOrNull(script: Script): Compilation<Compiler> =
+	structure.expression.let { lhsExpression ->
+		context.expressionCompilation(script).map { rhsExpression ->
+			set((lhsExpression == rhsExpression).structure)
 		}
 	}
 
