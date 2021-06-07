@@ -69,14 +69,14 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 		?: plusDynamicCompilation(scriptField)
 
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
-	when (scriptField.string) {
+	when (scriptField.name) {
 		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
 		commentName -> compilation
 		exampleName -> plusExampleCompilation(scriptField.rhs)
 		isName -> plusIsCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
-		else -> notNullIf(scriptField.rhs.isEmpty) { plusCompilation(scriptField.string) }
+		else -> notNullIf(scriptField.rhs.isEmpty) { plusCompilation(scriptField.name) }
 	}
 
 fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
@@ -114,7 +114,7 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	context.structureCompilation(scriptField.rhs).bind { rhsStructure ->
-		set(structure.plus(scriptField.string expressionTo rhsStructure)).resolveCompilation
+		set(structure.plus(scriptField.name expressionTo rhsStructure)).resolveCompilation
 	}
 
 fun Compiler.plusCompilation(literal: Literal): Compilation<Compiler> =

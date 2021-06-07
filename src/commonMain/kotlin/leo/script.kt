@@ -34,7 +34,7 @@ data class FieldScriptLine(val field: ScriptField) : ScriptLine() {
 
 data class ScriptLink(val lhs: Script, val line: ScriptLine)
 
-data class ScriptField(val string: String, val rhs: Script)
+data class ScriptField(val name: String, val rhs: Script)
 
 fun script(unit: Unit): Script = UnitScript(unit)
 fun script(literal: Literal): Script = script(line(literal))
@@ -176,7 +176,7 @@ val ScriptLink.code
 
 val ScriptField.code
 	get() =
-		"$string(${rhs.code})"
+		"${name}(${rhs.code})"
 
 fun <V> Stack<V>.script(fn: V.() -> ScriptLine): Script =
 	script().fold(reverse) { plus(it.fn()) }
@@ -204,7 +204,7 @@ val ScriptLine.coreString: String
 
 val ScriptField.coreString: String
 	get() =
-		"$string(${rhs.coreString})"
+		"$name(${rhs.coreString})"
 
 // === Line count
 
@@ -311,7 +311,7 @@ fun ScriptLine.rhsOrNull(string: String) =
 	}
 
 fun ScriptField.rhsOrNull(string: String) =
-	if (this.string == string) rhs
+	if (this.name == string) rhs
 	else null
 
 fun Script.lineOrNull(string: String): ScriptLine? =
@@ -341,7 +341,7 @@ fun ScriptLine.ifNamed(string: String) =
 fun ScriptLine.isNamed(string: String) =
 	when (this) {
 		is LiteralScriptLine -> literal.name == string
-		is FieldScriptLine -> field.string == string
+		is FieldScriptLine -> field.name == string
 	}
 
 val Literal.name
@@ -369,7 +369,7 @@ val ScriptLink.onlyLineOrNull: ScriptLine?
 
 val ScriptField.onlyStringOrNull: String?
 	get() =
-		notNullIf(rhs.isEmpty) { string }
+		notNullIf(rhs.isEmpty) { name }
 
 val Script.onlyStringOrNull: String?
 	get() =
@@ -381,7 +381,7 @@ tailrec fun Stack<String>.plusNamesOrNull(script: Script): Stack<String>? =
 		is LinkScript -> {
 			val field = script.link.line.fieldOrNull
 			if (!script.link.lhs.isEmpty || field == null) null
-			else push(field.string).plusNamesOrNull(field.rhs)
+			else push(field.name).plusNamesOrNull(field.rhs)
 		}
 	}
 
@@ -411,7 +411,7 @@ fun <R : Any> Script.matchInfix(fn: (Script, String, Script) -> R?): R? =
 	linkOrNull?.let { link ->
 		link.lhs.let { lhs ->
 			link.line.fieldOrNull?.let { field ->
-				fn(lhs, field.string, field.rhs)
+				fn(lhs, field.name, field.rhs)
 			}
 		}
 	}
@@ -441,6 +441,6 @@ fun <R : Any> ScriptLine.match(name: String, fn: (Script) -> R?): R? =
 	fieldOrNull?.match(name, fn)
 
 fun <R : Any> ScriptField.match(name: String, fn: (Script) -> R?): R? =
-	ifOrNull(string == name) {
+	ifOrNull(this.name == name) {
 		fn(rhs)
 	}

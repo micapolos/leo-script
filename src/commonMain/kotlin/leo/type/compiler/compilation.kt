@@ -38,7 +38,7 @@ fun TypeCompiler.plusCompilation(scriptLine: ScriptLine): TypeCompilation<TypeCo
 	}
 
 fun TypeCompiler.plusCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
-	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.string)
+	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.name)
 	else plusFieldCompilation(scriptField)
 
 fun TypeCompiler.plusFieldCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
@@ -47,7 +47,7 @@ fun TypeCompiler.plusFieldCompilation(scriptField: ScriptField): TypeCompilation
 		?: plusDynamicCompilation(scriptField)
 
 fun TypeCompiler.plusStaticCompilationOrNull(scriptField: ScriptField): TypeCompilation<TypeCompiler>? =
-	when (scriptField.string) {
+	when (scriptField.name) {
 		else -> null
 	}
 
@@ -56,7 +56,7 @@ fun TypeCompiler.plusCompilation(name: String): TypeCompilation<TypeCompiler> =
 
 fun TypeCompiler.plusDynamicCompilation(scriptField: ScriptField): TypeCompilation<TypeCompiler> =
 	context.structureCompilation(scriptField.rhs).map { rhsStructure ->
-		set(structure.plus(scriptField.string lineTo type(rhsStructure)))
+		set(structure.plus(scriptField.name lineTo type(rhsStructure)))
 	}
 
 val TypeCompiler.resolveCompilation: TypeCompilation<TypeCompiler> get() =

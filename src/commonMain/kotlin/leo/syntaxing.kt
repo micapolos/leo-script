@@ -32,7 +32,7 @@ fun Syntax.plusCompilation(scriptLine: ScriptLine): Syntaxing<Syntax> =
 	scriptLine.syntaxLineSyntaxing.map { plus(it) }
 
 val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
-	when (string) {
+	when (name) {
 		asName -> rhs.asSyntaxing.map(::line)
 		beName -> rhs.beSyntaxing.map(::line)
 		bindName -> rhs.bindSyntaxing.map(::line)
@@ -68,7 +68,7 @@ val ScriptField.syntaxAtomSyntaxing: Syntaxing<SyntaxAtom> get() =
 
 val ScriptField.syntaxFieldSyntaxing: Syntaxing<SyntaxField> get() =
 	rhs.syntaxSyntaxing.map { rhsSyntax ->
-		string fieldTo rhsSyntax
+		name fieldTo rhsSyntax
 	}
 
 val Literal.syntaxLineSyntaxing: Syntaxing<SyntaxAtom> get() =
@@ -85,7 +85,7 @@ val ScriptLine.caseSyntaxing: Syntaxing<Case> get() =
 
 val ScriptField.caseSyntaxing: Syntaxing<Case> get() =
 	rhs.syntaxSyntaxing.map { syntax ->
-		string caseTo syntax
+		name caseTo syntax
 	}
 
 val Script.asSyntaxing: Syntaxing<As> get() =

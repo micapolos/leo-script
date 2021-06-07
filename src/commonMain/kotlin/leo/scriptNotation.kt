@@ -22,15 +22,15 @@ fun NotationLink.plus(scriptLine: ScriptLine): NotationLink =
 
 fun NotationLink.plus(scriptField: ScriptField): NotationLink =
 	when (scriptField.rhs) {
-		is UnitScript -> plus(scriptField.string)
+		is UnitScript -> plus(scriptField.name)
 		is LinkScript -> notation(this) linkTo scriptField.notationLine
 	}
 
 val ScriptField.notationLine: NotationLine
 	get() =
 		when (rhs) {
-			is UnitScript -> line(chain(atom(string)))
-			is LinkScript -> line(string fieldTo rhs.link.notationLink)
+			is UnitScript -> line(chain(atom(name)))
+			is LinkScript -> line(name fieldTo rhs.link.notationLink)
 		}
 
 val ScriptLine.notationLine: NotationLine

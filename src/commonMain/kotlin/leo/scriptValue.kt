@@ -20,7 +20,7 @@ val ScriptLine.field: Field
 
 val ScriptField.field: Field
 	get() =
-		string fieldTo rhs.value
+		name fieldTo rhs.value
 
 val Literal.field: Field
 	get() =

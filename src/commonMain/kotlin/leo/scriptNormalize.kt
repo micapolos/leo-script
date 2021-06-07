@@ -17,4 +17,4 @@ val ScriptLine.normalize: ScriptLine get() =
 	}
 
 val ScriptField.normalize: ScriptField get() =
-	string fieldTo rhs.normalize
+	name fieldTo rhs.normalize
