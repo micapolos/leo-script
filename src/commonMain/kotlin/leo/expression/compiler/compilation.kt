@@ -24,6 +24,7 @@ import leo.expression.isEmpty
 import leo.expression.of
 import leo.expression.op
 import leo.expression.plus
+import leo.expression.resolveEqual
 import leo.expression.resolveGetOrNull
 import leo.expression.resolveMake
 import leo.expression.structure
@@ -104,7 +105,7 @@ fun Compiler.plusIsBooleanCompilationOrNull(script: Script): Compilation<Compile
 fun Compiler.plusIsExpressionCompilationOrNull(script: Script): Compilation<Compiler> =
 	structure.expression.let { lhsExpression ->
 		context.expressionCompilation(script).map { rhsExpression ->
-			set((lhsExpression == rhsExpression).structure)
+			set(lhsExpression.resolveEqual(rhsExpression).structure)
 		}
 	}
 

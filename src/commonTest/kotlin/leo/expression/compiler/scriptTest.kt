@@ -6,19 +6,25 @@ import leo.bindName
 import leo.commentName
 import leo.exampleName
 import leo.expression.applyBind
+import leo.expression.expression
 import leo.expression.expressionTo
 import leo.expression.of
 import leo.expression.op
 import leo.expression.plus
+import leo.expression.resolveEqual
 import leo.expression.resolveMake
 import leo.expression.structure
 import leo.expression.variable
+import leo.isName
 import leo.letName
+import leo.line
 import leo.lineTo
 import leo.literal
+import leo.noName
 import leo.numberTypeLine
 import leo.script
 import leo.type
+import leo.yesName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -143,6 +149,26 @@ class ScriptTest {
 					.plus("x" expressionTo 10.literal.structure)
 					.plus("y" expressionTo 20.literal.structure)
 					.applyBind("z" expressionTo structure()))
+	}
+
+	@Test
+	fun isConstant() {
+		script(isName lineTo script(yesName))
+			.structure
+			.assertEqualTo(true.structure)
+
+		script(isName lineTo script(noName))
+			.structure
+			.assertEqualTo(false.structure)
+	}
+
+	@Test
+	fun isExpression() {
+		script(
+			line(literal(10)),
+			isName lineTo script(line(literal(20))))
+			.structure
+			.assertEqualTo(10.literal.expression.resolveEqual(20.literal.expression).structure)
 	}
 
 	@Test

@@ -55,6 +55,7 @@ val Expression.dynamicKotlinCompilation: Compilation<Kotlin> get() =
 			is LiteralOp -> op.literal.kotlinCompilation
 			is MakeOp -> op.make.kotlinCompilation
 			is BindOp -> op.bind.kotlinCompilation
+			is EqualOp -> op.equal.kotlinCompilation
 			is VariableOp -> op.variable.kotlinCompilation
 			is InvokeOp -> op.invoke.kotlinCompilation
 		}
@@ -91,6 +92,13 @@ val Bind.kotlinCompilation: Compilation<Kotlin> get() =
 	rhsExpression.kotlinCompilation.fold(lhsStructure.expressionStack.seq) { field ->
 		bind { kotlin ->
 			kotlin.letCompilation(field)
+		}
+	}
+
+val Equal.kotlinCompilation: Compilation<Kotlin> get() =
+	lhsExpression.kotlinCompilation.bind { lhsKotlin ->
+		rhsExpression.kotlinCompilation.map { rhsKotlin ->
+			"${lhsKotlin.string}.equals(${rhsKotlin.string})".kotlin
 		}
 	}
 

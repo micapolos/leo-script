@@ -9,6 +9,7 @@ import leo.expression.dsl.number
 import leo.expression.dsl.structure
 import leo.expression.dsl.text
 import leo.lineTo
+import leo.literal
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.type
@@ -54,7 +55,7 @@ class ExpressionKotlinTest {
 	}
 
 	@Test
-	fun isExpression() {
+	fun isConstant() {
 		structure(false.expression)
 			.kotlin.string
 			.assertEqualTo("false")
@@ -62,5 +63,13 @@ class ExpressionKotlinTest {
 		structure(true.expression)
 			.kotlin.string
 			.assertEqualTo("true")
+	}
+
+	@Test
+	fun equal() {
+		10.literal.expression
+			.resolveEqual(20.literal.expression)
+			.kotlin.string
+			.assertEqualTo("10.equals(20)")
 	}
 }
