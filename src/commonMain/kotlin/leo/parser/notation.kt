@@ -1,10 +1,25 @@
 package leo.parser
 
+import leo.Atom
+import leo.Chain
+import leo.EmptyNotation
+import leo.LinkNotation
+import leo.LiteralAtom
+import leo.NameAtom
+import leo.Notation
+import leo.NotationLine
+import leo.NotationLink
 import leo.Stack
 import leo.array
+import leo.atom
+import leo.chain
+import leo.fieldTo
 import leo.fold
+import leo.line
+import leo.linkTo
+import leo.notation
+import leo.plus
 import leo.reverse
-import leo.*
 
 val atomParser: Parser<Atom>
 	get() =
@@ -37,7 +52,7 @@ val notationLinkParser: Parser<NotationLink>
 	get() =
 		notationLineParser.stackLinkParser.map {
 			it.reverse.let {
-				notation(*it.stack.array) linkTo it.value
+				notation(*it.tail.array) linkTo it.head
 			}
 		}
 

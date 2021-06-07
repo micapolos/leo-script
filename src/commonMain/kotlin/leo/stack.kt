@@ -24,13 +24,13 @@ data class EmptyStack<out T>(
 
 data class LinkStack<out T>(
 	val link: StackLink<T>) : Stack<T>() {
-	override fun toString() = "${link.stack}.push(${link.value})"
+	override fun toString() = "${link.tail}.push(${link.head})"
 }
 
 data class StackLink<out T>(
-	val stack: Stack<T>,
-	val value: T) {
-	override fun toString() = "link($stack, $value)"
+	val tail: Stack<T>,
+	val head: T) {
+	override fun toString() = "link($tail, $head)"
 }
 
 // ------------
@@ -49,38 +49,38 @@ fun <T> Stack<T>.pushAllReversed(stack: Stack<T>): Stack<T> = fold(stack) { push
 fun <T> StackLink<T>.push(value: T) = link(stack(this), value)
 val <T> Stack<T>.emptyOrNull get() = (this as? EmptyStack)?.empty
 val <T> Stack<T>.linkOrNull get() = (this as? LinkStack)?.link
-val <T> Stack<T>.splitOrNull get() = (this as? LinkStack)?.link?.run { stack to value }
-val <T> Stack<T>.onlyLinkOrNull get() = linkOrNull?.run { orNullIf(!link.stack.isEmpty) }
-val <T : Any> Stack<T>.valueOrNull: T? get() = linkOrNull?.value
+val <T> Stack<T>.splitOrNull get() = (this as? LinkStack)?.link?.run { tail to head }
+val <T> Stack<T>.onlyLinkOrNull get() = linkOrNull?.run { orNullIf(!link.tail.isEmpty) }
+val <T : Any> Stack<T>.valueOrNull: T? get() = linkOrNull?.head
 val <T> Stack<T>.link get() = linkOrNull!!
-val <T> Stack<T>.pop get() = link.stack
-val <T> Stack<T>.top get() = link.value
-val <T> Stack<T>.topOrNull: T? get() = linkOrNull?.value
+val <T> Stack<T>.pop get() = link.tail
+val <T> Stack<T>.top get() = link.head
+val <T> Stack<T>.topOrNull: T? get() = linkOrNull?.head
 val <T: Any> Stack<T>.isSingleton: Boolean get() = onlyOrNull != null
 val <T : Any> Stack<T>.onlyOrNull
 	get() = linkOrNull?.let { link ->
-		notNullIf(link.stack.isEmpty) {
-			link.value
+		notNullIf(link.tail.isEmpty) {
+			link.head
 		}
 	}
-val <T> StackLink<T>.asStack: Stack<T> get() = stack(this)
+val <T> StackLink<T>.stack: Stack<T> get() = stack(this)
 
 val <T> T.onlyStack get() = stack(this)
 val <T> T.stackLink get() = stack<T>().linkTo(this)
 
-val <T : Any> StackLink<T>.onlyOrNull get() = notNullIf(stack.isEmpty) { value }
+val <T : Any> StackLink<T>.onlyOrNull get() = notNullIf(tail.isEmpty) { head }
 
 tailrec fun <R, T> R.fold(stack: Stack<T>, fn: R.(T) -> R): R =
 	when (stack) {
 		is EmptyStack -> this
-		is LinkStack -> fn(stack.link.value).fold(stack.link.stack, fn)
+		is LinkStack -> fn(stack.link.head).fold(stack.link.tail, fn)
 	}
 
 fun <R, T> R.foldRight(stack: Stack<T>, fn: R.(T) -> R): R =
 	fold(stack.reverse, fn)
 
 val <T> Stack<T>.reverse get() = stack<T>().fold(this) { push(it) }
-val <T> StackLink<T>.reverse get() = stackLink(value).fold(stack) { push(it) }
+val <T> StackLink<T>.reverse get() = stackLink(head).fold(tail) { push(it) }
 inline val Stack<*>.isEmpty get() = this is EmptyStack
 
 fun <T> Stack<T>.any(fn: T.() -> Boolean): Boolean =
@@ -96,18 +96,18 @@ fun <T, R> Stack<T>.map(fn: T.() -> R): Stack<R> =
 	reverseMap(fn).reverse
 
 fun <T, R> StackLink<T>.map(fn: T.() -> R): StackLink<R> =
-	stack.map(fn).linkTo(value.fn())
+	tail.map(fn).linkTo(head.fn())
 
 fun <T, R> Stack<T>.reverseMap(fn: T.() -> R): Stack<R> =
 	stack<R>().fold(this) { push(fn(it)) }
 
 fun <T> StackLink<T>.updateTop(fn: T.() -> T): StackLink<T> =
-	stack linkTo (value.fn())
+	tail linkTo (head.fn())
 
 tailrec fun <T, R : Any> Stack<T>.mapFirst(fn: T.() -> R?): R? =
 	when (this) {
 		is EmptyStack -> null
-		is LinkStack -> link.value.fn() ?: link.stack.mapFirst(fn)
+		is LinkStack -> link.head.fn() ?: link.tail.mapFirst(fn)
 	}
 
 fun <T : Any> Stack<T>.first(fn: (T) -> Boolean): T? =
@@ -116,9 +116,9 @@ fun <T : Any> Stack<T>.first(fn: (T) -> Boolean): T? =
 fun <T: Any> Stack<T>.updateFirst(fn: T.() -> T?): Stack<T>? =
 	when (this) {
 		is EmptyStack -> null
-		is LinkStack -> link.value.fn()
-			?.let { link.stack.push(it) }
-			?: link.stack.updateFirst(fn)?.push(link.value)
+		is LinkStack -> link.head.fn()
+			?.let { link.tail.push(it) }
+			?: link.tail.updateFirst(fn)?.push(link.head)
 	}
 
 fun <T, R : Any> Stack<T>.mapOnly(fn: T.() -> R?): R? =
@@ -149,13 +149,13 @@ fun <T, R : Any> Stack<T>.mapOrNull(fn: T.() -> R?): Stack<R>? =
 tailrec fun <T : Any> Stack<T>.get(int: Int): T? =
 	when (this) {
 		is EmptyStack -> null
-		is LinkStack -> if (int == 0) link.value else link.stack.get(int.dec())
+		is LinkStack -> if (int == 0) link.head else link.tail.get(int.dec())
 	}
 
 tailrec fun <T> Stack<T>.unsafeGet(int: Int): T =
 	when (this) {
 		is EmptyStack -> fail()
-		is LinkStack -> if (int == 0) link.value else link.stack.unsafeGet(int.dec())
+		is LinkStack -> if (int == 0) link.head else link.tail.unsafeGet(int.dec())
 	}
 
 tailrec fun <T> Stack<T>.drop(stack: Stack<*>): Stack<T>? =
@@ -164,7 +164,7 @@ tailrec fun <T> Stack<T>.drop(stack: Stack<*>): Stack<T>? =
 		is LinkStack ->
 			when (this) {
 				is EmptyStack -> null
-				is LinkStack -> link.stack.drop(stack.link.stack)
+				is LinkStack -> link.tail.drop(stack.link.tail)
 			}
 	}
 
@@ -173,12 +173,12 @@ tailrec fun <A : Any, B : Any, R> R.zipFold(stackA: Stack<A>, stackB: Stack<B>, 
 		is EmptyStack ->
 			when (stackB) {
 				is EmptyStack -> this
-				is LinkStack -> fn(null, stackB.link.value).zipFold(stackA, stackB.link.stack, fn)
+				is LinkStack -> fn(null, stackB.link.head).zipFold(stackA, stackB.link.tail, fn)
 			}
 		is LinkStack ->
 			when (stackB) {
-				is EmptyStack -> fn(stackA.link.value, null).zipFold(stackA.link.stack, stackB, fn)
-				is LinkStack -> fn(stackA.link.value, stackB.link.value).zipFold(stackA.link.stack, stackB.link.stack, fn)
+				is EmptyStack -> fn(stackA.link.head, null).zipFold(stackA.link.tail, stackB, fn)
+				is LinkStack -> fn(stackA.link.head, stackB.link.head).zipFold(stackA.link.tail, stackB.link.tail, fn)
 			}
 	}
 
@@ -214,7 +214,7 @@ val <V> Stack<V>.seq: Seq<V>
 
 val <V> StackLink<V>.seqNode: SeqNode<V>
 	get() =
-		value then stack.seq
+		head then tail.seq
 
 fun <V> Stack<V>.toString(valueToString: (V) -> String): String =
 	appendableString { appendable ->
@@ -237,61 +237,61 @@ fun <V> Stack<V>.filter(fn: V.() -> Boolean): Stack<V> =
 	stack<V>().fold(this) { if (it.fn()) push(it) else this }.reverse
 
 operator fun <V : Any> Stack<V>.component1(): V? =
-	linkOrNull?.value
+	linkOrNull?.head
 
 operator fun <V : Any> Stack<V>.component2(): V? =
-	linkOrNull?.stack?.linkOrNull?.value
+	linkOrNull?.tail?.linkOrNull?.head
 
 operator fun <V : Any> Stack<V>.component3(): V? =
-	linkOrNull?.stack?.linkOrNull?.stack?.linkOrNull?.value
+	linkOrNull?.tail?.linkOrNull?.tail?.linkOrNull?.head
 
 operator fun <V : Any> Stack<V>.component4(): V? =
-	linkOrNull?.stack?.linkOrNull?.stack?.linkOrNull?.stack?.linkOrNull?.value
+	linkOrNull?.tail?.linkOrNull?.tail?.linkOrNull?.tail?.linkOrNull?.head
 
 fun <V, R : Any> Stack<V>.map1OrNull(fn: (V) -> R): R? =
 	linkOrNull?.let { link0 ->
-		link0.stack.emptyOrNull?.run {
-			fn(link0.value)
+		link0.tail.emptyOrNull?.run {
+			fn(link0.head)
 		}
 	}
 
 fun <V, R : Any> Stack<V>.map2OrNull(fn: (V, V) -> R): R? =
 	linkOrNull?.let { link0 ->
-		link0.stack.linkOrNull?.let { link1 ->
-			link1.stack.emptyOrNull?.run {
-				fn(link1.value, link0.value)
+		link0.tail.linkOrNull?.let { link1 ->
+			link1.tail.emptyOrNull?.run {
+				fn(link1.head, link0.head)
 			}
 		}
 	}
 
 fun <V, R : Any> Stack<V>.mapOrNull2OrNull(fn: (V, V) -> R?): R? =
 	linkOrNull?.let { link0 ->
-		link0.stack.linkOrNull?.let { link1 ->
-			link1.stack.emptyOrNull?.run {
-				fn(link1.value, link0.value)
+		link0.tail.linkOrNull?.let { link1 ->
+			link1.tail.emptyOrNull?.run {
+				fn(link1.head, link0.head)
 			}
 		}
 	}
 
 fun <V, R : Any> Stack<V>.map8OrNull(fn: (V, V, V, V, V, V, V, V) -> R): R? =
 	linkOrNull?.let { link0 ->
-		link0.stack.linkOrNull?.let { link1 ->
-			link1.stack.linkOrNull?.let { link2 ->
-				link2.stack.linkOrNull?.let { link3 ->
-					link3.stack.linkOrNull?.let { link4 ->
-						link4.stack.linkOrNull?.let { link5 ->
-							link5.stack.linkOrNull?.let { link6 ->
-								link6.stack.linkOrNull?.let { link7 ->
-									link7.stack.emptyOrNull?.run {
+		link0.tail.linkOrNull?.let { link1 ->
+			link1.tail.linkOrNull?.let { link2 ->
+				link2.tail.linkOrNull?.let { link3 ->
+					link3.tail.linkOrNull?.let { link4 ->
+						link4.tail.linkOrNull?.let { link5 ->
+							link5.tail.linkOrNull?.let { link6 ->
+								link6.tail.linkOrNull?.let { link7 ->
+									link7.tail.emptyOrNull?.run {
 										fn(
-											link7.value,
-											link6.value,
-											link5.value,
-											link4.value,
-											link3.value,
-											link2.value,
-											link1.value,
-											link0.value)
+											link7.head,
+											link6.head,
+											link5.head,
+											link4.head,
+											link3.head,
+											link2.head,
+											link1.head,
+											link0.head)
 									}
 								}
 							}
@@ -320,23 +320,23 @@ val Stack<*>.size
 		0.fold(this) { inc() }
 
 fun <V, R> Stack<V>.split(fn: (Stack<V>, V) -> R): R? =
-	linkOrNull?.run { fn(stack, value) }
+	linkOrNull?.run { fn(tail, head) }
 
 val Stack<Char>.charString: String get() = array.toCharArray().concatToString()
 
 fun <T> StackLink<T>.updateValue(fn: (T) -> T): StackLink<T> =
-	StackLink(stack, fn(value))
+	StackLink(tail, fn(head))
 
 // TODO: Refactor it to be tail recursive
 fun <T: Any> Stack<T>.updateFirstOrNull(fn: (T) -> T?): Stack<T>? =
 	when (this) {
 		is EmptyStack -> null
 		is LinkStack -> {
-			val updated = fn(link.value)
-			if (updated != null) stack(link.stack linkTo updated)
+			val updated = fn(link.head)
+			if (updated != null) stack(link.tail linkTo updated)
 			else {
-				val stack = link.stack.updateFirstOrNull(fn)
-				if (stack != null) stack(stack linkTo link.value)
+				val stack = link.tail.updateFirstOrNull(fn)
+				if (stack != null) stack(stack linkTo link.head)
 				else null
 			}
 		}

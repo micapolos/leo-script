@@ -1,10 +1,27 @@
 package leo.parser
 
-import leo.base.*
-import leo.*
-import leo.Stack
-import leo.stack
+import leo.Literal
 import leo.Number
+import leo.Stack
+import leo.StackLink
+import leo.base.charSeq
+import leo.base.fold
+import leo.base.iterate
+import leo.base.notNullIf
+import leo.base.orNull
+import leo.base.orNullFold
+import leo.base.orNullIf
+import leo.base.reverse
+import leo.base.runIf
+import leo.charString
+import leo.linkOrNull
+import leo.literal
+import leo.numberOrNull
+import leo.push
+import leo.seq
+import leo.size
+import leo.stack
+import leo.unaryMinus
 
 data class Parser<T>(
 	val plusCharFn: (Char) -> Parser<T>?,
@@ -171,13 +188,13 @@ fun <T> Parser<T>.parsed(string: String) =
 val nameParser: Parser<String>
 	get() =
 		letterCharParser.stackLinkParser.map {
-			it.asStack.charString
+			it.stack.charString
 		}
 
 val positiveNumberParser: Parser<Number>
 	get() =
 		digitCharParser.stackLinkParser.map {
-			it.asStack.charString.numberOrNull
+			it.stack.charString.numberOrNull
 		}
 
 val <T> Parser<T>.isPresentParser: Parser<Boolean>
