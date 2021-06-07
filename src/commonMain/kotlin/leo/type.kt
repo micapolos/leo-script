@@ -152,3 +152,9 @@ val isTypeField: TypeField get() =
 		choice(
 			noName lineTo type(),
 			yesName lineTo type()))
+
+val negateIsTypeLine: TypeLine get() =
+	line(atom(negateIsTypeField))
+
+val negateIsTypeField: TypeField get() =
+	negateName fieldTo type(isTypeLine)

@@ -5,6 +5,7 @@ import leo.lineTo
 import leo.structureOrNull
 import leo.type
 
+// TODO: Resolve normalized structures, because otherwise it won't work when used as prefix expression.
 fun Structure.resolveGetOrNull(name: String): Structure? =
 	expressionOrNull?.let { expression ->
 		expression.typeLine.structureOrNull?.lineOrNull(name)?.let { typeLine ->
@@ -17,3 +18,6 @@ fun Structure.resolveMake(name: String): Structure =
 
 fun Structure.applyBind(expression: Expression): Structure =
 	structure(bind(expression).op of expression.typeLine)
+
+val Structure.resolveNegatedOrNull: Structure? get() =
+	expressionOrNull?.resolveNegatedOrNull?.structure

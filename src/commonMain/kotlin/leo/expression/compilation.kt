@@ -46,6 +46,7 @@ val Expression.kotlinCompilation: Compilation<Kotlin> get() =
 val Expression.staticKotlinCompilationOrNull: Compilation<Kotlin>? get() =
 	null
 		?: booleanKotlinCompilationOrNull
+		?: booleanNegateKotlinCompilationOrNull
 
 val Expression.dynamicKotlinCompilation: Compilation<Kotlin> get() =
 	when (op) {
@@ -60,6 +61,11 @@ val Expression.dynamicKotlinCompilation: Compilation<Kotlin> get() =
 
 val Expression.booleanKotlinCompilationOrNull: Compilation<Kotlin>? get() =
 	booleanOrNull?.kotlin?.compilation
+
+val Expression.booleanNegateKotlinCompilationOrNull: Compilation<Kotlin>? get() =
+	resolveNegatedOrNull?.kotlinCompilation?.map { kotlin ->
+		"!${kotlin.string}".kotlin
+	}
 
 val Literal.kotlinCompilation: Compilation<Kotlin> get() =
 	toString().kotlin.compilation
