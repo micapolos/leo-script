@@ -67,8 +67,6 @@ fun Stack<TypeLine>.shiftRecursionWithName(name: String): Stack<TypeLine> =
 fun Type.make(name: String): Type =
 	(name lineTo this).unshiftRecursion.structure.type
 
-// TODO: It could be converted to full recursion normalization.
-
 val TypeLine.unshiftRecursion: TypeLine get() =
 	unshiftRecursionOrNull?.let { line(recursive(it)) } ?: this
 
@@ -81,7 +79,7 @@ val TypeLine.unshiftRecursionOrNull: TypeLine? get() =
 val TypeRecursible.unshiftRecursionOrNull: TypeRecursible? get() =
 	when (this) {
 		is AtomTypeRecursible -> atom.unshiftRecursion?.recursible
-		is RecurseTypeRecursible -> error("$this.unshiftRecursion")
+		is RecurseTypeRecursible -> null
 	}
 
 val TypeAtom.unshiftRecursion: TypeAtom? get() =

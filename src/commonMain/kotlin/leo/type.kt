@@ -149,6 +149,7 @@ fun atom(literal: TypeLiteral): TypeAtom = literal.primitive.atom
 
 val TypeField.atom: TypeAtom get() = atom(this)
 val TypePrimitive.atom: TypeAtom get() = atom(this)
+val TypeDoing.atom: TypeAtom get() = atom(this)
 
 fun line(recursible: TypeRecursible): TypeLine = RecursibleTypeLine(recursible)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
@@ -161,10 +162,11 @@ fun recursible(recurse: TypeRecurse) = recurse.recursible
 
 val TypeAtom.recursible: TypeRecursible get() = AtomTypeRecursible(this)
 val TypeRecurse.recursible: TypeRecursible get() = RecurseTypeRecursible(this)
+val TypeLine.recursive: TypeRecursive get() = recursive(this)
 
 fun recursive(line: TypeLine) = TypeRecursive(line)
 
-val TypeRecursive.line: TypeLine get() = RecursiveTypeLine(this)
+val TypeRecursive.toLine: TypeLine get() = RecursiveTypeLine(this)
 val TypeRecursible.line: TypeLine get() = RecursibleTypeLine(this)
 
 infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type).recursible)
