@@ -21,3 +21,5 @@ fun Context.plusPrivate(dictionary: Dictionary): Context =
 val Context.private: Context
 	get() =
 		context(dictionary(), privateDictionary)
+
+fun Context.plus(field: Field): Context = plus(field.definition)

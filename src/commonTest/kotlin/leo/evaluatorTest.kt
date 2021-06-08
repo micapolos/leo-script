@@ -916,4 +916,16 @@ class EvaluatorTest {
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(yesName lineTo script(line(literal(123))))))
 	}
+
+	@Test
+	fun contextSet() {
+		script(
+			setName lineTo script(
+				line(literal(10)),
+				plusName lineTo script(literal(20))),
+			numberName lineTo script(),
+			plusName lineTo script(line(plusName), line(numberName)))
+			.evaluate
+			.assertEqualTo(script(literal(30)))
+	}
 }

@@ -223,6 +223,15 @@ fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
 	dictionary.evaluation(value, update).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(set: Set): Evaluation<Evaluator> =
+	if (value.isEmpty) plusContextEvaluation(set)
+	else plusValueEvaluation(set)
+
+fun Evaluator.plusContextEvaluation(set: Set): Evaluation<Evaluator> =
+	context.evaluation
+		.foldStateful(set.atomSeq) { atom -> dictionary.fieldEvaluation(atom).map { plus(it) } }
+		.map { set(it) }
+
+fun Evaluator.plusValueEvaluation(set: Set): Evaluation<Evaluator> =
 	dictionary.evaluation(value, set).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(literal: Literal): Evaluation<Evaluator> =
