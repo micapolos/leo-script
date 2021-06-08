@@ -31,6 +31,12 @@ val TypeAtom.scriptLine: ScriptLine get() =
 		is LiteralTypeAtom -> literal.scriptLine
 	}
 
+val TypePrimitive.scriptLine: ScriptLine get() =
+	when (this) {
+		is DoingTypePrimitive -> doing.scriptLine
+		is LiteralTypePrimitive -> literal.scriptLine
+	}
+
 val TypeField.scriptLine: ScriptLine get() =
 	name lineTo rhsType.script
 
