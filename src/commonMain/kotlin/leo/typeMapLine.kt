@@ -1,53 +1,53 @@
 package leo
 
-fun Type.mapLine(fn: (TypeLine) -> TypeLine): Type =
+fun Type.updateLine(fn: (TypeLine) -> TypeLine): Type =
 	when (this) {
-		is ChoiceType -> choice.mapLine(fn).type
-		is StructureType -> structure.mapLine(fn).type
+		is ChoiceType -> choice.updateLine(fn).type
+		is StructureType -> structure.updateLine(fn).type
 	}
 
-fun TypeStructure.mapLine(fn: (TypeLine) -> TypeLine): TypeStructure  =
-	lineStack.mapLine(fn).structure
+fun TypeStructure.updateLine(fn: (TypeLine) -> TypeLine): TypeStructure  =
+	lineStack.updateLine(fn).structure
 
-fun TypeChoice.mapLine(fn: (TypeLine) -> TypeLine): TypeChoice  =
-	lineStack.mapLine(fn).choice
+fun TypeChoice.updateLine(fn: (TypeLine) -> TypeLine): TypeChoice  =
+	lineStack.updateLine(fn).choice
 
-fun Stack<TypeLine>.mapLine(fn: (TypeLine) -> TypeLine): Stack<TypeLine>  =
-	map { mapLine(fn) }
+fun Stack<TypeLine>.updateLine(fn: (TypeLine) -> TypeLine): Stack<TypeLine>  =
+	map { updateLine(fn) }
 
-fun TypeLine.mapLine(fn: (TypeLine) -> TypeLine): TypeLine  =
+fun TypeLine.updateLine(fn: (TypeLine) -> TypeLine): TypeLine  =
 	fn(when (this) {
-		is RecursibleTypeLine -> recursible.mapLine(fn).line
-		is RecursiveTypeLine -> recursive.mapLine(fn).toLine
+		is RecursibleTypeLine -> recursible.updateLine(fn).line
+		is RecursiveTypeLine -> recursive.updateLine(fn).toLine
 	})
 
-fun TypeRecursible.mapLine(fn: (TypeLine) -> TypeLine): TypeRecursible  =
+fun TypeRecursible.updateLine(fn: (TypeLine) -> TypeLine): TypeRecursible  =
 	when (this) {
-		is AtomTypeRecursible -> atom.mapLine(fn).recursible
-		is RecurseTypeRecursible -> recurse.mapLine(fn).recursible
+		is AtomTypeRecursible -> atom.updateLine(fn).recursible
+		is RecurseTypeRecursible -> recurse.updateLine(fn).recursible
 	}
 
-fun TypeRecurse.mapLine(fn: (TypeLine) -> TypeLine): TypeRecurse  = this
+fun TypeRecurse.updateLine(fn: (TypeLine) -> TypeLine): TypeRecurse  = this
 
-fun TypeRecursive.mapLine(fn: (TypeLine) -> TypeLine): TypeRecursive  =
-	line.mapLine(fn).recursive
+fun TypeRecursive.updateLine(fn: (TypeLine) -> TypeLine): TypeRecursive  =
+	line.updateLine(fn).recursive
 
-fun TypeAtom.mapLine(fn: (TypeLine) -> TypeLine): TypeAtom  =
+fun TypeAtom.updateLine(fn: (TypeLine) -> TypeLine): TypeAtom  =
 	when (this) {
-		is DoingTypeAtom -> doing.mapLine(fn).atom
-		is PrimitiveTypeAtom -> primitive.mapLine(fn).atom
+		is DoingTypeAtom -> doing.updateLine(fn).atom
+		is PrimitiveTypeAtom -> primitive.updateLine(fn).atom
 	}
 
-fun TypeDoing.mapLine(fn: (TypeLine) -> TypeLine): TypeDoing  =
-	lhsTypeStructure.mapLine(fn) doing rhsTypeLine.mapLine(fn)
+fun TypeDoing.updateLine(fn: (TypeLine) -> TypeLine): TypeDoing  =
+	lhsTypeStructure.updateLine(fn) doing rhsTypeLine.updateLine(fn)
 
-fun TypePrimitive.mapLine(fn: (TypeLine) -> TypeLine): TypePrimitive  =
+fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive  =
 	when (this) {
-		is FieldTypePrimitive -> field.mapLine(fn).primitive
-		is LiteralTypePrimitive -> literal.mapLine(fn).primitive
+		is FieldTypePrimitive -> field.updateLine(fn).primitive
+		is LiteralTypePrimitive -> literal.updateLine(fn).primitive
 	}
 
-fun TypeField.mapLine(fn: (TypeLine) -> TypeLine): TypeField  =
-	name fieldTo rhsType.mapLine(fn)
+fun TypeField.updateLine(fn: (TypeLine) -> TypeLine): TypeField  =
+	name fieldTo rhsType.updateLine(fn)
 
-fun TypeLiteral.mapLine(fn: (TypeLine) -> TypeLine): TypeLiteral  = this
+fun TypeLiteral.updateLine(fn: (TypeLine) -> TypeLine): TypeLiteral  = this
