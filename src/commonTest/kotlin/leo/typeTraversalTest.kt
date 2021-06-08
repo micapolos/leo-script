@@ -7,7 +7,7 @@ import kotlin.test.Test
 class TypeTraversalTest {
 	@Test
 	fun replaceNonRecursiveOrNull_present() {
-		type("foo" lineTo type(leo.recurseTypeLine))
+		type("foo" lineTo type(recurseTypeLine))
 			.replaceNonRecursiveOrNull(recurseTypeLine, "bar" lineTo type())
 			.assertEqualTo(type("foo" lineTo type("bar" lineTo type())))
 	}
