@@ -1,17 +1,29 @@
 let
-  any point
+  number
+  be any.number
+
+let
+  text
+  be any.number
+
+let
+  point
   be point
-    x any number
-    y any number
+    x number
+    y number
 
 let
-  any circle
+  radius
+  be number.radius
+
+let
+  center
+  be point.center
+
+let
+  circle
   be circle
-    radius any number
-    center any point
+    with radius
+    with center
 
-let
-  any option of any
-  do bind dupa
-
-any option of any text
+circle

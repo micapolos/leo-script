@@ -40,50 +40,49 @@ fun TypeChoice.shiftRecursionWithName(name: String): TypeChoice =
 
 fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine> =
 	mapRope { rope ->
-		rope.current.updateRecurseWith(
-			name lineTo rope
-				.updateCurrent { line ->
-					line(recursive(line))
-				}
-				.stack.structure.type)
+		rope.current
+			.replaceNonRecursiveOrNull(
+				line(typeRecurse),
+				name lineTo rope
+					.updateCurrent { line(typeRecurse) }
+					.stack.structure.type)
+			?.let { line(recursive(it)) }
+			?:rope.current
 	}
 
 // =====================================================
 
-fun TypeLine.updateRecurseWith(line: TypeLine): TypeLine =
-	updateRecurseOrNullWith(line) ?: this
-
-fun Type.updateRecurseOrNullWith(line: TypeLine): Type? =
+fun Type.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): Type? =
 	when (this) {
-		is ChoiceType -> choice.updateRecurseOrNullWith(line)?.let(::type)
-		is StructureType -> structure.updateRecurseOrNullWith(line)?.let(::type)
+		is ChoiceType -> choice.replaceNonRecursiveOrNull(line, newLine)?.type
+		is StructureType -> structure.replaceNonRecursiveOrNull(line, newLine)?.type
 	}
 
-fun TypeChoice.updateRecurseOrNullWith(line: TypeLine): TypeChoice? =
-	notNullIf(lineStack.any { updateRecurseOrNullWith(line) != null }) {
-		lineStack.map { updateRecurseOrNullWith(line) ?: this }.choice
+fun TypeChoice.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeChoice? =
+	lineStack.replaceNonRecursiveOrNull(line, newLine)?.choice
+
+fun TypeStructure.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeStructure? =
+	lineStack.replaceNonRecursiveOrNull(line, newLine)?.structure
+
+fun Stack<TypeLine>.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): Stack<TypeLine>? =
+	notNullIf(any { replaceNonRecursiveOrNull(line, newLine) != null }) {
+		map { replaceNonRecursiveOrNull(line, newLine) ?: this}
 	}
 
-fun TypeStructure.updateRecurseOrNullWith(line: TypeLine): TypeStructure? =
-	notNullIf(lineStack.any { updateRecurseOrNullWith(line) != null }) {
-		lineStack.map { updateRecurseOrNullWith(line) ?: this }.structure
-	}
-
-fun TypeLine.updateRecurseOrNullWith(line: TypeLine): TypeLine? =
-	when (this) {
-		is AtomTypeLine -> atom.updateRecurseOrNullWith(line)?.let(::line)
-		is RecurseTypeLine -> line
+fun TypeLine.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeLine? =
+	if (this == line) newLine
+	else when (this) {
+		is AtomTypeLine -> atom.replaceNonRecursiveOrNull(line, newLine)?.line
+		is RecurseTypeLine -> null
 		is RecursiveTypeLine -> null
 	}
 
-fun TypeAtom.updateRecurseOrNullWith(line: TypeLine): TypeAtom? =
+fun TypeAtom.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeAtom? =
 	when (this) {
 		is DoingTypeAtom -> null
-		is FieldTypeAtom -> field.updateRecurseOrNullWith(line)?.let(::atom)
+		is FieldTypeAtom -> field.replaceNonRecursiveOrNull(line, newLine)?.atom
 		is LiteralTypeAtom -> null
 	}
 
-fun TypeField.updateRecurseOrNullWith(line: TypeLine): TypeField? =
-	rhsType.updateRecurseOrNullWith(line)?.let { type ->
-		name fieldTo type
-	}
+fun TypeField.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeField? =
+	rhsType.replaceNonRecursiveOrNull(line, newLine)?.let { name fieldTo it }

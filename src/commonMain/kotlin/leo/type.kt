@@ -122,6 +122,8 @@ fun atom(field: TypeField): TypeAtom = FieldTypeAtom(field)
 fun atom(literal: TypeLiteral): TypeAtom = LiteralTypeAtom(literal)
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
 
+val TypeField.atom: TypeAtom get() = atom(this)
+
 fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
 fun line(recurse: TypeRecurse): TypeLine = RecurseTypeLine(recurse)
