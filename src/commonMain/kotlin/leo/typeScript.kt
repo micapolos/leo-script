@@ -45,8 +45,8 @@ val TypeRecursive.scriptLine: ScriptLine get() =
 val TypeRecurse.scriptLine: ScriptLine get() =
 	recurseName lineTo script()
 
-val TypeNonRecursive.scriptLine: ScriptLine get() =
+val TypeRecursible.scriptLine: ScriptLine get() =
 	when (this) {
-		is AtomTypeNonRecursive -> atom.scriptLine
-		is RecurseTypeNonRecursive -> recurse.scriptLine
+		is AtomTypeRecursible -> atom.scriptLine
+		is RecurseTypeRecursible -> recurse.scriptLine
 	}
