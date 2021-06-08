@@ -61,4 +61,11 @@ class TypeTraversalTest {
 										"data" lineTo type("foo"),
 										recurseTypeLine))))))))
 	}
+
+	@Test
+	fun make() {
+		type(recursiveLine("foo" lineTo type("bar" lineTo type(recurseTypeLine))))
+			.make("bar")
+			.assertEqualTo(type(recursiveLine("bar" lineTo type("foo" lineTo type(recurseTypeLine)))))
+	}
 }

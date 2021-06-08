@@ -8,6 +8,8 @@ val TypeLine.recursible: TypeRecursible get() =
 		is RecursiveTypeLine -> recursive.line.shiftRecursion.recursible
 	}
 
+// ========================================
+
 val TypeLine.shiftRecursion: TypeLine get() =
 	when (this) {
 		is RecursibleTypeLine -> recursible.shiftRecursion.line
@@ -42,12 +44,13 @@ fun Type.shiftRecursionWithName(name: String): Type =
 	}
 
 fun TypeStructure.shiftRecursionWithName(name: String): TypeStructure =
-	lineStack.typeLineShiftRecursionWithName(name).structure
+	lineStack.shiftRecursionWithName(name).structure
 
 fun TypeChoice.shiftRecursionWithName(name: String): TypeChoice =
-	lineStack.typeLineShiftRecursionWithName(name).choice
+	lineStack.shiftRecursionWithName(name).choice
 
-fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine> =
+@JvmName("typeLineShiftRecursionWithName")
+fun Stack<TypeLine>.shiftRecursionWithName(name: String): Stack<TypeLine> =
 	mapRope { rope ->
 		rope.current
 			.replaceNonRecursiveOrNull(
@@ -58,6 +61,78 @@ fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine
 			?.let { line(recursive(it)) }
 			?:rope.current
 	}
+
+// =====================================================
+
+fun Type.make(name: String): Type =
+	(name lineTo this).unshiftRecursion.structure.type
+
+val TypeLine.unshiftRecursion: TypeLine get() =
+	unshiftRecursionOrNull ?: this
+
+val TypeLine.unshiftRecursionOrNull: TypeLine? get() =
+	when (this) {
+		is RecursibleTypeLine -> recursible.unshiftRecursionOrNull?.line
+		is RecursiveTypeLine -> null
+	}
+
+val TypeRecursible.unshiftRecursionOrNull: TypeRecursible? get() =
+	when (this) {
+		is AtomTypeRecursible -> atom.unshiftRecursion?.recursible
+		is RecurseTypeRecursible -> error("$this.shiftRecursion")
+	}
+
+val TypeAtom.unshiftRecursion: TypeAtom? get() =
+	when (this) {
+		is DoingTypeAtom -> null
+		is PrimitiveTypeAtom -> primitive.unshiftRecursion?.atom
+	}
+
+val TypePrimitive.unshiftRecursion: TypePrimitive? get() =
+	when (this) {
+		is FieldTypePrimitive -> field.unshiftRecursion?.primitive
+		is LiteralTypePrimitive -> null
+	}
+
+val TypeField.unshiftRecursion: TypeField? get() =
+	rhsType.unshiftRecursionOrNullWithName(name)?.let { name fieldTo it }
+
+fun Type.unshiftRecursionOrNullWithName(name: String): Type? =
+	when (this) {
+		is ChoiceType -> choice.unshiftRecursionOrNullWithName(name)?.type
+		is StructureType -> structure.unshiftRecursionOrNullWithName(name)?.type
+	}
+
+fun TypeStructure.unshiftRecursionOrNullWithName(name: String): TypeStructure? =
+	lineStack.unshiftRecursionOrNullWithName(name)?.structure
+
+fun TypeChoice.unshiftRecursionOrNullWithName(name: String): TypeChoice? =
+	lineStack.unshiftRecursionOrNullWithName(name)?.choice
+
+@JvmName("typeLineUnshiftRecursionWithName")
+fun Stack<TypeLine>.unshiftRecursionOrNullWithName(name: String): Stack<TypeLine>? =
+	notNullIf(canUnshiftRecursionWithName(name)) {
+		mapRope { rope ->
+			rope.current.recursibleOrNull
+				?.replaceNonRecursiveOrNull(
+					name lineTo rope
+						.updateCurrent { line(recursible(typeRecurse)) }
+						.stack.structure.type,
+					line(recursible(typeRecurse)))
+				?.let { line(it) }
+				?: rope.current
+		}
+	}
+
+fun Stack<TypeLine>.canUnshiftRecursionWithName(name: String): Boolean =
+	mapRope { rope ->
+		rope.current.recursibleOrNull
+			?.replaceNonRecursiveOrNull(
+				name lineTo rope
+					.updateCurrent { line(recursible(typeRecurse)) }
+					.stack.structure.type,
+				line(recursible(typeRecurse)))
+	}.any { this != null }
 
 // =====================================================
 
@@ -74,9 +149,12 @@ fun TypeStructure.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): 
 	lineStack.replaceNonRecursiveOrNull(line, newLine)?.structure
 
 fun Stack<TypeLine>.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): Stack<TypeLine>? =
-	notNullIf(any { replaceNonRecursiveOrNull(line, newLine) != null }) {
-		map { replaceNonRecursiveOrNull(line, newLine) ?: this}
+	notNullIf(canReplaceNonRecursive(line, newLine)) {
+		map { replaceNonRecursiveOrNull(line, newLine) ?: this }
 	}
+
+fun Stack<TypeLine>.canReplaceNonRecursive(line: TypeLine, newLine: TypeLine): Boolean =
+	any { replaceNonRecursiveOrNull(line, newLine) != null }
 
 fun TypeLine.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeLine? =
 	if (this == line) newLine
