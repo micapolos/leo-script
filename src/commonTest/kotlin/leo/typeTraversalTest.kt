@@ -33,12 +33,13 @@ class TypeTraversalTest {
 				"chain" fieldTo type(
 					"data" lineTo type("foo"),
 					"next" lineTo type(recurseTypeLine))))
-			.atom
+			.recursible
 			.assertEqualTo(
-				atom(
-					"chain" fieldTo type(
-						"data" lineTo type("foo"),
-						"next" lineTo type(recurseTypeLine))))
+				recursible(
+					atom(
+						"chain" fieldTo type(
+							"data" lineTo type("foo"),
+							"next" lineTo type(recurseTypeLine)))))
 	}
 
 	@Test
@@ -48,15 +49,16 @@ class TypeTraversalTest {
 				"chain" lineTo type(
 					"data" lineTo type("foo"),
 					"next" lineTo type(recurseTypeLine))))
-			.atom
+			.recursible
 			.assertEqualTo(
-				atom(
-					"chain" fieldTo type(
-						"data" lineTo type("foo"),
-						line(recursive(
-							"next" lineTo type(
-								"chain" lineTo type(
-									"data" lineTo type("foo"),
-									recurseTypeLine)))))))
+				recursible(
+					atom(
+						"chain" fieldTo type(
+							"data" lineTo type("foo"),
+							line(recursive(
+								"next" lineTo type(
+									"chain" lineTo type(
+										"data" lineTo type("foo"),
+										recurseTypeLine))))))))
 	}
 }

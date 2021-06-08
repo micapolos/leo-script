@@ -2,9 +2,6 @@ package leo
 
 import leo.base.notNullIf
 
-val TypeLine.atom: TypeAtom get() =
-	recursible.atomOrNull!! // FIXIT!!!
-
 val TypeLine.recursible: TypeRecursible get() =
 	when (this) {
 		is RecursibleTypeLine -> recursible
