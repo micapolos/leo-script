@@ -9,8 +9,13 @@ val TypeLine.name: String get() =
 val TypeAtom.name: String get() =
 	when (this) {
 		is DoingTypeAtom -> doingName
-		is FieldTypeAtom -> field.name
-		is LiteralTypeAtom -> literal.name
+		is PrimitiveTypeAtom -> primitive.name
+	}
+
+val TypePrimitive.name: String get() =
+	when (this) {
+		is FieldTypePrimitive -> field.name
+		is LiteralTypePrimitive -> literal.name
 	}
 
 val TypeLiteral.name: String get() =

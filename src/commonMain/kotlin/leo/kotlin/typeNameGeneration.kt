@@ -2,9 +2,10 @@ package leo.kotlin
 
 import leo.AtomTypeRecursible
 import leo.DoingTypeAtom
-import leo.FieldTypeAtom
-import leo.LiteralTypeAtom
+import leo.FieldTypePrimitive
+import leo.LiteralTypePrimitive
 import leo.NumberTypeLiteral
+import leo.PrimitiveTypeAtom
 import leo.RecurseTypeRecursible
 import leo.RecursibleTypeLine
 import leo.RecursiveTypeLine
@@ -14,6 +15,7 @@ import leo.TypeDoing
 import leo.TypeField
 import leo.TypeLine
 import leo.TypeLiteral
+import leo.TypePrimitive
 import leo.TypeRecursible
 import leo.array
 import leo.bind
@@ -40,9 +42,15 @@ val TypeRecursible.typeNameGeneration: Generation<String> get() =
 val TypeAtom.typeNameGeneration: Generation<String> get() =
 	when (this) {
 		is DoingTypeAtom -> doing.typeNameGeneration
-		is FieldTypeAtom -> field.typeNameGeneration
-		is LiteralTypeAtom -> literal.typeNameGeneration
+		is PrimitiveTypeAtom -> primitive.typeNameGeneration
 	}
+
+val TypePrimitive.typeNameGeneration: Generation<String> get() =
+	when (this) {
+		is FieldTypePrimitive -> field.typeNameGeneration
+		is LiteralTypePrimitive -> literal.typeNameGeneration
+	}
+
 
 val TypeDoing.typeNameGeneration: Generation<String> get() =
 	lhsTypeStructure.lineStack

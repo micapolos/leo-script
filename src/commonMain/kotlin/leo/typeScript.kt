@@ -27,8 +27,7 @@ val TypeRecursible.scriptLine: ScriptLine get() =
 val TypeAtom.scriptLine: ScriptLine get() =
 	when (this) {
 		is DoingTypeAtom -> doing.scriptLine
-		is FieldTypeAtom -> field.scriptLine
-		is LiteralTypeAtom -> literal.scriptLine
+		is PrimitiveTypeAtom -> primitive.scriptLine
 	}
 
 val TypePrimitive.scriptLine: ScriptLine get() =

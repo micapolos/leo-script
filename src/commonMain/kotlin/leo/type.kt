@@ -51,11 +51,7 @@ sealed class TypeAtom {
 	override fun toString() = scriptLine.toString()
 }
 
-data class FieldTypeAtom(val field: TypeField): TypeAtom() {
-	override fun toString() = super.toString()
-}
-
-data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom() {
+data class PrimitiveTypeAtom(val primitive: TypePrimitive): TypeAtom() {
 	override fun toString() = super.toString()
 }
 
@@ -146,11 +142,13 @@ fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 infix fun TypeStructure.doing(line: TypeLine) = TypeDoing(this, line)
 infix fun TypeStructure.doingLineTo(line: TypeLine) = line(atom(this doing line))
 
-fun atom(field: TypeField): TypeAtom = FieldTypeAtom(field)
-fun atom(literal: TypeLiteral): TypeAtom = LiteralTypeAtom(literal)
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
+fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)
+fun atom(field: TypeField): TypeAtom = field.primitive.atom
+fun atom(literal: TypeLiteral): TypeAtom = literal.primitive.atom
 
 val TypeField.atom: TypeAtom get() = atom(this)
+val TypePrimitive.atom: TypeAtom get() = atom(this)
 
 fun line(recursible: TypeRecursible): TypeLine = RecursibleTypeLine(recursible)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
@@ -189,7 +187,9 @@ val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.struc
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
 val TypeLine.recursibleOrNull: TypeRecursible? get() = (this as? RecursibleTypeLine)?.recursible
 val TypeLine.atomOrNull: TypeAtom? get() = recursibleOrNull?.atomOrNull
-val TypeAtom.fieldOrNull: TypeField? get() = (this as? FieldTypeAtom)?.field
+val TypeAtom.primitiveOrNull: TypePrimitive? get() = (this as? PrimitiveTypeAtom)?.primitive
+val TypeAtom.doingOrNull: TypeDoing? get() = (this as? DoingTypeAtom)?.doing
+val TypeAtom.fieldOrNull: TypeField? get() = primitiveOrNull?.fieldOrNull
 val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rhsType?.structureOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
 val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom

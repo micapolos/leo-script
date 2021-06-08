@@ -1,7 +1,5 @@
 package leo.kotlin
 
-import leo.FieldTypeAtom
-import leo.LiteralTypeAtom
 import leo.Type
 import leo.TypeField
 import leo.TypeLine
@@ -13,6 +11,7 @@ import leo.base.titleCase
 import leo.bind
 import leo.map
 import leo.onlyLineOrNull
+import leo.primitiveOrNull
 import leo.updateAndGetEffect
 
 val String.nameGeneration: Generation<Name> get() =
@@ -54,4 +53,4 @@ val TypeField.nameOrNullGeneration: Generation<Name?> get() =
 	Generation { it effect it.generatedTypes.get(this)?.name }
 
 val Type.onlyLineForNameOrNull: TypeLine? get() =
-	onlyLineOrNull?.orNullIf { atomOrNull !is FieldTypeAtom && atomOrNull !is LiteralTypeAtom }
+	onlyLineOrNull?.orNullIf { atomOrNull?.primitiveOrNull == null }
