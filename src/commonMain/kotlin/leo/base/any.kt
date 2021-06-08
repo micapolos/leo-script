@@ -140,3 +140,5 @@ tailrec fun <T: Any> T.repeatUntilNull(fn: T.() -> T?): T {
 	return if (iterated == null) this
 	else iterated.repeatUntilNull(fn)
 }
+
+fun <T> it(t: T): T = t
