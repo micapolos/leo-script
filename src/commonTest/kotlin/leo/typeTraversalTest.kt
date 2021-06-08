@@ -63,7 +63,14 @@ class TypeTraversalTest {
 	}
 
 	@Test
-	fun make() {
+	fun make_withoutRecursion() {
+		type("foo" lineTo type("bar" lineTo type()))
+			.make("bar")
+			.assertEqualTo(type("bar" lineTo type("foo" lineTo type("bar"))))
+	}
+
+	@Test
+	fun make_withRecursion() {
 		type(recursiveLine("foo" lineTo type("bar" lineTo type(recurseTypeLine))))
 			.make("bar")
 			.assertEqualTo(type(recursiveLine("bar" lineTo type("foo" lineTo type(recurseTypeLine)))))

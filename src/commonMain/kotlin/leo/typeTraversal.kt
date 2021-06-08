@@ -68,7 +68,7 @@ fun Type.make(name: String): Type =
 	(name lineTo this).unshiftRecursion.structure.type
 
 val TypeLine.unshiftRecursion: TypeLine get() =
-	unshiftRecursionOrNull ?: this
+	unshiftRecursionOrNull?.let { line(recursive(it)) } ?: this
 
 val TypeLine.unshiftRecursionOrNull: TypeLine? get() =
 	when (this) {
@@ -79,7 +79,7 @@ val TypeLine.unshiftRecursionOrNull: TypeLine? get() =
 val TypeRecursible.unshiftRecursionOrNull: TypeRecursible? get() =
 	when (this) {
 		is AtomTypeRecursible -> atom.unshiftRecursion?.recursible
-		is RecurseTypeRecursible -> error("$this.shiftRecursion")
+		is RecurseTypeRecursible -> error("$this.unshiftRecursion")
 	}
 
 val TypeAtom.unshiftRecursion: TypeAtom? get() =
@@ -113,20 +113,21 @@ fun TypeChoice.unshiftRecursionOrNullWithName(name: String): TypeChoice? =
 fun Stack<TypeLine>.unshiftRecursionOrNullWithName(name: String): Stack<TypeLine>? =
 	notNullIf(canUnshiftRecursionWithName(name)) {
 		mapRope { rope ->
-			rope.current.recursibleOrNull
+			rope.current.recursiveOrNull?.line
 				?.replaceNonRecursiveOrNull(
 					name lineTo rope
 						.updateCurrent { line(recursible(typeRecurse)) }
 						.stack.structure.type,
 					line(recursible(typeRecurse)))
-				?.let { line(it) }
+				?.let { it }
 				?: rope.current
 		}
 	}
 
 fun Stack<TypeLine>.canUnshiftRecursionWithName(name: String): Boolean =
 	mapRope { rope ->
-		rope.current.recursibleOrNull
+		rope.current.recursiveOrNull
+			?.line
 			?.replaceNonRecursiveOrNull(
 				name lineTo rope
 					.updateCurrent { line(recursible(typeRecurse)) }
