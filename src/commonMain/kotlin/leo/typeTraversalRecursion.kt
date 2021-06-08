@@ -2,41 +2,88 @@ package leo
 
 import leo.base.notNullIf
 
-fun Type.updateRecurseWith(line: TypeLine): Type? =
+val TypeLine.atom: TypeAtom get() =
 	when (this) {
-		is ChoiceType -> choice.updateRecurseWith(line)?.let(::type)
-		is StructureType -> structure.updateRecurseWith(line)?.let(::type)
+		is AtomTypeLine -> atom
+		is RecurseTypeLine -> error("$this.shiftRecursion")
+		is RecursiveTypeLine -> recursive.atom.shiftRecursion
 	}
 
-fun TypeChoice.updateRecurseWith(line: TypeLine): TypeChoice? =
-	notNullIf(lineStack.any { updateRecurseWith(line) != null }) {
-		lineStack.map { updateRecurseWith(line) ?: this }.choice
-	}
 
-fun TypeStructure.updateRecurseWith(line: TypeLine): TypeStructure? =
-	notNullIf(lineStack.any { updateRecurseWith(line) != null }) {
-		lineStack.map { updateRecurseWith(line) ?: this }.structure
-	}
-
-fun TypeLine.updateRecurseWith(line: TypeLine): TypeLine? =
+val TypeAtom.shiftRecursion: TypeAtom get() =
 	when (this) {
-		is AtomTypeLine -> atom.updateRecurseWith(line)?.let(::line)
+		is DoingTypeAtom -> this
+		is FieldTypeAtom -> atom(field.shiftRecursion)
+		is ListTypeAtom -> TODO()
+		is LiteralTypeAtom -> this
+	}
+
+val TypeField.shiftRecursion: TypeField get() =
+	name fieldTo rhsType.shiftRecursionWithName(name)
+
+val TypeList.shiftRecursion: TypeList get() =
+	TODO()
+
+fun Type.shiftRecursionWithName(name: String): Type =
+	when (this) {
+		is ChoiceType -> choice.shiftRecursionWithName(name).type
+		is StructureType -> structure.shiftRecursionWithName(name).type
+	}
+
+fun TypeStructure.shiftRecursionWithName(name: String): TypeStructure =
+	lineStack.typeLineShiftRecursionWithName(name).structure
+
+fun TypeChoice.shiftRecursionWithName(name: String): TypeChoice =
+	lineStack.typeLineShiftRecursionWithName(name).choice
+
+fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine> =
+	mapRope { rope ->
+		rope.current.updateRecurseWith(
+			name lineTo rope
+				.updateCurrent { line(recursive(it.atomOrNull!!)) }
+				.stack.structure.type)
+	}
+
+// =====================================================
+
+fun TypeLine.updateRecurseWith(line: TypeLine): TypeLine =
+	updateRecurseOrNullWith(line) ?: this
+
+fun Type.updateRecurseOrNullWith(line: TypeLine): Type? =
+	when (this) {
+		is ChoiceType -> choice.updateRecurseOrNullWith(line)?.let(::type)
+		is StructureType -> structure.updateRecurseOrNullWith(line)?.let(::type)
+	}
+
+fun TypeChoice.updateRecurseOrNullWith(line: TypeLine): TypeChoice? =
+	notNullIf(lineStack.any { updateRecurseOrNullWith(line) != null }) {
+		lineStack.map { updateRecurseOrNullWith(line) ?: this }.choice
+	}
+
+fun TypeStructure.updateRecurseOrNullWith(line: TypeLine): TypeStructure? =
+	notNullIf(lineStack.any { updateRecurseOrNullWith(line) != null }) {
+		lineStack.map { updateRecurseOrNullWith(line) ?: this }.structure
+	}
+
+fun TypeLine.updateRecurseOrNullWith(line: TypeLine): TypeLine? =
+	when (this) {
+		is AtomTypeLine -> atom.updateRecurseOrNullWith(line)?.let(::line)
 		is RecurseTypeLine -> line
 		is RecursiveTypeLine -> null
 	}
 
-fun TypeAtom.updateRecurseWith(line: TypeLine): TypeAtom? =
+fun TypeAtom.updateRecurseOrNullWith(line: TypeLine): TypeAtom? =
 	when (this) {
 		is DoingTypeAtom -> null
-		is FieldTypeAtom -> field.updateRecurseWith(line)?.let(::atom)
-		is ListTypeAtom -> list.updateRecurseWith(line)?.let(::atom)
+		is FieldTypeAtom -> field.updateRecurseOrNullWith(line)?.let(::atom)
+		is ListTypeAtom -> list.updateRecurseOrNullWith(line)?.let(::atom)
 		is LiteralTypeAtom -> null
 	}
 
-fun TypeField.updateRecurseWith(line: TypeLine): TypeField? =
-	rhsType.updateRecurseWith(line)?.let { type ->
+fun TypeField.updateRecurseOrNullWith(line: TypeLine): TypeField? =
+	rhsType.updateRecurseOrNullWith(line)?.let { type ->
 		name fieldTo type
 	}
 
-fun TypeList.updateRecurseWith(line: TypeLine): TypeList? =
-	itemLine.updateRecurseWith(line)?.let { list(it) }
+fun TypeList.updateRecurseOrNullWith(line: TypeLine): TypeList? =
+	itemLine.updateRecurseOrNullWith(line)?.let { list(it) }

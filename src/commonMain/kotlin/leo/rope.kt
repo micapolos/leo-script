@@ -29,11 +29,17 @@ val <T: Any> Rope<T>.nextOrNull: T? get() = forwardOrNull?.current
 val <T> Rope<T>.stackLink: StackLink<T> get() =
 	(tail linkTo current).fold(head) { push(it) }
 
+val <T> Rope<T>.stack: Stack<T> get() =
+	stackLink.stack
+
 val <T> Rope<T>?.orNullStack: Stack<T> get() =
 	this?.stackLink?.stack ?: stack()
 
 fun <T, O> Rope<T>.map(fn: (T) -> O): Rope<O> =
 	Rope(tail.map(fn), fn(current), head.map(fn))
+
+fun <T> Rope<T>.updateCurrent(fn: (T) -> T): Rope<T> =
+	Rope(tail, fn(current), head)
 
 tailrec fun <F, V> F.fold(rope: Rope<V>, fn: F.(Rope<V>) -> F): F {
 	val folded = fn(rope)
