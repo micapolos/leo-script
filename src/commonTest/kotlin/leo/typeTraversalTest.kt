@@ -7,22 +7,22 @@ import kotlin.test.Test
 class TypeTraversalTest {
 	@Test
 	fun replaceNonRecursiveOrNull_present() {
-		type("foo" lineTo type(line(typeRecurse)))
-			.replaceNonRecursiveOrNull(line(typeRecurse), "bar" lineTo type())
+		type("foo" lineTo type(leo.recurseTypeLine))
+			.replaceNonRecursiveOrNull(recurseTypeLine, "bar" lineTo type())
 			.assertEqualTo(type("foo" lineTo type("bar" lineTo type())))
 	}
 
 	@Test
 	fun replaceNonRecursiveOrNull_absent() {
 		type("foo" lineTo type("zoo" lineTo type()))
-			.replaceNonRecursiveOrNull(line(typeRecurse), "bar" lineTo type())
+			.replaceNonRecursiveOrNull(recurseTypeLine, "bar" lineTo type())
 			.assertNull
 	}
 
 	@Test
 	fun replaceNonRecursiveOrNull_recursive() {
 		type("foo" lineTo type(line(recursive("zoo" lineTo type()))))
-			.replaceNonRecursiveOrNull(line(typeRecurse), "bar" lineTo type())
+			.replaceNonRecursiveOrNull(recurseTypeLine, "bar" lineTo type())
 			.assertNull
 	}
 
@@ -32,13 +32,13 @@ class TypeTraversalTest {
 			atom(
 				"chain" fieldTo type(
 					"data" lineTo type("foo"),
-					"next" lineTo type(line(typeRecurse)))))
+					"next" lineTo type(recurseTypeLine))))
 			.atom
 			.assertEqualTo(
 				atom(
 					"chain" fieldTo type(
 						"data" lineTo type("foo"),
-						"next" lineTo type(line(typeRecurse)))))
+						"next" lineTo type(recurseTypeLine))))
 	}
 
 	@Test
@@ -47,7 +47,7 @@ class TypeTraversalTest {
 			recursive(
 				"chain" lineTo type(
 					"data" lineTo type("foo"),
-					"next" lineTo type(line(typeRecurse)))))
+					"next" lineTo type(recurseTypeLine))))
 			.atom
 			.assertEqualTo(
 				atom(
@@ -57,6 +57,6 @@ class TypeTraversalTest {
 							"next" lineTo type(
 								"chain" lineTo type(
 									"data" lineTo type("foo"),
-									line(typeRecurse))))))))
+									recurseTypeLine)))))))
 	}
 }

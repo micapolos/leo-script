@@ -14,9 +14,14 @@ val TypeChoice.script: Script get() =
 
 val TypeLine.scriptLine: ScriptLine get() =
 	when (this) {
-		is AtomTypeLine -> atom.scriptLine
 		is RecursiveTypeLine -> recursive.scriptLine
-		is RecurseTypeLine -> recurse.scriptLine
+		is RecursibleTypeLine -> recursible.scriptLine
+	}
+
+val TypeRecursible.scriptLine: ScriptLine get() =
+	when (this) {
+		is AtomTypeRecursible -> atom.scriptLine
+		is RecurseTypeRecursible -> recurse.scriptLine
 	}
 
 val TypeAtom.scriptLine: ScriptLine get() =
@@ -44,9 +49,3 @@ val TypeRecursive.scriptLine: ScriptLine get() =
 @Suppress("unused")
 val TypeRecurse.scriptLine: ScriptLine get() =
 	recurseName lineTo script()
-
-val TypeRecursible.scriptLine: ScriptLine get() =
-	when (this) {
-		is AtomTypeRecursible -> atom.scriptLine
-		is RecurseTypeRecursible -> recurse.scriptLine
-	}

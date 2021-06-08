@@ -27,15 +27,11 @@ sealed class TypeLine {
 	override fun toString() = scriptLine.toString()
 }
 
-data class AtomTypeLine(val atom: TypeAtom): TypeLine()  {
-	override fun toString() = super.toString()
-}
-
 data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine() {
 	override fun toString() = super.toString()
 }
 
-data class RecurseTypeLine(val recurse: TypeRecurse): TypeLine() {
+data class RecursibleTypeLine(val recursible: TypeRecursible): TypeLine()  {
 	override fun toString() = super.toString()
 }
 
@@ -115,6 +111,8 @@ infix fun String.fieldTo(type: Type) = TypeField(this, type)
 val typeText get() = TypeText
 val typeNumber get() = TypeNumber
 val typeRecurse get() = TypeRecurse
+val recurseTypeLine get() = line(recursible(typeRecurse))
+fun recursiveLine(line: TypeLine) = line(recursive(line))
 
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
@@ -128,18 +126,24 @@ fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
 
 val TypeField.atom: TypeAtom get() = atom(this)
 
-fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
+fun line(recursible: TypeRecursible): TypeLine = RecursibleTypeLine(recursible)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
-fun line(recurse: TypeRecurse): TypeLine = RecurseTypeLine(recurse)
+fun line(atom: TypeAtom): TypeLine = atom.line
 
-val TypeAtom.line get() = line(this)
+val TypeAtom.line get() = recursible.line
+
+fun recursible(atom: TypeAtom) = atom.recursible
+fun recursible(recurse: TypeRecurse) = recurse.recursible
 
 val TypeAtom.recursible: TypeRecursible get() = AtomTypeRecursible(this)
 val TypeRecurse.recursible: TypeRecursible get() = RecurseTypeRecursible(this)
 
 fun recursive(line: TypeLine) = TypeRecursive(line)
 
-infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
+val TypeRecursive.line: TypeLine get() = RecursiveTypeLine(this)
+val TypeRecursible.line: TypeLine get() = RecursibleTypeLine(this)
+
+infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type).recursible)
 
 val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
 val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
@@ -157,10 +161,12 @@ val Literal.typeAtom: TypeAtom get() =
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
-val TypeLine.atomOrNull: TypeAtom? get() = (this as? AtomTypeLine)?.atom
+val TypeLine.recursibleOrNull: TypeRecursible? get() = (this as? RecursibleTypeLine)?.recursible
+val TypeLine.atomOrNull: TypeAtom? get() = recursibleOrNull?.atomOrNull
 val TypeAtom.fieldOrNull: TypeField? get() = (this as? FieldTypeAtom)?.field
 val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rhsType?.structureOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
+val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom
 
 fun TypeLine.get(name: String): TypeLine =
 	structureOrNull

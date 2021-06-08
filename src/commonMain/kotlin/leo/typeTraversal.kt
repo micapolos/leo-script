@@ -3,17 +3,24 @@ package leo
 import leo.base.notNullIf
 
 val TypeLine.atom: TypeAtom get() =
+	recursible.atomOrNull!! // FIXIT!!!
+
+val TypeLine.recursible: TypeRecursible get() =
 	when (this) {
-		is AtomTypeLine -> atom
-		is RecurseTypeLine -> error("$this.shiftRecursion")
-		is RecursiveTypeLine -> recursive.line.shiftRecursion.atom
+		is RecursibleTypeLine -> recursible
+		is RecursiveTypeLine -> recursive.line.shiftRecursion.recursible
 	}
 
 val TypeLine.shiftRecursion: TypeLine get() =
 	when (this) {
-		is AtomTypeLine -> atom.shiftRecursion.line
-		is RecurseTypeLine -> error("$this.shiftRecursion")
+		is RecursibleTypeLine -> recursible.shiftRecursion.line
 		is RecursiveTypeLine -> this
+	}
+
+val TypeRecursible.shiftRecursion: TypeRecursible get() =
+	when (this) {
+		is AtomTypeRecursible -> atom.shiftRecursion.recursible
+		is RecurseTypeRecursible -> error("$this.shiftRecursion")
 	}
 
 val TypeAtom.shiftRecursion: TypeAtom get() =
@@ -42,9 +49,9 @@ fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine
 	mapRope { rope ->
 		rope.current
 			.replaceNonRecursiveOrNull(
-				line(typeRecurse),
+				line(recursible(typeRecurse)),
 				name lineTo rope
-					.updateCurrent { line(typeRecurse) }
+					.updateCurrent { line(recursible(typeRecurse)) }
 					.stack.structure.type)
 			?.let { line(recursive(it)) }
 			?:rope.current
@@ -72,9 +79,14 @@ fun Stack<TypeLine>.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine)
 fun TypeLine.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeLine? =
 	if (this == line) newLine
 	else when (this) {
-		is AtomTypeLine -> atom.replaceNonRecursiveOrNull(line, newLine)?.line
-		is RecurseTypeLine -> null
+		is RecursibleTypeLine -> recursible.replaceNonRecursiveOrNull(line, newLine)?.line
 		is RecursiveTypeLine -> null
+	}
+
+fun TypeRecursible.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeRecursible? =
+	when (this) {
+		is AtomTypeRecursible -> atom.replaceNonRecursiveOrNull(line, newLine)?.recursible
+		is RecurseTypeRecursible -> null
 	}
 
 fun TypeAtom.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeAtom? =

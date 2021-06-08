@@ -11,9 +11,14 @@ val TypeChoice.isStatic: Boolean get() = false
 
 val TypeLine.isStatic: Boolean get() =
 	when (this) {
-		is AtomTypeLine -> atom.isStatic
-		is RecurseTypeLine -> recurse.isStatic
+		is RecursibleTypeLine -> recursible.isStatic
 		is RecursiveTypeLine -> recursive.isStatic
+	}
+
+val TypeRecursible.isStatic: Boolean get() =
+	when (this) {
+		is AtomTypeRecursible -> atom.isStatic
+		is RecurseTypeRecursible -> recurse.isStatic
 	}
 
 val TypeAtom.isStatic: Boolean get() =

@@ -40,7 +40,7 @@ class TypeScriptTest {
 				"stack" lineTo type(choice(
 					"empty" lineTo type(),
 					"link" lineTo type(
-						line(typeRecurse),
+						leo.recurseTypeLine,
 						numberTypeLine))))))
 			.script
 			.assertEqualTo(

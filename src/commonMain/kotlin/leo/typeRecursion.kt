@@ -7,13 +7,20 @@ import leo.base.notNullOrError
 typealias TypeRecursion<T> = Stateful<TypeRecursive?, T>
 val <T> T.typeRecursion: TypeRecursion<T> get() = stateful()
 
-val Effect<TypeRecursive?, TypeLine>.typeRecursiveAtomEffect: Effect<TypeRecursive?, TypeAtom> get() =
+@JvmName("typeRecursiveLineAtomEffect")
+fun Effect<TypeRecursive?, TypeLine>.typeRecursiveAtomEffect(): Effect<TypeRecursive?, TypeAtom> =
 	when (value) {
-		is AtomTypeLine -> state.effect(value.atom)
-		is RecursiveTypeLine -> value.recursive.effect(value.recursive.line).typeRecursiveAtomEffect
-		is RecurseTypeLine -> state.effect(line(state.notNullOrError("recursion"))).typeRecursiveAtomEffect
+		is RecursiveTypeLine -> value.recursive.effect(value.recursive.line).typeRecursiveAtomEffect()
+		is RecursibleTypeLine -> state.effect(value.recursible).typeRecursiveAtomEffect()
+	}
+
+@JvmName("typeRecursiveRecursibleAtomEffect")
+fun Effect<TypeRecursive?, TypeRecursible>.typeRecursiveAtomEffect(): Effect<TypeRecursive?, TypeAtom> =
+	when (value) {
+		is AtomTypeRecursible -> state.effect(value.atom)
+		is RecurseTypeRecursible -> state.effect(line(state.notNullOrError("recursion"))).typeRecursiveAtomEffect()
 	}
 
 val TypeLine.atomRecursion: TypeRecursion<TypeAtom> get() =
-	TypeRecursion { it.effect(this).typeRecursiveAtomEffect }
+	TypeRecursion { it.effect(this).typeRecursiveAtomEffect() }
 

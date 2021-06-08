@@ -1,16 +1,18 @@
 package leo.kotlin
 
-import leo.AtomTypeLine
+import leo.AtomTypeRecursible
 import leo.DoingTypeAtom
 import leo.FieldTypeAtom
 import leo.LiteralTypeAtom
 import leo.NumberTypeLiteral
-import leo.RecurseTypeLine
+import leo.RecurseTypeRecursible
+import leo.RecursibleTypeLine
 import leo.RecursiveTypeLine
 import leo.TextTypeLiteral
 import leo.TypeAtom
 import leo.TypeLine
 import leo.TypeLiteral
+import leo.TypeRecursible
 import leo.base.titleCase
 import leo.doingName
 import leo.get
@@ -22,9 +24,14 @@ val TypeLine.className: String get() =
 
 val TypeLine.classNameGeneration: Generation<String> get() =
 	when (this) {
-		is AtomTypeLine -> atom.classNameGeneration
-		is RecurseTypeLine -> TODO()
+		is RecursibleTypeLine -> recursible.classNameGeneration
 		is RecursiveTypeLine -> TODO()
+	}
+
+val TypeRecursible.classNameGeneration: Generation<String> get() =
+	when (this) {
+		is AtomTypeRecursible -> atom.classNameGeneration
+		is RecurseTypeRecursible -> TODO()
 	}
 
 val TypeAtom.classNameGeneration: Generation<String> get() =
