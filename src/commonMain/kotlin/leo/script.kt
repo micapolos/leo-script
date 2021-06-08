@@ -22,7 +22,9 @@ data class LinkScript(val link: ScriptLink) : Script() {
 	override fun toString() = super.toString()
 }
 
-sealed class ScriptLine
+sealed class ScriptLine {
+	override fun toString() = script(this).string
+}
 
 data class LiteralScriptLine(val literal: Literal) : ScriptLine() {
 	override fun toString() = super.toString()

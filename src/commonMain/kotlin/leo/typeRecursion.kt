@@ -10,7 +10,7 @@ val <T> T.typeRecursion: TypeRecursion<T> get() = stateful()
 val Effect<TypeRecursive?, TypeLine>.typeRecursiveAtomEffect: Effect<TypeRecursive?, TypeAtom> get() =
 	when (value) {
 		is AtomTypeLine -> state.effect(value.atom)
-		is RecursiveTypeLine -> value.recursive.effect(value.recursive.atom)
+		is RecursiveTypeLine -> value.recursive.effect(value.recursive.line).typeRecursiveAtomEffect
 		is RecurseTypeLine -> state.effect(line(state.notNullOrError("recursion"))).typeRecursiveAtomEffect
 	}
 

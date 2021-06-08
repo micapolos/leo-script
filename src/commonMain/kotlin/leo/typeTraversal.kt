@@ -6,7 +6,14 @@ val TypeLine.atom: TypeAtom get() =
 	when (this) {
 		is AtomTypeLine -> atom
 		is RecurseTypeLine -> error("$this.shiftRecursion")
-		is RecursiveTypeLine -> recursive.atom.shiftRecursion
+		is RecursiveTypeLine -> recursive.line.shiftRecursion.atom
+	}
+
+val TypeLine.shiftRecursion: TypeLine get() =
+	when (this) {
+		is AtomTypeLine -> atom.shiftRecursion.line
+		is RecurseTypeLine -> error("$this.shiftRecursion")
+		is RecursiveTypeLine -> this
 	}
 
 val TypeAtom.shiftRecursion: TypeAtom get() =
@@ -35,7 +42,9 @@ fun Stack<TypeLine>.typeLineShiftRecursionWithName(name: String): Stack<TypeLine
 	mapRope { rope ->
 		rope.current.updateRecurseWith(
 			name lineTo rope
-				.updateCurrent { line(recursive(it.atomOrNull!!)) }
+				.updateCurrent { line ->
+					line(recursive(line))
+				}
 				.stack.structure.type)
 	}
 

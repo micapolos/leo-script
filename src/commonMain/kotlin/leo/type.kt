@@ -3,36 +3,93 @@ package leo
 import leo.base.notNullOrError
 import leo.base.orNullIf
 
-sealed class Type
-data class StructureType(val structure: TypeStructure): Type()
-data class ChoiceType(val choice: TypeChoice): Type()
+sealed class Type {
+	override fun toString() = script.toString()
+}
 
-data class TypeChoice(val lineStack: Stack<TypeLine>)
-data class TypeStructure(val lineStack: Stack<TypeLine>)
+data class StructureType(val structure: TypeStructure): Type() {
+	override fun toString() = super.toString()
+}
 
-sealed class TypeLine
-data class AtomTypeLine(val atom: TypeAtom): TypeLine()
-data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine()
-data class RecurseTypeLine(val recurse: TypeRecurse): TypeLine()
+data class ChoiceType(val choice: TypeChoice): Type() {
+	override fun toString() = super.toString()
+}
 
-sealed class TypeAtom
-data class FieldTypeAtom(val field: TypeField): TypeAtom()
-data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom()
-data class DoingTypeAtom(val doing: TypeDoing): TypeAtom()
+data class TypeChoice(val lineStack: Stack<TypeLine>) {
+	override fun toString() = script.toString()
+}
 
-data class TypeField(val name: String, val rhsType: Type)
+data class TypeStructure(val lineStack: Stack<TypeLine>) {
+	override fun toString() = script.toString()
+}
 
-sealed class TypeLiteral
-data class TextTypeLiteral(val text: TypeText): TypeLiteral()
-data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
+sealed class TypeLine {
+	override fun toString() = scriptLine.toString()
+}
 
-data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine)
+data class AtomTypeLine(val atom: TypeAtom): TypeLine()  {
+	override fun toString() = super.toString()
+}
 
-data class TypeRecursive(val atom: TypeAtom)
+data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine() {
+	override fun toString() = super.toString()
+}
 
-object TypeText
-object TypeNumber
-object TypeRecurse
+data class RecurseTypeLine(val recurse: TypeRecurse): TypeLine() {
+	override fun toString() = super.toString()
+}
+
+sealed class TypeAtom {
+	override fun toString() = scriptLine.toString()
+}
+
+data class FieldTypeAtom(val field: TypeField): TypeAtom() {
+	override fun toString() = super.toString()
+}
+
+data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom() {
+	override fun toString() = super.toString()
+}
+
+data class DoingTypeAtom(val doing: TypeDoing): TypeAtom() {
+	override fun toString() = super.toString()
+}
+
+data class TypeField(val name: String, val rhsType: Type) {
+	override fun toString() = scriptLine.toString()
+}
+
+sealed class TypeLiteral {
+	override fun toString() = scriptLine.toString()
+}
+
+data class TextTypeLiteral(val text: TypeText): TypeLiteral() {
+	override fun toString() = super.toString()
+}
+
+data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral() {
+	override fun toString() = super.toString()
+}
+
+data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine) {
+	override fun toString() = scriptLine.toString()
+}
+
+data class TypeRecursive(val line: TypeLine) {
+	override fun toString() = scriptLine.toString()
+}
+
+object TypeText {
+	override fun toString() = textName
+}
+
+object TypeNumber {
+	override fun toString() = numberName
+}
+
+object TypeRecurse {
+	override fun toString() = recurseName
+}
 
 val Stack<TypeLine>.structure get() = TypeStructure(this)
 val Stack<TypeLine>.choice get() = TypeChoice(this)
@@ -44,6 +101,7 @@ fun typeStructure(vararg lines: TypeLine): TypeStructure = stack(*lines).structu
 fun structure(line: TypeLine, vararg lines: TypeLine): TypeStructure = stack(line, *lines).structure
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
 fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
+fun type(name: String): Type = type(name lineTo type())
 
 val TypeStructure.type: Type get() = type(this)
 val TypeChoice.type: Type get() = type(this)
@@ -68,7 +126,9 @@ fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
 fun line(recurse: TypeRecurse): TypeLine = RecurseTypeLine(recurse)
 
-fun recursive(atom: TypeAtom) = TypeRecursive(atom)
+val TypeAtom.line get() = line(this)
+
+fun recursive(line: TypeLine) = TypeRecursive(line)
 
 infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type))
 
