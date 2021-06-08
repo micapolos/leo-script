@@ -10,7 +10,6 @@ val TypeAtom.name: String get() =
 	when (this) {
 		is DoingTypeAtom -> doingName
 		is FieldTypeAtom -> field.name
-		is ListTypeAtom -> listName
 		is LiteralTypeAtom -> literal.name
 	}
 

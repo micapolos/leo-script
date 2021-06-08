@@ -9,20 +9,15 @@ val TypeLine.atom: TypeAtom get() =
 		is RecursiveTypeLine -> recursive.atom.shiftRecursion
 	}
 
-
 val TypeAtom.shiftRecursion: TypeAtom get() =
 	when (this) {
 		is DoingTypeAtom -> this
 		is FieldTypeAtom -> atom(field.shiftRecursion)
-		is ListTypeAtom -> TODO()
 		is LiteralTypeAtom -> this
 	}
 
 val TypeField.shiftRecursion: TypeField get() =
 	name fieldTo rhsType.shiftRecursionWithName(name)
-
-val TypeList.shiftRecursion: TypeList get() =
-	TODO()
 
 fun Type.shiftRecursionWithName(name: String): Type =
 	when (this) {
@@ -76,7 +71,6 @@ fun TypeAtom.updateRecurseOrNullWith(line: TypeLine): TypeAtom? =
 	when (this) {
 		is DoingTypeAtom -> null
 		is FieldTypeAtom -> field.updateRecurseOrNullWith(line)?.let(::atom)
-		is ListTypeAtom -> list.updateRecurseOrNullWith(line)?.let(::atom)
 		is LiteralTypeAtom -> null
 	}
 
@@ -84,6 +78,3 @@ fun TypeField.updateRecurseOrNullWith(line: TypeLine): TypeField? =
 	rhsType.updateRecurseOrNullWith(line)?.let { type ->
 		name fieldTo type
 	}
-
-fun TypeList.updateRecurseOrNullWith(line: TypeLine): TypeList? =
-	itemLine.updateRecurseOrNullWith(line)?.let { list(it) }

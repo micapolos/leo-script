@@ -19,7 +19,6 @@ sealed class TypeAtom
 data class FieldTypeAtom(val field: TypeField): TypeAtom()
 data class LiteralTypeAtom(val literal: TypeLiteral): TypeAtom()
 data class DoingTypeAtom(val doing: TypeDoing): TypeAtom()
-data class ListTypeAtom(val list: TypeList): TypeAtom()
 
 data class TypeField(val name: String, val rhsType: Type)
 
@@ -28,7 +27,6 @@ data class TextTypeLiteral(val text: TypeText): TypeLiteral()
 data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral()
 
 data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine)
-data class TypeList(val itemLine: TypeLine)
 
 data class TypeRecursive(val atom: TypeAtom)
 
@@ -62,12 +60,9 @@ fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 infix fun TypeStructure.doing(line: TypeLine) = TypeDoing(this, line)
 infix fun TypeStructure.doingLineTo(line: TypeLine) = line(atom(this doing line))
 
-fun list(line: TypeLine) = TypeList(line)
-
 fun atom(field: TypeField): TypeAtom = FieldTypeAtom(field)
 fun atom(literal: TypeLiteral): TypeAtom = LiteralTypeAtom(literal)
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
-fun atom(list: TypeList): TypeAtom = ListTypeAtom(list)
 
 fun line(atom: TypeAtom): TypeLine = AtomTypeLine(atom)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)

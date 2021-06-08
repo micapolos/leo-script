@@ -3,7 +3,6 @@ package leo.kotlin
 import leo.AtomTypeLine
 import leo.DoingTypeAtom
 import leo.FieldTypeAtom
-import leo.ListTypeAtom
 import leo.LiteralTypeAtom
 import leo.NumberTypeLiteral
 import leo.RecurseTypeLine
@@ -15,7 +14,6 @@ import leo.TypeLiteral
 import leo.base.titleCase
 import leo.doingName
 import leo.get
-import leo.listName
 import leo.numberName
 import leo.textName
 
@@ -33,7 +31,6 @@ val TypeAtom.classNameGeneration: Generation<String> get() =
 	when (this) {
 		is DoingTypeAtom -> doingName.titleCase.generation
 		is FieldTypeAtom -> field.typeNameGeneration
-		is ListTypeAtom -> listName.titleCase.generation
 		is LiteralTypeAtom -> literal.classNameGeneration
 	}
 

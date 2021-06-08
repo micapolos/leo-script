@@ -9,7 +9,6 @@ import leo.fieldTo
 import leo.isTypeLine
 import leo.line
 import leo.lineTo
-import leo.list
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.type
@@ -53,10 +52,9 @@ class KotlinTest {
 	@Test
 	fun structure() {
 		type(
-			line(atom(list(
-				"point" lineTo type(
-					"x" lineTo type(numberTypeLine),
-					"y" lineTo type(numberTypeLine))))),
+			"point" lineTo type(
+				"x" lineTo type(numberTypeLine),
+				"y" lineTo type(numberTypeLine)),
 			"map" lineTo type(line(atom(
 				typeStructure(
 					"x" lineTo type(numberTypeLine),

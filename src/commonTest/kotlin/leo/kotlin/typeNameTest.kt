@@ -5,7 +5,6 @@ import leo.base.assertEqualTo
 import leo.doing
 import leo.isTypeLine
 import leo.line
-import leo.list
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.typeStructure
@@ -17,13 +16,6 @@ class TypeNameTest {
 		line(atom(typeStructure(numberTypeLine, textTypeLine) doing numberTypeLine))
 			.typeName
 			.assertEqualTo("(Double, String) -> Double")
-	}
-
-	@Test
-	fun listTypeName() {
-		line(atom(list(numberTypeLine)))
-			.typeName
-			.assertEqualTo("Stack<Double>")
 	}
 
 	@Test

@@ -1,12 +1,9 @@
 package leo.kotlin
 
-import leo.atom
 import leo.base.assertEqualTo
 import leo.doingLineTo
 import leo.isTypeLine
-import leo.line
 import leo.lineTo
-import leo.list
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.type
@@ -43,13 +40,6 @@ class ClassNameTest {
 		typeStructure(numberTypeLine).doingLineTo(textTypeLine)
 			.className
 			.assertEqualTo("Doing")
-	}
-
-	@Test
-	fun listLine() {
-		line(atom(list(textTypeLine)))
-			.className
-			.assertEqualTo("List")
 	}
 
 	@Test

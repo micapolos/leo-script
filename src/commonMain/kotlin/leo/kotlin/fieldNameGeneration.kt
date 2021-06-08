@@ -3,7 +3,6 @@ package leo.kotlin
 import leo.AtomTypeLine
 import leo.DoingTypeAtom
 import leo.FieldTypeAtom
-import leo.ListTypeAtom
 import leo.LiteralTypeAtom
 import leo.NumberTypeLiteral
 import leo.RecurseTypeLine
@@ -26,7 +25,6 @@ val TypeAtom.fieldNameGeneration: Generation<String> get() =
 	when (this) {
 		is DoingTypeAtom -> "doing".generation
 		is FieldTypeAtom -> field.name.nameKotlin.string.generation
-		is ListTypeAtom -> "list".generation
 		is LiteralTypeAtom -> literal.fieldNameGeneration
 	}
 
