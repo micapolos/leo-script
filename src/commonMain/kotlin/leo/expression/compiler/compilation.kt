@@ -1,3 +1,5 @@
+@file:Suppress("unused", "UNUSED_PARAMETER")
+
 package leo.expression.compiler
 
 import leo.FieldScriptLine
@@ -109,6 +111,7 @@ fun Compiler.plusIsExpressionCompilationOrNull(script: Script): Compilation<Comp
 		}
 	}
 
+@Suppress("UNUSED_PARAMETER", "unused")
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	TODO()
 
@@ -154,7 +157,7 @@ fun Dictionary.dynamicStructureCompilationOrNull(name: String): Compilation<Stru
 
 fun Dictionary.staticStructureCompilationOrNull(name: String): Compilation<Structure>? =
 	bindingOrNull(name.typeStructure)
-		?.let { binding -> TODO() }
+		?.let { TODO() }
 
 fun Dictionary.dynamicStructureCompilationOrNull(structure: Structure): Compilation<Structure>? =
 	null // TODO()

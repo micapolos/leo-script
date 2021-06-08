@@ -8,14 +8,14 @@ typealias TypeRecursion<T> = Stateful<TypeRecursive?, T>
 val <T> T.typeRecursion: TypeRecursion<T> get() = stateful()
 val <T> TypeRecursion<T>.apply: T get() = get(null)
 
-@JvmName("typeRecursiveLineAtomEffect")
+@kotlin.jvm.JvmName("typeRecursiveLineAtomEffect")
 fun Effect<TypeRecursive?, TypeLine>.typeRecursiveAtomEffect(): Effect<TypeRecursive?, TypeAtom> =
 	when (value) {
 		is RecursiveTypeLine -> value.recursive.effect(value.recursive.line.shiftRecursion).typeRecursiveAtomEffect()
 		is RecursibleTypeLine -> state.effect(value.recursible).typeRecursiveAtomEffect()
 	}
 
-@JvmName("typeRecursiveRecursibleAtomEffect")
+@kotlin.jvm.JvmName("typeRecursiveRecursibleAtomEffect")
 fun Effect<TypeRecursive?, TypeRecursible>.typeRecursiveAtomEffect(): Effect<TypeRecursive?, TypeAtom> =
 	when (value) {
 		is AtomTypeRecursible -> state.effect(value.atom)

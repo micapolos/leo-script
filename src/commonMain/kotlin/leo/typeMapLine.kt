@@ -27,7 +27,7 @@ fun TypeRecursible.updateLine(fn: (TypeLine) -> TypeLine): TypeRecursible  =
 		is RecurseTypeRecursible -> recurse.updateLine(fn).recursible
 	}
 
-fun TypeRecurse.updateLine(fn: (TypeLine) -> TypeLine): TypeRecurse  = this
+fun TypeRecurse.updateLine(@Suppress("UNUSED_PARAMETER") fn: (TypeLine) -> TypeLine): TypeRecurse  = this
 
 fun TypeRecursive.updateLine(fn: (TypeLine) -> TypeLine): TypeRecursive  =
 	line.updateLine(fn).recursive
@@ -50,4 +50,4 @@ fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive  =
 fun TypeField.updateLine(fn: (TypeLine) -> TypeLine): TypeField  =
 	name fieldTo rhsType.updateLine(fn)
 
-fun TypeLiteral.updateLine(fn: (TypeLine) -> TypeLine): TypeLiteral  = this
+fun TypeLiteral.updateLine(@Suppress("UNUSED_PARAMETER") fn: (TypeLine) -> TypeLine): TypeLiteral  = this

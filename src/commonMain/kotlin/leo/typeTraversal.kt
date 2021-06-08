@@ -49,7 +49,7 @@ fun TypeStructure.shiftRecursionWithName(name: String): TypeStructure =
 fun TypeChoice.shiftRecursionWithName(name: String): TypeChoice =
 	lineStack.shiftRecursionWithName(name).choice
 
-@JvmName("typeLineShiftRecursionWithName")
+@kotlin.jvm.JvmName("typeLineShiftRecursionWithName")
 fun Stack<TypeLine>.shiftRecursionWithName(name: String): Stack<TypeLine> =
 	mapRope { rope ->
 		rope.current
@@ -109,7 +109,7 @@ fun TypeStructure.unshiftRecursionOrNullWithName(name: String): TypeStructure? =
 fun TypeChoice.unshiftRecursionOrNullWithName(name: String): TypeChoice? =
 	lineStack.unshiftRecursionOrNullWithName(name)?.choice
 
-@JvmName("typeLineUnshiftRecursionWithName")
+@kotlin.jvm.JvmName("typeLineUnshiftRecursionWithName")
 fun Stack<TypeLine>.unshiftRecursionOrNullWithName(name: String): Stack<TypeLine>? =
 	notNullIf(canUnshiftRecursionWithName(name)) {
 		mapRope { rope ->
