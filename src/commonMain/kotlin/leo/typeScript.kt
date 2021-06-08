@@ -33,7 +33,7 @@ val TypeAtom.scriptLine: ScriptLine get() =
 
 val TypePrimitive.scriptLine: ScriptLine get() =
 	when (this) {
-		is DoingTypePrimitive -> doing.scriptLine
+		is FieldTypePrimitive -> field.scriptLine
 		is LiteralTypePrimitive -> literal.scriptLine
 	}
 

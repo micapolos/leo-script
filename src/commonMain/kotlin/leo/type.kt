@@ -67,9 +67,17 @@ data class TypeField(val name: String, val rhsType: Type) {
 	override fun toString() = scriptLine.toString()
 }
 
-sealed class TypePrimitive
-data class LiteralTypePrimitive(val literal: TypeLiteral): TypePrimitive()
-data class DoingTypePrimitive(val doing: TypeDoing): TypePrimitive()
+sealed class TypePrimitive {
+	override fun toString() = scriptLine.toString()
+}
+
+data class LiteralTypePrimitive(val literal: TypeLiteral): TypePrimitive() {
+	override fun toString() = super.toString()
+}
+
+data class FieldTypePrimitive(val field: TypeField): TypePrimitive() {
+	override fun toString() = super.toString()
+}
 
 sealed class TypeLiteral {
 	override fun toString() = scriptLine.toString()
@@ -116,10 +124,10 @@ fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
 fun type(name: String): Type = type(name lineTo type())
 
 val TypeLiteral.primitive: TypePrimitive get() = LiteralTypePrimitive(this)
-val TypeDoing.primitive: TypePrimitive get() = DoingTypePrimitive(this)
+val TypeField.primitive: TypePrimitive get() = FieldTypePrimitive(this)
 
 val TypePrimitive.literalOrNull: TypeLiteral? get() = (this as? LiteralTypePrimitive)?.literal
-val TypePrimitive.doingOrNull: TypeDoing? get() = (this as? DoingTypePrimitive)?.doing
+val TypePrimitive.fieldOrNull: TypeField? get() = (this as? FieldTypePrimitive)?.field
 
 val TypeStructure.type: Type get() = type(this)
 val TypeChoice.type: Type get() = type(this)
