@@ -35,9 +35,17 @@ data class RecursibleTypeLine(val recursible: TypeRecursible): TypeLine()  {
 	override fun toString() = super.toString()
 }
 
-sealed class TypeRecursible
-data class AtomTypeRecursible(val atom: TypeAtom): TypeRecursible()
-data class RecurseTypeRecursible(val recurse: TypeRecurse): TypeRecursible()
+sealed class TypeRecursible {
+	override fun toString() = scriptLine.toString()
+}
+
+data class AtomTypeRecursible(val atom: TypeAtom): TypeRecursible() {
+	override fun toString() = super.toString()
+}
+
+data class RecurseTypeRecursible(val recurse: TypeRecurse): TypeRecursible() {
+	override fun toString() = super.toString()
+}
 
 sealed class TypeAtom {
 	override fun toString() = scriptLine.toString()
