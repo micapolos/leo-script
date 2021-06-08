@@ -35,6 +35,10 @@ data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine() {
 	override fun toString() = super.toString()
 }
 
+sealed class TypeNonRecursive
+data class AtomTypeNonRecursive(val atom: Atom): TypeNonRecursive()
+data class RecurseTypeNonRecursive(val recurse: TypeRecurse): TypeNonRecursive()
+
 data class RecurseTypeLine(val recurse: TypeRecurse): TypeLine() {
 	override fun toString() = super.toString()
 }

@@ -44,3 +44,9 @@ val TypeRecursive.scriptLine: ScriptLine get() =
 @Suppress("unused")
 val TypeRecurse.scriptLine: ScriptLine get() =
 	recurseName lineTo script()
+
+val TypeNonRecursive.scriptLine: ScriptLine get() =
+	when (this) {
+		is AtomTypeNonRecursive -> atom.scriptLine
+		is RecurseTypeNonRecursive -> recurse.scriptLine
+	}
