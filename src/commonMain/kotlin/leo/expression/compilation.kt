@@ -9,6 +9,7 @@ import leo.base.effect
 import leo.base.fold
 import leo.base.lines
 import leo.bind
+import leo.definition.Definition
 import leo.fieldTo
 import leo.flat
 import leo.getStateful

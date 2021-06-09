@@ -1,6 +1,16 @@
-package leo.expression
+package leo.definition
 
 import leo.base.assertEqualTo
+import leo.expression.compiler
+import leo.expression.expression
+import leo.expression.expressionTo
+import leo.expression.invoke
+import leo.expression.kotlinCompilation
+import leo.expression.of
+import leo.expression.op
+import leo.expression.resolveGet
+import leo.expression.structure
+import leo.expression.variable
 import leo.get
 import leo.lineTo
 import leo.literal
