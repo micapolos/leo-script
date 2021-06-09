@@ -2,8 +2,9 @@ package leo.typed
 
 import leo.Stack
 import leo.base.ifOrNull
+import leo.base.notNullIf
+import leo.first
 import leo.isEmpty
-import leo.mapOrNull
 import leo.numberName
 import leo.push
 import leo.stack
@@ -17,47 +18,57 @@ data class Field(val name: String, val value: Value) {
 	override fun toString() = scriptLine.toString()
 }
 
-data class Value(val body: Body, val typeValueOrNull: Value?) {
+sealed class Value {
 	override fun toString() = script.toString()
 }
 
-sealed class Body {
-	override fun toString() = script.toString()
-}
-
-data class NativeBody(val any: Any): Body() {
+data class NativeValue(val any: Any): Value() {
 	override fun toString() = super.toString()
 }
 
-data class StructureBody(val structure: Structure): Body() {
+data class StructureValue(val structure: Structure): Value() {
 	override fun toString() = super.toString()
 }
 
 val Stack<Field>.structure get() = Structure(this)
 fun Structure.plus(field: Field) = fieldStack.push(field).structure
 fun structure(vararg fields: Field) = stack(*fields).structure
-infix fun Body.of(value: Value?) = Value(this, value)
 
 infix fun String.fieldTo(value: Value) = Field(this, value)
-infix fun String.fieldTo(structure: Structure) = this fieldTo structure.body.of(structure.typeStructureOrNull?.body?.of(null))
-val Any.nativeBody: Body get() = NativeBody(this)
-val Structure.body: Body get() = StructureBody(this)
-val Any.nativeValue: Value get() = nativeBody of null
+infix fun String.fieldTo(structure: Structure) = this fieldTo structure.value
+val Any.nativeValue: Value get() = NativeValue(this)
+val Structure.value: Value get() = StructureValue(this)
 
-val String.field: Field get() = textName fieldTo nativeBody.of(String::class.nativeBody.of(null))
-val Double.field: Field get() = numberName fieldTo nativeBody.of(Double::class.nativeBody.of(null))
-val Int.field: Field get() = toDouble().field
+val String.value get() = nativeValue
+val Double.value get() = nativeValue
+val Int.value get() = toDouble().value
 
-val Body.nativeOrNull: Any? get() = (this as? NativeBody)?.any
-val Body.structureOrNull: Structure? get() = (this as? StructureBody)?.structure
+val String.textField: Field get() = textName fieldTo value
+val Double.numberField: Field get() = numberName fieldTo value
+val Int.numberField: Field get() = toDouble().numberField
 
-val textField: Field get() = textName fieldTo String::class.nativeBody.of(null)
-val numberField: Field get() = numberName fieldTo Double::class.nativeBody.of(null)
+val textField: Field get() = textName fieldTo String::class.nativeValue
+val numberField: Field get() = numberName fieldTo Double::class.nativeValue
 
-val Field.typeFieldOrNull: Field? get() = value.typeValueOrNull?.let { name fieldTo it }
+val Value.nativeOrNull: Any? get() = (this as? NativeValue)?.any
+val Value.structureOrNull: Structure? get() = (this as? StructureValue)?.structure
+
 val Structure.isEmpty: Boolean get() = fieldStack.isEmpty
-val Structure.typeStructureOrNull: Structure? get() = ifOrNull(!isEmpty) { fieldStack.mapOrNull { typeFieldOrNull }?.structure }
 
-val Value.typeValue: Value get() = typeValueOrNull?:this
-val Field.typeField: Field get() = typeFieldOrNull?:this
-val Structure.typeStructure: Structure get() = typeStructureOrNull?:this
+val Value.isEmpty: Boolean get() =
+	when (this) {
+		is NativeValue -> false
+		is StructureValue -> structure.isEmpty
+	}
+
+fun Structure.normalizeOrNull(field: Field): Structure? =
+	notNullIf(field.value.isEmpty) {
+		structure(field.name fieldTo value)
+	}
+
+fun Structure.fieldOrNull(name: String): Field? = fieldStack.first { it.name == name }
+fun Field.getOrNull(name: String): Field? = structureOrNull?.fieldOrNull(name)
+val Field.structureOrNull: Structure? get() = value.structureOrNull
+
+val Field.doubleOrNull: Double? get() = ifOrNull(name == numberName) { value.nativeOrNull as? Double }
+val Field.stringOrNull: String? get() = ifOrNull(name == textName) { value.nativeOrNull as? String }
