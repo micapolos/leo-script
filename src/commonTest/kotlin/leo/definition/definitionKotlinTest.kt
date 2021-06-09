@@ -17,7 +17,7 @@ class DefinitionKotlinTest {
 			Binding(
 				structure(
 					"increment".variable.op.of("increment" lineTo type(numberTypeLine))
-						.get(numberName).op.of(numberTypeLine),
+						.resolveGet(numberName),
 					"plus" expressionTo structure(1.literal.expression))
 					.invoke.op.of(numberTypeLine),
 				isFunction = true))
