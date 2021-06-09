@@ -173,11 +173,11 @@ class ScriptTest {
 
 	@Test
 	fun let() {
-		// TODO: Wait until implemented
-		assertFails {
-			script(letName)
-				.structure
-				.assertEqualTo(null)
-		}
+//		script(
+//			letName lineTo script(
+//				"foo" lineTo script(),
+//				beName lineTo script(literal(10))))
+//			.context
+//			.assertEqualTo(null)
 	}
 }

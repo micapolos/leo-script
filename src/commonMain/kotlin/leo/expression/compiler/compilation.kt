@@ -15,6 +15,7 @@ import leo.beName
 import leo.bind
 import leo.bindName
 import leo.commentName
+import leo.doName
 import leo.exampleName
 import leo.expression.Expression
 import leo.expression.Structure
@@ -38,11 +39,14 @@ import leo.isEmpty
 import leo.isName
 import leo.letName
 import leo.lineSeq
+import leo.lineTo
 import leo.map
+import leo.matchInfix
 import leo.noName
 import leo.script
 import leo.stateful
-import leo.typeStructure
+import leo.type
+import leo.type.compiler.type
 import leo.yesName
 
 typealias Compilation<T> = Stateful<Context, T>
@@ -52,6 +56,9 @@ val contextCompilation: Compilation<Context> get() = getStateful()
 
 fun Context.structureCompilation(script: Script): Compilation<Structure> =
 	Compiler(this, structure()).plusCompilation(script).map { it.structure }
+
+fun Context.contextCompilation(script: Script): Compilation<Context> =
+	Compiler(this, structure()).plusCompilation(script).map { it.context }
 
 fun Context.expressionCompilation(script: Script): Compilation<Expression> =
 	structureCompilation(script).map { it.expression }
@@ -111,8 +118,25 @@ fun Compiler.plusIsExpressionCompilationOrNull(script: Script): Compilation<Comp
 		}
 	}
 
-@Suppress("UNUSED_PARAMETER", "unused")
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
+	script
+		.matchInfix { lhs, name, rhs ->
+			when (name) {
+				beName -> plusLetBeCompilation(lhs, rhs)
+				doName -> plusLetDoCompilation(lhs, rhs)
+				else -> null
+			}
+		}
+		?:error((letName lineTo script).toString())
+
+fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
+	lhs.type.let { type ->
+		context.expressionCompilation(rhs).map { expression ->
+			set(context.plus(type to expression.typeLine.functionBinding))
+		}
+	}
+
+fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	TODO()
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
@@ -149,15 +173,15 @@ fun Context.structureCompilationOrNull(name: String): Compilation<Structure>? =
 		?: staticDictionary.staticStructureCompilationOrNull(name)
 
 fun Dictionary.dynamicStructureCompilationOrNull(name: String): Compilation<Structure>? =
-	bindingOrNull(name.typeStructure)
+	bindingOrNull(name.type)
 		?.let { binding ->
 			if (binding.isFunction) TODO()
 			else name.variable.op.of(binding.typeLine).structure.compilation
 		}
 
 fun Dictionary.staticStructureCompilationOrNull(name: String): Compilation<Structure>? =
-	bindingOrNull(name.typeStructure)
-		?.let { TODO() }
+	bindingOrNull(name.type)
+		?.let { null }
 
 fun Dictionary.dynamicStructureCompilationOrNull(structure: Structure): Compilation<Structure>? =
 	null // TODO()

@@ -3,6 +3,7 @@ package leo.expression
 import leo.Literal
 import leo.Stateful
 import leo.TypeField
+import leo.TypeStructure
 import leo.array
 import leo.base.effect
 import leo.base.fold
@@ -14,11 +15,13 @@ import leo.getStateful
 import leo.kotlin.Kotlin
 import leo.kotlin.constructorNameGeneration
 import leo.kotlin.kotlin
+import leo.kotlin.paramsDeclarationGeneration
 import leo.kotlin.plus
 import leo.map
 import leo.name
 import leo.seq
 import leo.stateful
+import leo.structureOrNull
 import leo.type
 
 typealias Compilation<T> = Stateful<Compiler, T>
@@ -129,5 +132,19 @@ val TypeField.constructorNameCompilation: Compilation<String> get() =
 	Compilation { compiler ->
 		constructorNameGeneration.run(compiler.types).let { effect ->
 			compiler.copy(types = effect.state) effect effect.value
+		}
+	}
+
+val TypeStructure.paramsDeclarationCompilation: Compilation<String> get() =
+	Compilation { compiler ->
+		paramsDeclarationGeneration.run(compiler.types).let { effect ->
+			compiler.copy(types = effect.state) effect effect.value
+		}
+	}
+
+val Definition.kotlinCompilation: Compilation<Kotlin> get() =
+	type.structureOrNull!!.paramsDeclarationCompilation.bind { params ->
+		binding.expression.kotlinCompilation.map { expressionKotlin ->
+			"fun _invoke($params) = ${expressionKotlin.string}".kotlin
 		}
 	}
