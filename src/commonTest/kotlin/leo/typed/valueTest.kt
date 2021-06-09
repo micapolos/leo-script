@@ -40,4 +40,10 @@ class ValueTest {
 						"x" fieldTo structure(numberField),
 						"y" fieldTo structure(numberField))))
 	}
+
+	@Test
+	fun typeField() {
+		10.field.typeField.assertEqualTo(numberField)
+		10.field.typeField.typeField.assertEqualTo(numberField)
+	}
 }

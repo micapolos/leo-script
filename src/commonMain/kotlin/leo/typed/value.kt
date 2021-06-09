@@ -57,3 +57,7 @@ val numberField: Field get() = numberName fieldTo Double::class.nativeBody.of(nu
 val Field.typeFieldOrNull: Field? get() = value.typeValueOrNull?.let { name fieldTo it }
 val Structure.isEmpty: Boolean get() = fieldStack.isEmpty
 val Structure.typeStructureOrNull: Structure? get() = ifOrNull(!isEmpty) { fieldStack.mapOrNull { typeFieldOrNull }?.structure }
+
+val Value.typeValue: Value get() = typeValueOrNull?:this
+val Field.typeField: Field get() = typeFieldOrNull?:this
+val Structure.typeStructure: Structure get() = typeStructureOrNull?:this
