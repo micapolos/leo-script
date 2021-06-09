@@ -146,7 +146,7 @@ fun <T, R : Any> Stack<T>.mapOrNull(fn: T.() -> R?): Stack<R>? =
 		}
 	}?.reverse
 
-tailrec fun <T : Any> Stack<T>.get(int: Int): T? =
+tailrec fun <T> Stack<T>.get(int: Int): T? =
 	when (this) {
 		is EmptyStack -> null
 		is LinkStack -> if (int == 0) link.head else link.tail.get(int.dec())
