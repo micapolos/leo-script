@@ -22,8 +22,8 @@ fun Evaluator.set(context: Context): Evaluator =
 fun Dictionary.dictionaryEvaluation(syntax: Syntax): Evaluation<Dictionary> =
 	context.evaluator().plusEvaluation(syntax).map { it.context.publicDictionary }
 
-fun Dictionary.recursiveEvaluation(syntax: Syntax): Evaluation<LetRecursive> =
-	dictionaryEvaluation(syntax).map { it.recursive }
+fun Dictionary.recursiveEvaluation(syntax: Syntax): Evaluation<DictionaryRecursive> =
+	dictionaryEvaluation(syntax).map(::recursive)
 
 fun Dictionary.valueEvaluation(value: Value, syntax: Syntax): Evaluation<Value> =
 	context.evaluator(value).plusEvaluation(syntax).map { it.value }

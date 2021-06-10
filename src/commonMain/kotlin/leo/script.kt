@@ -446,3 +446,6 @@ fun <R : Any> ScriptField.match(name: String, fn: (Script) -> R?): R? =
 	ifOrNull(this.name == name) {
 		fn(rhs)
 	}
+
+val Script.isError: Boolean get() =
+	onlyLineOrNull?.fieldOrNull?.name.equals(errorName)

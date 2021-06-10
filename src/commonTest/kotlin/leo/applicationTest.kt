@@ -32,16 +32,16 @@ class ApplicationTest {
 		dictionary(
 			definition(
 				recursive(
-					dictionary(),
-					let(value("ping"), binding(body(block(syntax("ping"))))))))
+					dictionary(
+						definition(let(value("ping"), binding(body(block(syntax("ping"))))))))))
 			.applicationOrNull(value("ping"))
 			.assertEqualTo(
 				application(
 					dictionary(
 						definition(
 							recursive(
-								dictionary(),
-								let(value("ping"), binding(body(block(syntax("ping")))))))),
+								dictionary(
+									definition(let(value("ping"), binding(body(block(syntax("ping")))))))))),
 					binding(body(block(syntax("ping"))))))
 	}
 
@@ -51,8 +51,9 @@ class ApplicationTest {
 			definition(let(value("foo"), binding(value("bar")))),
 			definition(
 				recursive(
-					dictionary(definition(let(value("ping"), binding(value("pong"))))),
-					let(value("pong"), binding(value("ping"))))))
+					dictionary(
+						definition(let(value("ping"), binding(value("pong")))),
+						definition(let(value("pong"), binding(value("ping"))))))))
 
 		dictionary
 			.applicationOrNull(value("pong"))
@@ -61,8 +62,9 @@ class ApplicationTest {
 					dictionary(
 						definition(let(value("foo"), binding(value("bar")))),
 						definition(recursive(
-							dictionary(definition(let(value("ping"), binding(value("pong"))))),
-							let(value("pong"), binding(value("ping")))))),
+							dictionary(
+								definition(let(value("ping"), binding(value("pong")))),
+								definition(let(value("pong"), binding(value("ping")))))))),
 					binding(value("ping"))))
 
 		dictionary
@@ -72,8 +74,9 @@ class ApplicationTest {
 					dictionary(
 						definition(let(value("foo"), binding(value("bar")))),
 						definition(recursive(
-							dictionary(),
-							let(value("pong"), binding(value("ping")))))),
+							dictionary(
+								definition(let(value("ping"), binding(value("pong")))),
+								definition(let(value("pong"), binding(value("ping")))))))),
 					binding(value("pong"))))
 
 		dictionary

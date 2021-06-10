@@ -27,13 +27,12 @@ fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): Application?
 		Application(this, let.binding)
 	}
 
-fun Dictionary.applicationOrNull(recursive: LetRecursive, value: Value): Application? =
+fun Dictionary.applicationOrNull(recursive: DictionaryRecursive, value: Value): Application? =
 	recursive.dictionary
-		.plus(definition(recursive.let))
 		.applicationOrNull(value)
 		?.let { application ->
-			Application(
-				this.plus(definition(recursive(application.dictionary, recursive.let))),
+			application(
+				plus(definition(recursive)),
 				application.binding)
 		}
 

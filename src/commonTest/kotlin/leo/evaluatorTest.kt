@@ -1,9 +1,10 @@
 package leo
 
 import leo.base.assertEqualTo
-import leo.base.assertFails
 import leo.base.assertNotNull
+import leo.base.assertTrue
 import leo.natives.appendName
+import leo.natives.minusName
 import kotlin.math.PI
 import kotlin.test.Test
 
@@ -967,10 +968,7 @@ class EvaluatorTest {
 					"be" lineTo script("bar")),
 				letName lineTo script(
 					"zoo" lineTo script(),
-					"be" lineTo script("zar")),
-				letName lineTo script(
-					"ping" lineTo script(),
-					"be" lineTo script("pong"))))
+					"be" lineTo script("zar"))))
 			.dictionary
 			.assertEqualTo(
 				dictionary(
@@ -978,25 +976,7 @@ class EvaluatorTest {
 						recursive(
 							dictionary(
 								definition(let(value("foo"), binding(value("bar")))),
-								definition(let(value("zoo"), binding(value("zar"))))),
-							let(value("ping"), binding(value("pong")))))))
-	}
-
-	@Test
-	fun recursiveDictionary_empty() {
-		assertFails {
-			script(recursiveName lineTo script()).dictionary
-		}
-	}
-
-	@Test
-	fun recursiveDictionary_noTrailingLet() {
-		assertFails {
-			script(
-				recursiveName lineTo script(
-					recursiveName lineTo script()))
-				.dictionary
-		}
+								definition(let(value("zoo"), binding(value("zar")))))))))
 	}
 
 	@Test
@@ -1026,13 +1006,85 @@ class EvaluatorTest {
 		val script = script(
 			recursiveName lineTo script(
 				letName lineTo script(
+					numberName lineTo script(anyName),
+					"even" lineTo script(),
+					"decrement" lineTo script(),
+					doName lineTo script(
+						"decrement" lineTo script(),
+						"even" lineTo script(),
+						numberName lineTo script(),
+						checkName lineTo script(
+							equalName lineTo script(literal(0))),
+						switchName lineTo script(
+							yesName lineTo script(numberName),
+							noName lineTo script(
+								numberName lineTo script(),
+								minusName lineTo script(literal(1)),
+								"odd" lineTo script(),
+								"decrement" lineTo script())))),
+				letName lineTo script(
+					numberName lineTo script(anyName),
+					"odd" lineTo script(),
+					"decrement" lineTo script(),
+					doName lineTo script(
+						"decrement" lineTo script(),
+						"odd" lineTo script(),
+						numberName lineTo script(),
+						checkName lineTo script(
+							equalName lineTo script(literal(0))),
+						switchName lineTo script(
+							yesName lineTo script(numberName),
+							noName lineTo script(
+								numberName lineTo script(),
+								minusName lineTo script(literal(1)),
+								"even" lineTo script(),
+								"decrement" lineTo script()))))))
+
+		script
+			.plus("decrement" lineTo script("even" lineTo script(literal(100))))
+			.evaluate
+			.assertEqualTo(script(literal(0)))
+
+		script
+			.plus("decrement" lineTo script("odd" lineTo script(literal(100))))
+			.evaluate
+			.assertEqualTo(script(literal(0)))
+	}
+
+	@Test
+	fun recursive_stackOverflow1() {
+		script(
+			recursiveName lineTo script(
+				letName lineTo script(
+					"say" lineTo script("ping" lineTo script()),
+					doName lineTo script("say" lineTo script("ping")))),
+			"say" lineTo script("ping" lineTo script()))
+			.evaluate
+			.isError
+			.assertTrue
+	}
+
+	@Test
+	fun recursive_stackOverflow2() {
+		val script = script(
+			recursiveName lineTo script(
+				letName lineTo script(
 					"ping" lineTo script(),
+					doName lineTo script("pong")),
+				letName lineTo script(
+					"pong" lineTo script(),
 					doName lineTo script("ping"))))
 
-		// TODO: This should stack-overflow
 		script
 			.plus("ping" lineTo script())
 			.evaluate
-			.assertEqualTo(script("ping"))
+			.isError
+			.assertTrue
+
+		script
+			.plus("ping" lineTo script())
+			.evaluate
+			.isError
+			.assertTrue
 	}
 }
