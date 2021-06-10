@@ -8,6 +8,7 @@ data class Tuple<out T>(val expressionStack: Stack<Expression<T>>)
 
 sealed class Expression<out T>
 data class IndexExpression<T>(val index: Int): Expression<T>()
+data class TupleExpression<T>(val tuple: Tuple<T>): Expression<T>()
 data class AtExpression<T>(val at: At<T>): Expression<T>()
 data class FunctionExpression<T>(val function: Function<T>): Expression<T>()
 data class InvokeExpression<T>(val invoke: Invoke<T>): Expression<T>()
@@ -23,6 +24,7 @@ data class Variable(val index: Int)
 fun <T> tuple(vararg expressions: Expression<T>) = Tuple(stack(*expressions))
 
 fun <T> expression(literal: Literal): Expression<T> = LiteralExpression(literal)
+fun <T> expression(tuple: Tuple<T>): Expression<T> = TupleExpression(tuple)
 fun <T> expression(index: Int): Expression<T> = IndexExpression(index)
 fun <T> expression(at: At<T>): Expression<T> = AtExpression(at)
 fun <T> expression(function: Function<T>): Expression<T> = FunctionExpression(function)
