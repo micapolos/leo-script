@@ -5,23 +5,25 @@ import leo.indexed.at
 import leo.indexed.expression
 import leo.indexed.typed.of
 import leo.indexed.typed.tuple
-import leo.indexed.typed.typedTo
+import leo.indexed.variable
 import leo.lineTo
+import leo.numberTypeLine
 import leo.type
 import kotlin.test.Test
 
 class TypedResolveTest {
 	@Test
 	fun resolveGet() {
-		val typed =
-			"x" typedTo tuple<Unit>(
-				"point" typedTo tuple(
-					"x" typedTo tuple("zero" typedTo tuple()),
-					"y" typedTo tuple("zero" typedTo tuple())))
-
-		tuple(typed)
+		tuple(
+			expression<Unit>(variable(123))
+				.of(
+					"x" lineTo type(
+						"point" lineTo type(
+							"x" lineTo type(numberTypeLine),
+							"y" lineTo type(numberTypeLine)))))
 			.resolveGetOrNull
 			.assertEqualTo(
-				tuple(expression(at(typed.expression, expression(0))).of("x" lineTo type("zero" lineTo type()))))
+				tuple(expression(at(expression<Unit>(variable(123)), expression(0)))
+					.of("x" lineTo type(numberTypeLine))))
 	}
 }
