@@ -18,7 +18,7 @@ val <T> TypedTuple<T>.resolve: TypedTuple<T> get() =
 
 val <T> TypedTuple<T>.resolveGetOrNull: TypedTuple<T>? get() =
 	typedStack.onlyOrNull?.let { typed ->
-		typed.typeLine.recursible?.atomOrNull?.fieldOrNull?.let { typeField ->
+		typed.typeLine.recursible.atomOrNull?.fieldOrNull?.let { typeField ->
 			typeField.rhsType.getIndexedLineOrNull(typeField.name)?.let { indexedTypeLine ->
 				tuple(expression(at(typed.expression, expression(indexedTypeLine.index))).of(indexedTypeLine.value))
 			}
