@@ -53,9 +53,7 @@ val Syntax.dictionary: Dictionary
 
 val Syntax.dictionaryEvaluation: Evaluation<Dictionary>
 	get() =
-		preludeDictionary.context.evaluator()
-			.plusEvaluation(this)
-			.map { it.context.publicDictionary }
+		preludeDictionary.dictionaryEvaluation(this)
 
 fun Context.evaluatorEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 	evaluator().plusEvaluation(syntax)

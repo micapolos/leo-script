@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.assertEqualTo
+import leo.base.assertFails
 import leo.base.assertNotNull
 import leo.natives.appendName
 import kotlin.math.PI
@@ -958,14 +959,43 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun recursive_noRecursion() {
+	fun recursive() {
 		script(
 			recursiveName lineTo script(
 				letName lineTo script(
+					"foo" lineTo script(),
+					"be" lineTo script("bar")),
+				letName lineTo script(
+					"zoo" lineTo script(),
+					"be" lineTo script("zar")),
+				letName lineTo script(
 					"ping" lineTo script(),
-					"be" lineTo script("pong"))),
-			"ping" lineTo script())
-			.evaluate
-			.assertEqualTo(script("pong"))
+					"be" lineTo script("pong"))))
+			.dictionary
+			.assertEqualTo(
+				dictionary(
+					definition(
+						recursive(
+							dictionary(
+								definition(let(value("foo"), binding(value("bar")))),
+								definition(let(value("zoo"), binding(value("zar"))))),
+							let(value("ping"), binding(value("pong")))))))
+	}
+
+	@Test
+	fun recursive_empty() {
+		assertFails {
+			script(recursiveName lineTo script()).dictionary
+		}
+	}
+
+	@Test
+	fun recursive_noTrailingLet() {
+		assertFails {
+			script(
+				recursiveName lineTo script(
+					recursiveName lineTo script()))
+				.dictionary
+		}
 	}
 }
