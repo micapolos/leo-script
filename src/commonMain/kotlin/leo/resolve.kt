@@ -11,18 +11,18 @@ fun Dictionary.resolveEvaluation(value: Value): Evaluation<Value> =
 fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
 	bindingOrNull(value)?.applyEvaluation(value) ?: evaluation(null)
 
-fun Dictionary.bind(value: Value): Dictionary =
+fun Dictionary.plus(value: Value): Dictionary =
 	this
-		.bindContent(value)
-		.bindFields(value)
+		.plusContent(value)
+		.plusFields(value)
 
-fun Dictionary.bindContent(value: Value) =
+fun Dictionary.plusContent(value: Value) =
 	plus(definition(value(contentName), binding(value)))
 
-fun Dictionary.bindFields(value: Value) =
-	fold(value.fieldSeq.reverse) { bind(it) }
+fun Dictionary.plusFields(value: Value) =
+	fold(value.fieldSeq.reverse) { plus(it) }
 
-fun Dictionary.bind(field: Field): Dictionary =
+fun Dictionary.plus(field: Field): Dictionary =
 	plus(
 		definition(
 			value(field.name),
