@@ -49,3 +49,12 @@ fun DefinitionApplication.applyEvaluation(given: Value): Evaluation<Value> =
 	}
 
 val Definition.letOrNull: DefinitionLet? get() = (this as? LetDefinition)?.let
+
+val Dictionary.recursive: LetRecursive get() =
+	definitionStack.linkOrNull
+		.notNullOrThrow { value("recursive") }
+		.let {
+			recursive(
+				Dictionary(it.tail),
+				it.head.letOrNull.notNullOrThrow { value("recursive") })
+		}

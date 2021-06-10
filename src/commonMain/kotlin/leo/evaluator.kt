@@ -19,6 +19,12 @@ fun Evaluator.setEvaluation(value: Value): Evaluation<Evaluator> =
 fun Evaluator.set(context: Context): Evaluator =
 	context.evaluator(value)
 
+fun Dictionary.dictionaryEvaluation(syntax: Syntax): Evaluation<Dictionary> =
+	context.evaluator().plusEvaluation(syntax).map { it.context.publicDictionary }
+
+fun Dictionary.recursiveEvaluation(syntax: Syntax): Evaluation<LetRecursive> =
+	dictionaryEvaluation(syntax).map { it.recursive }
+
 fun Dictionary.valueEvaluation(value: Value, syntax: Syntax): Evaluation<Value> =
 	context.evaluator(value).plusEvaluation(syntax).map { it.value }
 
@@ -196,9 +202,7 @@ fun Evaluator.plusEvaluation(field: Field): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
-	dictionary.definitionEvaluation(let).bind {
-		set(context.plus(it)).evaluation
-	}
+	dictionary.definitionEvaluation(let).map { plus(it) }
 
 fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(repeat, value).bind { setEvaluation(it) }
@@ -299,13 +303,7 @@ fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, recurse).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(recursive: Recursive): Evaluation<Evaluator> =
-	context.evaluatorEvaluation(recursive.syntax).map { evaluator ->
-		evaluator.context.publicDictionary.definitionStack.linkOrNull
-			.notNullOrThrow { value("recursive") }
-			.let {
-				set(context.plus(definition(recursive(Dictionary(it.tail), it.head.letOrNull.notNullOrThrow { value("recursive") }))))
-			}
-	}
+	dictionary.recursiveEvaluation(recursive.syntax).map { plus(definition(it)) }
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {
@@ -328,3 +326,6 @@ fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))
+
+fun Evaluator.plus(definition: Definition): Evaluator =
+	set(context.plus(definition))
