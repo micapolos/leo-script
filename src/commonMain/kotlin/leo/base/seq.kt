@@ -256,6 +256,9 @@ fun <V> Seq<V>.mapFirst(fn: V.() -> V): Seq<V> =
 		}
 	}
 
+fun <V: Any> Seq<V>.firstOrNull(fn: V.() -> Boolean): V? =
+	mapFirstOrNull { orNullIf(!fn(this)) }
+
 fun <V, R : Any> Seq<V>.mapFirstOrNull(fn: V.() -> R?): R? =
 	nodeOrNull?.mapFirstOrNull(fn)
 

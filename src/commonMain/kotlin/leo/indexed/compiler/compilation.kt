@@ -65,4 +65,9 @@ fun <T> Compiler<T>.plusResolveCompilation(typed: Typed<T>): Compilation<T, Comp
 	context.resolveCompilation(tuple.plus(typed)).map { set(it) }
 
 fun <T> Context<T>.resolveCompilation(tuple: TypedTuple<T>): Compilation<T, TypedTuple<T>> =
-	tuple.compilation() // TODO()
+	null
+		?: resolveCompilationOrNull(tuple)
+		?: tuple.resolve.compilation()
+
+fun <T> Context<T>.resolveCompilationOrNull(tuple: TypedTuple<T>): Compilation<T, TypedTuple<T>>? =
+	null // TODO()
