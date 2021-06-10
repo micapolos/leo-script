@@ -8,4 +8,4 @@ val <T> TypedTuple<T>.resolve: TypedTuple<T> get() =
 		?: this
 
 val <T> TypedTuple<T>.resolveGetOrNull: TypedTuple<T>? get() =
-	null
+	TODO()

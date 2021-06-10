@@ -29,4 +29,24 @@ class TypeIndexingTest {
 			.indexedLineOrNull("z")
 			.assertNull
 	}
+
+	@Test
+	fun get() {
+		val structure = type(
+			"point" lineTo type(
+				"x" lineTo type(numberTypeLine),
+				"y" lineTo type(textTypeLine)))
+
+		structure
+			.getIndexedOrNull("x")
+			.assertEqualTo(0.indexed(type("x" lineTo type(numberTypeLine))))
+
+		structure
+			.getIndexedOrNull("y")
+			.assertEqualTo(1.indexed(type("y" lineTo type(textTypeLine))))
+
+		structure
+			.getIndexedOrNull("z")
+			.assertNull
+	}
 }
