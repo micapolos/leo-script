@@ -11,6 +11,7 @@ use test fail
 use test get
 use test give
 use test hash
+use test head
 use test is
 use test is all
 comment use test java all
@@ -26,6 +27,7 @@ use test recurse
 use test repeat
 use test set
 use test switch
+use test tail
 use test take
 use test test
 use test text
