@@ -15,16 +15,11 @@ fun dictionary(vararg definitions: Definition): Dictionary =
 fun Dictionary.plus(definition: Definition): Dictionary =
 	Dictionary(definitionStack.push(definition))
 
-//fun Dictionary.plus(script: Script, body: Body): Dictionary =
-//	plus(definition(script.type, binding(function(body))))
-
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
-fun Dictionary.bindingOrNull(value: Value): Binding? =
-	definitionStack
-		.first { definition -> value.matches(definition.value) }
-		?.binding
+fun Dictionary.applicationOrNull(value: Value, recursiveStack: Stack<DefinitionLet>): DefinitionApplication? =
+	definitionStack.mapFirst { applicationOrNull(value, recursiveStack) }
 
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {

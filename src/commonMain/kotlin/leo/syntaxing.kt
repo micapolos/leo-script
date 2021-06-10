@@ -51,6 +51,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		repeatName -> rhs.repeatSyntaxing.map(::line)
 		privateName -> rhs.privateSyntaxing.map(::line)
 		recurseName -> rhs.recurseSyntaxing.map(::line)
+		recursiveName -> rhs.recursiveSyntaxing.map(::line)
 		quoteName -> rhs.quoteSyntaxing.map(::line)
 		setName -> rhs.setSyntaxing.map(::line)
 		switchName -> rhs.switchSyntaxing.map(::line)
@@ -178,6 +179,9 @@ val Script.equalSyntaxing: Syntaxing<Equal> get() =
 
 val Script.recurseSyntaxing: Syntaxing<Recurse> get() =
 	syntaxSyntaxing.map(::recurse)
+
+val Script.recursiveSyntaxing: Syntaxing<Recursive> get() =
+	syntaxSyntaxing.map(::recursive)
 
 val Script.quoteSyntaxing: Syntaxing<Quote> get() =
 	quote(this).syntaxing

@@ -31,6 +31,7 @@ fun TypedStructure.plusTypedStructureCompilation(line: SyntaxLine): Compilation<
 		is PrivateSyntaxLine -> TODO()
 		is QuoteSyntaxLine -> TODO()
 		is RecurseSyntaxLine -> TODO()
+		is RecursiveSyntaxLine -> TODO()
 		is RepeatSyntaxLine -> TODO()
 		is SetSyntaxLine -> TODO()
 		is SwitchSyntaxLine -> TODO()

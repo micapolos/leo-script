@@ -232,6 +232,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun recursive() {
+		script(
+			line(literal("Hello, world!")),
+			recursiveName lineTo script("foo"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal("Hello, world!")),
+					line(recursive(syntax("foo" lineTo syntax())))))
+	}
+
+	@Test
 	fun letDo() {
 		script(
 			line(literal("Hello, world!")),

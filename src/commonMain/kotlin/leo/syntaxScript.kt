@@ -27,6 +27,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is PrivateSyntaxLine -> privateName lineTo private.script
 		is QuoteSyntaxLine -> quoteName lineTo quote.script
 		is RecurseSyntaxLine -> recurseName lineTo recurse.script
+		is RecursiveSyntaxLine -> recursiveName lineTo recursive.script
 		is SetSyntaxLine -> setName lineTo set.script
 		is SwitchSyntaxLine -> switchName lineTo switch.script
 		is TakeSyntaxLine -> takeName lineTo take.script
@@ -55,6 +56,7 @@ val Repeat.script get() = syntax.script
 val Matching.script get() = syntax.script
 val Private.script get() = syntax.script
 val Recurse.script get() = syntax.script
+val Recursive.script get() = syntax.script
 val Set.script get() = script(atomStack.map { scriptLine })
 val Switch.script get() = script(caseStack.map { scriptLine })
 val Case.scriptLine get() = name lineTo syntax.script
