@@ -81,14 +81,25 @@ class ValueTest {
 	}
 
 	@Test
-	fun resolveFunctionApply() {
+	fun resolveFunctionApply_content() {
 		value(
-			field(dictionary().function(body(script("ok")))),
+			field(dictionary().function(body(script(contentName)))),
 			giveName fieldTo value("foo")
 		)
 			.resolveFunctionApplyOrNullEvaluation
 			.get
-			.assertEqualTo(value("ok" fieldTo value("foo")))
+			.assertEqualTo(value("foo"))
+	}
+
+	@Test
+	fun resolveFunctionApply_field() {
+		value(
+			field(dictionary().function(body(script("x")))),
+			giveName fieldTo value("x" fieldTo value("zero"), "y" fieldTo value("one"))
+		)
+			.resolveFunctionApplyOrNullEvaluation
+			.get
+			.assertEqualTo(value("x" fieldTo value("zero")))
 	}
 
 	@Test

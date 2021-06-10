@@ -1,9 +1,10 @@
 test
-  "Hello, world!"
-  123
-  doing foo
-  x 10
-  y 20
+  data
+    "Hello, world!"
+    123
+    doing foo
+    x 10
+    y 20
   bind
     a text
     a number

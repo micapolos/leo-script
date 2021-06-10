@@ -24,3 +24,7 @@ fun <T> Value.failEvaluation(): Evaluation<T> =
 	traceEvaluation.bind { trace ->
 		plus(trace.value).throwError()
 	}
+
+val Value.contentEvaluation: Evaluation<Value> get() =
+	fieldOrNull?.valueOrNull?.evaluation
+		?: plus(contentName).throwError()

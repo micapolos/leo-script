@@ -1,8 +1,8 @@
 test
-  doing it
+  doing content
   give
     x 10
     y 20
-  is equal it
+  is equal
     x 10
     y 20

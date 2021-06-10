@@ -1,5 +1,5 @@
 package leo.definition
 
-import java.util.*
+import leo.Stack
 
 data class Library(val definitionStack: Stack<Definition>)

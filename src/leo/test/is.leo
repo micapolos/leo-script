@@ -19,7 +19,7 @@ test
 let
   text any
   is greeting
-  do bind
+  do
     text
     is equal "Hello, world!"
 

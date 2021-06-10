@@ -143,21 +143,21 @@ class EvaluatorTest {
 	@Test
 	fun give() {
 		script(
-			doingName lineTo script("ok"),
+			doingName lineTo script(contentName),
 			giveName lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("ok" lineTo script("foo")))
+			.assertEqualTo(script("foo"))
 	}
 
 	@Test
 	fun take() {
 		script(
 			line("foo"),
-			takeName lineTo script(doingName lineTo script("ok"))
+			takeName lineTo script(doingName lineTo script(contentName))
 		)
 			.evaluate
-			.assertEqualTo(script("ok" lineTo script("foo")))
+			.assertEqualTo(script("foo"))
 	}
 
 	@Test
@@ -202,12 +202,12 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(anyName),
-				doName lineTo script("ok")
+				doName lineTo script(contentName)
 			),
 			"name" lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("ok" lineTo script("name" lineTo script("foo"))))
+			.assertEqualTo(script("name" lineTo script("foo")))
 	}
 
 	@Test
@@ -230,6 +230,7 @@ class EvaluatorTest {
 				numberName lineTo script(anyName),
 				"increment" lineTo script(),
 				doName lineTo script(
+					"increment" lineTo script(),
 					numberName lineTo script(),
 					"plus" lineTo script("one")
 				)
@@ -275,6 +276,7 @@ class EvaluatorTest {
 			"number" lineTo script("one"),
 			doName lineTo script(
 				recursingName lineTo script(
+					"number" lineTo script(),
 					switchName lineTo script(
 						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
 						"one" lineTo script(
@@ -828,7 +830,7 @@ class EvaluatorTest {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			doName lineTo script())
+			doName lineTo script(contentName))
 			.evaluate
 			.assertEqualTo(
 				script(
@@ -839,8 +841,9 @@ class EvaluatorTest {
 	@Test
 	fun bind() {
 		script(
-			"x" lineTo script(line(literal(10))),
-			"y" lineTo script(line(literal(20))),
+			"point" lineTo script(
+				"x" lineTo script(line(literal(10))),
+				"y" lineTo script(line(literal(20)))),
 			bindName lineTo script(
 				"first" lineTo script("x"),
 				"second" lineTo script("y"),
