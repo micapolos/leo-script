@@ -9,7 +9,7 @@ fun Dictionary.resolveEvaluation(value: Value): Evaluation<Value> =
 		.tracing(value)
 
 fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
-	applicationOrNull(value, stack())?.applyEvaluation(value) ?: evaluation(null)
+	applicationOrNull(value)?.applyEvaluation(value) ?: evaluation(null)
 
 fun Dictionary.plus(value: Value): Dictionary =
 	this

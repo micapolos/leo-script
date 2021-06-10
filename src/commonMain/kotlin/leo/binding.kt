@@ -2,18 +2,18 @@ package leo
 
 sealed class Binding
 data class ValueBinding(val value: Value) : Binding()
-data class FunctionBinding(val function: Function) : Binding()
-data class RecurseBinding(val recurse: FunctionRecurse): Binding()
+data class BodyBinding(val body: Body) : Binding()
+data class RecurseBinding(val recurse: BodyRecurse): Binding()
 
 fun binding(value: Value): Binding = ValueBinding(value)
-fun binding(function: Function): Binding = FunctionBinding(function)
-fun binding(recurse: FunctionRecurse): Binding = RecurseBinding(recurse)
+fun binding(body: Body): Binding = BodyBinding(body)
+fun binding(recurse: BodyRecurse): Binding = RecurseBinding(recurse)
 
-fun Binding.applyEvaluation(given: Value): Evaluation<Value> =
-	when (this) {
-		is FunctionBinding -> function.applyEvaluation(given)
-		is ValueBinding -> value.evaluation
-		is RecurseBinding -> recurse.function.applyEvaluation(given.structureOrThrow.value)
+fun Dictionary.applyEvaluation(binding: Binding, given: Value): Evaluation<Value> =
+	when (binding) {
+		is BodyBinding -> applyEvaluation(binding.body, given)
+		is ValueBinding -> binding.value.evaluation
+		is RecurseBinding -> applyEvaluation(binding.recurse.body, given.structureOrThrow.value)
 	}
 
 val Binding.valueOrNull: Value?

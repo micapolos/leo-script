@@ -2,6 +2,7 @@ package leo
 
 import leo.base.fold
 import leo.base.ifOrNull
+import leo.base.notNullIf
 import leo.base.nullOf
 import leo.base.runIf
 import leo.natives.nativeValue
@@ -18,8 +19,22 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
-fun Dictionary.applicationOrNull(value: Value, recursiveStack: Stack<DefinitionLet>): DefinitionApplication? =
-	definitionStack.mapFirst { applicationOrNull(value, recursiveStack) }
+fun Dictionary.applicationOrNull(value: Value): DefinitionApplication? =
+	definitionStack.mapFirst { applicationOrNull(this, value) }
+
+fun Dictionary.applicationOrNull(definition: Definition, value: Value): DefinitionApplication? =
+	when (definition) {
+		is LetDefinition -> applicationOrNull(definition.let, value)
+		is RecursiveDefinition -> applicationOrNull(definition.recursive, value)
+	}
+
+fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): DefinitionApplication? =
+	notNullIf(value.matches(let.value)) {
+		DefinitionApplication(this, let.binding)
+	}
+
+fun Dictionary.applicationOrNull(recursive: LetRecursive, value: Value): DefinitionApplication? =
+	recursive.dictionary.applicationOrNull(value)?.let { TODO() }
 
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
@@ -82,7 +97,7 @@ fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
 			value(recurseName fieldTo anyValue),
-			binding(recurse(function(body(block(recursing(syntax))))))
+			binding(recurse(body(block(recursing(syntax)))))
 		)
 	)
 
@@ -125,7 +140,7 @@ fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 	valueEvaluation(be.syntax).map(::binding)
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	binding(function(body(do_.block))).evaluation
+	binding(body(do_.block)).evaluation
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->
@@ -222,3 +237,4 @@ fun Dictionary.valueEvaluation(value: Value, end_: End): Evaluation<Value> =
 	valueEvaluation(value, end_.syntax).map {
 		value(endName fieldTo it)
 	}
+

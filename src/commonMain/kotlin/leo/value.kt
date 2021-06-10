@@ -371,7 +371,7 @@ fun <R> Value.resolveOrNull(lhsName: String, rhsName: String, fn: Value.(Value) 
 fun Value.as_(value: Value): Value =
 	dictionary()
 		.plus(definition(value, binding(this)))
-		.applicationOrNull(this, stack())
+		.applicationOrNull(this)
 		?.let { this }
 		.notNullOrThrow { plus(value(asName fieldTo value)) }
 
