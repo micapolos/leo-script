@@ -38,15 +38,15 @@ class TypeIndexingTest {
 				"y" lineTo type(textTypeLine)))
 
 		structure
-			.getIndexedOrNull("x")
-			.assertEqualTo(0.indexed(type("x" lineTo type(numberTypeLine))))
+			.getIndexedLineOrNull("x")
+			.assertEqualTo(0.indexed("x" lineTo type(numberTypeLine)))
 
 		structure
-			.getIndexedOrNull("y")
-			.assertEqualTo(1.indexed(type("y" lineTo type(textTypeLine))))
+			.getIndexedLineOrNull("y")
+			.assertEqualTo(1.indexed("y" lineTo type(textTypeLine)))
 
 		structure
-			.getIndexedOrNull("z")
+			.getIndexedLineOrNull("z")
 			.assertNull
 	}
 }
