@@ -959,7 +959,7 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun recursive() {
+	fun recursiveDictionary() {
 		script(
 			recursiveName lineTo script(
 				letName lineTo script(
@@ -983,19 +983,59 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun recursive_empty() {
+	fun recursiveDictionary_empty() {
 		assertFails {
 			script(recursiveName lineTo script()).dictionary
 		}
 	}
 
 	@Test
-	fun recursive_noTrailingLet() {
+	fun recursiveDictionary_noTrailingLet() {
 		assertFails {
 			script(
 				recursiveName lineTo script(
 					recursiveName lineTo script()))
 				.dictionary
 		}
+	}
+
+	@Test
+	fun recursive_be() {
+		val script = script(
+			recursiveName lineTo script(
+				letName lineTo script(
+					"ping" lineTo script(),
+					beName lineTo script("pong")),
+				letName lineTo script(
+					"pong" lineTo script(),
+					beName lineTo script("ping"))))
+
+		script
+			.plus("pong" lineTo script())
+			.evaluate
+			.assertEqualTo(script("pong"))
+
+		script
+			.plus("ping" lineTo script())
+			.evaluate
+			.assertEqualTo(script("pong"))
+	}
+
+	@Test
+	fun recursive_do() {
+		val script = script(
+			recursiveName lineTo script(
+				letName lineTo script(
+					"ping" lineTo script(),
+					doName lineTo script("pong")),
+				letName lineTo script(
+					"pong" lineTo script(),
+					doName lineTo script("ping"))))
+
+		// TODO: This should stack-overflow
+		script
+			.plus("pong" lineTo script())
+			.evaluate
+			.assertEqualTo(script("ping"))
 	}
 }

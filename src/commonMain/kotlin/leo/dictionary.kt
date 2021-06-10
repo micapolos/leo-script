@@ -19,22 +19,33 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
-fun Dictionary.applicationOrNull(value: Value): DefinitionApplication? =
-	definitionStack.mapFirst { applicationOrNull(this, value) }
+fun Dictionary.applicationOrNull(value: Value): BindingApplication? =
+	definitionStack.linkOrNull?.let { link ->
+		null
+			?: Dictionary(link.tail).applicationOrNull(link.head, value)
+			?: Dictionary(link.tail).applicationOrNull(value)
+	}
 
-fun Dictionary.applicationOrNull(definition: Definition, value: Value): DefinitionApplication? =
+fun Dictionary.applicationOrNull(definition: Definition, value: Value): BindingApplication? =
 	when (definition) {
 		is LetDefinition -> applicationOrNull(definition.let, value)
 		is RecursiveDefinition -> applicationOrNull(definition.recursive, value)
 	}
 
-fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): DefinitionApplication? =
+fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): BindingApplication? =
 	notNullIf(value.matches(let.value)) {
-		DefinitionApplication(this, let.binding)
+		BindingApplication(this, let.binding)
 	}
 
-fun Dictionary.applicationOrNull(recursive: LetRecursive, value: Value): DefinitionApplication? =
-	recursive.dictionary.applicationOrNull(value)?.let { TODO() }
+fun Dictionary.applicationOrNull(recursive: LetRecursive, value: Value): BindingApplication? =
+	recursive.dictionary
+		.plus(definition(recursive.let))
+		.applicationOrNull(value)
+		?.let { application ->
+			BindingApplication(
+				this.plus(definition(recursive(application.dictionary, recursive.let))),
+				application.binding)
+		}
 
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
