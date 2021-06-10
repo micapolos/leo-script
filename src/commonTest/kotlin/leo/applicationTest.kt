@@ -28,6 +28,24 @@ class ApplicationTest {
 	}
 
 	@Test
+	fun recursive_infinite() {
+		dictionary(
+			definition(
+				recursive(
+					dictionary(),
+					let(value("ping"), binding(body(block(syntax("ping"))))))))
+			.applicationOrNull(value("ping"))
+			.assertEqualTo(
+				application(
+					dictionary(
+						definition(
+							recursive(
+								dictionary(),
+								let(value("ping"), binding(body(block(syntax("ping")))))))),
+					binding(body(block(syntax("ping"))))))
+	}
+
+	@Test
 	fun recursive() {
 		val dictionary = dictionary(
 			definition(let(value("foo"), binding(value("bar")))),

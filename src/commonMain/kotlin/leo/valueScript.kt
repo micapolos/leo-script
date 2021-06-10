@@ -42,7 +42,7 @@ val Body.script: Script
 	get() =
 		when (this) {
 			is FnBody -> script("native")
-			is CodeBody -> block.script
+			is BlockBody -> block.script
 		}
 
 val Native.script: Script

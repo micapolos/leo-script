@@ -2,7 +2,6 @@ package leo
 
 import leo.base.fold
 import leo.base.ifOrNull
-import leo.base.notNullIf
 import leo.base.nullOf
 import leo.base.runIf
 import leo.natives.nativeValue
@@ -18,35 +17,6 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
-
-fun Dictionary.applicationOrNull(value: Value): BindingApplication? =
-	definitionStack.linkOrNull?.let { link ->
-		null
-			?: Dictionary(link.tail).applicationOrNull(link.head, value)
-			?: Dictionary(link.tail).applicationOrNull(value)
-	}
-
-fun Dictionary.applicationOrNull(definition: Definition, value: Value): BindingApplication? =
-	when (definition) {
-		is LetDefinition -> applicationOrNull(definition.let, value)
-		is RecursiveDefinition -> applicationOrNull(definition.recursive, value)
-	}
-
-fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): BindingApplication? =
-	notNullIf(value.matches(let.value)) {
-		BindingApplication(this, let.binding)
-	}
-
-fun Dictionary.applicationOrNull(recursive: LetRecursive, value: Value): BindingApplication? =
-	recursive.dictionary
-		.plus(definition(recursive.let))
-		.applicationOrNull(value)
-		?.let { application ->
-			BindingApplication(
-				this.plus(definition(recursive(application.dictionary, recursive.let))),
-				application.binding)
-		}
-
 fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(switchName).throwError()
@@ -75,12 +45,15 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 
 fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
 	when (body) {
-		is FnBody -> try {
-			body.fn(value("the" fieldTo given)).evaluation
-		} catch (throwable: Throwable) {
-			throwable.value.failEvaluation()
-		}
-		is CodeBody -> applyEvaluation(body.block, given)
+		is FnBody -> applyEvaluation(body.fn, given)
+		is BlockBody -> applyEvaluation(body.block, given)
+	}
+
+fun applyEvaluation(fn: (Value) -> Value, given: Value): Evaluation<Value> =
+	try {
+		fn(value("the" fieldTo given)).evaluation
+	} catch (throwable: Throwable) {
+		throwable.value.failEvaluation()
 	}
 
 fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =

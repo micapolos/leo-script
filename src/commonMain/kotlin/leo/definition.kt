@@ -16,14 +16,8 @@ val Field.definition: Definition get() =
 data class DefinitionLet(val value: Value, val binding: Binding)
 data class LetRecursive(val dictionary: Dictionary, val let: DefinitionLet)
 
-data class BindingApplication(val dictionary: Dictionary, val binding: Binding)
-fun application(dictionary: Dictionary, binding: Binding) = BindingApplication(dictionary, binding)
-
 fun let(value: Value, binding: Binding) = DefinitionLet(value, binding)
 fun recursive(dictionary: Dictionary, let: DefinitionLet) = LetRecursive(dictionary, let)
-
-fun BindingApplication.applyEvaluation(given: Value): Evaluation<Value> =
-	dictionary.applyEvaluation(binding, given)
 
 val Definition.letOrNull: DefinitionLet? get() = (this as? LetDefinition)?.let
 

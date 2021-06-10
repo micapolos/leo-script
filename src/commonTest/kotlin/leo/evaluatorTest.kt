@@ -1027,14 +1027,11 @@ class EvaluatorTest {
 			recursiveName lineTo script(
 				letName lineTo script(
 					"ping" lineTo script(),
-					doName lineTo script("pong")),
-				letName lineTo script(
-					"pong" lineTo script(),
 					doName lineTo script("ping"))))
 
 		// TODO: This should stack-overflow
 		script
-			.plus("pong" lineTo script())
+			.plus("ping" lineTo script())
 			.evaluate
 			.assertEqualTo(script("ping"))
 	}
