@@ -956,4 +956,16 @@ class EvaluatorTest {
 			.evaluate
 			.assertEqualTo(script(literal(30)))
 	}
+
+	@Test
+	fun recursive_noRecursion() {
+		script(
+			recursiveName lineTo script(
+				letName lineTo script(
+					"ping" lineTo script(),
+					"be" lineTo script("pong"))),
+			"ping" lineTo script())
+			.evaluate
+			.assertEqualTo(script("pong"))
+	}
 }

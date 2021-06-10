@@ -299,7 +299,13 @@ fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, recurse).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(recursive: Recursive): Evaluation<Evaluator> =
-	TODO()
+	context.evaluatorEvaluation(recursive.syntax).map { evaluator ->
+		evaluator.context.publicDictionary.definitionStack.linkOrNull
+			.notNullOrThrow { value("recursive") }
+			.let {
+				set(context.plus(definition(recursive(Dictionary(it.tail), it.head.letOrNull.notNullOrThrow { value("recursive") }))))
+			}
+	}
 
 fun Evaluator.plusValueOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {

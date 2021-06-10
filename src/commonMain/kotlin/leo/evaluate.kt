@@ -23,4 +23,3 @@ fun Environment.evaluate(script: Script): Script =
 val Script.evaluateEvaluation: Evaluation<Script>
 	get() =
 		preludeDictionary.valueEvaluation(syntax).map { it.script }
-

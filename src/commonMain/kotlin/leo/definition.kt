@@ -47,3 +47,5 @@ fun DefinitionApplication.applyEvaluation(given: Value): Evaluation<Value> =
 		is ValueBinding -> binding.value.evaluation
 		is RecurseBinding -> binding.recurse.function.fold(recursiveStack.reverse) { push(it) }.applyEvaluation(given.structureOrThrow.value)
 	}
+
+val Definition.letOrNull: DefinitionLet? get() = (this as? LetDefinition)?.let
