@@ -19,7 +19,7 @@ val Type.compileStructure: TypeStructure get() =
 val Type.compileChoice: TypeChoice get() =
 	choiceOrNull.notNullOrError("$this not choice")
 
-val TypeStructure.compileOnlyLine: TypeLine get() =
+val TypeStructure.compileOnlyExpression: TypeLine get() =
 	onlyLineOrNull.notNullOrError("$this not a line")
 
 fun TypeChoice.compileIndexOf(line: TypeLine): Int =

@@ -3,6 +3,7 @@ package leo.named
 import leo.Literal
 import leo.Stack
 import leo.TypeStructure
+import leo.push
 import leo.stack
 
 data class Structure<out T>(val expressionStack: Stack<Expression<T>>)
@@ -46,3 +47,5 @@ fun variable(typeStructure: TypeStructure) = Variable(typeStructure)
 fun <T> Expression<T>.get(name: String): Expression<T> = expression(get(this, name))
 fun <T> Expression<T>.switch(vararg fields: Field<T>): Expression<T> = expression(switch(this, stack(*fields)))
 fun <T> Expression<T>.invoke(vararg params: Expression<T>): Expression<T> = expression(invoke(this, structure(*params)))
+
+fun <T> Structure<T>.plus(expression: Expression<T>) = Structure(expressionStack.push(expression))
