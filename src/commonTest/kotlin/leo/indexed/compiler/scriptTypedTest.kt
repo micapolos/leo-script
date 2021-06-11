@@ -92,6 +92,19 @@ class ScriptTypedTest {
 	}
 
 	@Test
+	fun be() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			beName lineTo script("z" lineTo script(literal(30))))
+			.typed
+			.assertEqualTo(
+				typed(
+					expression(literal(30)),
+					"z" lineTo type(numberTypeLine)))
+	}
+
+	@Test
 	fun do_() {
 		script(
 			"x" lineTo script(literal(10)),

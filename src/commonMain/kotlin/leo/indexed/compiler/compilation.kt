@@ -69,10 +69,14 @@ fun <T> Compiler<T>.plusCompilation(scriptField: ScriptField): Compilation<T, Co
 
 fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<T, Compiler<T>>? =
 	when (scriptField.name) {
+		beName -> plusBeCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		else -> null
 	}
+
+fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T>> =
+	context.typedCompilation(script).map { set(tuple(it)) }
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
 	context.plus(bodyTuple).typedCompilation(script).map { typed ->
