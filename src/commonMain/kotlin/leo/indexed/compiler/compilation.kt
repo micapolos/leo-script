@@ -34,8 +34,8 @@ import leo.reverse
 import leo.seq
 import leo.size
 import leo.stateful
+import leo.theName
 import leo.type.compiler.type
-import leo.wordName
 
 typealias Compilation<T, V> = Stateful<Context<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
@@ -86,7 +86,7 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 		beName -> plusBeCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
-		wordName -> plusWordCompilation(scriptField.rhs)
+		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
 	}
 
@@ -115,7 +115,7 @@ fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<
 			}
 		}.notNullOrError("$script let error")
 
-fun <T> Compiler<T>.plusWordCompilation(script: Script): Compilation<T, Compiler<T>> =
+fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<T>> =
 	context.typedCompilation(script.compileOnlyLine).map { plus(it) }
 
 fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =

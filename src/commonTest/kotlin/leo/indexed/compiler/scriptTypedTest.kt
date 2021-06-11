@@ -19,10 +19,10 @@ import leo.literal
 import leo.numberTypeLine
 import leo.script
 import leo.textTypeLine
+import leo.theName
 import leo.type
 import leo.type.compiler.textTypeScriptLine
 import leo.typeStructure
-import leo.wordName
 import kotlin.test.Test
 
 class ScriptTypedTest {
@@ -159,14 +159,14 @@ class ScriptTypedTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(textTypeScriptLine),
-				doName lineTo script("the" lineTo script("name"))))
+				doName lineTo script("ok" lineTo script("name"))))
 			.paramsTuple
 			.assertEqualTo(
 				tuple(
 					typed(
 						expression(function(1, expression(variable(0)))),
 						typeStructure("name" lineTo type(textTypeLine))
-							.doingLineTo("the" lineTo type("name" lineTo type(textTypeLine))))))
+							.doingLineTo("ok" lineTo type("name" lineTo type(textTypeLine))))))
 	}
 
 	@Test
@@ -174,7 +174,7 @@ class ScriptTypedTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(textTypeScriptLine),
-				doName lineTo script("the" lineTo script("name"))),
+				doName lineTo script("ok" lineTo script("name"))),
 			"name" lineTo script(literal("foo")))
 			.typed
 			.assertEqualTo(
@@ -187,7 +187,7 @@ class ScriptTypedTest {
 										expression(variable(0)),
 										tuple(expression(literal("foo"))))))),
 							tuple(expression(function(1, expression(variable(0))))))),
-					"the" lineTo type("name" lineTo type(textTypeLine))))
+					"ok" lineTo type("name" lineTo type(textTypeLine))))
 	}
 
 	@Test
@@ -230,10 +230,10 @@ class ScriptTypedTest {
 	}
 
 	@Test
-	fun word() {
+	fun the() {
 		script(
 			"red" lineTo script(),
-			wordName lineTo script("color"))
+			theName lineTo script("color"))
 			.bodyTypedTuple
 			.assertEqualTo(
 				tuple(
@@ -242,14 +242,14 @@ class ScriptTypedTest {
 	}
 
 	@Test
-	fun wordWord() {
+	fun theThe() {
 		script(
 			"red" lineTo script(),
-			wordName lineTo script(wordName))
+			theName lineTo script(theName))
 			.bodyTypedTuple
 			.assertEqualTo(
 				tuple(
 					expression<Unit>() of ("red" lineTo type()),
-					expression<Unit>() of (wordName lineTo type())))
+					expression<Unit>() of (theName lineTo type())))
 	}
 }

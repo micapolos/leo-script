@@ -7,9 +7,9 @@ import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.numberName
 import leo.script
-import leo.textName
-import leo.type.compiler.textTypeScriptLine
+import leo.type.compiler.numberTypeScriptLine
 import kotlin.test.Test
 
 class ScriptEvaluateTest {
@@ -68,10 +68,10 @@ class ScriptEvaluateTest {
 	fun letDo() {
 		script(
 			letName lineTo script(
-				"the" lineTo script(textTypeScriptLine),
-				doName lineTo script(line("the"), line(textName))),
-			"the" lineTo script(literal("foo")))
+				"length" lineTo script(numberTypeScriptLine),
+				doName lineTo script(line("length"), line(numberName))),
+			"length" lineTo script(literal(10)))
 			.evaluate
-			.assertEqualTo("foo")
+			.assertEqualTo(10.0)
 	}
 }
