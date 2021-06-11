@@ -3,6 +3,7 @@ package leo.indexed.compiler
 import leo.base.assertEqualTo
 import leo.beName
 import leo.doName
+import leo.doingLineTo
 import leo.indexed.at
 import leo.indexed.expression
 import leo.indexed.function
@@ -19,6 +20,8 @@ import leo.numberTypeLine
 import leo.script
 import leo.textTypeLine
 import leo.type
+import leo.type.compiler.textTypeScriptLine
+import leo.typeStructure
 import leo.wordName
 import kotlin.test.Test
 
@@ -139,6 +142,42 @@ class ScriptTypedTest {
 	}
 
 	@Test
+	fun letDoDefinition() {
+		script(
+			letName lineTo script(
+				"name" lineTo script(textTypeScriptLine),
+				doName lineTo script("the" lineTo script("name"))))
+			.paramsTuple
+			.assertEqualTo(
+				tuple(
+					typed(
+						expression(function(1, expression(variable(0)))),
+						typeStructure("name" lineTo type(textTypeLine))
+							.doingLineTo("the" lineTo type("name" lineTo type(textTypeLine))))))
+	}
+
+	@Test
+	fun letDoApplication() {
+		script(
+			letName lineTo script(
+				"name" lineTo script(textTypeScriptLine),
+				doName lineTo script("the" lineTo script("name"))),
+			"name" lineTo script(literal("foo")))
+			.typed
+			.assertEqualTo(
+				typed(
+					expression(
+						invoke(
+							expression(
+								function(1, expression(
+									invoke(
+										expression(variable(0)),
+										tuple(expression(literal("foo"))))))),
+							tuple(expression(function(1, expression(variable(0))))))),
+					"the" lineTo type("name" lineTo type(textTypeLine))))
+	}
+
+	@Test
 	fun let_indexing() {
 		script(
 			letName lineTo script(
@@ -187,5 +226,17 @@ class ScriptTypedTest {
 				tuple(
 					expression<Unit>() of ("red" lineTo type()),
 					expression<Unit>() of ("color" lineTo type())))
+	}
+
+	@Test
+	fun wordWord() {
+		script(
+			"red" lineTo script(),
+			wordName lineTo script(wordName))
+			.bodyTypedTuple
+			.assertEqualTo(
+				tuple(
+					expression<Unit>() of ("red" lineTo type()),
+					expression<Unit>() of (wordName lineTo type())))
 	}
 }

@@ -12,6 +12,7 @@ import leo.base.notNullOrError
 import leo.beName
 import leo.bind
 import leo.doName
+import leo.doingLineTo
 import leo.foldStateful
 import leo.indexed.expression
 import leo.indexed.function
@@ -129,7 +130,15 @@ fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<
 
 fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
 	context.typeStructureCompilation(lhs).bind { typeStructure ->
-		TODO()
+		context.plus(typeStructure).typedCompilation(rhs).map { bodyTyped ->
+			context
+				.plus(definition(typeStructure, functionBinding(bodyTyped.typeLine)))
+				.plusParam(
+					typed(
+						expression(function(typeStructure.lineStack.size, bodyTyped.expression)),
+						typeStructure.doingLineTo(bodyTyped.typeLine)))
+				.compiler
+		}
 	}
 
 fun <T> Compiler<T>.plusDynamicCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
