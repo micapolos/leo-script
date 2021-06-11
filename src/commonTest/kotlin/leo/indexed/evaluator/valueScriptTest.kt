@@ -17,5 +17,21 @@ class ValueScriptTest {
 		type("id" lineTo type(choice(textTypeLine, numberTypeLine)))
 			.script(0.indexed("foo"))
 			.assertEqualTo(script("id" lineTo script(literal("foo"))))
+
+		type("id" lineTo type(choice(textTypeLine, numberTypeLine)))
+			.script(1.indexed(10.0))
+			.assertEqualTo(script("id" lineTo script(literal(10))))
+	}
+
+	@Test
+	fun structures() {
+		type(
+			"name" lineTo type(textTypeLine),
+			"size" lineTo type(numberTypeLine))
+			.script(listOf("foo", 10.0))
+			.assertEqualTo(
+				script(
+					"name" lineTo script(literal("foo")),
+					"size" lineTo script(literal(10))))
 	}
 }
