@@ -37,6 +37,7 @@ import leo.reverse
 import leo.seq
 import leo.size
 import leo.stateful
+import leo.switchName
 import leo.theName
 import leo.type.compiler.type
 
@@ -90,15 +91,23 @@ fun <T> Compiler<T>.plusCompilation(scriptField: ScriptField): Compilation<T, Co
 fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<T, Compiler<T>>? =
 	when (scriptField.name) {
 		beName -> plusBeCompilation(scriptField.rhs)
+		castName -> plusCastCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
-		castName -> plusCastCompilation(scriptField.rhs)
+		switchName -> plusSwitchCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
 	}
 
 fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T>> =
 	context.typedCompilation(script).map { set(tuple(it)) }
+
+fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
+	bodyTuple.compileTyped.let { typed ->
+		context.typeLineCompilation(script).map { typeLine ->
+			set(tuple(typed.compileCast(typeLine)))
+		}
+	}
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
 	context.plus(bodyTuple).typedCompilation(script).map { typed ->
@@ -122,12 +131,8 @@ fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<
 			}
 		}.notNullOrError("$script let error")
 
-fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
-	bodyTuple.compileTyped.let { typed ->
-		context.typeLineCompilation(script).map { typeLine ->
-			set(tuple(typed.compileCast(typeLine)))
-		}
-	}
+fun <T> Compiler<T>.plusSwitchCompilation(script: Script): Compilation<T, Compiler<T>> =
+	TODO()
 
 fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<T>> =
 	context.typedCompilation(script.compileOnlyLine).map { plus(it) }
