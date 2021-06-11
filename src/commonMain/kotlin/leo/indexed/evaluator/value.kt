@@ -1,4 +1,4 @@
-package leo.indexed.evalutor
+package leo.indexed.evaluator
 
 typealias Value = Any?
 

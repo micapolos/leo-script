@@ -3,7 +3,6 @@ package leo.indexed.evaluator
 import leo.base.assertEqualTo
 import leo.beName
 import leo.doName
-import leo.indexed.evalutor.evaluate
 import leo.letName
 import leo.lineTo
 import leo.literal

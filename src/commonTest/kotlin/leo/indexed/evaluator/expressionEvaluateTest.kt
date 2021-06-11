@@ -2,7 +2,6 @@ package leo.indexed.evaluator
 
 import leo.base.assertEqualTo
 import leo.indexed.at
-import leo.indexed.evalutor.evaluate
 import leo.indexed.expression
 import leo.indexed.tuple
 import leo.literal

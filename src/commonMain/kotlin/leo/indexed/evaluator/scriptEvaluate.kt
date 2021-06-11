@@ -1,4 +1,4 @@
-package leo.indexed.evalutor
+package leo.indexed.evaluator
 
 import leo.Script
 import leo.indexed.compiler.typed
