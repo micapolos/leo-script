@@ -16,19 +16,24 @@ import leo.indexed.typed.onlyTypedOrNull
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
 import leo.indexed.variable
+import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.recursible
+import leo.structureOrNull
 
 val <T> TypedTuple<T>.resolve: TypedTuple<T> get() =
 	null
 		?: resolveGetOrNull
 		?: this
 
+// TODO: Simplify this method, it's terrible right now.
 val <T> TypedTuple<T>.resolveGetOrNull: TypedTuple<T>? get() =
 	typedStack.onlyOrNull?.let { typed ->
 		typed.typeLine.recursible.atomOrNull?.fieldOrNull?.let { typeField ->
 			typeField.rhsType.getIndexedLineOrNull(typeField.name)?.let { indexedTypeLine ->
-				tuple(expression(at(typed.expression, expression(indexedTypeLine.index))).of(indexedTypeLine.value))
+				typeField.rhsType.onlyLineOrNull?.structureOrNull?.onlyLineOrNull
+					?.let { tuple(expressionTuple.expressionStack.onlyOrNull!!.of(indexedTypeLine.value) ) }
+					?: tuple(expression(at(typed.expression, expression(indexedTypeLine.index))).of(indexedTypeLine.value))
 			}
 		}
 	}

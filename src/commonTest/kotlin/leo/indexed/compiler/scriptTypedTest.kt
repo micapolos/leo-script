@@ -65,6 +65,19 @@ class ScriptTypedTest {
 	}
 
 	@Test
+	fun get_oneField() {
+		script(
+			"x" lineTo script(literal(10)),
+			"point" lineTo script(),
+			"x" lineTo script())
+			.typed
+			.assertEqualTo(
+				typed(
+					expression(literal(10)),
+					"x" lineTo type(numberTypeLine)))
+	}
+
+	@Test
 	fun get() {
 		script(
 			"x" lineTo script(literal(10)),

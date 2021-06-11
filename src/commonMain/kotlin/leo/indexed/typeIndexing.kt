@@ -18,4 +18,4 @@ fun TypeLine.getIndexedLineOrNull(name: String): IndexedValue<TypeLine>? =
 	structureOrNull?.indexedLineOrNull(name)
 
 fun Type.getIndexedLineOrNull(name: String): IndexedValue<TypeLine>? =
-	structureOrNull?.onlyLineOrNull?.getIndexedLineOrNull(name)
+	onlyLineOrNull?.getIndexedLineOrNull(name)
