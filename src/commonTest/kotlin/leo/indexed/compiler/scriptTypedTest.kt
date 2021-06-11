@@ -63,5 +63,18 @@ class ScriptTypedTest {
 						at(
 							expression(tuple(expression(literal(10)), expression(literal(20)))),
 							expression<Unit>(0))).of("x" lineTo type(numberTypeLine))))
+
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			"point" lineTo script(),
+			"y" lineTo script())
+			.typedTuple
+			.assertEqualTo(
+				tuple(
+					expression(
+						at(
+							expression(tuple(expression(literal(10)), expression(literal(20)))),
+							expression<Unit>(1))).of("y" lineTo type(numberTypeLine))))
 	}
 }
