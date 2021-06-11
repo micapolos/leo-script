@@ -19,6 +19,7 @@ import leo.numberTypeLine
 import leo.script
 import leo.textTypeLine
 import leo.type
+import leo.wordName
 import kotlin.test.Test
 
 class ScriptTypedTest {
@@ -174,5 +175,17 @@ class ScriptTypedTest {
 							expression(literal(10)),
 							expression(literal("foo"))))),
 					textTypeLine))
+	}
+
+	@Test
+	fun word() {
+		script(
+			"red" lineTo script(),
+			wordName lineTo script("color"))
+			.bodyTypedTuple
+			.assertEqualTo(
+				tuple(
+					expression<Unit>() of ("red" lineTo type()),
+					expression<Unit>() of ("color" lineTo type())))
 	}
 }

@@ -34,6 +34,7 @@ import leo.seq
 import leo.size
 import leo.stateful
 import leo.type.compiler.type
+import leo.wordName
 
 typealias Compilation<T, V> = Stateful<Context<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
@@ -43,6 +44,18 @@ fun <T> Context<T>.tupleCompilation(script: Script): Compilation<T, TypedTuple<T
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.bodyTuple }
+
+fun <T> Context<T>.typedCompilation(scriptLine: ScriptLine): Compilation<T, Typed<T>> =
+	when (scriptLine) {
+		is FieldScriptLine -> typedCompilation(scriptLine.field)
+		is LiteralScriptLine -> typedCompilation(scriptLine.literal)
+	}
+
+fun <T> Context<T>.typedCompilation(scriptField: ScriptField): Compilation<T, Typed<T>> =
+	tupleCompilation(scriptField.rhs).map { scriptField.name typedTo it }
+
+fun <T> typedCompilation(literal: Literal): Compilation<T, Typed<T>> =
+	typed<T>(literal).compilation()
 
 fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
 	tupleCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
@@ -72,6 +85,7 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 		beName -> plusBeCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
+		wordName -> plusWordCompilation(scriptField.rhs)
 		else -> null
 	}
 
@@ -99,6 +113,9 @@ fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<
 				else -> null
 			}
 		}.notNullOrError("$script let error")
+
+fun <T> Compiler<T>.plusWordCompilation(script: Script): Compilation<T, Compiler<T>> =
+	context.typedCompilation(script.compileOnlyLine).map { plus(it) }
 
 fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
 	context.typeStructureCompilation(lhs).bind { typeStructure ->

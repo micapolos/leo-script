@@ -36,3 +36,5 @@ fun <T> at(vector: Expression<T>, index: Expression<T>) = At(vector, index)
 fun <T> function(paramCount: Int, body: Expression<T>) = Function(paramCount, body)
 fun <T> invoke(function: Expression<T>, params: Tuple<T>) = Invoke(function, params)
 fun variable(index: Int) = Variable(index)
+
+fun <T> expression(): Expression<T> = expression(tuple())

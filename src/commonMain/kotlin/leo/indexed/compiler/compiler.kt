@@ -6,6 +6,7 @@ import leo.indexed.invoke
 import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
 import leo.indexed.typed.expressionTuple
+import leo.indexed.typed.plus
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
 import leo.isEmpty
@@ -29,3 +30,7 @@ val <T> Compiler<T>.typed: Typed<T> get() =
 					context.paramsTuple.expressionTuple)),
 			typed.typeLine)
 	}
+
+fun <T> Compiler<T>.plus(typed: Typed<T>): Compiler<T> =
+	set(bodyTuple.plus(typed))
+

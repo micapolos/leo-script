@@ -56,5 +56,6 @@ val updateName = "update"
 val useName = "use"
 val valueName = "value"
 val withName = "with"
+val wordName = "word"
 val yesName = "yes"
 
