@@ -8,6 +8,9 @@ val TypeLine.recursible: TypeRecursible get() =
 		is RecursiveTypeLine -> recursive.line.shiftRecursion.recursible
 	}
 
+val TypeLine.atom: TypeAtom get() =
+	recursible.atomOrNull!! // TODO: Incorporate into recursible, so there's no unsafety
+
 // ========================================
 
 val TypeLine.shiftRecursion: TypeLine get() =

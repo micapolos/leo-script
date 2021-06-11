@@ -15,8 +15,8 @@ import kotlin.test.Test
 class ScriptEvaluateTest {
 	@Test
 	fun literals() {
-		script(literal(10)).evaluate.assertEqualTo(10.0)
-		script(literal("foo")).evaluate.assertEqualTo("foo")
+		script(literal(10)).evaluateValue.assertEqualTo(10.0)
+		script(literal("foo")).evaluateValue.assertEqualTo("foo")
 	}
 
 	@Test
@@ -25,7 +25,7 @@ class ScriptEvaluateTest {
 			"point" lineTo script(
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))))
-			.evaluate
+			.evaluateValue
 			.assertEqualTo(listOf(10.0, 20.0))
 	}
 
@@ -36,7 +36,7 @@ class ScriptEvaluateTest {
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))),
 			"x" lineTo script())
-			.evaluate
+			.evaluateValue
 			.assertEqualTo(10.0)
 	}
 
@@ -46,7 +46,7 @@ class ScriptEvaluateTest {
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
 			doName lineTo script("x"))
-			.evaluate
+			.evaluateValue
 			.assertEqualTo(10.0)
 	}
 
@@ -60,7 +60,7 @@ class ScriptEvaluateTest {
 				"y" lineTo script(),
 				beName lineTo script(literal(20))),
 			"x" lineTo script())
-			.evaluate
+			.evaluateValue
 			.assertEqualTo(10.0)
 	}
 
@@ -71,7 +71,7 @@ class ScriptEvaluateTest {
 				"length" lineTo script(numberTypeScriptLine),
 				doName lineTo script(line("length"), line(numberName))),
 			"length" lineTo script(literal(10)))
-			.evaluate
+			.evaluateValue
 			.assertEqualTo(10.0)
 	}
 }
