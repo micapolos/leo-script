@@ -1,7 +1,10 @@
 package leo.indexed.evaluator
 
 import leo.base.assertEqualTo
+import leo.beName
+import leo.doName
 import leo.indexed.evalutor.evaluate
+import leo.letName
 import leo.lineTo
 import leo.literal
 import leo.script
@@ -30,6 +33,30 @@ class ScriptEvaluateTest {
 			"point" lineTo script(
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))),
+			"x" lineTo script())
+			.evaluate
+			.assertEqualTo(10.0)
+	}
+
+	@Test
+	fun do_() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			doName lineTo script("x"))
+			.evaluate
+			.assertEqualTo(10.0)
+	}
+
+	@Test
+	fun letBe() {
+		script(
+			letName lineTo script(
+				"x" lineTo script(),
+				beName lineTo script(literal(10))),
+			letName lineTo script(
+				"y" lineTo script(),
+				beName lineTo script(literal(20))),
 			"x" lineTo script())
 			.evaluate
 			.assertEqualTo(10.0)
