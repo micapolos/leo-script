@@ -111,55 +111,55 @@ class ScriptTypedTest {
 	fun letBe() {
 		script(
 			letName lineTo script(
-				"foo" lineTo script(),
-				beName lineTo script("bar")),
-			"foo" lineTo script())
+				"size" lineTo script(),
+				beName lineTo script(literal(10))),
+			"size" lineTo script())
 			.typed
 			.assertEqualTo(
 				typed(
 					expression(
 						invoke(
 							expression(function(1, expression(variable(0)))),
-							tuple(expression(leo.indexed.tuple())))),
-					"bar" lineTo type()))
+							tuple(expression(literal(10))))),
+					numberTypeLine))
 	}
 
 	@Test
 	fun let_indexing() {
 		script(
 			letName lineTo script(
-				"foo" lineTo script(),
-				beName lineTo script("bar")),
+				"size" lineTo script(),
+				beName lineTo script(literal(10))),
 			letName lineTo script(
-				"zoo" lineTo script(),
-				beName lineTo script("zar")),
-			"foo" lineTo script())
+				"name" lineTo script(),
+				beName lineTo script(literal("foo"))),
+			"size" lineTo script())
 			.typed
 			.assertEqualTo(
 				typed(expression(
 					invoke(
 						expression(function(2, expression(variable(1)))),
 						tuple(
-							expression(leo.indexed.tuple()),
-							expression(leo.indexed.tuple())))),
-					"bar" lineTo type()))
+							expression(literal(10)),
+							expression(literal("foo"))))),
+					numberTypeLine))
 
 		script(
 			letName lineTo script(
-				"foo" lineTo script(),
-				beName lineTo script("bar")),
+				"size" lineTo script(),
+				beName lineTo script(literal(10))),
 			letName lineTo script(
-				"zoo" lineTo script(),
-				beName lineTo script("zar")),
-			"zoo" lineTo script())
+				"name" lineTo script(),
+				beName lineTo script(literal("foo"))),
+			"name" lineTo script())
 			.typed
 			.assertEqualTo(
 				typed(expression(
 					invoke(
 						expression(function(2, expression(variable(0)))),
 						tuple(
-							expression(leo.indexed.tuple()),
-							expression(leo.indexed.tuple())))),
-					"zar" lineTo type()))
+							expression(literal(10)),
+							expression(literal("foo"))))),
+					textTypeLine))
 	}
 }
