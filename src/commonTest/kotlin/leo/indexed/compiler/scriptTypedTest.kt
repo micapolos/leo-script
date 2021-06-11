@@ -1,6 +1,7 @@
 package leo.indexed.compiler
 
 import leo.base.assertEqualTo
+import leo.beName
 import leo.doName
 import leo.indexed.at
 import leo.indexed.expression
@@ -11,6 +12,7 @@ import leo.indexed.typed.of
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
 import leo.indexed.variable
+import leo.letName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
@@ -103,5 +105,30 @@ class ScriptTypedTest {
 							expression(function(2, expression(variable(1)))),
 							tuple(expression(literal(10)), expression(literal(20))))),
 					"x" lineTo type(numberTypeLine)))
+	}
+
+	@Test
+	fun letBe() {
+		script(
+			letName lineTo script(
+				"foo" lineTo script(),
+				beName lineTo script("bar")),
+			"foo" lineTo script())
+			.typed
+			.assertEqualTo(typed(expression(variable(0)), "bar" lineTo type()))
+	}
+
+	@Test
+	fun letBe_multi() {
+		script(
+			letName lineTo script(
+				"foo" lineTo script(),
+				beName lineTo script("bar")),
+			letName lineTo script(
+				"zoo" lineTo script(),
+				beName lineTo script("zar")),
+			"foo" lineTo script())
+			.typed
+			.assertEqualTo(typed(expression(variable(1)), "bar" lineTo type()))
 	}
 }

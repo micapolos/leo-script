@@ -7,7 +7,9 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
+import leo.TypeStructure
 import leo.base.notNullOrError
+import leo.beName
 import leo.bind
 import leo.doName
 import leo.foldStateful
@@ -23,12 +25,15 @@ import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
 import leo.indexed.typed.typedTo
 import leo.isEmpty
+import leo.letName
 import leo.lineStack
 import leo.map
+import leo.matchInfix
 import leo.reverse
 import leo.seq
 import leo.size
 import leo.stateful
+import leo.type.compiler.type
 
 typealias Compilation<T, V> = Stateful<Context<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
@@ -41,6 +46,9 @@ fun <T> Context<T>.tupleCompilation(script: Script): Compilation<T, TypedTuple<T
 
 fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
 	tupleCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
+
+fun <T> Context<T>.typeStructureCompilation(script: Script): Compilation<T, TypeStructure> =
+	script.type.compileStructure.compilation() // TODO
 
 fun <T> Compiler<T>.plusCompilation(scriptLine: ScriptLine): Compilation<T, Compiler<T>> =
 	when (scriptLine) {
@@ -59,6 +67,7 @@ fun <T> Compiler<T>.plusCompilation(scriptField: ScriptField): Compilation<T, Co
 fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<T, Compiler<T>>? =
 	when (scriptField.name) {
 		doName -> plusDoCompilation(scriptField.rhs)
+		letName -> plusLetCompilation(scriptField.rhs)
 		else -> null
 	}
 
@@ -72,6 +81,31 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 							expression(function(tuple.typedStack.size, typed.expression)),
 							tuple.expressionTuple)),
 					typed.typeLine)))
+	}
+
+fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<T>> =
+	script
+		.matchInfix { lhs, name, rhs ->
+			when (name) {
+				beName -> plusLetBeCompilation(lhs, rhs)
+				doName -> plusLetDoCompilation(lhs, rhs)
+				else -> null
+			}
+		}.notNullOrError("$script let error")
+
+fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
+	context.typeStructureCompilation(lhs).bind { typeStructure ->
+		context.typedCompilation(rhs).map { typed ->
+			set(
+				context
+					.plus(definition(typeStructure, constantBinding(typed.typeLine)))
+					.plus(typed))
+		}
+	}
+
+fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
+	context.typeStructureCompilation(lhs).bind { typeStructure ->
+		TODO()
 	}
 
 fun <T> Compiler<T>.plusDynamicCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =

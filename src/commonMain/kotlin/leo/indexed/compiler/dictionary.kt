@@ -15,8 +15,11 @@ import leo.stack
 data class Dictionary(val definitionStack: Stack<Definition>)
 fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
 
+fun Dictionary.plus(definition: Definition): Dictionary =
+	definitionStack.push(definition).let(::Dictionary)
+
 fun Dictionary.plus(typeLine: TypeLine): Dictionary =
-	definitionStack.push(typeLine.definition()).let(::Dictionary)
+	plus(typeLine.definition())
 
 fun Dictionary.plus(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plus(it) }
