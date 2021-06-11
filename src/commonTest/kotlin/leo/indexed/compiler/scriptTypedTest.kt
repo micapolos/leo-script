@@ -38,7 +38,7 @@ class ScriptTypedTest {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)))
-			.typedTuple
+			.bodyTypedTuple
 			.assertEqualTo(
 				tuple(
 					typed(expression(literal(10)), "x" lineTo type(numberTypeLine)),
@@ -115,11 +115,17 @@ class ScriptTypedTest {
 				beName lineTo script("bar")),
 			"foo" lineTo script())
 			.typed
-			.assertEqualTo(typed(expression(variable(0)), "bar" lineTo type()))
+			.assertEqualTo(
+				typed(
+					expression(
+						invoke(
+							expression(function(1, expression(variable(0)))),
+							tuple(expression(leo.indexed.tuple())))),
+					"bar" lineTo type()))
 	}
 
 	@Test
-	fun letBe_multi() {
+	fun let_indexing() {
 		script(
 			letName lineTo script(
 				"foo" lineTo script(),
@@ -129,6 +135,31 @@ class ScriptTypedTest {
 				beName lineTo script("zar")),
 			"foo" lineTo script())
 			.typed
-			.assertEqualTo(typed(expression(variable(1)), "bar" lineTo type()))
+			.assertEqualTo(
+				typed(expression(
+					invoke(
+						expression(function(2, expression(variable(1)))),
+						tuple(
+							expression(leo.indexed.tuple()),
+							expression(leo.indexed.tuple())))),
+					"bar" lineTo type()))
+
+		script(
+			letName lineTo script(
+				"foo" lineTo script(),
+				beName lineTo script("bar")),
+			letName lineTo script(
+				"zoo" lineTo script(),
+				beName lineTo script("zar")),
+			"zoo" lineTo script())
+			.typed
+			.assertEqualTo(
+				typed(expression(
+					invoke(
+						expression(function(2, expression(variable(0)))),
+						tuple(
+							expression(leo.indexed.tuple()),
+							expression(leo.indexed.tuple())))),
+					"zar" lineTo type()))
 	}
 }

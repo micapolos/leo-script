@@ -9,7 +9,7 @@ import leo.indexed.typed.type
 data class Context<out T>(
 	val environment: Environment<T>,
 	val dictionary: Dictionary,
-	val tuple: TypedTuple<T>)
+	val paramsTuple: TypedTuple<T>)
 
 val <T> Environment<T>.context get() = Context(this, dictionary(), tuple())
 
@@ -22,5 +22,5 @@ fun <T> Context<T>.typedOrNull(tuple: TypedTuple<T>): Typed<T>? =
 fun <T> Context<T>.plus(definition: Definition): Context<T> =
 	copy(dictionary = dictionary.plus(definition))
 
-fun <T> Context<T>.plus(typed: Typed<T>): Context<T> =
-	copy(tuple = tuple.plus(typed))
+fun <T> Context<T>.plusParam(typed: Typed<T>): Context<T> =
+	copy(paramsTuple = paramsTuple.plus(typed))

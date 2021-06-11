@@ -4,9 +4,13 @@ import leo.Script
 import leo.get
 import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
+import leo.map
 
-val Script.typedTuple: TypedTuple<Unit> get() =
+val Script.bodyTyped: Typed<Unit> get() =
+	unitEnvironment.context.typedCompilation(this).get(unitEnvironment.context)
+
+val Script.bodyTypedTuple: TypedTuple<Unit> get() =
 	unitEnvironment.context.tupleCompilation(this).get(unitEnvironment.context)
 
 val Script.typed: Typed<Unit> get() =
-	unitEnvironment.context.typedCompilation(this).get(unitEnvironment.context)
+	unitEnvironment.context.compiler.plusCompilation(this).map { it.typed }.get(unitEnvironment.context)

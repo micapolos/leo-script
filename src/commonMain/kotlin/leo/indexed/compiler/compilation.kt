@@ -42,13 +42,16 @@ fun <T> Context<T>.tupleCompilation(script: Script): Compilation<T, TypedTuple<T
 	compiler
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
-		.map { it.tuple }
+		.map { it.bodyTuple }
 
 fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
 	tupleCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
 
 fun <T> Context<T>.typeStructureCompilation(script: Script): Compilation<T, TypeStructure> =
 	script.type.compileStructure.compilation() // TODO
+
+fun <T> Compiler<T>.plusCompilation(script: Script): Compilation<T, Compiler<T>> =
+	compilation<T, Compiler<T>>().foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 
 fun <T> Compiler<T>.plusCompilation(scriptLine: ScriptLine): Compilation<T, Compiler<T>> =
 	when (scriptLine) {
@@ -72,14 +75,14 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 	}
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
-	context.plus(tuple).typedCompilation(script).map { typed ->
+	context.plus(bodyTuple).typedCompilation(script).map { typed ->
 		set(
 			tuple(
 				typed(
 					expression(
 						invoke(
-							expression(function(tuple.typedStack.size, typed.expression)),
-							tuple.expressionTuple)),
+							expression(function(bodyTuple.typedStack.size, typed.expression)),
+							bodyTuple.expressionTuple)),
 					typed.typeLine)))
 	}
 
@@ -99,7 +102,7 @@ fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<
 			set(
 				context
 					.plus(definition(typeStructure, constantBinding(typed.typeLine)))
-					.plus(typed))
+					.plusParam(typed))
 		}
 	}
 
@@ -113,7 +116,7 @@ fun <T> Compiler<T>.plusDynamicCompilation(scriptField: ScriptField): Compilatio
 	else plusFieldCompilation(scriptField)
 
 fun <T> Compiler<T>.plusCompilation(name: String): Compilation<T, Compiler<T>> =
-	context.resolveCompilation(tuple(name typedTo tuple)).map { set(it) }
+	context.resolveCompilation(tuple(name typedTo bodyTuple)).map { set(it) }
 
 fun <T> Compiler<T>.plusFieldCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
 	context.tupleCompilation(scriptField.rhs).bind { tuple ->
@@ -121,7 +124,7 @@ fun <T> Compiler<T>.plusFieldCompilation(scriptField: ScriptField): Compilation<
 	}
 
 fun <T> Compiler<T>.plusResolveCompilation(typed: Typed<T>): Compilation<T, Compiler<T>> =
-	context.resolveCompilation(tuple.plus(typed)).map { set(it) }
+	context.resolveCompilation(bodyTuple.plus(typed)).map { set(it) }
 
 fun <T> Context<T>.resolveCompilation(tuple: TypedTuple<T>): Compilation<T, TypedTuple<T>> =
 	null
