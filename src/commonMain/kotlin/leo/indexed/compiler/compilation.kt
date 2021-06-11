@@ -7,10 +7,12 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
+import leo.base.notNullOrError
 import leo.bind
 import leo.foldStateful
 import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
+import leo.indexed.typed.onlyTypedOrNull
 import leo.indexed.typed.plus
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
@@ -30,6 +32,9 @@ fun <T> Context<T>.vectorCompilation(script: Script): Compilation<T, TypedTuple<
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.tuple }
+
+fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
+	vectorCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
 
 fun <T> Compiler<T>.plusCompilation(scriptLine: ScriptLine): Compilation<T, Compiler<T>> =
 	when (scriptLine) {

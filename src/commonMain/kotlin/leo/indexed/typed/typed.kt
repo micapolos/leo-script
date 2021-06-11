@@ -20,6 +20,7 @@ import leo.typeLine
 data class Typed<out T>(val expression: Expression<T>, val typeLine: TypeLine)
 data class TypedTuple<out T>(val typedStack: Stack<Typed<T>>)
 
+fun <T> typed(expression: Expression<T>, typeLine: TypeLine) = Typed(expression, typeLine)
 infix fun <T> Expression<T>.of(typeLine: TypeLine) = Typed(this, typeLine)
 fun <T> tuple(vararg typeds: Typed<T>) = TypedTuple(stack(*typeds))
 infix fun <T> String.typedTo(tuple: TypedTuple<T>) = tuple.expression.of(this lineTo tuple.type)

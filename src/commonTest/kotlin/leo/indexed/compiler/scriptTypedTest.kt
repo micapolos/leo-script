@@ -7,11 +7,11 @@ import leo.indexed.tuple
 import leo.indexed.typed.of
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
-import leo.indexed.typed.typedTo
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
 import leo.script
+import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
 
@@ -19,8 +19,12 @@ class ScriptTypedTest {
 	@Test
 	fun literals() {
 		script(literal(10))
-			.typedTuple
-			.assertEqualTo(tuple(typed(literal(10))))
+			.typed
+			.assertEqualTo(expression<Unit>(literal(10)) of numberTypeLine)
+
+		script(literal("foo"))
+			.typed
+			.assertEqualTo(expression<Unit>(literal("foo")) of textTypeLine)
 	}
 
 	@Test
@@ -31,8 +35,8 @@ class ScriptTypedTest {
 			.typedTuple
 			.assertEqualTo(
 				tuple(
-					"x" typedTo tuple(typed(literal(10))),
-					"y" typedTo tuple(typed(literal(20)))))
+					typed(expression(literal(10)), "x" lineTo type(numberTypeLine)),
+					typed(expression(literal(20)), "y" lineTo type(numberTypeLine))))
 	}
 
 	@Test
@@ -41,12 +45,13 @@ class ScriptTypedTest {
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
 			"point" lineTo script())
-			.typedTuple
+			.typed
 			.assertEqualTo(
-				tuple(
-					"point" typedTo tuple(
-						"x" typedTo tuple(typed(literal(10))),
-						"y" typedTo tuple(typed(literal(20))))))
+				typed(
+					expression(tuple(expression(literal(10)), expression(literal(20)))),
+					"point" lineTo type(
+						"x" lineTo type(numberTypeLine),
+						"y" lineTo type(numberTypeLine))))
 	}
 
 	@Test
@@ -56,25 +61,27 @@ class ScriptTypedTest {
 			"y" lineTo script(literal(20)),
 			"point" lineTo script(),
 			"x" lineTo script())
-			.typedTuple
+			.typed
 			.assertEqualTo(
-				tuple(
+				typed(
 					expression(
 						at(
 							expression(tuple(expression(literal(10)), expression(literal(20)))),
-							expression<Unit>(0))).of("x" lineTo type(numberTypeLine))))
+							expression(0))),
+					"x" lineTo type(numberTypeLine)))
 
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
 			"point" lineTo script(),
 			"y" lineTo script())
-			.typedTuple
+			.typed
 			.assertEqualTo(
-				tuple(
+				typed(
 					expression(
 						at(
 							expression(tuple(expression(literal(10)), expression(literal(20)))),
-							expression<Unit>(1))).of("y" lineTo type(numberTypeLine))))
+							expression(1))),
+					"y" lineTo type(numberTypeLine)))
 	}
 }
