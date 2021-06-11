@@ -16,7 +16,7 @@ class EvaluateTest {
 					tuple(
 						expression(literal("Hello, ")),
 						expression(literal("world!")))),
-				expression(1)))
+				1))
 			.evaluate
 			.assertEqualTo("world!")
 	}

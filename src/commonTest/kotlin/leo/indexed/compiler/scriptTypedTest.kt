@@ -87,10 +87,7 @@ class ScriptTypedTest {
 			.typed
 			.assertEqualTo(
 				typed(
-					expression(
-						at(
-							expression(tuple(expression(literal(10)), expression(literal(20)))),
-							expression(0))),
+					expression(at(expression(tuple(expression(literal(10)), expression(literal(20)))), 0)),
 					"x" lineTo type(numberTypeLine)))
 
 		script(
@@ -102,9 +99,7 @@ class ScriptTypedTest {
 			.assertEqualTo(
 				typed(
 					expression(
-						at(
-							expression(tuple(expression(literal(10)), expression(literal(20)))),
-							expression(1))),
+						at(expression(tuple(expression(literal(10)), expression(literal(20)))), 1)),
 					"y" lineTo type(numberTypeLine)))
 	}
 

@@ -152,6 +152,9 @@ tailrec fun <T> Stack<T>.get(int: Int): T? =
 		is LinkStack -> if (int == 0) link.head else link.tail.get(int.dec())
 	}
 
+fun <T> Stack<T>.getFromBottom(int: Int): T? =
+	get(size - int - 1)
+
 tailrec fun <T> Stack<T>.unsafeGet(int: Int): T =
 	when (this) {
 		is EmptyStack -> fail()

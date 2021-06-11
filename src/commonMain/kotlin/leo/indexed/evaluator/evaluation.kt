@@ -4,8 +4,10 @@ import leo.Literal
 import leo.NumberLiteral
 import leo.Stateful
 import leo.StringLiteral
+import leo.base.indexed
 import leo.bind
 import leo.flat
+import leo.getFromBottom
 import leo.getStateful
 import leo.indexed.AnyExpression
 import leo.indexed.At
@@ -13,10 +15,12 @@ import leo.indexed.AtExpression
 import leo.indexed.Expression
 import leo.indexed.Function
 import leo.indexed.FunctionExpression
-import leo.indexed.IndexExpression
+import leo.indexed.IndexedExpression
 import leo.indexed.Invoke
 import leo.indexed.InvokeExpression
 import leo.indexed.LiteralExpression
+import leo.indexed.Switch
+import leo.indexed.SwitchExpression
 import leo.indexed.Tuple
 import leo.indexed.TupleExpression
 import leo.indexed.Variable
@@ -38,18 +42,17 @@ val Expression<Value>.valueEvaluation: Evaluation<Value> get() =
 		is AnyExpression -> any.evaluation
 		is AtExpression -> at.valueEvaluation
 		is FunctionExpression -> function.valueEvaluation
-		is IndexExpression -> index.evaluation
 		is InvokeExpression -> invoke.valueEvaluation
 		is LiteralExpression -> literal.value.evaluation
 		is TupleExpression -> tuple.valueEvaluation
 		is VariableExpression -> variable.valueEvaluation
+		is IndexedExpression -> indexed.valueEvaluation
+		is SwitchExpression -> switch.valueEvaluation
 	}
 
 val At<Value>.valueEvaluation: Evaluation<Value> get() =
-	vector.valueEvaluation.bind { vector ->
-		index.valueEvaluation.map { index ->
-			vector.valueList[index.valueInt]
-		}
+	vector.valueEvaluation.map { vector ->
+		vector.valueList[index]
 	}
 
 val Function<Value>.valueEvaluation: Evaluation<Value> get() =
@@ -78,4 +81,16 @@ val Tuple<Value>.valueEvaluation: Evaluation<Value> get() =
 val Variable.valueEvaluation: Evaluation<Value> get() =
 	contextEvaluation.map { context ->
 		context.value(this)
+	}
+
+val IndexedValue<Expression<Value>>.valueEvaluation: Evaluation<Value> get() =
+	value.valueEvaluation.map { index indexed it }
+
+val Switch<Value>.valueEvaluation: Evaluation<Value> get() =
+	lhs.valueEvaluation.bind { value ->
+		value.valueIndexed.let { indexed ->
+			contextEvaluation.map { context ->
+				context.push(value).evaluate(cases.expressionStack.getFromBottom(indexed.index)!!)
+			}
+		}
 	}

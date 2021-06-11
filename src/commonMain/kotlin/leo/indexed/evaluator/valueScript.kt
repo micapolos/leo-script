@@ -23,6 +23,7 @@ import leo.TypeStructure
 import leo.TypeText
 import leo.atom
 import leo.doingName
+import leo.getFromBottom
 import leo.isEmpty
 import leo.line
 import leo.lineTo
@@ -78,7 +79,9 @@ fun TypeStructure.script(value: Value): Script =
 			}!!.script
 
 fun TypeChoice.script(value: Value): Script =
-	TODO()
+	value.valueIndexed.let { indexed ->
+		lineStack.getFromBottom(indexed.index)!!.scriptLine(indexed.value).script
+	}
 
 fun Type.script(value: Value): Script =
 	when (this) {

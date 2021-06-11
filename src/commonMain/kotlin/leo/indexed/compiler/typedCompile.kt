@@ -33,7 +33,7 @@ val <T> TypedTuple<T>.resolveGetOrNull: TypedTuple<T>? get() =
 			typeField.rhsType.getIndexedLineOrNull(typeField.name)?.let { indexedTypeLine ->
 				typeField.rhsType.onlyLineOrNull?.structureOrNull?.onlyLineOrNull
 					?.let { tuple(expressionTuple.expressionStack.onlyOrNull!!.of(indexedTypeLine.value) ) }
-					?: tuple(expression(at(typed.expression, expression(indexedTypeLine.index))).of(indexedTypeLine.value))
+					?: tuple(expression(at(typed.expression, indexedTypeLine.index)).of(indexedTypeLine.value))
 			}
 		}
 	}

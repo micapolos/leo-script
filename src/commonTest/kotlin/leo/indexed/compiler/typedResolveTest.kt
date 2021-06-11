@@ -23,7 +23,7 @@ class TypedResolveTest {
 							"y" lineTo type(numberTypeLine)))))
 			.resolveGetOrNull
 			.assertEqualTo(
-				tuple(expression(at(expression<Unit>(variable(123)), expression(0)))
+				tuple(expression(at(expression<Unit>(variable(123)), 0))
 					.of("x" lineTo type(numberTypeLine))))
 	}
 }
