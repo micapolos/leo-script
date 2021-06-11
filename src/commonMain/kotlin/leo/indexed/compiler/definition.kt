@@ -8,10 +8,10 @@ import leo.name
 import leo.type
 import leo.typeStructure
 
-data class Definition<out T>(val structure: TypeStructure, val binding: Binding<T>)
+data class Definition(val structure: TypeStructure, val binding: Binding)
 
-fun <T> definition(type: TypeStructure, binding: Binding<T>) = Definition(type, binding)
-fun <T> TypeLine.definition(): Definition<T> = definition(typeStructure(name lineTo type()), constantBinding(this))
+fun definition(type: TypeStructure, binding: Binding) = Definition(type, binding)
+fun TypeLine.definition(): Definition = definition(typeStructure(name lineTo type()), constantBinding(this))
 
-fun <T> Definition<T>.bindingOrNull(structure: TypeStructure): Binding<T>? =
+fun Definition.bindingOrNull(structure: TypeStructure): Binding? =
 	binding.orNullIf(this.structure != structure)

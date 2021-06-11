@@ -12,16 +12,16 @@ import leo.reverse
 import leo.seq
 import leo.stack
 
-data class Dictionary<out T>(val definitionStack: Stack<Definition<T>>)
-fun <T> dictionary(vararg definitions: Definition<T>) = Dictionary(stack(*definitions))
+data class Dictionary(val definitionStack: Stack<Definition>)
+fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
 
-fun <T> Dictionary<T>.plus(typeLine: TypeLine): Dictionary<T> =
+fun Dictionary.plus(typeLine: TypeLine): Dictionary =
 	definitionStack.push(typeLine.definition()).let(::Dictionary)
 
-fun <T> Dictionary<T>.plus(structure: TypeStructure): Dictionary<T> =
+fun Dictionary.plus(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plus(it) }
 
-fun <T> Dictionary<T>.indexedBindingOrNull(structure: TypeStructure): IndexedValue<Binding<T>>? =
+fun Dictionary.indexedBindingOrNull(structure: TypeStructure): IndexedValue<Binding>? =
 	definitionStack.seq.mapIndexed.mapFirstOrNull {
 		value.bindingOrNull(structure)?.let { binding ->
 			index indexed binding

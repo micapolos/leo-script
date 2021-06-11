@@ -1,13 +1,19 @@
 package leo.indexed.compiler
 
 import leo.atomOrNull
+import leo.base.runIf
 import leo.fieldOrNull
 import leo.indexed.at
 import leo.indexed.expression
 import leo.indexed.getIndexedLineOrNull
+import leo.indexed.invoke
+import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
+import leo.indexed.typed.expressionTuple
 import leo.indexed.typed.of
 import leo.indexed.typed.tuple
+import leo.indexed.typed.typed
+import leo.indexed.variable
 import leo.onlyOrNull
 import leo.recursible
 
@@ -24,3 +30,10 @@ val <T> TypedTuple<T>.resolveGetOrNull: TypedTuple<T>? get() =
 			}
 		}
 	}
+
+fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
+	typed(
+		expression<T>(variable(index)).runIf(!value.isConstant) {
+			expression(invoke(this, tuple.expressionTuple))
+		},
+		value.typeLine)
