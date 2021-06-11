@@ -9,9 +9,14 @@ import leo.ScriptLine
 import leo.Stateful
 import leo.base.notNullOrError
 import leo.bind
+import leo.doName
 import leo.foldStateful
+import leo.indexed.expression
+import leo.indexed.function
+import leo.indexed.invoke
 import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
+import leo.indexed.typed.expressionTuple
 import leo.indexed.typed.onlyTypedOrNull
 import leo.indexed.typed.plus
 import leo.indexed.typed.tuple
@@ -22,19 +27,20 @@ import leo.lineStack
 import leo.map
 import leo.reverse
 import leo.seq
+import leo.size
 import leo.stateful
 
 typealias Compilation<T, V> = Stateful<Context<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
 
-fun <T> Context<T>.vectorCompilation(script: Script): Compilation<T, TypedTuple<T>> =
+fun <T> Context<T>.tupleCompilation(script: Script): Compilation<T, TypedTuple<T>> =
 	compiler
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.tuple }
 
 fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
-	vectorCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
+	tupleCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
 
 fun <T> Compiler<T>.plusCompilation(scriptLine: ScriptLine): Compilation<T, Compiler<T>> =
 	when (scriptLine) {
@@ -52,7 +58,20 @@ fun <T> Compiler<T>.plusCompilation(scriptField: ScriptField): Compilation<T, Co
 
 fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<T, Compiler<T>>? =
 	when (scriptField.name) {
+		doName -> plusDoCompilation(scriptField.rhs)
 		else -> null
+	}
+
+fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
+	context.plus(tuple).typedCompilation(script).map { typed ->
+		set(
+			tuple(
+				typed(
+					expression(
+						invoke(
+							expression(function(tuple.typedStack.size, typed.expression)),
+							tuple.expressionTuple)),
+					typed.typeLine)))
 	}
 
 fun <T> Compiler<T>.plusDynamicCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
@@ -63,7 +82,7 @@ fun <T> Compiler<T>.plusCompilation(name: String): Compilation<T, Compiler<T>> =
 	context.resolveCompilation(tuple(name typedTo tuple)).map { set(it) }
 
 fun <T> Compiler<T>.plusFieldCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
-	context.vectorCompilation(scriptField.rhs).bind { tuple ->
+	context.tupleCompilation(scriptField.rhs).bind { tuple ->
 		plusResolveCompilation(scriptField.name.typedTo(tuple))
 	}
 
@@ -76,4 +95,4 @@ fun <T> Context<T>.resolveCompilation(tuple: TypedTuple<T>): Compilation<T, Type
 		?: tuple.resolve.compilation()
 
 fun <T> Context<T>.resolveCompilationOrNull(tuple: TypedTuple<T>): Compilation<T, TypedTuple<T>>? =
-	null // TODO()
+	typedOrNull(tuple)?.let { tuple(it) }?.compilation()

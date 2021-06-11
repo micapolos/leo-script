@@ -18,7 +18,7 @@ data class AnyExpression<T>(val any: Any?): Expression<T>()
 
 data class At<out T>(val vector: Expression<T>, val index: Expression<T>)
 data class Function<out T>(val paramCount: Int, val body: Expression<T>)
-data class Invoke<out T>(val function: Function<T>, val params: Tuple<T>)
+data class Invoke<out T>(val function: Expression<T>, val params: Tuple<T>)
 data class Variable(val index: Int)
 
 fun <T> tuple(vararg expressions: Expression<T>) = Tuple(stack(*expressions))
@@ -34,5 +34,5 @@ fun <T> anyExpression(any: T): Expression<T> = AnyExpression(any)
 
 fun <T> at(vector: Expression<T>, index: Expression<T>) = At(vector, index)
 fun <T> function(paramCount: Int, body: Expression<T>) = Function(paramCount, body)
-fun <T> invoke(function: Function<T>, params: Tuple<T>) = Invoke(function, params)
+fun <T> invoke(function: Expression<T>, params: Tuple<T>) = Invoke(function, params)
 fun variable(index: Int) = Variable(index)

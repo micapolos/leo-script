@@ -33,6 +33,10 @@ val <T> TypedTuple<T>.expression: Expression<T> get() =
 	if (isEmpty) expression(leo.indexed.tuple())
 	else onlyTypedOrNull
 		?.let { it.expression }
-		?:expression(typedStack.map { expression }.let(::Tuple))
+		?:expression(expressionTuple)
+
+val <T> TypedTuple<T>.expressionTuple: Tuple<T> get() =
+	typedStack.map { expression }.let(::Tuple)
+
 val <T> TypedTuple<T>.type: Type get() = typedStack.map { typeLine }.let(::TypeStructure).let(::StructureType)
 fun <T> typed(literal: Literal): Typed<T> = expression<T>(literal).of(literal.typeLine)
