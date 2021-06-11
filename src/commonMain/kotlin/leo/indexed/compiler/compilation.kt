@@ -18,6 +18,7 @@ import leo.indexed.typed.typedTo
 import leo.isEmpty
 import leo.lineStack
 import leo.map
+import leo.reverse
 import leo.seq
 import leo.stateful
 
@@ -27,7 +28,7 @@ fun <T, V> V.compilation(): Compilation<T, V> = stateful()
 fun <T> Context<T>.vectorCompilation(script: Script): Compilation<T, TypedTuple<T>> =
 	compiler
 		.compilation<T, Compiler<T>>()
-		.foldStateful(script.lineStack.seq) { plusCompilation(it) }
+		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.tuple }
 
 fun <T> Compiler<T>.plusCompilation(scriptLine: ScriptLine): Compilation<T, Compiler<T>> =
