@@ -65,7 +65,7 @@ class ScriptTypedTest {
 	}
 
 	@Test
-	fun get_oneField() {
+	fun get_singleField() {
 		script(
 			"x" lineTo script(literal(10)),
 			"point" lineTo script(),
@@ -78,7 +78,7 @@ class ScriptTypedTest {
 	}
 
 	@Test
-	fun get() {
+	fun get_multipleFields() {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
