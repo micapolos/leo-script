@@ -2,7 +2,6 @@ package leo.indexed.typed
 
 import leo.Literal
 import leo.Stack
-import leo.StructureType
 import leo.Type
 import leo.TypeLine
 import leo.TypeStructure
@@ -15,6 +14,7 @@ import leo.map
 import leo.onlyOrNull
 import leo.push
 import leo.stack
+import leo.type
 import leo.typeLine
 
 data class Typed<out T>(val expression: Expression<T>, val typeLine: TypeLine)
@@ -38,5 +38,6 @@ val <T> TypedTuple<T>.expression: Expression<T> get() =
 val <T> TypedTuple<T>.expressionTuple: Tuple<T> get() =
 	typedStack.map { expression }.let(::Tuple)
 
-val <T> TypedTuple<T>.type: Type get() = typedStack.map { typeLine }.let(::TypeStructure).let(::StructureType)
+val <T> TypedTuple<T>.typeStructure: TypeStructure get() = typedStack.map { typeLine }.let(::TypeStructure)
+val <T> TypedTuple<T>.type: Type get() = type(typeStructure)
 fun <T> typed(literal: Literal): Typed<T> = expression<T>(literal).of(literal.typeLine)

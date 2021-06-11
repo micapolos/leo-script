@@ -186,6 +186,7 @@ val Literal.typeAtom: TypeAtom get() =
 	}
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
+val Type.choiceOrNull: TypeChoice? get() = (this as? ChoiceType)?.choice
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
 val TypeLine.recursibleOrNull: TypeRecursible? get() = (this as? RecursibleTypeLine)?.recursible
 val TypeLine.recursiveOrNull: TypeRecursive? get() = (this as? RecursiveTypeLine)?.recursive
@@ -194,6 +195,7 @@ val TypeAtom.primitiveOrNull: TypePrimitive? get() = (this as? PrimitiveTypeAtom
 val TypeAtom.doingOrNull: TypeDoing? get() = (this as? DoingTypeAtom)?.doing
 val TypeAtom.fieldOrNull: TypeField? get() = primitiveOrNull?.fieldOrNull
 val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rhsType?.structureOrNull
+val TypeLine.choiceOrNull: TypeChoice? get() = atomOrNull?.fieldOrNull?.rhsType?.choiceOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
 val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom
 

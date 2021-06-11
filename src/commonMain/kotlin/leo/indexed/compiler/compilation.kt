@@ -7,10 +7,12 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
+import leo.TypeLine
 import leo.TypeStructure
 import leo.base.notNullOrError
 import leo.beName
 import leo.bind
+import leo.castName
 import leo.doName
 import leo.doingLineTo
 import leo.foldStateful
@@ -30,6 +32,7 @@ import leo.letName
 import leo.lineStack
 import leo.map
 import leo.matchInfix
+import leo.onlyLineOrNull
 import leo.reverse
 import leo.seq
 import leo.size
@@ -62,7 +65,10 @@ fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, Typed<T>> =
 	tupleCompilation(script).map { it.onlyTypedOrNull.notNullOrError("$it.onlyTypedOrNull") }
 
 fun <T> Context<T>.typeStructureCompilation(script: Script): Compilation<T, TypeStructure> =
-	script.type.compileStructure.compilation() // TODO
+	script.type.compileStructure.compilation()
+
+fun <T> Context<T>.typeLineCompilation(script: Script): Compilation<T, TypeLine> =
+	typeStructureCompilation(script).map { it.onlyLineOrNull.notNullOrError("$this not line") }
 
 fun <T> Compiler<T>.plusCompilation(script: Script): Compilation<T, Compiler<T>> =
 	compilation<T, Compiler<T>>().foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
@@ -86,6 +92,7 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 		beName -> plusBeCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
+		castName -> plusCastCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
 	}
@@ -114,6 +121,13 @@ fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<
 				else -> null
 			}
 		}.notNullOrError("$script let error")
+
+fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
+	bodyTuple.compileTyped.let { typed ->
+		context.typeLineCompilation(script).map { typeLine ->
+			set(tuple(typed.compileCast(typeLine)))
+		}
+	}
 
 fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<T>> =
 	context.typedCompilation(script.compileOnlyLine).map { plus(it) }

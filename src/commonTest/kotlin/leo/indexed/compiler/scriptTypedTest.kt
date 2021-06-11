@@ -1,7 +1,10 @@
 package leo.indexed.compiler
 
 import leo.base.assertEqualTo
+import leo.base.indexed
 import leo.beName
+import leo.castName
+import leo.choice
 import leo.doName
 import leo.doingLineTo
 import leo.indexed.at
@@ -17,6 +20,7 @@ import leo.letName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
+import leo.orName
 import leo.script
 import leo.textTypeLine
 import leo.theName
@@ -246,5 +250,22 @@ class ScriptTypedTest {
 				tuple(
 					expression<Unit>() of ("red" lineTo type()),
 					expression<Unit>() of (theName lineTo type())))
+	}
+
+	@Test
+	fun cast() {
+		script(
+			"color" lineTo script("red"),
+			castName lineTo script(
+				"color" lineTo script(
+					orName lineTo script("red"),
+					orName lineTo script("green"))))
+			.typed
+			.assertEqualTo(
+				typed(
+					expression(0 indexed expression()),
+					"color" lineTo type(choice(
+						"red" lineTo type(),
+						"green" lineTo type()))))
 	}
 }

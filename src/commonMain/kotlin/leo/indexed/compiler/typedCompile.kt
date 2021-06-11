@@ -1,6 +1,8 @@
 package leo.indexed.compiler
 
+import leo.TypeLine
 import leo.atomOrNull
+import leo.base.indexed
 import leo.base.notNullOrError
 import leo.base.runIf
 import leo.fieldOrNull
@@ -47,3 +49,8 @@ fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
 
 val <T> TypedTuple<T>.compileTyped: Typed<T> get() =
 	onlyTypedOrNull.notNullOrError("$this not expression")
+
+fun <T> Typed<T>.compileCast(typeLine: TypeLine): Typed<T> =
+	typed(
+		expression(typeLine.compileIndexOf(this.typeLine).indexed(expression)),
+		typeLine)
