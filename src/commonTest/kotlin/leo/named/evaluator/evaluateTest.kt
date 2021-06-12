@@ -3,6 +3,7 @@ package leo.named.evaluator
 import leo.base.assertEqualTo
 import leo.literal
 import leo.named.expression.expression
+import leo.named.expression.expressionStructure
 import leo.named.expression.expressionTo
 import leo.named.expression.function
 import leo.named.expression.invoke
@@ -22,7 +23,8 @@ class EvaluateTest {
 		expression(
 			function<Unit>(
 				typeStructure(numberTypeLine),
-				"foo" expressionTo leo.named.expression.structure()))
+				"foo" expressionTo expressionStructure()
+			))
 			.invoke(structure(expression(literal(10))))
 			.evaluate
 			.assertEqualTo("foo" valueTo leo.named.value.structure())

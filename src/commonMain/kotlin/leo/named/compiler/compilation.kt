@@ -198,4 +198,4 @@ fun <T> Context<T>.resolveCompilation(tuple: TypedStructure<T>): Compilation<T, 
 		?: tuple.resolve.compilation()
 
 fun <T> Context<T>.resolveCompilationOrNull(tuple: TypedStructure<T>): Compilation<T, TypedStructure<T>>? =
-	typedExpressionOrNull(tuple)?.let { typedStructure(it) }?.compilation()
+	resolveOrNull(tuple)?.let { typedStructure(it) }?.compilation()

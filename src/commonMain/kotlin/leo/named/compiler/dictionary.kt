@@ -4,9 +4,9 @@ import leo.Stack
 import leo.TypeLine
 import leo.TypeStructure
 import leo.base.fold
-import leo.base.indexed
-import leo.base.mapFirstOrNull
-import leo.base.mapIndexed
+import leo.mapFirst
+import leo.named.typed.TypedExpression
+import leo.named.typed.TypedStructure
 import leo.push
 import leo.reverse
 import leo.seq
@@ -24,9 +24,8 @@ fun Dictionary.plus(typeLine: TypeLine): Dictionary =
 fun Dictionary.plus(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plus(it) }
 
-fun Dictionary.indexedBindingOrNull(structure: TypeStructure): IndexedValue<Binding>? =
-	definitionStack.seq.mapIndexed.mapFirstOrNull {
-		value.bindingOrNull(structure)?.let { binding ->
-			index indexed binding
-		}
-	}
+fun Dictionary.bindingOrNull(structure: TypeStructure): Binding? =
+	definitionStack.mapFirst { bindingOrNull(structure) }
+
+fun <T> Dictionary.resolveOrNull(typedStructure: TypedStructure<T>): TypedExpression<T>? =
+	bindingOrNull(typedStructure.typeStructure)?.resolve(typedStructure)

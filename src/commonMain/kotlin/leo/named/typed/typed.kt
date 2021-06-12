@@ -8,9 +8,9 @@ import leo.lineTo
 import leo.named.expression.Expression
 import leo.named.expression.Structure
 import leo.named.expression.expression
+import leo.named.expression.expressionStructure
 import leo.named.expression.expressionTo
 import leo.named.expression.plus
-import leo.named.expression.structure
 import leo.plus
 import leo.type
 import leo.typeLine
@@ -26,7 +26,7 @@ fun <T> TypedStructure<T>.plus(typedExpression: TypedExpression<T>): TypedStruct
 	typed(structure.plus(typedExpression.expression), typeStructure.plus(typedExpression.typeLine))
 
 fun <T> typedStructure(vararg typedExpression: TypedExpression<T>) =
-	typed(structure<T>(), typeStructure()).fold(typedExpression) { plus(it) }
+	typed(expressionStructure<T>(), typeStructure()).fold(typedExpression) { plus(it) }
 
 infix fun <T> String.expressionTo(typedStructure: TypedStructure<T>): TypedExpression<T> =
 	typed(

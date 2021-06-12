@@ -9,7 +9,6 @@ import leo.indexed.typed.type
 import leo.named.compiler.Definition
 import leo.named.compiler.Dictionary
 import leo.named.compiler.dictionary
-import leo.named.compiler.indexedBindingOrNull
 import leo.named.compiler.plus
 
 data class Context<out T>(

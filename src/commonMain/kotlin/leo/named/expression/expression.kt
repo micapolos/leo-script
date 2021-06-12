@@ -30,7 +30,8 @@ data class Function<out T>(val paramTypeStructure: TypeStructure, val bodyExpres
 data class Invoke<out T>(val function: Expression<T>, val params: Structure<T>)
 data class Variable(val typeStructure: TypeStructure)
 
-fun <T> structure(vararg expressions: Expression<T>) = Structure(stack(*expressions))
+fun <T> expressionStructure(vararg expressions: Expression<T>) = Structure<T>(stack(*expressions))
+fun <T> structure(expression: Expression<T>, vararg expressions: Expression<T>) = Structure(stack(expression, *expressions))
 infix fun <T> String.fieldTo(rhs: Structure<T>) = Field(this, rhs)
 infix fun <T> String.expressionTo(rhs: Structure<T>) = expression(this fieldTo rhs)
 infix fun <T> String.caseTo(expression: Expression<T>) = Case(this, expression)
@@ -53,7 +54,7 @@ fun variable(typeStructure: TypeStructure) = Variable(typeStructure)
 fun <T> Expression<T>.get(name: String): Expression<T> = expression(get(this, name))
 fun <T> Expression<T>.switch(vararg cases: Case<T>): Expression<T> = expression(switch(this, stack(*cases)))
 fun <T> Expression<T>.invoke(structure: Structure<T>): Expression<T> = expression(invoke(this, structure))
-fun <T> Expression<T>.invoke(vararg params: Expression<T>): Expression<T> = expression(invoke(this, structure(*params)))
+fun <T> Expression<T>.invoke(vararg params: Expression<T>): Expression<T> = expression(invoke(this, Structure(stack(*params))))
 
 fun <T> Structure<T>.plus(expression: Expression<T>) = Structure(expressionStack.push(expression))
 
