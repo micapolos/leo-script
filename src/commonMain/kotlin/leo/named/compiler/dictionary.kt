@@ -20,11 +20,11 @@ fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
 fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
 
-fun Dictionary.plus(typeLine: TypeLine): Dictionary =
-	plus(typeLine.definition())
+fun Dictionary.plusName(typeLine: TypeLine): Dictionary =
+	plus(typeLine.nameDefinition())
 
-fun Dictionary.plusLines(structure: TypeStructure): Dictionary =
-	fold(structure.lineStack.reverse.seq) { plus(it) }
+fun Dictionary.plusNames(structure: TypeStructure): Dictionary =
+	fold(structure.lineStack.reverse.seq) { plusName(it) }
 
 fun Dictionary.bindingOrNull(structure: Type): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
