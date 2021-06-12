@@ -1,4 +1,4 @@
-package leo.indexed.compiler
+package leo.named.compiler
 
 import leo.Stack
 import leo.TypeLine

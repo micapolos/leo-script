@@ -5,7 +5,6 @@ import leo.base.indexed
 import leo.base.notNullOrError
 import leo.base.runIf
 import leo.expression.compiler.resolveGetOrNull
-import leo.indexed.compiler.Binding
 import leo.indexed.compiler.compileIndexOf
 import leo.indexed.compiler.compileOnlyExpression
 import leo.indexed.expression

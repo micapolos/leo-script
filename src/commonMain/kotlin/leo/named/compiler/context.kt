@@ -1,10 +1,6 @@
 package leo.named.compiler
 
 import leo.TypeStructure
-import leo.indexed.compiler.Definition
-import leo.indexed.compiler.Dictionary
-import leo.indexed.compiler.dictionary
-import leo.indexed.compiler.plus
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedStructure
 import leo.named.typed.plus

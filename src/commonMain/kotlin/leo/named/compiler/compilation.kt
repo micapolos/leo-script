@@ -19,9 +19,6 @@ import leo.foldStateful
 import leo.indexed.compiler.compileOnlyExpression
 import leo.indexed.compiler.compileOnlyLine
 import leo.indexed.compiler.compileStructure
-import leo.indexed.compiler.constantBinding
-import leo.indexed.compiler.definition
-import leo.indexed.compiler.functionBinding
 import leo.isEmpty
 import leo.letName
 import leo.lineStack

@@ -18,6 +18,7 @@ import leo.indexed.typed.onlyTypedOrNull
 import leo.indexed.typed.tuple
 import leo.indexed.typed.typed
 import leo.indexed.variable
+import leo.named.compiler.Binding
 import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.recursible
