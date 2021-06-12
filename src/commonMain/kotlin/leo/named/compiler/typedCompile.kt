@@ -5,13 +5,11 @@ import leo.TypeChoice
 import leo.TypeLine
 import leo.TypeStructure
 import leo.atom
-import leo.base.indexed
 import leo.base.notNullOrError
 import leo.base.runIf
 import leo.choiceOrNull
 import leo.fieldOrNull
 import leo.getOrNull
-import leo.indexed.compiler.compileIndexOf
 import leo.indexed.expression
 import leo.indexed.invoke
 import leo.indexed.typed.Typed
@@ -44,11 +42,6 @@ fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
 val <T> TypedTuple<T>.compileTyped: Typed<T>
 	get() =
 	onlyTypedOrNull.notNullOrError("$this not expression")
-
-fun <T> Typed<T>.compileCast(typeLine: TypeLine): Typed<T> =
-	typed(
-		expression(typeLine.compileIndexOf(this.typeLine).indexed(expression)),
-		typeLine)
 
 val <T> TypedStructure<T>.compileOnlyExpression: TypedExpression<T> get() =
 	typeStructure.compileOnlyExpression.let { typeLine ->

@@ -1,2 +1,0 @@
-package leo.definition.kotlin
-
