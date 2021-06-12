@@ -113,6 +113,7 @@ val Stack<TypeLine>.choice get() = TypeChoice(this)
 fun type(structure: TypeStructure): Type = StructureType(structure)
 fun type(choice: TypeChoice): Type = ChoiceType(choice)
 
+fun typeStructure(name: String): TypeStructure = typeStructure(name lineTo type())
 fun typeStructure(vararg lines: TypeLine): TypeStructure = stack(*lines).structure
 fun structure(line: TypeLine, vararg lines: TypeLine): TypeStructure = stack(line, *lines).structure
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice

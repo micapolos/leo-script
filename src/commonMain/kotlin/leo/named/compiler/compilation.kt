@@ -120,19 +120,22 @@ fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler
 	}
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
-	context.plus(bodyTypedStructure).typedExpressionCompilation(script).map { typed ->
-		set(
-			typedStructure(
-				typed(
-					expression(
-						invoke(
-							expression(function(bodyTypedStructure.typeStructure, typed.expression)),
-							bodyTypedStructure.structure)
-					),
-					typed.typeLine)
+	context
+		.plus(bodyTypedStructure.typeStructure)
+		.typedExpressionCompilation(script)
+		.map { typed ->
+			set(
+				typedStructure(
+					typed(
+						expression(
+							invoke(
+								expression(function(bodyTypedStructure.typeStructure, typed.expression)),
+								bodyTypedStructure.structure)
+						),
+						typed.typeLine)
+				)
 			)
-		)
-	}
+		}
 
 fun <T> Compiler<T>.plusLetCompilation(script: Script): Compilation<T, Compiler<T>> =
 	script

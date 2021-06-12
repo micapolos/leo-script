@@ -17,9 +17,6 @@ val <T> Environment<T>.context get() = Context(this, dictionary(), typedStructur
 fun <T> Context<T>.plus(typeStructure: TypeStructure): Context<T> =
 	copy(dictionary = dictionary.plus(typeStructure))
 
-fun <T> Context<T>.plus(typedStructure: TypedStructure<T>): Context<T> =
-	copy(dictionary = dictionary.plus(typedStructure.typeStructure))
-
 fun <T> Context<T>.typedExpressionOrNull(typedStructure: TypedStructure<T>): TypedExpression<T>? =
 	null // TODO
 

@@ -52,6 +52,7 @@ fun variable(typeStructure: TypeStructure) = Variable(typeStructure)
 
 fun <T> Expression<T>.get(name: String): Expression<T> = expression(get(this, name))
 fun <T> Expression<T>.switch(vararg cases: Case<T>): Expression<T> = expression(switch(this, stack(*cases)))
+fun <T> Expression<T>.invoke(structure: Structure<T>): Expression<T> = expression(invoke(this, structure))
 fun <T> Expression<T>.invoke(vararg params: Expression<T>): Expression<T> = expression(invoke(this, structure(*params)))
 
 fun <T> Structure<T>.plus(expression: Expression<T>) = Structure(expressionStack.push(expression))
