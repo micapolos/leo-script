@@ -1,37 +1,39 @@
 package leo.named.compiler
 
-import leo.isEmpty
+import leo.fold
+import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedStructure
+import leo.named.typed.TypedLine
 import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedStructure
+import leo.typeStructure
 
 data class Compiler<out T>(
 	val context: Context<T>,
-	val bodyTypedStructure: TypedStructure<T>
+	val bodyTypedExpression: TypedExpression<T>
 )
 
 fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> = copy(context = context)
-fun <T> Compiler<T>.set(typedStructure: TypedStructure<T>): Compiler<T> = copy(bodyTypedStructure = typedStructure)
+fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> = copy(bodyTypedExpression = typedExpression)
 val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedStructure())
 
-val <T> Compiler<T>.typedExpression: TypedExpression<T>
+val <T> Compiler<T>.typedLine: TypedLine<T>
 	get() =
-	bodyTypedStructure.compileOnlyExpression.let { typedExpression ->
-		if (context.paramsTuple.typeStructure.lineStack.isEmpty) typedExpression
-		else typed(
+	bodyTypedExpression.compileOnlyLine.fold(context.paramLineStack) { paramLine ->
+		typed(
 			line(
 				invoke(
-					line(function(context.paramsTuple.typeStructure, typedExpression.line)),
-					context.paramsTuple.expression)
+					line(function(typeStructure(paramLine.typeLine), line)),
+					expression(paramLine.line)
+				)
 			),
-			typedExpression.typeLine)
+			typeLine)
 	}
 
-fun <T> Compiler<T>.plus(typedExpression: TypedExpression<T>): Compiler<T> =
-	set(bodyTypedStructure.plus(typedExpression))
+fun <T> Compiler<T>.plus(typedLine: TypedLine<T>): Compiler<T> =
+	set(bodyTypedExpression.plus(typedLine))
 

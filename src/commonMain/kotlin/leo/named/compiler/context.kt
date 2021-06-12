@@ -1,27 +1,28 @@
 package leo.named.compiler
 
+import leo.Stack
 import leo.TypeStructure
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedStructure
-import leo.named.typed.plus
-import leo.named.typed.typedStructure
+import leo.named.typed.TypedLine
+import leo.push
+import leo.stack
 
 data class Context<out T>(
 	val environment: Environment<T>,
 	val dictionary: Dictionary,
-	val paramsTuple: TypedStructure<T>
+	val paramLineStack: Stack<TypedLine<T>>
 )
 
-val <T> Environment<T>.context get() = Context(this, dictionary(), typedStructure())
+val <T> Environment<T>.context get() = Context(this, dictionary(), stack())
 
 fun <T> Context<T>.plus(typeStructure: TypeStructure): Context<T> =
 	copy(dictionary = dictionary.plus(typeStructure))
 
-fun <T> Context<T>.resolveOrNull(typedStructure: TypedStructure<T>): TypedExpression<T>? =
-	dictionary.resolveOrNull(typedStructure)
+fun <T> Context<T>.resolveOrNull(typedExpression: TypedExpression<T>): TypedLine<T>? =
+	dictionary.resolveOrNull(typedExpression)
 
 fun <T> Context<T>.plus(definition: Definition): Context<T> =
 	copy(dictionary = dictionary.plus(definition))
 
-fun <T> Context<T>.plusParam(typedExpression: TypedExpression<T>): Context<T> =
-	copy(paramsTuple = paramsTuple.plus(typedExpression))
+fun <T> Context<T>.plusParam(typedLine: TypedLine<T>): Context<T> =
+	copy(paramLineStack = paramLineStack.push(typedLine))

@@ -6,7 +6,7 @@ import leo.TypeStructure
 import leo.base.fold
 import leo.mapFirst
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedStructure
+import leo.named.typed.TypedLine
 import leo.push
 import leo.reverse
 import leo.seq
@@ -27,5 +27,5 @@ fun Dictionary.plus(structure: TypeStructure): Dictionary =
 fun Dictionary.bindingOrNull(structure: TypeStructure): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
 
-fun <T> Dictionary.resolveOrNull(typedStructure: TypedStructure<T>): TypedExpression<T>? =
-	bindingOrNull(typedStructure.typeStructure)?.resolve(typedStructure)
+fun <T> Dictionary.resolveOrNull(typedExpression: TypedExpression<T>): TypedLine<T>? =
+	bindingOrNull(typedExpression.typeStructure)?.resolve(typedExpression)

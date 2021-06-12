@@ -6,7 +6,7 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.variable
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedStructure
+import leo.named.typed.TypedLine
 import leo.named.typed.typed
 
 data class Binding(val typeLine: TypeLine, val isConstant: Boolean)
@@ -14,8 +14,8 @@ fun binding(typeLine: TypeLine, isConstant: Boolean): Binding = Binding(typeLine
 fun constantBinding(typeLine: TypeLine) = binding(typeLine, isConstant = true)
 fun functionBinding(typeLine: TypeLine) = binding(typeLine, isConstant = false)
 
-fun <T> Binding.resolve(typedStructure: TypedStructure<T>): TypedExpression<T> =
+fun <T> Binding.resolve(typedExpression: TypedExpression<T>): TypedLine<T> =
 	typed(
-		line<T>(variable(typedStructure.typeStructure))
-			.runIf(!isConstant) { invoke(typedStructure.expression) },
+		line<T>(variable(typedExpression.typeStructure))
+			.runIf(!isConstant) { invoke(typedExpression.expression) },
 		typeLine)

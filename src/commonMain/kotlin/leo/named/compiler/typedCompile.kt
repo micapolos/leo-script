@@ -21,7 +21,7 @@ import leo.indexed.variable
 import leo.linkOrNull
 import leo.named.expression.get
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedStructure
+import leo.named.typed.TypedLine
 import leo.named.typed.typed
 import leo.onlyLineOrNull
 import leo.onlyOrNull
@@ -29,7 +29,7 @@ import leo.structure
 import leo.structureOrNull
 import leo.type
 
-val <T> TypedStructure<T>.resolve: TypedStructure<T>
+val <T> TypedExpression<T>.resolve: TypedExpression<T>
 	get() = this
 
 fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
@@ -43,7 +43,7 @@ val <T> TypedTuple<T>.compileTyped: Typed<T>
 	get() =
 	onlyTypedOrNull.notNullOrError("$this not expression")
 
-val <T> TypedStructure<T>.compileOnlyExpression: TypedExpression<T> get() =
+val <T> TypedExpression<T>.compileOnlyLine: TypedLine<T> get() =
 	typeStructure.compileOnlyExpression.let { typeLine ->
 		typed(expression.lineStack.onlyOrNull!!, typeLine)
 	}
@@ -58,12 +58,12 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 		}
 	}
 
-val <T> TypedStructure<T>.onlyTypedExpressionOrNull: TypedExpression<T>? get() =
+val <T> TypedExpression<T>.onlyTypedLineOrNull: TypedLine<T>? get() =
 	typeStructure.onlyLineOrNull?.let {
 		typed(expression.lineStack.onlyOrNull!!, it)
 	}
 
-fun <T> TypedStructure<T>.getOrNull(name: String): TypedStructure<T>? =
+fun <T> TypedExpression<T>.getOrNull(name: String): TypedExpression<T>? =
 	typeStructure.getOrNull(name)?.let {
 		typed(expression.get(name), it)
 	}

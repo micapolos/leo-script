@@ -16,22 +16,22 @@ import leo.type
 import leo.typeLine
 import leo.typeStructure
 
-data class TypedExpression<out T>(val line: Line<T>, val typeLine: TypeLine)
-data class TypedStructure<out T>(val expression: Expression<T>, val typeStructure: TypeStructure)
+data class TypedLine<out T>(val line: Line<T>, val typeLine: TypeLine)
+data class TypedExpression<out T>(val expression: Expression<T>, val typeStructure: TypeStructure)
 
-fun <T> typed(line: Line<T>, typeLine: TypeLine) = TypedExpression(line, typeLine)
-fun <T> typed(expression: Expression<T>, typeStructure: TypeStructure) = TypedStructure(expression, typeStructure)
+fun <T> typed(line: Line<T>, typeLine: TypeLine) = TypedLine(line, typeLine)
+fun <T> typed(expression: Expression<T>, typeStructure: TypeStructure) = TypedExpression(expression, typeStructure)
 
-fun <T> TypedStructure<T>.plus(typedExpression: TypedExpression<T>): TypedStructure<T> =
-	typed(expression.plus(typedExpression.line), typeStructure.plus(typedExpression.typeLine))
+fun <T> TypedExpression<T>.plus(typedLine: TypedLine<T>): TypedExpression<T> =
+	typed(expression.plus(typedLine.line), typeStructure.plus(typedLine.typeLine))
 
-fun <T> typedStructure(vararg typedExpression: TypedExpression<T>) =
-	typed(expression<T>(), typeStructure()).fold(typedExpression) { plus(it) }
+fun <T> typedStructure(vararg typedLine: TypedLine<T>) =
+	typed(expression<T>(), typeStructure()).fold(typedLine) { plus(it) }
 
-infix fun <T> String.expressionTo(typedStructure: TypedStructure<T>): TypedExpression<T> =
+infix fun <T> String.expressionTo(typedExpression: TypedExpression<T>): TypedLine<T> =
 	typed(
-		this lineTo typedStructure.expression,
-		this lineTo type(typedStructure.typeStructure))
+		this lineTo typedExpression.expression,
+		this lineTo type(typedExpression.typeStructure))
 
-fun <T> typedExpression(literal: Literal): TypedExpression<T> =
+fun <T> typedExpression(literal: Literal): TypedLine<T> =
 	typed(expressionLine(literal), literal.typeLine)

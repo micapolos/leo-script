@@ -27,7 +27,7 @@ class CompileTest {
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))),
 			"x" lineTo script())
-			.typedExpression
+			.typedLine
 			.assertEqualTo(
 				typed(
 					line(
@@ -64,7 +64,7 @@ class CompileTest {
 		script(
 			"foo" lineTo script(),
 			doName lineTo script("bar"))
-			.typedExpression
+			.typedLine
 			.assertEqualTo(
 				typed(
 					line(
@@ -81,7 +81,7 @@ class CompileTest {
 		script(
 			"x" lineTo script(literal(10)),
 			doName lineTo script("x"))
-			.typedExpression
+			.typedLine
 			.assertEqualTo(
 				typed(
 					line(
