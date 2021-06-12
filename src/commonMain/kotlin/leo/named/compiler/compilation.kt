@@ -27,11 +27,10 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
-import leo.named.typed.expressionTo
+import leo.named.typed.lineTo
 import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
-import leo.named.typed.typedStructure
 import leo.onlyLineOrNull
 import leo.reverse
 import leo.seq
@@ -56,7 +55,7 @@ fun <T> Context<T>.typedExpressionCompilation(scriptLine: ScriptLine): Compilati
 	}
 
 fun <T> Context<T>.typedExpressionCompilation(scriptField: ScriptField): Compilation<T, TypedLine<T>> =
-	typedStructureCompilation(scriptField.rhs).map { scriptField.name expressionTo it }
+	typedStructureCompilation(scriptField.rhs).map { scriptField.name lineTo it }
 
 fun <T> typedExpressionCompilation(literal: Literal): Compilation<T, TypedLine<T>> =
 	typedExpression<T>(literal).compilation()
@@ -106,7 +105,7 @@ fun <T> Compiler<T>.plusGetCompilationOrNull(scriptField: ScriptField): Compilat
 	}
 
 fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T>> =
-	context.typedExpressionCompilation(script).map { set(typedStructure(it)) }
+	context.typedExpressionCompilation(script).map { set(typedExpression(it)) }
 
 fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
 	bodyTypedExpression.typeStructure.compileOnlyExpression.let { typedExpression ->
@@ -122,7 +121,7 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 		.typedExpressionCompilation(script)
 		.map { typed ->
 			set(
-				typedStructure(
+				typedExpression(
 					typed(
 						line(
 							invoke(
@@ -179,11 +178,11 @@ fun <T> Compiler<T>.plusDynamicCompilation(scriptField: ScriptField): Compilatio
 	else plusFieldCompilation(scriptField)
 
 fun <T> Compiler<T>.plusCompilation(name: String): Compilation<T, Compiler<T>> =
-	context.resolveCompilation(typedStructure(name expressionTo bodyTypedExpression)).map { set(it) }
+	context.resolveCompilation(typedExpression(name lineTo bodyTypedExpression)).map { set(it) }
 
 fun <T> Compiler<T>.plusFieldCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
 	context.typedStructureCompilation(scriptField.rhs).bind { tuple ->
-		plusResolveCompilation(scriptField.name expressionTo tuple)
+		plusResolveCompilation(scriptField.name lineTo tuple)
 	}
 
 fun <T> Compiler<T>.plusResolveCompilation(typed: TypedLine<T>): Compilation<T, Compiler<T>> =
@@ -195,4 +194,4 @@ fun <T> Context<T>.resolveCompilation(tuple: TypedExpression<T>): Compilation<T,
 		?: tuple.resolve.compilation()
 
 fun <T> Context<T>.resolveCompilationOrNull(tuple: TypedExpression<T>): Compilation<T, TypedExpression<T>>? =
-	resolveOrNull(tuple)?.let { typedStructure(it) }?.compilation()
+	resolveOrNull(tuple)?.let { typedExpression(it) }?.compilation()

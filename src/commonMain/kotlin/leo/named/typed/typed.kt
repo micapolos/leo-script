@@ -25,10 +25,10 @@ fun <T> typed(expression: Expression<T>, typeStructure: TypeStructure) = TypedEx
 fun <T> TypedExpression<T>.plus(typedLine: TypedLine<T>): TypedExpression<T> =
 	typed(expression.plus(typedLine.line), typeStructure.plus(typedLine.typeLine))
 
-fun <T> typedStructure(vararg typedLine: TypedLine<T>) =
+fun <T> typedExpression(vararg typedLine: TypedLine<T>) =
 	typed(expression<T>(), typeStructure()).fold(typedLine) { plus(it) }
 
-infix fun <T> String.expressionTo(typedExpression: TypedExpression<T>): TypedLine<T> =
+infix fun <T> String.lineTo(typedExpression: TypedExpression<T>): TypedLine<T> =
 	typed(
 		this lineTo typedExpression.expression,
 		this lineTo type(typedExpression.typeStructure))

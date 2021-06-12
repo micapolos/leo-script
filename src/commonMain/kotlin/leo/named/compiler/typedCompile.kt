@@ -58,7 +58,7 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 		}
 	}
 
-val <T> TypedExpression<T>.onlyTypedLineOrNull: TypedLine<T>? get() =
+val <T> TypedExpression<T>.onlyLineOrNull: TypedLine<T>? get() =
 	typeStructure.onlyLineOrNull?.let {
 		typed(expression.lineStack.onlyOrNull!!, it)
 	}

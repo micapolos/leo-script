@@ -9,7 +9,7 @@ import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.plus
 import leo.named.typed.typed
-import leo.named.typed.typedStructure
+import leo.named.typed.typedExpression
 import leo.typeStructure
 
 data class Compiler<out T>(
@@ -19,7 +19,7 @@ data class Compiler<out T>(
 
 fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> = copy(context = context)
 fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> = copy(bodyTypedExpression = typedExpression)
-val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedStructure())
+val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedExpression())
 
 val <T> Compiler<T>.typedLine: TypedLine<T>
 	get() =
