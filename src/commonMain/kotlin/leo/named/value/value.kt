@@ -2,7 +2,7 @@ package leo.named.value
 
 import leo.Literal
 import leo.Stack
-import leo.named.expression.Function
+import leo.named.expression.Expression
 
 data class Structure<out T>(val valueStack: Stack<Value<T>>)
 
@@ -13,6 +13,7 @@ data class FunctionValue<T>(val function: Function<T>): Value<T>()
 data class AnyValue<T>(val any: T): Value<T>()
 
 data class Field<out T>(val name: String, val structure: Structure<T>)
+data class Function<out T>(val expression: Expression<T>)
 
 fun <T> anyValue(any: T): Value<T> = AnyValue(any)
 fun <T> value(field: Field<T>): Value<T> = FieldValue(field)
@@ -21,5 +22,6 @@ fun <T> value(function: Function<T>): Value<T> = FunctionValue(function)
 
 infix fun <T> String.fieldTo(structure: Structure<T>) = Field(this, structure)
 infix fun <T> String.valueTo(structure: Structure<T>) = value(this fieldTo structure)
+fun <T> function(expression: Expression<T>) = Function(expression)
 
 fun <T> Value<T>.get(name: String): Value<T> = TODO()

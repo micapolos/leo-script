@@ -10,7 +10,6 @@ import leo.named.expression.AnyExpression
 import leo.named.expression.Expression
 import leo.named.expression.Field
 import leo.named.expression.FieldExpression
-import leo.named.expression.Function
 import leo.named.expression.FunctionExpression
 import leo.named.expression.Get
 import leo.named.expression.GetExpression
@@ -26,6 +25,7 @@ import leo.named.value.FunctionValue
 import leo.named.value.Structure
 import leo.named.value.Value
 import leo.named.value.anyValue
+import leo.named.value.function
 import leo.named.value.get
 import leo.named.value.name
 import leo.named.value.value
@@ -65,8 +65,8 @@ val <T> T.anyValueEvaluation: Evaluation<T, Value<T>> get() =
 val <T> Field<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	structure.structureEvaluation.map { name valueTo it }
 
-val <T> Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	value(this).evaluation()
+val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+	value(function(bodyExpression)).evaluation()
 
 val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	lhs.valueEvaluation.map { it.get(name) }
@@ -78,7 +78,7 @@ val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
 						.plus(paramsStructure.dictionary)
-						.value(function.bodyExpression)
+						.value(function.expression)
 				}
 			}
 		}
