@@ -33,7 +33,6 @@ import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.onlyLineOrNull
-import leo.onlyOrNull
 import leo.reverse
 import leo.seq
 import leo.stateful
@@ -116,18 +115,17 @@ fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
 	context
 		.plusNames(bodyTypedExpression.type)
-		.typedExpressionCompilation(script)
+		.typedStructureCompilation(script)
 		.map { typed ->
 			set(
-				typedExpression(
 					typed(
+						expression(
 						line(
 							invoke(
-								line(function(bodyTypedExpression.type, typed.line)),
+								line(function(bodyTypedExpression.type, typed.expression)),
 								bodyTypedExpression.expression)
-						),
-						typed.typeLine)
-				)
+						)),
+						typed.type)
 			)
 		}
 
@@ -164,7 +162,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 				.plus(definition(type, functionBinding(bodyTyped.type)))
 				.plusParam(
 					typed(
-						expression(line(function(type, bodyTyped.expression.lineStack.onlyOrNull!!))),
+						expression(line(function(type, bodyTyped.expression))),
 						type(type.doingLineTo(bodyTyped.type.onlyLineOrNull!!)))
 				)
 				.compiler

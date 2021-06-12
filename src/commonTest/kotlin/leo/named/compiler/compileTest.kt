@@ -69,7 +69,7 @@ class CompileTest {
 					line(
 						function(
 							type("foo"),
-							"bar" lineTo expression<Unit>()
+							expression("bar" lineTo expression<Unit>())
 						))
 						.invoke(expression("foo" lineTo expression())),
 					"bar" lineTo type()))
@@ -86,7 +86,7 @@ class CompileTest {
 					line(
 						function(
 							type("x" lineTo type(numberTypeLine)),
-							line<Unit>(variable(type("x")))))
+							expression(line<Unit>(variable(type("x"))))))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					"x" lineTo type(numberTypeLine)))
 	}

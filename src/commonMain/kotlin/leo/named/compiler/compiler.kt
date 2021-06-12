@@ -10,7 +10,6 @@ import leo.named.typed.TypedLine
 import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
-import leo.onlyOrNull
 
 data class Compiler<out T>(
 	val context: Context<T>,
@@ -29,7 +28,7 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 					expression(
 						line(
 							invoke(
-								line(function(paramTypedExpression.type, expression.lineStack.onlyOrNull!!)),
+								line(function(paramTypedExpression.type, expression)),
 								paramTypedExpression.expression)
 							)
 						),
