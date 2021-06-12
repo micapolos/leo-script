@@ -27,7 +27,7 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 			line(
 				invoke(
 					line(function(context.paramsTuple.typeStructure, typedExpression.line)),
-					context.paramsTuple.structure)
+					context.paramsTuple.expression)
 			),
 			typedExpression.typeLine)
 	}

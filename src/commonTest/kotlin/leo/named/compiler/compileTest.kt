@@ -4,13 +4,12 @@ import leo.base.assertEqualTo
 import leo.doName
 import leo.lineTo
 import leo.literal
-import leo.named.expression.expressionStructure
+import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.get
 import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
-import leo.named.expression.structure
 import leo.named.expression.variable
 import leo.named.typed.typed
 import leo.numberTypeLine
@@ -32,9 +31,10 @@ class CompileTest {
 				typed(
 					line(
 						get(
-							"point" lineTo structure(
-								"x" lineTo structure(line<Unit>(literal(10))),
-							"y" lineTo structure(line(literal(20)))),
+							"point" lineTo expression(
+								"x" lineTo expression(line<Unit>(literal(10))),
+								"y" lineTo expression(line(literal(20)))
+							),
 							"x")),
 					"x" lineTo type(numberTypeLine)))
 	}
@@ -69,8 +69,9 @@ class CompileTest {
 					line(
 						function(
 							typeStructure("foo"),
-							"bar" lineTo expressionStructure<Unit>()))
-						.invoke(structure("foo" lineTo expressionStructure())),
+							"bar" lineTo expression<Unit>()
+						))
+						.invoke(expression("foo" lineTo expression())),
 					"bar" lineTo type()))
 	}
 
@@ -86,7 +87,7 @@ class CompileTest {
 						function(
 							typeStructure("x" lineTo type(numberTypeLine)),
 							line<Unit>(variable(typeStructure("x")))))
-						.invoke(structure("x" lineTo structure(line(literal(10))))),
+						.invoke(expression("x" lineTo expression(line(literal(10))))),
 					"x" lineTo type(numberTypeLine)))
 	}
 }

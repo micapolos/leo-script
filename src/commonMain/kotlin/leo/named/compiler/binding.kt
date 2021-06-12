@@ -17,5 +17,5 @@ fun functionBinding(typeLine: TypeLine) = binding(typeLine, isConstant = false)
 fun <T> Binding.resolve(typedStructure: TypedStructure<T>): TypedExpression<T> =
 	typed(
 		line<T>(variable(typedStructure.typeStructure))
-			.runIf(!isConstant) { invoke(typedStructure.structure) },
+			.runIf(!isConstant) { invoke(typedStructure.expression) },
 		typeLine)

@@ -41,7 +41,7 @@ fun <T> dictionaryEvaluation(): Evaluation<T, Dictionary<T>> = getStateful()
 fun <T> Dictionary<T>.setEvaluation(): Evaluation<T, Unit> = setStateful(this)
 fun <T> updateDictionaryEvaluation(fn: (Dictionary<T>) -> Dictionary<T>): Evaluation<T, Unit> = updateStateful(fn)
 
-val <T> leo.named.expression.Structure<T>.structureEvaluation: Evaluation<T, Structure<T>> get() =
+val <T> leo.named.expression.Expression<T>.structureEvaluation: Evaluation<T, Structure<T>> get() =
 	lineStack.map { valueEvaluation }.flat.map(::Structure)
 
 fun <T> Dictionary<T>.valueEvaluation(line: Line<T>): Evaluation<T, Value<T>> =
@@ -63,7 +63,7 @@ val <T> T.anyValueEvaluation: Evaluation<T, Value<T>> get() =
 	anyValue(this).evaluation()
 
 val <T> Field<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	structure.structureEvaluation.map { name valueTo it }
+	expression.structureEvaluation.map { name valueTo it }
 
 val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	value(function(bodyLine)).evaluation()

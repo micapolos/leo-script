@@ -130,7 +130,7 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 						line(
 							invoke(
 								line(function(bodyTypedStructure.typeStructure, typed.line)),
-								bodyTypedStructure.structure)
+								bodyTypedStructure.expression)
 						),
 						typed.typeLine)
 				)

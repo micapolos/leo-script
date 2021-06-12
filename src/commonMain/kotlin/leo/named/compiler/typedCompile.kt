@@ -51,7 +51,7 @@ fun <T> Typed<T>.compileCast(typeLine: TypeLine): Typed<T> =
 
 val <T> TypedStructure<T>.compileOnlyExpression: TypedExpression<T> get() =
 	typeStructure.compileOnlyExpression.let { typeLine ->
-		typed(structure.lineStack.onlyOrNull!!, typeLine)
+		typed(expression.lineStack.onlyOrNull!!, typeLine)
 	}
 
 fun <R> Type.resolveInfix(fn: (Type, String, Type) -> R?): R? =
@@ -66,10 +66,10 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 
 val <T> TypedStructure<T>.onlyTypedExpressionOrNull: TypedExpression<T>? get() =
 	typeStructure.onlyLineOrNull?.let {
-		typed(structure.lineStack.onlyOrNull!!, it)
+		typed(expression.lineStack.onlyOrNull!!, it)
 	}
 
 fun <T> TypedStructure<T>.getOrNull(name: String): TypedStructure<T>? =
 	typeStructure.getOrNull(name)?.let {
-		typed(structure.get(name), it)
+		typed(expression.get(name), it)
 	}
