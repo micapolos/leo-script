@@ -23,16 +23,18 @@ val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedStructure()
 
 val <T> Compiler<T>.typedLine: TypedLine<T>
 	get() =
-	bodyTypedExpression.compileOnlyLine.fold(context.paramLineStack) { paramLine ->
-		typed(
-			line(
-				invoke(
-					line(function(typeStructure(paramLine.typeLine), line)),
-					expression(paramLine.line)
-				)
-			),
-			typeLine)
-	}
+		bodyTypedExpression
+			.compileOnlyLine
+			.fold(context.paramLineStack) { paramLine ->
+				typed(
+					line(
+						invoke(
+							line(function(typeStructure(paramLine.typeLine), line)),
+							expression(paramLine.line)
+						)
+					),
+					typeLine)
+			}
 
 fun <T> Compiler<T>.plus(typedLine: TypedLine<T>): Compiler<T> =
 	set(bodyTypedExpression.plus(typedLine))
