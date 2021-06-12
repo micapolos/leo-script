@@ -163,7 +163,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 				.plusParam(
 					typed(
 						expression(line(function(type, bodyTyped.expression))),
-						type(type.doingLineTo(bodyTyped.type.onlyLineOrNull!!)))
+						type(type.doingLineTo(bodyTyped.type)))
 				)
 				.compiler
 		}

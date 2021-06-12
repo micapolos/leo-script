@@ -87,7 +87,7 @@ data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral() {
 	override fun toString() = super.toString()
 }
 
-data class TypeDoing(val lhsType: Type, val rhsTypeLine: TypeLine) {
+data class TypeDoing(val lhsType: Type, val rhsType: Type) {
 	override fun toString() = scriptLine.toString()
 }
 
@@ -140,8 +140,8 @@ fun recursiveLine(line: TypeLine) = line(recursive(line))
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
-infix fun Type.doing(line: TypeLine) = TypeDoing(this, line)
-infix fun Type.doingLineTo(line: TypeLine) = line(atom(this doing line))
+infix fun Type.doing(type: Type) = TypeDoing(this, type)
+infix fun Type.doingLineTo(type: Type) = line(atom(this doing type))
 
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)
