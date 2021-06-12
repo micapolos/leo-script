@@ -37,6 +37,7 @@ import leo.seq
 import leo.stateful
 import leo.switchName
 import leo.theName
+import leo.type
 import leo.type.compiler.type
 
 typealias Compilation<T, V> = Stateful<Context<T>, V>
@@ -154,7 +155,7 @@ fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<
 		context.typedExpressionCompilation(rhs).map { typed ->
 			set(
 				context
-					.plus(definition(typeStructure, constantBinding(typed.typeLine)))
+					.plus(definition(typeStructure.type, constantBinding(typed.typeLine)))
 					.plusParam(typed))
 		}
 	}
@@ -163,7 +164,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 	context.typeStructureCompilation(lhs).bind { typeStructure ->
 		context.plus(typeStructure).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
-				.plus(definition(typeStructure, functionBinding(bodyTyped.typeLine)))
+				.plus(definition(typeStructure.type, functionBinding(bodyTyped.typeLine)))
 				.plusParam(
 					typed(
 						line(function(typeStructure, bodyTyped.line)),
