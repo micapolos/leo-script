@@ -1,9 +1,9 @@
 package leo.named.compiler
 
 import leo.isEmpty
-import leo.named.expression
-import leo.named.function
-import leo.named.invoke
+import leo.named.expression.expression
+import leo.named.expression.function
+import leo.named.expression.invoke
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedStructure
 import leo.named.typed.plus

@@ -1,8 +1,11 @@
-package leo.named
+package leo.named.expression
 
 import leo.Literal
 import leo.Stack
 import leo.TypeStructure
+import leo.base.notNullIf
+import leo.base.notNullOrError
+import leo.mapFirst
 import leo.push
 import leo.stack
 
@@ -22,7 +25,7 @@ data class Field<out T>(val name: String, val structure: Structure<T>)
 data class Get<out T>(val lhs: Expression<T>, val name: String)
 data class Switch<out T>(val lhs: Expression<T>, val cases: Stack<Case<T>>)
 data class Case<out T>(val name: String, val expression: Expression<T>)
-data class Function<out T>(val paramTypeStructure: TypeStructure, val body: Expression<T>)
+data class Function<out T>(val paramTypeStructure: TypeStructure, val bodyExpression: Expression<T>)
 data class Invoke<out T>(val function: Expression<T>, val params: Structure<T>)
 data class Variable(val typeStructure: TypeStructure)
 
@@ -51,3 +54,7 @@ fun <T> Expression<T>.switch(vararg cases: Case<T>): Expression<T> = expression(
 fun <T> Expression<T>.invoke(vararg params: Expression<T>): Expression<T> = expression(invoke(this, structure(*params)))
 
 fun <T> Structure<T>.plus(expression: Expression<T>) = Structure(expressionStack.push(expression))
+
+fun <T> Switch<T>.expression(name: String): Expression<T> = expressionOrNull(name).notNullOrError("$this.expression($name)")
+fun <T> Switch<T>.expressionOrNull(name: String): Expression<T>? = cases.mapFirst { expressionOrNull(name) }
+fun <T> Case<T>.expressionOrNull(name: String): Expression<T>? = notNullIf(this.name == name) { expression }
