@@ -10,7 +10,7 @@ fun <T> Value<T>.line(name: String): ValueLine<T> =
 val <T> Value<T>.line: ValueLine<T> get() =
 	lineStack.onlyOrNull!!
 
-val <T> ValueLine<T>.field: Field<T> get() =
+val <T> ValueLine<T>.field: ValueField<T> get() =
 	(this as FieldValueLine).field
 
 fun <T> ValueLine<T>.get(name: String): ValueLine<T> =

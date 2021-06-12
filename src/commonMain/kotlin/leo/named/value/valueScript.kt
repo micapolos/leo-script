@@ -24,8 +24,8 @@ val <T> ValueLine<T>.scriptLine: ScriptLine get() =
 val <T> T.nativeScriptLine: ScriptLine get() =
 	nativeName lineTo script(literal("$this"))
 
-val <T> Field<T>.scriptLine: ScriptLine get() =
+val <T> ValueField<T>.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
-val <T> Function<T>.scriptLine get() =
+val <T> ValueFunction<T>.scriptLine get() =
 	doingName lineTo script(expression.nativeScriptLine)

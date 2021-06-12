@@ -3,7 +3,7 @@ package leo
 import leo.base.assertEqualTo
 import kotlin.test.Test
 
-class FunctionTest {
+class ValueFunctionTest {
 	@Test
 	fun apply() {
 		dictionary().function(body(script(contentName)))
