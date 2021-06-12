@@ -2,11 +2,11 @@ package leo.named.evaluator
 
 import leo.base.assertEqualTo
 import leo.literal
-import leo.named.expression.expression
 import leo.named.expression.expressionStructure
-import leo.named.expression.expressionTo
 import leo.named.expression.function
 import leo.named.expression.invoke
+import leo.named.expression.line
+import leo.named.expression.lineTo
 import leo.named.expression.structure
 import leo.named.expression.variable
 import leo.named.value.structure
@@ -20,23 +20,23 @@ import kotlin.test.Test
 class EvaluateTest {
 	@Test
 	fun invoke_static() {
-		expression(
+		line(
 			function<Unit>(
 				typeStructure(numberTypeLine),
-				"foo" expressionTo expressionStructure()
+				"foo" lineTo expressionStructure()
 			))
-			.invoke(structure(expression(literal(10))))
+			.invoke(structure(line(literal(10))))
 			.evaluate
 			.assertEqualTo("foo" valueTo leo.named.value.structure())
 	}
 
 	@Test
 	fun invoke_variable() {
-		expression(
+		line(
 			function<Unit>(
 				typeStructure(numberTypeLine),
-				"foo" expressionTo structure(expression(variable(typeStructure(numberName))))))
-			.invoke(structure(expression(literal(10))))
+				"foo" lineTo structure(line(variable(typeStructure(numberName))))))
+			.invoke(structure(line(literal(10))))
 			.evaluate
 			.assertEqualTo("foo" valueTo structure(value(literal(10))))
 	}

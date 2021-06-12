@@ -1,9 +1,9 @@
 package leo.named.compiler
 
 import leo.isEmpty
-import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
+import leo.named.expression.line
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedStructure
 import leo.named.typed.plus
@@ -24,9 +24,9 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 	bodyTypedStructure.compileOnlyExpression.let { typedExpression ->
 		if (context.paramsTuple.typeStructure.lineStack.isEmpty) typedExpression
 		else typed(
-			expression(
+			line(
 				invoke(
-					expression(function(context.paramsTuple.typeStructure, typedExpression.expression)),
+					line(function(context.paramsTuple.typeStructure, typedExpression.line)),
 					context.paramsTuple.structure)
 			),
 			typedExpression.typeLine)

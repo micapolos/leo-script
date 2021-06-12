@@ -25,9 +25,9 @@ import leo.letName
 import leo.lineStack
 import leo.map
 import leo.matchInfix
-import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
+import leo.named.expression.line
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedStructure
 import leo.named.typed.expressionTo
@@ -127,9 +127,9 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 			set(
 				typedStructure(
 					typed(
-						expression(
+						line(
 							invoke(
-								expression(function(bodyTypedStructure.typeStructure, typed.expression)),
+								line(function(bodyTypedStructure.typeStructure, typed.line)),
 								bodyTypedStructure.structure)
 						),
 						typed.typeLine)
@@ -170,7 +170,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 				.plus(definition(typeStructure, functionBinding(bodyTyped.typeLine)))
 				.plusParam(
 					typed(
-						expression(function(typeStructure, bodyTyped.expression)),
+						line(function(typeStructure, bodyTyped.line)),
 						typeStructure.doingLineTo(bodyTyped.typeLine))
 				)
 				.compiler

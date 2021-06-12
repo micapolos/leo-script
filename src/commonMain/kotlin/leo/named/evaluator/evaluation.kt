@@ -6,21 +6,21 @@ import leo.bind
 import leo.flat
 import leo.getStateful
 import leo.map
-import leo.named.expression.AnyExpression
-import leo.named.expression.Expression
+import leo.named.expression.AnyLine
 import leo.named.expression.Field
-import leo.named.expression.FieldExpression
-import leo.named.expression.FunctionExpression
+import leo.named.expression.FieldLine
+import leo.named.expression.FunctionLine
 import leo.named.expression.Get
-import leo.named.expression.GetExpression
+import leo.named.expression.GetLine
 import leo.named.expression.Invoke
-import leo.named.expression.InvokeExpression
-import leo.named.expression.LiteralExpression
+import leo.named.expression.InvokeLine
+import leo.named.expression.Line
+import leo.named.expression.LiteralLine
 import leo.named.expression.Switch
-import leo.named.expression.SwitchExpression
+import leo.named.expression.SwitchLine
 import leo.named.expression.Variable
-import leo.named.expression.VariableExpression
-import leo.named.expression.expression
+import leo.named.expression.VariableLine
+import leo.named.expression.line
 import leo.named.value.FunctionValue
 import leo.named.value.Structure
 import leo.named.value.Value
@@ -42,21 +42,21 @@ fun <T> Dictionary<T>.setEvaluation(): Evaluation<T, Unit> = setStateful(this)
 fun <T> updateDictionaryEvaluation(fn: (Dictionary<T>) -> Dictionary<T>): Evaluation<T, Unit> = updateStateful(fn)
 
 val <T> leo.named.expression.Structure<T>.structureEvaluation: Evaluation<T, Structure<T>> get() =
-	expressionStack.map { valueEvaluation }.flat.map(::Structure)
+	lineStack.map { valueEvaluation }.flat.map(::Structure)
 
-fun <T> Dictionary<T>.valueEvaluation(expression: Expression<T>): Evaluation<T, Value<T>> =
+fun <T> Dictionary<T>.valueEvaluation(line: Line<T>): Evaluation<T, Value<T>> =
 	TODO()
 
-val <T> Expression<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val <T> Line<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	when (this) {
-		is AnyExpression -> any.anyValueEvaluation
-		is FieldExpression -> field.valueEvaluation
-		is FunctionExpression -> function.valueEvaluation
-		is GetExpression -> get.valueEvaluation
-		is InvokeExpression -> invoke.valueEvaluation
-		is LiteralExpression -> literal.valueEvaluation()
-		is SwitchExpression -> switch.valueEvaluation
-		is VariableExpression -> variable.valueEvaluation()
+		is AnyLine -> any.anyValueEvaluation
+		is FieldLine -> field.valueEvaluation
+		is FunctionLine -> function.valueEvaluation
+		is GetLine -> get.valueEvaluation
+		is InvokeLine -> invoke.valueEvaluation
+		is LiteralLine -> literal.valueEvaluation()
+		is SwitchLine -> switch.valueEvaluation
+		is VariableLine -> variable.valueEvaluation()
 	}
 
 val <T> T.anyValueEvaluation: Evaluation<T, Value<T>> get() =
@@ -66,10 +66,10 @@ val <T> Field<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	structure.structureEvaluation.map { name valueTo it }
 
 val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	value(function(bodyExpression)).evaluation()
+	value(function(bodyLine)).evaluation()
 
 val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	expression.valueEvaluation.map { it.get(name) }
+	line.valueEvaluation.map { it.get(name) }
 
 val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	function.valueEvaluation.bind { functionValue ->
@@ -78,7 +78,7 @@ val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
 						.plus(paramsStructure.dictionary)
-						.value(function.expression)
+						.value(function.line)
 				}
 			}
 		}
@@ -90,7 +90,7 @@ fun <T> Literal.valueEvaluation(): Evaluation<T, Value<T>> =
 val <T> Switch<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	lhs.valueEvaluation.bind { value ->
 		dictionaryEvaluation<T>().map { dictionary ->
-			dictionary.plus(value.definition).value(expression(value.name))
+			dictionary.plus(value.definition).value(line(value.name))
 		}
 	}
 

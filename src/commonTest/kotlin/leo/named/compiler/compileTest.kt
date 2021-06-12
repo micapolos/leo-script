@@ -3,20 +3,61 @@ package leo.named.compiler
 import leo.base.assertEqualTo
 import leo.doName
 import leo.lineTo
-import leo.named.expression.expression
+import leo.literal
 import leo.named.expression.expressionStructure
-import leo.named.expression.expressionTo
 import leo.named.expression.function
+import leo.named.expression.get
 import leo.named.expression.invoke
+import leo.named.expression.line
+import leo.named.expression.lineTo
 import leo.named.expression.structure
 import leo.named.expression.variable
 import leo.named.typed.typed
+import leo.numberTypeLine
 import leo.script
 import leo.type
 import leo.typeStructure
 import kotlin.test.Test
 
 class CompileTest {
+	@Test
+	fun get_postfix() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))),
+			"x" lineTo script())
+			.typedExpression
+			.assertEqualTo(
+				typed(
+					line(
+						get(
+							"point" lineTo structure(
+								"x" lineTo structure(line<Unit>(literal(10))),
+							"y" lineTo structure(line(literal(20)))),
+							"x")),
+					"x" lineTo type(numberTypeLine)))
+	}
+
+//	@Test
+//	fun get_prefix() {
+//		script(
+//			"x" lineTo script(
+//				"point" lineTo script(
+//					"x" lineTo script(literal(10)),
+//					"y" lineTo script(literal(20)))))
+//			.typedExpression
+//			.assertEqualTo(
+//				typed(
+//					expression(
+//						get(
+//							"point" expressionTo structure(
+//								"x" expressionTo structure(expression<Unit>(literal(10))),
+//								"y" expressionTo structure(expression(literal(20)))),
+//							"x")),
+//					"x" lineTo type(numberTypeLine)))
+//	}
+
 	@Test
 	fun do_withoutBindings() {
 		script(
@@ -25,27 +66,27 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(
+					line(
 						function(
 							typeStructure("foo"),
-							"bar" expressionTo expressionStructure<Unit>()))
-						.invoke(structure("foo" expressionTo expressionStructure())),
+							"bar" lineTo expressionStructure<Unit>()))
+						.invoke(structure("foo" lineTo expressionStructure())),
 					"bar" lineTo type()))
 	}
 
 	@Test
-	fun do_withBindings() {
+	fun do_withBinding() {
 		script(
-			"foo" lineTo script(),
-			doName lineTo script("foo"))
+			"x" lineTo script(literal(10)),
+			doName lineTo script("x"))
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(
+					line(
 						function(
-							typeStructure("foo"),
-							expression<Unit>(variable(typeStructure("foo")))))
-						.invoke(structure("foo" expressionTo expressionStructure())),
-					"foo" lineTo type()))
+							typeStructure("x" lineTo type(numberTypeLine)),
+							line<Unit>(variable(typeStructure("x")))))
+						.invoke(structure("x" lineTo structure(line(literal(10))))),
+					"x" lineTo type(numberTypeLine)))
 	}
 }

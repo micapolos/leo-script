@@ -73,13 +73,8 @@ class ScriptEvaluateTest {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
-			doName lineTo script(
-				"x" lineTo script(),
-				"and" lineTo script("y")))
+			doName lineTo script("x" lineTo script()))
 			.evaluate
-			.assertEqualTo(
-				script(
-					"x" lineTo script(literal(10)),
-					"and" lineTo script("y" lineTo script(literal(20)))))
+			.assertEqualTo(script("x" lineTo script(literal(10))))
 	}
 }
