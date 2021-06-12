@@ -39,7 +39,7 @@ fun TypeAtom.updateLine(fn: (TypeLine) -> TypeLine): TypeAtom  =
 	}
 
 fun TypeDoing.updateLine(fn: (TypeLine) -> TypeLine): TypeDoing  =
-	lhsTypeStructure.updateLine(fn) doing rhsTypeLine.updateLine(fn)
+	lhsType.updateLine(fn) doing rhsTypeLine.updateLine(fn)
 
 fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive  =
 	when (this) {

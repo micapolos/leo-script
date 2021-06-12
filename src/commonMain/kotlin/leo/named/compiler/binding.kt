@@ -17,6 +17,6 @@ fun functionBinding(type: Type) = binding(type, isConstant = false)
 
 fun <T> Binding.resolve(typedExpression: TypedExpression<T>): TypedLine<T> =
 	typed(
-		line<T>(variable(typedExpression.typeStructure))
+		line<T>(variable(typedExpression.type))
 			.runIf(!isConstant) { invoke(typedExpression.expression) },
 		type.onlyLineOrNull!!) // TODO()

@@ -87,7 +87,7 @@ data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral() {
 	override fun toString() = super.toString()
 }
 
-data class TypeDoing(val lhsTypeStructure: TypeStructure, val rhsTypeLine: TypeLine) {
+data class TypeDoing(val lhsType: Type, val rhsTypeLine: TypeLine) {
 	override fun toString() = scriptLine.toString()
 }
 
@@ -140,8 +140,8 @@ fun recursiveLine(line: TypeLine) = line(recursive(line))
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
-infix fun TypeStructure.doing(line: TypeLine) = TypeDoing(this, line)
-infix fun TypeStructure.doingLineTo(line: TypeLine) = line(atom(this doing line))
+infix fun Type.doing(line: TypeLine) = TypeDoing(this, line)
+infix fun Type.doingLineTo(line: TypeLine) = line(atom(this doing line))
 
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)
@@ -175,6 +175,7 @@ infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type).rec
 val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
 val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
 
+fun Type.plusOrNull(line: TypeLine): Type? = structureOrNull?.plus(line)?.type
 fun TypeStructure.plus(line: TypeLine): TypeStructure = TypeStructure(lineStack.push(line))
 fun TypeChoice.plus(line: TypeLine): TypeChoice = TypeChoice(lineStack.push(line))
 
@@ -228,6 +229,9 @@ val negateIsTypeField: TypeField get() =
 	negateName fieldTo type(isTypeLine)
 
 val TypeLine.structure: TypeStructure get() = typeStructure(this)
+
+fun Type.getOrNull(name: String): Type? =
+	structureOrNull?.getOrNull(name)?.type
 
 fun TypeStructure.getOrNull(name: String): TypeStructure? =
 	getLineOrNull(name)?.structure

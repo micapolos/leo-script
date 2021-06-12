@@ -2,7 +2,7 @@ package leo.named.expression
 
 import leo.Literal
 import leo.Stack
-import leo.TypeStructure
+import leo.Type
 import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.mapFirst
@@ -26,9 +26,9 @@ data class Field<out T>(val name: String, val expression: Expression<T>)
 data class Get<out T>(val line: Line<T>, val name: String)
 data class Switch<out T>(val lhs: Line<T>, val cases: Stack<Case<T>>)
 data class Case<out T>(val name: String, val line: Line<T>)
-data class Function<out T>(val paramTypeStructure: TypeStructure, val bodyLine: Line<T>)
+data class Function<out T>(val paramType: Type, val bodyLine: Line<T>)
 data class Invoke<out T>(val function: Line<T>, val params: Expression<T>)
-data class Variable(val typeStructure: TypeStructure)
+data class Variable(val type: Type)
 
 fun <T> expression(vararg lines: Line<T>) = Expression(stack(*lines))
 infix fun <T> String.fieldTo(rhs: Expression<T>) = Field(this, rhs)
@@ -45,10 +45,10 @@ fun <T> line(variable: Variable): Line<T> = VariableLine(variable)
 fun <T> anyExpressionLine(any: T): Line<T> = AnyLine(any)
 
 fun <T> get(lhs: Line<T>, name: String) = Get(lhs, name)
-fun <T> function(paramTypeStructure: TypeStructure, body: Line<T>) = Function(paramTypeStructure, body)
+fun <T> function(paramType: Type, body: Line<T>) = Function(paramType, body)
 fun <T> invoke(function: Line<T>, params: Expression<T>) = Invoke(function, params)
 fun <T> switch(lhs: Line<T>, cases: Stack<Case<T>>) = Switch(lhs, cases)
-fun variable(typeStructure: TypeStructure) = Variable(typeStructure)
+fun variable(type: Type) = Variable(type)
 
 fun <T> Line<T>.get(name: String): Line<T> = line(get(this, name))
 fun <T> Line<T>.switch(vararg cases: Case<T>): Line<T> = line(switch(this, stack(*cases)))

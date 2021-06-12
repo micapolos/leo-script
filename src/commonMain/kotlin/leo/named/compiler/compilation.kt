@@ -7,8 +7,8 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Stateful
+import leo.Type
 import leo.TypeLine
-import leo.TypeStructure
 import leo.base.ifOrNull
 import leo.base.notNullOrError
 import leo.beName
@@ -22,6 +22,7 @@ import leo.letName
 import leo.lineStack
 import leo.map
 import leo.matchInfix
+import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
 import leo.named.expression.line
@@ -32,6 +33,7 @@ import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.onlyLineOrNull
+import leo.onlyOrNull
 import leo.reverse
 import leo.seq
 import leo.stateful
@@ -64,11 +66,11 @@ fun <T> typedExpressionCompilation(literal: Literal): Compilation<T, TypedLine<T
 fun <T> Context<T>.typedExpressionCompilation(script: Script): Compilation<T, TypedLine<T>> =
 	typedStructureCompilation(script).map { it.compileOnlyLine }
 
-fun <T> Context<T>.typeStructureCompilation(script: Script): Compilation<T, TypeStructure> =
-	script.type.compileStructure.compilation()
+fun <T> Context<T>.typeCompilation(script: Script): Compilation<T, Type> =
+	script.type.compilation()
 
 fun <T> Context<T>.typeLineCompilation(script: Script): Compilation<T, TypeLine> =
-	typeStructureCompilation(script).map { it.onlyLineOrNull.notNullOrError("$this not line") }
+	typeCompilation(script).map { it.onlyLineOrNull.notNullOrError("$this not line") }
 
 fun <T> Compiler<T>.plusCompilation(script: Script): Compilation<T, Compiler<T>> =
 	compilation<T, Compiler<T>>().foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
@@ -109,16 +111,11 @@ fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T
 	context.typedExpressionCompilation(script).map { set(typedExpression(it)) }
 
 fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
-	bodyTypedExpression.typeStructure.compileOnlyExpression.let { typedExpression ->
-		context.typeLineCompilation(script).map { typeLine ->
-			TODO()
-			//set(typedStructure(typedExpression.compileCast(typeLine)))
-		}
-	}
+	TODO()
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
 	context
-		.plus(bodyTypedExpression.typeStructure)
+		.plusNames(bodyTypedExpression.type)
 		.typedExpressionCompilation(script)
 		.map { typed ->
 			set(
@@ -126,7 +123,7 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 					typed(
 						line(
 							invoke(
-								line(function(bodyTypedExpression.typeStructure, typed.line)),
+								line(function(bodyTypedExpression.type, typed.line)),
 								bodyTypedExpression.expression)
 						),
 						typed.typeLine)
@@ -151,24 +148,24 @@ fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<
 	context.typedExpressionCompilation(script.compileOnlyLine).map { plus(it) }
 
 fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
-	context.typeStructureCompilation(lhs).bind { typeStructure ->
-		context.typedExpressionCompilation(rhs).map { typed ->
+	context.typeCompilation(lhs).bind { type ->
+		context.typedStructureCompilation(rhs).map { typed ->
 			set(
 				context
-					.plus(definition(typeStructure.type, constantBinding(type(typed.typeLine))))
+					.plus(definition(type, constantBinding(typed.type)))
 					.plusParam(typed))
 		}
 	}
 
 fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
-	context.typeStructureCompilation(lhs).bind { typeStructure ->
-		context.plus(typeStructure).typedExpressionCompilation(rhs).map { bodyTyped ->
+	context.typeCompilation(lhs).bind { type ->
+		context.plusNames(type).typedStructureCompilation(rhs).map { bodyTyped ->
 			context
-				.plus(definition(typeStructure.type, functionBinding(type(bodyTyped.typeLine))))
+				.plus(definition(type, functionBinding(bodyTyped.type)))
 				.plusParam(
 					typed(
-						line(function(typeStructure, bodyTyped.line)),
-						typeStructure.doingLineTo(bodyTyped.typeLine))
+						expression(line(function(type, bodyTyped.expression.lineStack.onlyOrNull!!))),
+						type(type.doingLineTo(bodyTyped.type.onlyLineOrNull!!)))
 				)
 				.compiler
 		}

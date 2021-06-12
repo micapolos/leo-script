@@ -97,4 +97,4 @@ val <T> Switch<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
 	}
 
 fun <T> Variable.lineEvaluation(): Evaluation<T, ValueLine<T>> =
-	dictionaryEvaluation<T>().map { it.value(typeStructure) }
+	dictionaryEvaluation<T>().map { it.value(type) }

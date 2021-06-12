@@ -31,7 +31,7 @@ val <T> TypedTuple<T>.compileTyped: Typed<T>
 	onlyTypedOrNull.notNullOrError("$this not expression")
 
 val <T> TypedExpression<T>.compileOnlyLine: TypedLine<T> get() =
-	typeStructure.compileOnlyExpression.let { typeLine ->
+	type.onlyLineOrNull!!.let { typeLine ->
 		typed(expression.lineStack.onlyOrNull!!, typeLine)
 	}
 
@@ -46,12 +46,12 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 	}
 
 val <T> TypedExpression<T>.onlyLineOrNull: TypedLine<T>? get() =
-	typeStructure.onlyLineOrNull?.let {
+	type.onlyLineOrNull?.let {
 		typed(expression.lineStack.onlyOrNull!!, it)
 	}
 
 fun <T> TypedExpression<T>.getOrNull(name: String): TypedExpression<T>? =
-	typeStructure.getOrNull(name)?.let {
+	type.getOrNull(name)?.let {
 		typed(expression.get(name), it)
 	}
 

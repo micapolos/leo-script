@@ -12,12 +12,12 @@ class TypeIndexingTest {
 			"x" lineTo type(),
 			textTypeLine,
 			numberTypeLine,
-			typeStructure(textTypeLine) doingLineTo numberTypeLine
+			type(textTypeLine) doingLineTo numberTypeLine
 		).run {
 			indexedLineOrNull("x").assertEqualTo(0 indexed ("x" lineTo type()))
 			indexedLineOrNull(textName).assertEqualTo(1 indexed textTypeLine)
 			indexedLineOrNull(numberName).assertEqualTo(2 indexed numberTypeLine)
-			indexedLineOrNull(doingName).assertEqualTo(3 indexed (typeStructure(textTypeLine) doingLineTo numberTypeLine))
+			indexedLineOrNull(doingName).assertEqualTo(3 indexed (type(textTypeLine) doingLineTo numberTypeLine))
 			indexedLineOrNull("foo").assertNull
 		}
 	}

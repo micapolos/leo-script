@@ -12,7 +12,6 @@ import leo.push
 import leo.reverse
 import leo.seq
 import leo.stack
-import leo.type
 
 data class Dictionary(val definitionStack: Stack<Definition>)
 fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
@@ -30,4 +29,4 @@ fun Dictionary.bindingOrNull(structure: Type): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
 
 fun <T> Dictionary.resolveOrNull(typedExpression: TypedExpression<T>): TypedLine<T>? =
-	bindingOrNull(typedExpression.typeStructure.type)?.resolve(typedExpression)
+	bindingOrNull(typedExpression.type)?.resolve(typedExpression)

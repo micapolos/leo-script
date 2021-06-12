@@ -59,7 +59,7 @@ fun TypePrimitive.scriptLine(value: Value): ScriptLine =
 	}
 
 fun TypeDoing.scriptLine(value: Value): ScriptLine =
-	doingName lineTo lhsTypeStructure.script.plus("to" lineTo script(rhsTypeLine.scriptLine))
+	doingName lineTo lhsType.script.plus("to" lineTo script(rhsTypeLine.scriptLine))
 
 fun TypeAtom.scriptLine(value: Value): ScriptLine =
 	when (this) {

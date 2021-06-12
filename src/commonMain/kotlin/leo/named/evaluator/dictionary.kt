@@ -1,7 +1,7 @@
 package leo.named.evaluator
 
 import leo.Stack
-import leo.TypeStructure
+import leo.Type
 import leo.base.notNullOrError
 import leo.fold
 import leo.get
@@ -27,7 +27,7 @@ fun <T> Dictionary<T>.plus(dictionary: Dictionary<T>): Dictionary<T> =
 fun <T> Dictionary<T>.valueLine(line: Line<T>): ValueLine<T> =
 	line.lineEvaluation.get(this)
 
-fun <T> Dictionary<T>.value(typeStructure: TypeStructure): ValueLine<T> =
+fun <T> Dictionary<T>.value(typeStructure: Type): ValueLine<T> =
 	definitionStack
 		.mapFirst { valueLineOrNull(typeStructure) }
 		.notNullOrError("$this.value($this)")

@@ -14,7 +14,7 @@ import leo.named.value.value
 import leo.named.value.valueLine
 import leo.numberName
 import leo.numberTypeLine
-import leo.typeStructure
+import leo.type
 import kotlin.test.Test
 
 class EvaluateTest {
@@ -22,7 +22,7 @@ class EvaluateTest {
 	fun invoke_static() {
 		line(
 			function<Unit>(
-				typeStructure(numberTypeLine),
+				type(numberTypeLine),
 				"foo" lineTo expression()
 			))
 			.invoke(expression(expressionLine(literal(10))))
@@ -34,8 +34,8 @@ class EvaluateTest {
 	fun invoke_variable() {
 		line(
 			function<Unit>(
-				typeStructure(numberTypeLine),
-				"foo" lineTo expression(line(variable(typeStructure(numberName))))
+				type(numberTypeLine),
+				"foo" lineTo expression(line(variable(type(numberName))))
 			))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate

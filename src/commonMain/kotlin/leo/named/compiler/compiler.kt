@@ -10,7 +10,7 @@ import leo.named.typed.TypedLine
 import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
-import leo.typeStructure
+import leo.onlyOrNull
 
 data class Compiler<out T>(
 	val context: Context<T>,
@@ -21,19 +21,19 @@ fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> = copy(context = conte
 fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> = copy(bodyTypedExpression = typedExpression)
 val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedExpression())
 
-val <T> Compiler<T>.typedLine: TypedLine<T>
+val <T> Compiler<T>.typedExpression: TypedExpression<T>
 	get() =
 		bodyTypedExpression
-			.compileOnlyLine
-			.fold(context.paramLineStack) { paramLine ->
+			.fold(context.paramExpressionStack) { paramTypedExpression ->
 				typed(
-					line(
-						invoke(
-							line(function(typeStructure(paramLine.typeLine), line)),
-							expression(paramLine.line)
-						)
-					),
-					typeLine)
+					expression(
+						line(
+							invoke(
+								line(function(paramTypedExpression.type, expression.lineStack.onlyOrNull!!)),
+								paramTypedExpression.expression)
+							)
+						),
+					type)
 			}
 
 fun <T> Compiler<T>.plus(typedLine: TypedLine<T>): Compiler<T> =

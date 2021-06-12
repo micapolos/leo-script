@@ -16,7 +16,6 @@ import leo.named.typed.typed
 import leo.numberTypeLine
 import leo.script
 import leo.type
-import leo.typeStructure
 import kotlin.test.Test
 
 class CompileTest {
@@ -69,7 +68,7 @@ class CompileTest {
 				typed(
 					line(
 						function(
-							typeStructure("foo"),
+							type("foo"),
 							"bar" lineTo expression<Unit>()
 						))
 						.invoke(expression("foo" lineTo expression())),
@@ -86,8 +85,8 @@ class CompileTest {
 				typed(
 					line(
 						function(
-							typeStructure("x" lineTo type(numberTypeLine)),
-							line<Unit>(variable(typeStructure("x")))))
+							type("x" lineTo type(numberTypeLine)),
+							line<Unit>(variable(type("x")))))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					"x" lineTo type(numberTypeLine)))
 	}
