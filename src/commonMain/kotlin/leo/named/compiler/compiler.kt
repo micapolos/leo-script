@@ -9,7 +9,6 @@ import leo.named.typed.TypedStructure
 import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedStructure
-import leo.size
 
 data class Compiler<out T>(
 	val context: Context<T>,
@@ -27,7 +26,7 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 		else typed(
 			expression(
 				invoke(
-					expression(function(context.paramsTuple.typeStructure.lineStack.size, typedExpression.expression)),
+					expression(function(context.paramsTuple.typeStructure, typedExpression.expression)),
 					context.paramsTuple.structure)
 			),
 			typedExpression.typeLine)

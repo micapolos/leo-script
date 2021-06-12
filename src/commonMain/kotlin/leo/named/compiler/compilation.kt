@@ -37,7 +37,6 @@ import leo.named.typed.typedStructure
 import leo.onlyLineOrNull
 import leo.reverse
 import leo.seq
-import leo.size
 import leo.stateful
 import leo.switchName
 import leo.theName
@@ -119,7 +118,7 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 				typed(
 					expression(
 						invoke(
-							expression(function(bodyTypedStructure.typeStructure.lineStack.size, typed.expression)),
+							expression(function(bodyTypedStructure.typeStructure, typed.expression)),
 							bodyTypedStructure.structure)
 					),
 					typed.typeLine)
@@ -160,7 +159,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 				.plus(definition(typeStructure, functionBinding(bodyTyped.typeLine)))
 				.plusParam(
 					typed(
-						expression(function(typeStructure.lineStack.size, bodyTyped.expression)),
+						expression(function(typeStructure, bodyTyped.expression)),
 						typeStructure.doingLineTo(bodyTyped.typeLine))
 				)
 				.compiler

@@ -16,12 +16,12 @@ data class SwitchExpression<T>(val switch: Switch<T>): Expression<T>()
 data class FunctionExpression<T>(val function: Function<T>): Expression<T>()
 data class InvokeExpression<T>(val invoke: Invoke<T>): Expression<T>()
 data class VariableExpression<T>(val variable: Variable): Expression<T>()
-data class AnyExpression<T>(val any: Any?): Expression<T>()
+data class AnyExpression<T>(val any: T): Expression<T>()
 
 data class Field<out T>(val name: String, val rhs: Structure<T>)
 data class Get<out T>(val lhs: Expression<T>, val name: String)
 data class Switch<out T>(val lhs: Expression<T>, val cases: Stack<Field<T>>)
-data class Function<out T>(val paramCount: Int, val body: Expression<T>)
+data class Function<out T>(val paramTypeStructure: TypeStructure, val body: Expression<T>)
 data class Invoke<out T>(val function: Expression<T>, val params: Structure<T>)
 data class Variable(val typeStructure: TypeStructure)
 
@@ -39,7 +39,7 @@ fun <T> expression(variable: Variable): Expression<T> = VariableExpression(varia
 fun <T> anyExpression(any: T): Expression<T> = AnyExpression(any)
 
 fun <T> get(lhs: Expression<T>, name: String) = Get(lhs, name)
-fun <T> function(paramCount: Int, body: Expression<T>) = Function(paramCount, body)
+fun <T> function(paramTypeStructure: TypeStructure, body: Expression<T>) = Function(paramTypeStructure, body)
 fun <T> invoke(function: Expression<T>, params: Structure<T>) = Invoke(function, params)
 fun <T> switch(lhs: Expression<T>, cases: Stack<Field<T>>) = Switch(lhs, cases)
 fun variable(typeStructure: TypeStructure) = Variable(typeStructure)
