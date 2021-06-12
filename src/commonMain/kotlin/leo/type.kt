@@ -229,7 +229,10 @@ val negateIsTypeField: TypeField get() =
 val TypeLine.structure: TypeStructure get() = typeStructure(this)
 
 fun TypeStructure.getOrNull(name: String): TypeStructure? =
-	onlyLineOrNull?.structureOrNull?.lineOrNull(name)?.structure
+	getLineOrNull(name)?.structure
+
+fun TypeStructure.getLineOrNull(name: String): TypeLine? =
+	onlyLineOrNull?.structureOrNull?.lineOrNull(name)
 
 val TypeStructure.isEmpty: Boolean get() = lineStack.isEmpty
 val Type.isEmpty: Boolean get() = structureOrNull?.isEmpty ?: false

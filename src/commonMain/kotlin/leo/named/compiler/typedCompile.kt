@@ -1,10 +1,13 @@
 package leo.named.compiler
 
+import leo.Type
 import leo.TypeLine
+import leo.TypeStructure
+import leo.atom
 import leo.base.indexed
 import leo.base.notNullOrError
 import leo.base.runIf
-import leo.expression.compiler.resolveGetOrNull
+import leo.fieldOrNull
 import leo.indexed.compiler.compileIndexOf
 import leo.indexed.compiler.compileOnlyExpression
 import leo.indexed.expression
@@ -15,21 +18,31 @@ import leo.indexed.typed.expressionTuple
 import leo.indexed.typed.onlyTypedOrNull
 import leo.indexed.typed.typed
 import leo.indexed.variable
+import leo.linkOrNull
+import leo.name
+import leo.named.expression.get
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedStructure
 import leo.named.typed.typed
+import leo.named.typed.typedStructure
+import leo.onlyLineOrNull
 import leo.onlyOrNull
+import leo.structure
+import leo.structureOrNull
+import leo.type
 
 val <T> TypedStructure<T>.resolve: TypedStructure<T>
 	get() =
-	null
-		?: resolveGetOrNull
-		?: this
+		null
+			?: resolveGetOrNull
+			?: this
 
-// TODO: Simplify this method, it's terrible right now.
 val <T> TypedStructure<T>.resolveGetOrNull: TypedStructure<T>? get() =
-	typeStructure.resolveGetOrNull?.let { resolvedTypeStructure ->
-		TODO()
+	onlyTypedExpressionOrNull?.resolveGetOrNull?.let { typedStructure(it) }
+
+val <T> TypedExpression<T>.resolveGetOrNull: TypedExpression<T>? get() =
+	typeLine.resolveGetOrNull?.let { getLine ->
+		typed(expression.get(getLine.name), getLine)
 	}
 
 fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
@@ -51,4 +64,19 @@ fun <T> Typed<T>.compileCast(typeLine: TypeLine): Typed<T> =
 val <T> TypedStructure<T>.compileOnlyExpression: TypedExpression<T> get() =
 	typeStructure.compileOnlyExpression.let { typeLine ->
 		typed(structure.expressionStack.onlyOrNull!!, typeLine)
+	}
+
+fun <R> Type.resolveInfix(fn: (Type, String, Type) -> R?): R? =
+	structureOrNull?.resolveInfix(fn)
+
+fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
+	lineStack.linkOrNull?.let { link ->
+		link.head.atom.fieldOrNull?.let { field ->
+			fn(link.tail.structure.type, field.name, field.rhsType)
+		}
+	}
+
+val <T> TypedStructure<T>.onlyTypedExpressionOrNull: TypedExpression<T>? get() =
+	typeStructure.onlyLineOrNull?.let {
+		typed(structure.expressionStack.onlyOrNull!!, it)
 	}

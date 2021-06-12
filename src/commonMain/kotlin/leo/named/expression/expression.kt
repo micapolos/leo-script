@@ -22,7 +22,7 @@ data class VariableExpression<T>(val variable: Variable): Expression<T>()
 data class AnyExpression<T>(val any: T): Expression<T>()
 
 data class Field<out T>(val name: String, val structure: Structure<T>)
-data class Get<out T>(val lhs: Expression<T>, val name: String)
+data class Get<out T>(val expression: Expression<T>, val name: String)
 data class Switch<out T>(val lhs: Expression<T>, val cases: Stack<Case<T>>)
 data class Case<out T>(val name: String, val expression: Expression<T>)
 data class Function<out T>(val paramTypeStructure: TypeStructure, val bodyExpression: Expression<T>)

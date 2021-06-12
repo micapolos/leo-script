@@ -69,7 +69,7 @@ val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>
 	value(function(bodyExpression)).evaluation()
 
 val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	lhs.valueEvaluation.map { it.get(name) }
+	expression.valueEvaluation.map { it.get(name) }
 
 val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	function.valueEvaluation.bind { functionValue ->

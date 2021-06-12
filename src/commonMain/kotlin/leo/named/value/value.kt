@@ -3,6 +3,7 @@ package leo.named.value
 import leo.Literal
 import leo.Stack
 import leo.named.expression.Expression
+import leo.stack
 
 data class Structure<out T>(val valueStack: Stack<Value<T>>)
 
@@ -24,4 +25,4 @@ infix fun <T> String.fieldTo(structure: Structure<T>) = Field(this, structure)
 infix fun <T> String.valueTo(structure: Structure<T>) = value(this fieldTo structure)
 fun <T> function(expression: Expression<T>) = Function(expression)
 
-fun <T> Value<T>.get(name: String): Value<T> = TODO()
+fun <T> structure(vararg values: Value<T>) = Structure(stack(*values))
