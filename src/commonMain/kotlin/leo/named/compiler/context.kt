@@ -21,7 +21,7 @@ fun <T> Context<T>.plus(typedStructure: TypedStructure<T>): Context<T> =
 	copy(dictionary = dictionary.plus(typedStructure.typeStructure))
 
 fun <T> Context<T>.typedExpressionOrNull(typedStructure: TypedStructure<T>): TypedExpression<T>? =
-	TODO()
+	null // TODO
 
 fun <T> Context<T>.plus(definition: Definition): Context<T> =
 	copy(dictionary = dictionary.plus(definition))

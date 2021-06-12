@@ -1,3 +1,5 @@
 package leo.named.compiler
 
-sealed class Environment<out T>
+data class Environment<out T>(val unit: Unit)
+
+val unitEnvironment: Environment<Unit> get() = Environment(Unit)

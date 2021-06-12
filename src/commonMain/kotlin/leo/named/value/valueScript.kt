@@ -28,4 +28,4 @@ val <T> Field<T>.scriptLine: ScriptLine get() =
 	name lineTo structure.script
 
 val <T> Function<T>.scriptLine get() =
-	doingName lineTo script(literal(expression.toString()))
+	doingName lineTo script(expression.nativeScriptLine)

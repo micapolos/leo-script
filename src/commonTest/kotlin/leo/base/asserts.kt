@@ -11,6 +11,9 @@ fun <V> V.assertEqualTo(other: V, message: String? = null) =
 infix fun <V> V.assertEqualTo(other: V) =
 	assertEqualTo(other, null)
 
+infix fun <V> V.assertSameAfter(fn: V.() -> V) =
+	fn().assertEqualTo(this)
+
 infix fun <V> V.assert(fn: V.() -> Boolean) =
 	fn().assert
 

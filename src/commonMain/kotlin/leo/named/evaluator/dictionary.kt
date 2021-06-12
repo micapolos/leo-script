@@ -12,8 +12,11 @@ import leo.named.value.Structure
 import leo.named.value.Value
 import leo.push
 import leo.reverse
+import leo.stack
 
 data class Dictionary<out T>(val definitionStack: Stack<Definition<T>>)
+
+fun <T> dictionary(): Dictionary<T> = Dictionary(stack())
 
 fun <T> Dictionary<T>.plus(definition: Definition<T>): Dictionary<T> =
 	definitionStack.push(definition).let(::Dictionary)

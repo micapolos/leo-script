@@ -45,26 +45,26 @@ import leo.type.compiler.type
 typealias Compilation<T, V> = Stateful<Context<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
 
-fun <T> Context<T>.tupleCompilation(script: Script): Compilation<T, TypedStructure<T>> =
+fun <T> Context<T>.typedStructureCompilation(script: Script): Compilation<T, TypedStructure<T>> =
 	compiler
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.bodyTypedStructure }
 
-fun <T> Context<T>.typedCompilation(scriptLine: ScriptLine): Compilation<T, TypedExpression<T>> =
+fun <T> Context<T>.typedExpressionCompilation(scriptLine: ScriptLine): Compilation<T, TypedExpression<T>> =
 	when (scriptLine) {
-		is FieldScriptLine -> typedCompilation(scriptLine.field)
-		is LiteralScriptLine -> typedCompilation(scriptLine.literal)
+		is FieldScriptLine -> typedExpressionCompilation(scriptLine.field)
+		is LiteralScriptLine -> typedExpressionCompilation(scriptLine.literal)
 	}
 
-fun <T> Context<T>.typedCompilation(scriptField: ScriptField): Compilation<T, TypedExpression<T>> =
-	tupleCompilation(scriptField.rhs).map { scriptField.name expressionTo it }
+fun <T> Context<T>.typedExpressionCompilation(scriptField: ScriptField): Compilation<T, TypedExpression<T>> =
+	typedStructureCompilation(scriptField.rhs).map { scriptField.name expressionTo it }
 
-fun <T> typedCompilation(literal: Literal): Compilation<T, TypedExpression<T>> =
+fun <T> typedExpressionCompilation(literal: Literal): Compilation<T, TypedExpression<T>> =
 	typedExpression<T>(literal).compilation()
 
-fun <T> Context<T>.typedCompilation(script: Script): Compilation<T, TypedExpression<T>> =
-	tupleCompilation(script).map { it.compileOnlyExpression }
+fun <T> Context<T>.typedExpressionCompilation(script: Script): Compilation<T, TypedExpression<T>> =
+	typedStructureCompilation(script).map { it.compileOnlyExpression }
 
 fun <T> Context<T>.typeStructureCompilation(script: Script): Compilation<T, TypeStructure> =
 	script.type.compileStructure.compilation()
@@ -101,7 +101,7 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 	}
 
 fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T>> =
-	context.typedCompilation(script).map { set(typedStructure(it)) }
+	context.typedExpressionCompilation(script).map { set(typedStructure(it)) }
 
 fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler<T>> =
 	bodyTypedStructure.typeStructure.compileOnlyExpression.let { typedExpression ->
@@ -112,7 +112,7 @@ fun <T> Compiler<T>.plusCastCompilation(script: Script): Compilation<T, Compiler
 	}
 
 fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T>>? =
-	context.plus(bodyTypedStructure).typedCompilation(script).map { typed ->
+	context.plus(bodyTypedStructure).typedExpressionCompilation(script).map { typed ->
 		set(
 			typedStructure(
 				typed(
@@ -140,11 +140,11 @@ fun <T> Compiler<T>.plusSwitchCompilation(script: Script): Compilation<T, Compil
 	TODO()
 
 fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<T>> =
-	context.typedCompilation(script.compileOnlyLine).map { plus(it) }
+	context.typedExpressionCompilation(script.compileOnlyLine).map { plus(it) }
 
 fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
 	context.typeStructureCompilation(lhs).bind { typeStructure ->
-		context.typedCompilation(rhs).map { typed ->
+		context.typedExpressionCompilation(rhs).map { typed ->
 			set(
 				context
 					.plus(definition(typeStructure, constantBinding(typed.typeLine)))
@@ -154,7 +154,7 @@ fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<
 
 fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
 	context.typeStructureCompilation(lhs).bind { typeStructure ->
-		context.plus(typeStructure).typedCompilation(rhs).map { bodyTyped ->
+		context.plus(typeStructure).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
 				.plus(definition(typeStructure, functionBinding(bodyTyped.typeLine)))
 				.plusParam(
@@ -174,7 +174,7 @@ fun <T> Compiler<T>.plusCompilation(name: String): Compilation<T, Compiler<T>> =
 	context.resolveCompilation(typedStructure(name expressionTo bodyTypedStructure)).map { set(it) }
 
 fun <T> Compiler<T>.plusFieldCompilation(scriptField: ScriptField): Compilation<T, Compiler<T>> =
-	context.tupleCompilation(scriptField.rhs).bind { tuple ->
+	context.typedStructureCompilation(scriptField.rhs).bind { tuple ->
 		plusResolveCompilation(scriptField.name expressionTo tuple)
 	}
 
