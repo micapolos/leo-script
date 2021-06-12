@@ -74,8 +74,8 @@ val <T> Get<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
 	line.lineEvaluation.map { it.get(name) }
 
 val <T> Invoke<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
-	function.lineStack.onlyOrNull!!.lineEvaluation.bind { functionValue ->
-		(functionValue as leo.named.value.FunctionValueLine).function.let { function ->
+	function.valueEvaluation.bind { functionValue ->
+		(functionValue.lineStack.onlyOrNull!! as leo.named.value.FunctionValueLine).function.let { function ->
 			params.valueEvaluation.bind { paramsStructure ->
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
