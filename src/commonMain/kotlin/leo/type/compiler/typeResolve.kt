@@ -1,4 +1,4 @@
-package leo.expression.compiler
+package leo.type.compiler
 
 import leo.Type
 import leo.TypeStructure

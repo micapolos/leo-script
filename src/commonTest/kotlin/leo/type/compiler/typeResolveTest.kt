@@ -1,7 +1,6 @@
 package leo.type.compiler
 
 import leo.base.assertEqualTo
-import leo.expression.compiler.resolveGetOrNull
 import leo.lineTo
 import leo.numberTypeLine
 import leo.structure

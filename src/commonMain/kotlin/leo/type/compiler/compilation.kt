@@ -11,7 +11,6 @@ import leo.Type
 import leo.TypeLine
 import leo.atom
 import leo.base.reverse
-import leo.expression.compiler.resolve
 import leo.foldStateful
 import leo.isEmpty
 import leo.line
