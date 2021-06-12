@@ -122,7 +122,7 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 						expression(
 						line(
 							invoke(
-								line(function(bodyTypedExpression.type, typed.expression)),
+								expression(line(function(bodyTypedExpression.type, typed.expression))),
 								bodyTypedExpression.expression)
 						)),
 						typed.type)
@@ -190,4 +190,4 @@ fun <T> Context<T>.resolveCompilation(tuple: TypedExpression<T>): Compilation<T,
 		?: tuple.resolve.compilation()
 
 fun <T> Context<T>.resolveCompilationOrNull(tuple: TypedExpression<T>): Compilation<T, TypedExpression<T>>? =
-	resolveOrNull(tuple)?.let { typedExpression(it) }?.compilation()
+	resolveOrNull(tuple)?.compilation()

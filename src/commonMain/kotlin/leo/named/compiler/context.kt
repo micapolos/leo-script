@@ -6,7 +6,6 @@ import leo.StructureType
 import leo.Type
 import leo.TypeStructure
 import leo.named.typed.TypedExpression
-import leo.named.typed.TypedLine
 import leo.push
 import leo.stack
 
@@ -28,7 +27,7 @@ fun <T> Context<T>.plusNames(type: Type): Context<T> =
 fun <T> Context<T>.plusNames(typeStructure: TypeStructure): Context<T> =
 	copy(dictionary = dictionary.plusNames(typeStructure))
 
-fun <T> Context<T>.resolveOrNull(typedExpression: TypedExpression<T>): TypedLine<T>? =
+fun <T> Context<T>.resolveOrNull(typedExpression: TypedExpression<T>): TypedExpression<T>? =
 	dictionary.resolveOrNull(typedExpression)
 
 fun <T> Context<T>.plus(definition: Definition): Context<T> =

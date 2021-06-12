@@ -27,7 +27,7 @@ data class Get<out T>(val line: Line<T>, val name: String)
 data class Switch<out T>(val lhs: Line<T>, val cases: Stack<Case<T>>)
 data class Case<out T>(val name: String, val line: Line<T>)
 data class Function<out T>(val paramType: Type, val bodyExpression: Expression<T>)
-data class Invoke<out T>(val function: Line<T>, val params: Expression<T>)
+data class Invoke<out T>(val function: Expression<T>, val params: Expression<T>)
 data class Variable(val type: Type)
 
 fun <T> expression(vararg lines: Line<T>) = Expression(stack(*lines))
@@ -46,14 +46,14 @@ fun <T> anyExpressionLine(any: T): Line<T> = AnyLine(any)
 
 fun <T> get(lhs: Line<T>, name: String) = Get(lhs, name)
 fun <T> function(paramType: Type, body: Expression<T>) = Function(paramType, body)
-fun <T> invoke(function: Line<T>, params: Expression<T>) = Invoke(function, params)
+fun <T> invoke(function: Expression<T>, params: Expression<T>) = Invoke(function, params)
 fun <T> switch(lhs: Line<T>, cases: Stack<Case<T>>) = Switch(lhs, cases)
 fun variable(type: Type) = Variable(type)
 
 fun <T> Line<T>.get(name: String): Line<T> = line(get(this, name))
 fun <T> Line<T>.switch(vararg cases: Case<T>): Line<T> = line(switch(this, stack(*cases)))
-fun <T> Line<T>.invoke(expression: Expression<T>): Line<T> = line(invoke(this, expression))
-fun <T> Line<T>.invoke(vararg params: Line<T>): Line<T> = line(invoke(this, Expression(stack(*params))))
+fun <T> Expression<T>.invoke(expression: Expression<T>): Expression<T> = expression(line(invoke(this, expression)))
+fun <T> Expression<T>.invoke(vararg params: Line<T>): Line<T> = line(invoke(this, Expression(stack(*params))))
 
 fun <T> Expression<T>.plus(line: Line<T>) = Expression(lineStack.push(line))
 

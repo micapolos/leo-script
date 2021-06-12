@@ -28,7 +28,7 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 					expression(
 						line(
 							invoke(
-								line(function(paramTypedExpression.type, expression)),
+								expression(line(function(paramTypedExpression.type, expression))),
 								paramTypedExpression.expression)
 							)
 						),

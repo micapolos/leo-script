@@ -31,6 +31,7 @@ import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.name
 import leo.named.value.valueLine
+import leo.onlyOrNull
 import leo.setStateful
 import leo.stateful
 import leo.updateStateful
@@ -73,7 +74,7 @@ val <T> Get<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
 	line.lineEvaluation.map { it.get(name) }
 
 val <T> Invoke<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
-	function.lineEvaluation.bind { functionValue ->
+	function.lineStack.onlyOrNull!!.lineEvaluation.bind { functionValue ->
 		(functionValue as leo.named.value.FunctionValueLine).function.let { function ->
 			params.valueEvaluation.bind { paramsStructure ->
 				dictionaryEvaluation<T>().map { dictionary ->

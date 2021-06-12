@@ -20,25 +20,25 @@ import kotlin.test.Test
 class EvaluateTest {
 	@Test
 	fun invoke_static() {
-		line(
+		expression(line(
 			function<Unit>(
 				type(numberTypeLine),
 				expression("foo" lineTo expression())
-			))
+			)))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo("foo" lineTo value())
+			.assertEqualTo(value("foo" lineTo value()))
 	}
 
 	@Test
 	fun invoke_variable() {
-		line(
+		expression(line(
 			function<Unit>(
 				type(numberTypeLine),
 				expression("foo" lineTo expression(line(variable(type(numberName)))))
-			))
+			)))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo("foo" lineTo value(valueLine(literal(10))))
+			.assertEqualTo(value("foo" lineTo value(valueLine(literal(10)))))
 	}
 }

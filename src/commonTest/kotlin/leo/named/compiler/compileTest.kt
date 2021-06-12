@@ -26,17 +26,17 @@ class CompileTest {
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))),
 			"x" lineTo script())
-			.typedLine
+			.typedExpression
 			.assertEqualTo(
 				typed(
-					line(
+					expression(line(
 						get(
 							"point" lineTo expression(
 								"x" lineTo expression(expressionLine<Unit>(literal(10))),
 								"y" lineTo expression(expressionLine(literal(20)))
 							),
-							"x")),
-					"x" lineTo type(numberTypeLine)))
+							"x"))),
+					type("x" lineTo type(numberTypeLine))))
 	}
 
 //	@Test
@@ -63,16 +63,16 @@ class CompileTest {
 		script(
 			"foo" lineTo script(),
 			doName lineTo script("bar"))
-			.typedLine
+			.typedExpression
 			.assertEqualTo(
 				typed(
-					line(
+					expression(line(
 						function(
 							type("foo"),
 							expression("bar" lineTo expression<Unit>())
-						))
+						)))
 						.invoke(expression("foo" lineTo expression())),
-					"bar" lineTo type()))
+					type("bar")))
 	}
 
 	@Test
@@ -80,14 +80,14 @@ class CompileTest {
 		script(
 			"x" lineTo script(literal(10)),
 			doName lineTo script("x"))
-			.typedLine
+			.typedExpression
 			.assertEqualTo(
 				typed(
-					line(
+					expression(line(
 						function(
 							type("x" lineTo type(numberTypeLine)),
-							expression(line<Unit>(variable(type("x"))))))
+							expression(line<Unit>(variable(type("x")))))))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
-					"x" lineTo type(numberTypeLine)))
+					type("x" lineTo type(numberTypeLine))))
 	}
 }
