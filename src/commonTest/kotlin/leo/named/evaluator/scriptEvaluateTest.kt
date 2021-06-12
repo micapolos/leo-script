@@ -40,6 +40,6 @@ class ScriptEvaluateTest {
 				"y" lineTo script(literal(20))),
 			"x" lineTo script())
 			.evaluate
-			.assertEqualTo("x" lineTo script(literal(10)))
+			.assertEqualTo(script("x" lineTo script(literal(10))))
 	}
 }

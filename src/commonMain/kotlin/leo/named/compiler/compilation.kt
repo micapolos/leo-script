@@ -9,6 +9,7 @@ import leo.ScriptLine
 import leo.Stateful
 import leo.TypeLine
 import leo.TypeStructure
+import leo.base.ifOrNull
 import leo.base.notNullOrError
 import leo.beName
 import leo.bind
@@ -97,7 +98,14 @@ fun <T> Compiler<T>.plusStaticCompilationOrNull(scriptField: ScriptField): Compi
 		letName -> plusLetCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
-		else -> null
+		else -> plusGetCompilationOrNull(scriptField)
+	}
+
+fun <T> Compiler<T>.plusGetCompilationOrNull(scriptField: ScriptField): Compilation<T, Compiler<T>>? =
+	ifOrNull(scriptField.rhs.isEmpty) {
+		bodyTypedStructure.getOrNull(scriptField.name)?.let {
+			set(it).compilation()
+		}
 	}
 
 fun <T> Compiler<T>.plusBeCompilation(script: Script): Compilation<T, Compiler<T>> =
