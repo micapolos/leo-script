@@ -8,7 +8,7 @@ import leo.lineTo
 import leo.named.expression.Expression
 import leo.named.expression.Line
 import leo.named.expression.expression
-import leo.named.expression.line
+import leo.named.expression.expressionLine
 import leo.named.expression.lineTo
 import leo.named.expression.plus
 import leo.plus
@@ -34,4 +34,4 @@ infix fun <T> String.expressionTo(typedStructure: TypedStructure<T>): TypedExpre
 		this lineTo type(typedStructure.typeStructure))
 
 fun <T> typedExpression(literal: Literal): TypedExpression<T> =
-	typed(line(literal), literal.typeLine)
+	typed(expressionLine(literal), literal.typeLine)

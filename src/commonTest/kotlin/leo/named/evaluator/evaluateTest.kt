@@ -3,14 +3,15 @@ package leo.named.evaluator
 import leo.base.assertEqualTo
 import leo.literal
 import leo.named.expression.expression
+import leo.named.expression.expressionLine
 import leo.named.expression.function
 import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.variable
-import leo.named.value.structure
+import leo.named.value.lineTo
 import leo.named.value.value
-import leo.named.value.valueTo
+import leo.named.value.valueLine
 import leo.numberName
 import leo.numberTypeLine
 import leo.typeStructure
@@ -24,9 +25,9 @@ class EvaluateTest {
 				typeStructure(numberTypeLine),
 				"foo" lineTo expression()
 			))
-			.invoke(expression(line(literal(10))))
+			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo("foo" valueTo structure())
+			.assertEqualTo("foo" lineTo value())
 	}
 
 	@Test
@@ -36,8 +37,8 @@ class EvaluateTest {
 				typeStructure(numberTypeLine),
 				"foo" lineTo expression(line(variable(typeStructure(numberName))))
 			))
-			.invoke(expression(line(literal(10))))
+			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo("foo" valueTo structure(value(literal(10))))
+			.assertEqualTo("foo" lineTo value(valueLine(literal(10))))
 	}
 }

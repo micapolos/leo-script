@@ -5,6 +5,7 @@ import leo.doName
 import leo.lineTo
 import leo.literal
 import leo.named.expression.expression
+import leo.named.expression.expressionLine
 import leo.named.expression.function
 import leo.named.expression.get
 import leo.named.expression.invoke
@@ -32,8 +33,8 @@ class CompileTest {
 					line(
 						get(
 							"point" lineTo expression(
-								"x" lineTo expression(line<Unit>(literal(10))),
-								"y" lineTo expression(line(literal(20)))
+								"x" lineTo expression(expressionLine<Unit>(literal(10))),
+								"y" lineTo expression(expressionLine(literal(20)))
 							),
 							"x")),
 					"x" lineTo type(numberTypeLine)))
@@ -87,7 +88,7 @@ class CompileTest {
 						function(
 							typeStructure("x" lineTo type(numberTypeLine)),
 							line<Unit>(variable(typeStructure("x")))))
-						.invoke(expression("x" lineTo expression(line(literal(10))))),
+						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					"x" lineTo type(numberTypeLine)))
 	}
 }

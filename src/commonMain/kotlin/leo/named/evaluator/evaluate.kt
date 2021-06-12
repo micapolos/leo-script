@@ -2,7 +2,8 @@ package leo.named.evaluator
 
 import leo.get
 import leo.named.expression.Line
-import leo.named.value.Value
+import leo.named.value.ValueLine
 
-val <T> Line<T>.evaluate: Value<T> get() =
-	valueEvaluation.get(dictionary())
+val <T> Line<T>.evaluate: ValueLine<T>
+	get() =
+	lineEvaluation.get(dictionary())

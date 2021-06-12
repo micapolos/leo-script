@@ -10,22 +10,22 @@ import leo.map
 import leo.nativeName
 import leo.script
 
-val <T> Structure<T>.script: Script get() =
-	valueStack.map { scriptLine }.script
+val <T> Value<T>.script: Script get() =
+	lineStack.map { scriptLine }.script
 
-val <T> Value<T>.scriptLine: ScriptLine get() =
+val <T> ValueLine<T>.scriptLine: ScriptLine get() =
 	when (this) {
-		is AnyValue -> any.nativeScriptLine
-		is FieldValue -> field.scriptLine
-		is FunctionValue -> function.scriptLine
-		is LiteralValue -> literal.line
+		is AnyValueLine -> any.nativeScriptLine
+		is FieldValueLine -> field.scriptLine
+		is FunctionValueLine -> function.scriptLine
+		is LiteralValueLine -> literal.line
 	}
 
 val <T> T.nativeScriptLine: ScriptLine get() =
 	nativeName lineTo script(literal("$this"))
 
 val <T> Field<T>.scriptLine: ScriptLine get() =
-	name lineTo structure.script
+	name lineTo value.script
 
 val <T> Function<T>.scriptLine get() =
 	doingName lineTo script(expression.nativeScriptLine)

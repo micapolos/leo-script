@@ -8,12 +8,12 @@ import leo.nativeName
 import leo.numberName
 import leo.textName
 
-val <T> Value<T>.name get() =
+val <T> ValueLine<T>.name get() =
 	when (this) {
-		is AnyValue -> nativeName
-		is FieldValue -> field.name
-		is FunctionValue -> doingName
-		is LiteralValue -> literal.name
+		is AnyValueLine -> nativeName
+		is FieldValueLine -> field.name
+		is FunctionValueLine -> doingName
+		is LiteralValueLine -> literal.name
 	}
 
 val Literal.name: String get() =

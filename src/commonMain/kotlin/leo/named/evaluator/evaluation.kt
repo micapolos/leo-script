@@ -23,15 +23,15 @@ import leo.named.expression.VariableLine
 import leo.named.expression.expression
 import leo.named.expression.line
 import leo.named.expression.unsafeLine
-import leo.named.value.FunctionValue
-import leo.named.value.Structure
 import leo.named.value.Value
-import leo.named.value.anyValue
+import leo.named.value.ValueLine
+import leo.named.value.anyValueLine
 import leo.named.value.function
 import leo.named.value.get
+import leo.named.value.line
+import leo.named.value.lineTo
 import leo.named.value.name
-import leo.named.value.value
-import leo.named.value.valueTo
+import leo.named.value.valueLine
 import leo.setStateful
 import leo.stateful
 import leo.updateStateful
@@ -43,58 +43,58 @@ fun <T> dictionaryEvaluation(): Evaluation<T, Dictionary<T>> = getStateful()
 fun <T> Dictionary<T>.setEvaluation(): Evaluation<T, Unit> = setStateful(this)
 fun <T> updateDictionaryEvaluation(fn: (Dictionary<T>) -> Dictionary<T>): Evaluation<T, Unit> = updateStateful(fn)
 
-val <T> leo.named.expression.Expression<T>.structureEvaluation: Evaluation<T, Structure<T>> get() =
-	lineStack.map { valueEvaluation }.flat.map(::Structure)
+val <T> leo.named.expression.Expression<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+	lineStack.map { lineEvaluation }.flat.map(::Value)
 
-fun <T> Dictionary<T>.valueEvaluation(line: Line<T>): Evaluation<T, Value<T>> =
+fun <T> Dictionary<T>.lineEvaluation(line: Line<T>): Evaluation<T, ValueLine<T>> =
 	TODO()
 
-val <T> Line<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val <T> Line<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
 	when (this) {
-		is AnyLine -> any.anyValueEvaluation
-		is FieldLine -> field.valueEvaluation
-		is FunctionLine -> function.valueEvaluation
-		is GetLine -> get.valueEvaluation
-		is InvokeLine -> invoke.valueEvaluation
-		is LiteralLine -> literal.valueEvaluation()
-		is SwitchLine -> switch.valueEvaluation
-		is VariableLine -> variable.valueEvaluation()
+		is AnyLine -> any.anyLineEvaluation
+		is FieldLine -> field.lineEvaluation
+		is FunctionLine -> function.lineEvaluation
+		is GetLine -> get.lineEvaluation
+		is InvokeLine -> invoke.lineEvaluation
+		is LiteralLine -> literal.lineEvaluation()
+		is SwitchLine -> switch.lineEvaluation
+		is VariableLine -> variable.lineEvaluation()
 	}
 
-val <T> T.anyValueEvaluation: Evaluation<T, Value<T>> get() =
-	anyValue(this).evaluation()
+val <T> T.anyLineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	anyValueLine(this).evaluation()
 
-val <T> Field<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	expression.structureEvaluation.map { name valueTo it }
+val <T> Field<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	expression.valueEvaluation.map { name lineTo it }
 
-val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	value(function(expression(bodyLine))).evaluation()
+val <T> leo.named.expression.Function<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	line(function(expression(bodyLine))).evaluation()
 
-val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	line.valueEvaluation.map { it.get(name) }
+val <T> Get<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	line.lineEvaluation.map { it.get(name) }
 
-val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	function.valueEvaluation.bind { functionValue ->
-		(functionValue as FunctionValue).function.let { function ->
-			params.structureEvaluation.bind { paramsStructure ->
+val <T> Invoke<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	function.lineEvaluation.bind { functionValue ->
+		(functionValue as leo.named.value.FunctionValueLine).function.let { function ->
+			params.valueEvaluation.bind { paramsStructure ->
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
 						.plus(paramsStructure.dictionary)
-						.value(function.expression.unsafeLine)
+						.valueLine(function.expression.unsafeLine)
 				}
 			}
 		}
 	}
 
-fun <T> Literal.valueEvaluation(): Evaluation<T, Value<T>> =
-	value<T>(this).evaluation()
+fun <T> Literal.lineEvaluation(): Evaluation<T, ValueLine<T>> =
+	valueLine<T>(this).evaluation()
 
-val <T> Switch<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	lhs.valueEvaluation.bind { value ->
+val <T> Switch<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+	lhs.lineEvaluation.bind { value ->
 		dictionaryEvaluation<T>().map { dictionary ->
-			dictionary.plus(value.definition).value(line(value.name))
+			dictionary.plus(value.definition).valueLine(line(value.name))
 		}
 	}
 
-fun <T> Variable.valueEvaluation(): Evaluation<T, Value<T>> =
+fun <T> Variable.lineEvaluation(): Evaluation<T, ValueLine<T>> =
 	dictionaryEvaluation<T>().map { it.value(typeStructure) }

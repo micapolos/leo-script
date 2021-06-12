@@ -4,17 +4,17 @@ import leo.base.orNullIf
 import leo.mapFirst
 import leo.onlyOrNull
 
-fun <T> Structure<T>.value(name: String): Value<T> =
-	valueStack.mapFirst { orNullIf(this.name != name) }!!
+fun <T> Value<T>.line(name: String): ValueLine<T> =
+	lineStack.mapFirst { orNullIf(this.name != name) }!!
 
-val <T> Structure<T>.value: Value<T> get() =
-	valueStack.onlyOrNull!!
+val <T> Value<T>.line: ValueLine<T> get() =
+	lineStack.onlyOrNull!!
 
-val <T> Value<T>.field: Field<T> get() =
-	(this as FieldValue).field
+val <T> ValueLine<T>.field: Field<T> get() =
+	(this as FieldValueLine).field
+
+fun <T> ValueLine<T>.get(name: String): ValueLine<T> =
+	field.value.line(name)
 
 fun <T> Value<T>.get(name: String): Value<T> =
-	field.structure.value(name)
-
-fun <T> Structure<T>.get(name: String): Structure<T> =
-	structure(value.get(name))
+	value(line.get(name))

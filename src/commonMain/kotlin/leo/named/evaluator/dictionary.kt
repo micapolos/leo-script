@@ -8,8 +8,8 @@ import leo.get
 import leo.map
 import leo.mapFirst
 import leo.named.expression.Line
-import leo.named.value.Structure
 import leo.named.value.Value
+import leo.named.value.ValueLine
 import leo.push
 import leo.reverse
 import leo.stack
@@ -24,13 +24,13 @@ fun <T> Dictionary<T>.plus(definition: Definition<T>): Dictionary<T> =
 fun <T> Dictionary<T>.plus(dictionary: Dictionary<T>): Dictionary<T> =
 	fold(dictionary.definitionStack.reverse) { plus(it) }
 
-fun <T> Dictionary<T>.value(line: Line<T>): Value<T> =
-	line.valueEvaluation.get(this)
+fun <T> Dictionary<T>.valueLine(line: Line<T>): ValueLine<T> =
+	line.lineEvaluation.get(this)
 
-fun <T> Dictionary<T>.value(typeStructure: TypeStructure): Value<T> =
+fun <T> Dictionary<T>.value(typeStructure: TypeStructure): ValueLine<T> =
 	definitionStack
-		.mapFirst { valueOrNull(typeStructure) }
+		.mapFirst { valueLineOrNull(typeStructure) }
 		.notNullOrError("$this.value($this)")
 
-val <T> Structure<T>.dictionary: Dictionary<T> get() =
-	valueStack.map { definition }.let(::Dictionary)
+val <T> Value<T>.dictionary: Dictionary<T> get() =
+	lineStack.map { definition }.let(::Dictionary)
