@@ -6,6 +6,7 @@ import leo.TypeStructure
 import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.mapFirst
+import leo.onlyOrNull
 import leo.push
 import leo.stack
 
@@ -58,3 +59,6 @@ fun <T> Structure<T>.plus(expression: Expression<T>) = Structure(expressionStack
 fun <T> Switch<T>.expression(name: String): Expression<T> = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun <T> Switch<T>.expressionOrNull(name: String): Expression<T>? = cases.mapFirst { expressionOrNull(name) }
 fun <T> Case<T>.expressionOrNull(name: String): Expression<T>? = notNullIf(this.name == name) { expression }
+
+fun <T> Structure<T>.get(name: String): Structure<T> =
+	structure(expressionStack.onlyOrNull!!.get(name))
