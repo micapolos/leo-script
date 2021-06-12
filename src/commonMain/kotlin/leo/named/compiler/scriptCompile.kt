@@ -1,4 +1,4 @@
-package leo.indexed.compiler
+package leo.named.compiler
 
 import leo.Script
 import leo.ScriptLine

@@ -18,7 +18,6 @@ import leo.doName
 import leo.doingLineTo
 import leo.foldStateful
 import leo.indexed.compiler.compileOnlyExpression
-import leo.indexed.compiler.compileOnlyLine
 import leo.indexed.compiler.compileStructure
 import leo.isEmpty
 import leo.letName
