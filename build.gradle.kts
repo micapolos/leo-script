@@ -11,13 +11,6 @@ repositories {
 }
 
 kotlin {
-//    macosX64 {
-//        binaries {
-//            executable {
-//                entryPoint = "leo.main"
-//            }
-//        }
-//    }
     jvm {
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
@@ -53,8 +46,6 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-//        val macosX64Main by getting
-//        val macosX64Test by getting
         val jvmMain by getting
         val jvmTest by getting
     }
