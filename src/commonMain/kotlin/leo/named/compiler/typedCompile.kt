@@ -6,18 +6,12 @@ import leo.TypeLine
 import leo.TypeStructure
 import leo.atom
 import leo.base.notNullOrError
-import leo.base.runIf
 import leo.choiceOrNull
 import leo.fieldOrNull
 import leo.getOrNull
-import leo.indexed.expression
-import leo.indexed.invoke
 import leo.indexed.typed.Typed
 import leo.indexed.typed.TypedTuple
-import leo.indexed.typed.expressionTuple
 import leo.indexed.typed.onlyTypedOrNull
-import leo.indexed.typed.typed
-import leo.indexed.variable
 import leo.linkOrNull
 import leo.named.expression.get
 import leo.named.typed.TypedExpression
@@ -31,13 +25,6 @@ import leo.type
 
 val <T> TypedExpression<T>.resolve: TypedExpression<T>
 	get() = this
-
-fun <T> IndexedValue<Binding>.apply(tuple: TypedTuple<T>): Typed<T> =
-	typed(
-		expression<T>(variable(index)).runIf(!value.isConstant) {
-			expression(invoke(this, tuple.expressionTuple))
-		},
-		value.typeLine)
 
 val <T> TypedTuple<T>.compileTyped: Typed<T>
 	get() =

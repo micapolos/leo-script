@@ -155,7 +155,7 @@ fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<
 		context.typedExpressionCompilation(rhs).map { typed ->
 			set(
 				context
-					.plus(definition(typeStructure.type, constantBinding(typed.typeLine)))
+					.plus(definition(typeStructure.type, constantBinding(type(typed.typeLine))))
 					.plusParam(typed))
 		}
 	}
@@ -164,7 +164,7 @@ fun <T> Compiler<T>.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<
 	context.typeStructureCompilation(lhs).bind { typeStructure ->
 		context.plus(typeStructure).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
-				.plus(definition(typeStructure.type, functionBinding(bodyTyped.typeLine)))
+				.plus(definition(typeStructure.type, functionBinding(type(bodyTyped.typeLine))))
 				.plusParam(
 					typed(
 						line(function(typeStructure, bodyTyped.line)),
