@@ -8,6 +8,7 @@ import leo.indexed.typed.tuple
 import leo.indexed.typed.type
 import leo.named.compiler.Definition
 import leo.named.compiler.Dictionary
+import leo.named.compiler.compileStructure
 import leo.named.compiler.dictionary
 import leo.named.compiler.plus
 

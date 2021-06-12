@@ -1,16 +1,17 @@
 package leo.named.compiler
 
 import leo.Type
+import leo.TypeChoice
 import leo.TypeLine
 import leo.TypeStructure
 import leo.atom
 import leo.base.indexed
 import leo.base.notNullOrError
 import leo.base.runIf
+import leo.choiceOrNull
 import leo.fieldOrNull
 import leo.getOrNull
 import leo.indexed.compiler.compileIndexOf
-import leo.indexed.compiler.compileOnlyExpression
 import leo.indexed.expression
 import leo.indexed.invoke
 import leo.indexed.typed.Typed
@@ -73,3 +74,14 @@ fun <T> TypedStructure<T>.getOrNull(name: String): TypedStructure<T>? =
 	typeStructure.getOrNull(name)?.let {
 		typed(expression.get(name), it)
 	}
+
+val Type.compileStructure: TypeStructure get() =
+	structureOrNull.notNullOrError("$this not structure")
+
+val Type.compileChoice: TypeChoice
+	get() =
+	choiceOrNull.notNullOrError("$this not choice")
+
+val TypeStructure.compileOnlyExpression: TypeLine get() =
+	onlyLineOrNull.notNullOrError("$this not a line")
+

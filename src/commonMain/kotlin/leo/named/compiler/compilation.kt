@@ -17,8 +17,6 @@ import leo.castName
 import leo.doName
 import leo.doingLineTo
 import leo.foldStateful
-import leo.indexed.compiler.compileOnlyExpression
-import leo.indexed.compiler.compileStructure
 import leo.isEmpty
 import leo.letName
 import leo.lineStack

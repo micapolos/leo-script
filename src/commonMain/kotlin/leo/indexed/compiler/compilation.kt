@@ -33,6 +33,7 @@ import leo.lineStack
 import leo.map
 import leo.matchInfix
 import leo.named.compiler.compileOnlyLine
+import leo.named.compiler.compileStructure
 import leo.named.compiler.constantBinding
 import leo.named.compiler.definition
 import leo.named.compiler.functionBinding
