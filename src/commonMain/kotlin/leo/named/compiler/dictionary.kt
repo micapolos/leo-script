@@ -23,7 +23,7 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 fun Dictionary.plus(typeLine: TypeLine): Dictionary =
 	plus(typeLine.definition())
 
-fun Dictionary.plus(structure: TypeStructure): Dictionary =
+fun Dictionary.plusLines(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plus(it) }
 
 fun Dictionary.bindingOrNull(structure: Type): Binding? =

@@ -16,7 +16,7 @@ data class Context<out T>(
 val <T> Environment<T>.context get() = Context(this, dictionary(), stack())
 
 fun <T> Context<T>.plus(typeStructure: TypeStructure): Context<T> =
-	copy(dictionary = dictionary.plus(typeStructure))
+	copy(dictionary = dictionary.plusLines(typeStructure))
 
 fun <T> Context<T>.resolveOrNull(typedExpression: TypedExpression<T>): TypedLine<T>? =
 	dictionary.resolveOrNull(typedExpression)
