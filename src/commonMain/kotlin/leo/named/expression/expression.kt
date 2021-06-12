@@ -63,3 +63,5 @@ fun <T> Case<T>.lineOrNull(name: String): Line<T>? = notNullIf(this.name == name
 
 fun <T> Expression<T>.get(name: String): Expression<T> =
 	expression(lineStack.onlyOrNull!!.get(name))
+
+val <T> Expression<T>.unsafeLine: Line<T> get() = lineStack.onlyOrNull!!

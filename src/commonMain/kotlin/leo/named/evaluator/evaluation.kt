@@ -20,7 +20,9 @@ import leo.named.expression.Switch
 import leo.named.expression.SwitchLine
 import leo.named.expression.Variable
 import leo.named.expression.VariableLine
+import leo.named.expression.expression
 import leo.named.expression.line
+import leo.named.expression.unsafeLine
 import leo.named.value.FunctionValue
 import leo.named.value.Structure
 import leo.named.value.Value
@@ -66,7 +68,7 @@ val <T> Field<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	expression.structureEvaluation.map { name valueTo it }
 
 val <T> leo.named.expression.Function<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
-	value(function(bodyLine)).evaluation()
+	value(function(expression(bodyLine))).evaluation()
 
 val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	line.valueEvaluation.map { it.get(name) }
@@ -78,7 +80,7 @@ val <T> Invoke<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
 						.plus(paramsStructure.dictionary)
-						.value(function.line)
+						.value(function.expression.unsafeLine)
 				}
 			}
 		}
