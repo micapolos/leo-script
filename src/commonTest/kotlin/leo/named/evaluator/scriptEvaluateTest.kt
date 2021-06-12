@@ -1,5 +1,6 @@
 package leo.named.evaluator
 
+import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.lineTo
 import leo.literal
@@ -29,5 +30,16 @@ class ScriptEvaluateTest {
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)))
 			.assertSameAfter { evaluate }
+	}
+
+	@Test
+	fun fieldGet() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))),
+			"x" lineTo script())
+			.evaluate
+			.assertEqualTo("x" lineTo script(literal(10)))
 	}
 }
