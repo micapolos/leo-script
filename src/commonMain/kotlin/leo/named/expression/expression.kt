@@ -33,7 +33,7 @@ data class Field(val name: String, val expression: Expression) { override fun to
 data class Get(val expression: Expression, val name: String) { override fun toString() = script.toString() }
 data class Switch(val expression: Expression, val cases: Stack<Case>) { override fun toString() = script.toString() }
 data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Function(val paramType: Type, val body: Body) { override fun toString() = scriptLine.toString() }
+data class Function(val body: Body) { override fun toString() = scriptLine.toString() }
 data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
 data class Variable(val type: Type) { override fun toString() = script.toString() }
 
@@ -65,7 +65,7 @@ fun body(expression: Expression): Body = ExpressionBody(expression)
 fun body(fn: (Dictionary) -> Value): Body = FnBody(fn)
 
 fun get(expression: Expression, name: String) = Get(expression, name)
-fun function(paramType: Type, body: Body) = Function(paramType, body)
+fun function(body: Body) = Function(body)
 fun invoke(function: Expression, params: Expression) = Invoke(function, params)
 fun switch(lhs: Expression, cases: Stack<Case>) = Switch(lhs, cases)
 fun variable(type: Type) = Variable(type)

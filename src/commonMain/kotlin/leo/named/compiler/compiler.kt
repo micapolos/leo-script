@@ -33,7 +33,7 @@ val Compiler.typedExpression: TypedExpression
 				typed(
 					expression(
 						invoke(
-							expression(line(function(paramTypedExpression.type, body(expression)))),
+							expression(line(function(body(expression)))),
 							paramTypedExpression.expression)
 						),
 					type)

@@ -132,7 +132,8 @@ fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compi
 fun Compiler.plusBeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
 	set(typedExpression).compilation
 
-fun Compiler.plusCastCompilation(script: Script): Compilation<Compiler> =
+@Suppress("unused")
+fun Compiler.plusCastCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
 	TODO()
 
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =

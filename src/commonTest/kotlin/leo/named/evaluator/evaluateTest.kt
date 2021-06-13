@@ -15,7 +15,6 @@ import leo.named.value.numberPlusNumber
 import leo.named.value.numberValue
 import leo.named.value.value
 import leo.numberName
-import leo.numberTypeLine
 import leo.type
 import kotlin.test.Test
 
@@ -24,7 +23,6 @@ class EvaluateTest {
 	fun invoke_static() {
 		expression(line(
 			function(
-				type(numberTypeLine),
 				body(expression("foo" lineTo expression()))
 			)))
 			.invoke(expression(expressionLine(literal(10))))
@@ -36,7 +34,6 @@ class EvaluateTest {
 	fun invoke_variable() {
 		expression(line(
 			function(
-				type(numberTypeLine),
 				body(expression("foo" lineTo expression(variable(type(numberName)))))
 			)))
 			.invoke(expression(expressionLine(literal(10))))
@@ -48,7 +45,6 @@ class EvaluateTest {
 	fun invoke_native() {
 		expression(line(
 			function(
-				type(numberTypeLine),
 				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.numberValue) })))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate

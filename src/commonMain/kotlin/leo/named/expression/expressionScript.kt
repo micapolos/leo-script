@@ -12,7 +12,6 @@ import leo.named.value.anyScriptLine
 import leo.plus
 import leo.script
 import leo.switchName
-import leo.toName
 
 val Expression.scriptLine: ScriptLine get() =
 	"expression" lineTo script
@@ -43,7 +42,7 @@ val Case.scriptLine: ScriptLine get() = name lineTo expression.script
 val Variable.script: Script get() = script("variable" lineTo type.script)
 
 val Field.scriptLine: ScriptLine get() = name lineTo expression.script
-val Function.scriptLine: ScriptLine get() = doingName lineTo paramType.script.plus(toName lineTo body.script)
+val Function.scriptLine: ScriptLine get() = doingName lineTo body.script
 
 val Body.script: Script get() =
 	when (this) {

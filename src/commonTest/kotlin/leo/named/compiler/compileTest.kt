@@ -75,7 +75,6 @@ class CompileTest {
 				typed(
 					expression(line(
 						function(
-							type("foo"),
 							body(expression("bar" lineTo expression()))
 						)))
 						.invoke(expression("foo" lineTo expression())),
@@ -92,7 +91,6 @@ class CompileTest {
 				typed(
 					expression(line(
 						function(
-							type("x" lineTo type(numberTypeLine)),
 							body(expression(variable(type("x"))))
 						)))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),

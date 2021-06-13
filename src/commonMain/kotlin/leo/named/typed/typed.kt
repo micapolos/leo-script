@@ -62,7 +62,7 @@ fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
 	typed(
 		expression(
 			invoke(
-				expression(line(function(type, body(typedExpression.expression)))),
+				expression(line(function(body(typedExpression.expression)))),
 				expression
 			)
 		),
@@ -85,7 +85,7 @@ fun TypedExpression.get(name: String): TypedExpression =
 
 infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 	typed(
-		line(function(this, body(bodyTypedExpression.expression))),
+		line(function(body(bodyTypedExpression.expression))),
 		this.doingLineTo(bodyTypedExpression.type))
 
 val TypedField.name: String get() = typeField.name
