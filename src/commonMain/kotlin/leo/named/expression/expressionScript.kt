@@ -14,6 +14,9 @@ import leo.script
 import leo.switchName
 import leo.toName
 
+val Expression.scriptLine: ScriptLine get() =
+	"expression" lineTo script
+
 val Expression.script: Script get() =
 	when (this) {
 		is EmptyExpression -> script()

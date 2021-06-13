@@ -27,9 +27,9 @@ import leo.giveName
 import leo.isEmpty
 import leo.letName
 import leo.lineStack
+import leo.lineTo
 import leo.map
 import leo.matchInfix
-import leo.named.expression.script
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
 import leo.named.typed.TypedLine
@@ -136,15 +136,11 @@ fun Compiler.plusCastCompilation(script: Script): Compilation<Compiler> =
 	TODO()
 
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
-	when (script) {
-		script("body") -> set(bodyTypedExpression.expression.script.reflectTypedExpression).compilation
-		script("context") -> set(script(context.scriptLine).reflectTypedExpression).compilation
-		script("compiler") -> set(script(scriptLine).reflectTypedExpression).compilation
-		script("dictionary") -> set(script(context.dictionary.scriptLine).reflectTypedExpression).compilation
-		script("expression") -> set(typedExpression.expression.script.reflectTypedExpression).compilation
-		script("type") -> set(bodyTypedExpression.type.script.reflectTypedExpression).compilation
-		else -> error("$script is not debug command")
-	}
+	if (!script.isEmpty) error("debug")
+	else plusDebugCompilation
+
+val Compiler.plusDebugCompilation: Compilation<Compiler> get() =
+	set(script("debug" lineTo script(scriptLine)).reflectTypedExpression).compilation
 
 fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler>? =
 	context

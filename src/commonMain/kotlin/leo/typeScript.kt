@@ -3,6 +3,9 @@ package leo
 import leo.type.compiler.numberTypeScriptLine
 import leo.type.compiler.textTypeScriptLine
 
+val Type.scriptLine: ScriptLine get() =
+	"type" lineTo script
+
 val Type.script: Script get() =
 	when (this) {
 		is StructureType -> structure.script

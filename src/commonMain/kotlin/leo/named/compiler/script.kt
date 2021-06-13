@@ -3,7 +3,6 @@ package leo.named.compiler
 import leo.ScriptLine
 import leo.lineTo
 import leo.map
-import leo.named.typed.script
 import leo.named.typed.scriptLine
 import leo.plus
 import leo.script
@@ -27,4 +26,4 @@ val Compiler.scriptLine: ScriptLine get() =
 	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)
 
 val Scope.scriptLine: ScriptLine get() =
-	"scope" lineTo typedExpressionStack.map { "typed" lineTo this.script }.script
+	"scope" lineTo typedExpressionStack.map { scriptLine }.script
