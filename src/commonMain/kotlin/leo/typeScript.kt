@@ -1,5 +1,8 @@
 package leo
 
+import leo.type.compiler.numberTypeScriptLine
+import leo.type.compiler.textTypeScriptLine
+
 val Type.script: Script get() =
 	when (this) {
 		is StructureType -> structure.script
@@ -41,8 +44,8 @@ val TypeField.scriptLine: ScriptLine get() =
 
 val TypeLiteral.scriptLine: ScriptLine get() =
 	when (this) {
-		is NumberTypeLiteral -> numberName lineTo script()
-		is TextTypeLiteral -> textName lineTo script()
+		is NumberTypeLiteral -> numberTypeScriptLine
+		is TextTypeLiteral -> textTypeScriptLine
 	}
 
 val TypeDoing.scriptLine: ScriptLine get() =

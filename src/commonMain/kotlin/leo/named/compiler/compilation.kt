@@ -35,13 +35,11 @@ import leo.named.typed.line
 import leo.named.typed.lineTo
 import leo.named.typed.name
 import leo.named.typed.plus
-import leo.named.typed.reflectTypedExpression
 import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.onlyLineOrNull
 import leo.reverse
-import leo.script
 import leo.seq
 import leo.stateful
 import leo.switchName
@@ -169,7 +167,7 @@ fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
 
 fun Compiler.plusTypeCompilationOrNull(typed: TypedExpression): Compilation<Compiler>? =
 	notNullIf(bodyTypedExpression.type.isEmpty) {
-		set(typed.type.script.reflectTypedExpression).compilation()
+		set(typed.type.typedExpression).compilation()
 	}
 
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =

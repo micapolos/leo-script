@@ -25,7 +25,7 @@ import leo.named.typed.typedLine
 import leo.numberTypeLine
 import leo.script
 import leo.takeName
-import leo.textName
+import leo.textTypeLine
 import leo.toName
 import leo.type
 import leo.typeName
@@ -174,7 +174,6 @@ class CompileTest {
 			line(literal("foo")),
 			typeName lineTo script())
 			.typedExpression
-			.assertEqualTo(
-				typedExpression(textName lineTo typedExpression()))
+			.assertEqualTo(type(textTypeLine).typedExpression)
 	}
 }

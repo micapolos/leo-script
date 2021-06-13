@@ -11,6 +11,9 @@ import leo.literal
 import leo.script
 import leo.takeName
 import leo.toName
+import leo.type.compiler.numberTypeScriptLine
+import leo.type.compiler.textTypeScriptLine
+import leo.typeName
 import kotlin.test.Test
 
 class ScriptEvaluateTest {
@@ -103,5 +106,18 @@ class ScriptEvaluateTest {
 					toName lineTo script("pong" lineTo script()))))
 			.evaluate
 			.assertEqualTo(script("pong"))
+	}
+
+	@Test
+	fun type() {
+		script(
+			"name" lineTo script(literal("foo")),
+			"age" lineTo script(literal(15)),
+			typeName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				script(
+					"name" lineTo script(textTypeScriptLine),
+					"age" lineTo script(numberTypeScriptLine)))
 	}
 }

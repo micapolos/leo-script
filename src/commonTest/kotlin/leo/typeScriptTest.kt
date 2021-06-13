@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.assertEqualTo
+import leo.type.compiler.numberTypeScriptLine
 import kotlin.test.Test
 
 class TypeScriptTest {
@@ -14,8 +15,8 @@ class TypeScriptTest {
 			.assertEqualTo(
 				script(
 					"point" lineTo script(
-						"x" lineTo script("number"),
-						"y" lineTo script("number"))))
+						"x" lineTo script(numberTypeScriptLine),
+						"y" lineTo script(numberTypeScriptLine))))
 	}
 
 	@Test
@@ -40,7 +41,7 @@ class TypeScriptTest {
 				"stack" lineTo type(choice(
 					"empty" lineTo type(),
 					"link" lineTo type(
-						leo.recurseTypeLine,
+						recurseTypeLine,
 						numberTypeLine))))))
 			.script
 			.assertEqualTo(
@@ -51,6 +52,6 @@ class TypeScriptTest {
 								"empty" lineTo script(),
 								"link" lineTo script(
 									recurseName lineTo script(),
-									numberName lineTo script()))))))
+									numberTypeScriptLine))))))
 	}
 }
