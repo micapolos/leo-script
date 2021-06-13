@@ -36,6 +36,7 @@ import leo.reverse
 import leo.seq
 import leo.stateful
 import leo.switchName
+import leo.takeName
 import leo.theName
 import leo.toName
 import leo.type.compiler.type
@@ -97,6 +98,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		giveName -> plusGiveCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
+		takeName -> plusTakeCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> plusGetCompilationOrNull(scriptField)
 	}
@@ -146,6 +148,12 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 
 fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
 	TODO()
+
+fun Compiler.plusTakeCompilation(script: Script): Compilation<Compiler> =
+	context.typedExpressionCompilation(script).map {
+		set(it.invoke(bodyTypedExpression))
+	}
+
 
 fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
 	context.typedLineCompilation(script.compileLine).map { plus(it) }

@@ -22,6 +22,7 @@ import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.numberTypeLine
 import leo.script
+import leo.takeName
 import leo.toName
 import leo.type
 import kotlin.test.Test
@@ -106,11 +107,11 @@ class CompileTest {
 	fun doing() {
 		script(
 			doingName lineTo script(
-				"x" lineTo script(),
-				toName lineTo script("y")))
+				"ping" lineTo script(),
+				toName lineTo script("pong")))
 			.typedExpression
 			.assertEqualTo(
-				typedExpression(type("x") doingTypedLine typedExpression("y" lineTo typedExpression())))
+				typedExpression(type("ping") doingTypedLine typedExpression("pong" lineTo typedExpression())))
 	}
 
 	@Test
@@ -118,13 +119,13 @@ class CompileTest {
 		script(
 			"foo" lineTo script(),
 			doingName lineTo script(
-				"x" lineTo script(),
-				toName lineTo script("y")))
+				"ping" lineTo script(),
+				toName lineTo script("pong")))
 			.typedExpression
 			.assertEqualTo(
 				typedExpression(
 					"foo" lineTo typedExpression(),
-					type("x") doingTypedLine typedExpression("y" lineTo typedExpression())))
+					type("ping") doingTypedLine typedExpression("pong" lineTo typedExpression())))
 	}
 
 	@Test
@@ -138,22 +139,37 @@ class CompileTest {
 	fun doingGive() {
 		script(
 			doingName lineTo script(
-				"x" lineTo script(),
-				toName lineTo script("y")),
-			giveName lineTo script("x"))
+				"ping" lineTo script(),
+				toName lineTo script("pong")),
+			giveName lineTo script("ping"))
 			.typedExpression
 			.assertEqualTo(
-				typedExpression(type("x") doingTypedLine typedExpression("y" lineTo typedExpression()))
-					.invoke(typedExpression("x" lineTo typedExpression())))
+				typedExpression(type("ping") doingTypedLine typedExpression("pong" lineTo typedExpression()))
+					.invoke(typedExpression("ping" lineTo typedExpression())))
 	}
 
 	@Test
 	fun doingGive_notFunction() {
 		assertFails {
 			script(
-				"x" lineTo script(),
-				giveName lineTo script("y"))
+				"ping" lineTo script(),
+				giveName lineTo script("pong"))
 				.typedExpression
 		}
 	}
+
+	@Test
+	fun takeDoing() {
+		script(
+			"ping" lineTo script(),
+			takeName lineTo script(
+				doingName lineTo script(
+					"ping" lineTo script(),
+					toName lineTo script("pong"))))
+			.typedExpression
+			.assertEqualTo(
+				typedExpression(type("ping") doingTypedLine typedExpression("pong" lineTo typedExpression()))
+					.invoke(typedExpression("ping" lineTo typedExpression())))
+	}
+
 }

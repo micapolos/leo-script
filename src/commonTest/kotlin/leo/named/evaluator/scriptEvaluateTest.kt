@@ -9,6 +9,7 @@ import leo.giveName
 import leo.lineTo
 import leo.literal
 import leo.script
+import leo.takeName
 import leo.toName
 import kotlin.test.Test
 
@@ -88,6 +89,18 @@ class ScriptEvaluateTest {
 				"ping" lineTo script(),
 				toName lineTo script("pong" lineTo script())),
 			giveName lineTo script("ping"))
+			.evaluate
+			.assertEqualTo(script("pong"))
+	}
+
+	@Test
+	fun takeDoing() {
+		script(
+			"ping" lineTo script(),
+			takeName lineTo script(
+				doingName lineTo script(
+					"ping" lineTo script(),
+					toName lineTo script("pong" lineTo script()))))
 			.evaluate
 			.assertEqualTo(script("pong"))
 	}
