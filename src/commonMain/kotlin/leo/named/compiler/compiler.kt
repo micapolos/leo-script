@@ -1,6 +1,7 @@
 package leo.named.compiler
 
 import leo.fold
+import leo.named.expression.body
 import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
@@ -32,7 +33,7 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 				typed(
 					expression(
 						invoke(
-							expression(line(function(paramTypedExpression.type, expression))),
+							expression(line(function(paramTypedExpression.type, body(expression)))),
 							paramTypedExpression.expression)
 						),
 					type)

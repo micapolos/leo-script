@@ -7,7 +7,10 @@ import leo.fold
 import leo.get
 import leo.map
 import leo.mapFirst
+import leo.named.expression.Body
 import leo.named.expression.Expression
+import leo.named.expression.ExpressionBody
+import leo.named.expression.FnBody
 import leo.named.value.Value
 import leo.push
 import leo.reverse
@@ -22,6 +25,12 @@ fun <T> Dictionary<T>.plus(definition: Definition<T>): Dictionary<T> =
 
 fun <T> Dictionary<T>.plus(dictionary: Dictionary<T>): Dictionary<T> =
 	fold(dictionary.definitionStack.reverse) { plus(it) }
+
+fun <T> Dictionary<T>.value(body: Body<T>): Value<T> =
+	when (body) {
+		is ExpressionBody -> value(body.expression)
+		is FnBody -> body.valueFn(this)
+	}
 
 fun <T> Dictionary<T>.value(expression: Expression<T>): Value<T> =
 	expression.valueEvaluation.get(this)

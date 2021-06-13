@@ -4,6 +4,7 @@ import leo.base.assertEqualTo
 import leo.doName
 import leo.lineTo
 import leo.literal
+import leo.named.expression.body
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.function
@@ -70,7 +71,7 @@ class CompileTest {
 					expression(line(
 						function(
 							type("foo"),
-							expression("bar" lineTo expression<Unit>())
+							body(expression("bar" lineTo expression<Unit>()))
 						)))
 						.invoke(expression("foo" lineTo expression())),
 					type("bar")))
@@ -87,7 +88,7 @@ class CompileTest {
 					expression(line(
 						function(
 							type("x" lineTo type(numberTypeLine)),
-							expression<Unit>(variable(type("x")))
+							body(expression<Unit>(variable(type("x"))))
 						)))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					type("x" lineTo type(numberTypeLine))))

@@ -28,4 +28,4 @@ val <T> ValueField<T>.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
 val <T> ValueFunction<T>.scriptLine get() =
-	doingName lineTo script(expression.nativeScriptLine)
+	doingName lineTo script(body.nativeScriptLine)

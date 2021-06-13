@@ -9,6 +9,8 @@ import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.empty
 import leo.mapFirst
+import leo.named.evaluator.Dictionary
+import leo.named.value.Value
 import leo.stack
 
 sealed class Expression<out T>
@@ -30,9 +32,13 @@ data class Field<out T>(val name: String, val expression: Expression<T>)
 data class Get<out T>(val expression: Expression<T>, val name: String)
 data class Switch<out T>(val expression: Expression<T>, val cases: Stack<Case<T>>)
 data class Case<out T>(val name: String, val line: Expression<T>)
-data class Function<out T>(val paramType: Type, val bodyExpression: Expression<T>)
+data class Function<out T>(val paramType: Type, val body: Body<T>)
 data class Invoke<out T>(val function: Expression<T>, val params: Expression<T>)
 data class Variable(val type: Type)
+
+sealed class Body<out T>
+data class ExpressionBody<T>(val expression: Expression<T>): Body<T>()
+data class FnBody<T>(val valueFn: (Dictionary<T>) -> Value<T>): Body<T>()
 
 fun <T> expression(empty: Empty): Expression<T> = EmptyExpression(empty)
 fun <T> expression(link: Link<T>): Expression<T> = LinkExpression(link)
@@ -54,8 +60,11 @@ fun <T> line(field: Field<T>): Line<T> = FieldLine(field)
 fun <T> line(function: Function<T>): Line<T> = FunctionLine(function)
 fun <T> anyExpressionLine(any: T): Line<T> = AnyLine(any)
 
+fun <T> body(expression: Expression<T>): Body<T> = ExpressionBody(expression)
+fun <T> body(fn: (Dictionary<T>) -> Value<T>): Body<T> = FnBody(fn)
+
 fun <T> get(expression: Expression<T>, name: String) = Get(expression, name)
-fun <T> function(paramType: Type, body: Expression<T>) = Function(paramType, body)
+fun <T> function(paramType: Type, body: Body<T>) = Function(paramType, body)
 fun <T> invoke(function: Expression<T>, params: Expression<T>) = Invoke(function, params)
 fun <T> switch(lhs: Expression<T>, cases: Stack<Case<T>>) = Switch(lhs, cases)
 fun variable(type: Type) = Variable(type)

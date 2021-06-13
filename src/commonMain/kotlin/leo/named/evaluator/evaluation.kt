@@ -87,7 +87,7 @@ fun <T> Literal.lineEvaluation(): Evaluation<T, ValueLine<T>> =
 	valueLine<T>(this).evaluation()
 
 val <T> leo.named.expression.Function<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
-	line(function(bodyExpression)).evaluation()
+	line(function(body)).evaluation()
 
 val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
 	expression.valueEvaluation.map { it.get(name) }
@@ -99,7 +99,7 @@ val <T> Invoke<T>.lineEvaluation: Evaluation<T, Value<T>> get() =
 				dictionaryEvaluation<T>().map { dictionary ->
 					dictionary
 						.plus(paramsValue.dictionary)
-						.value(function.expression)
+						.value(function.body)
 				}
 			}
 		}
