@@ -13,32 +13,33 @@ import leo.named.evaluator.Dictionary
 import leo.named.value.Value
 import leo.stack
 
-sealed class Expression
-data class EmptyExpression(val empty: Empty): Expression()
-data class LinkExpression(val link: Link): Expression()
-data class GetExpression(val get: Get): Expression()
-data class SwitchExpression(val switch: Switch): Expression()
-data class InvokeExpression(val invoke: Invoke): Expression()
-data class VariableExpression(val variable: Variable): Expression()
+sealed class Expression { override fun toString() = script.toString() }
 
-sealed class Line
-data class LiteralLine(val literal: Literal): Line()
-data class FieldLine(val field: Field): Line()
-data class FunctionLine(val function: Function): Line()
-data class AnyLine(val any: Any?): Line()
+data class EmptyExpression(val empty: Empty): Expression() { override fun toString() = super.toString() }
+data class LinkExpression(val link: Link): Expression() { override fun toString() = super.toString() }
+data class GetExpression(val get: Get): Expression() { override fun toString() = super.toString() }
+data class SwitchExpression(val switch: Switch): Expression() { override fun toString() = super.toString() }
+data class InvokeExpression(val invoke: Invoke): Expression() { override fun toString() = super.toString() }
+data class VariableExpression(val variable: Variable): Expression() { override fun toString() = super.toString() }
 
-data class Link(val expression: Expression, val line: Line)
-data class Field(val name: String, val expression: Expression)
-data class Get(val expression: Expression, val name: String)
-data class Switch(val expression: Expression, val cases: Stack<Case>)
-data class Case(val name: String, val line: Expression)
-data class Function(val paramType: Type, val body: Body)
-data class Invoke(val function: Expression, val params: Expression)
-data class Variable(val type: Type)
+sealed class Line { override fun toString() = scriptLine.toString() }
+data class LiteralLine(val literal: Literal): Line() { override fun toString() = super.toString() }
+data class FieldLine(val field: Field): Line() { override fun toString() = super.toString() }
+data class FunctionLine(val function: Function): Line() { override fun toString() = super.toString() }
+data class AnyLine(val any: Any?): Line() { override fun toString() = super.toString() }
 
-sealed class Body
-data class ExpressionBody(val expression: Expression): Body()
-data class FnBody(val valueFn: (Dictionary) -> Value): Body()
+data class Link(val expression: Expression, val line: Line) { override fun toString() = script.toString() }
+data class Field(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Get(val expression: Expression, val name: String) { override fun toString() = script.toString() }
+data class Switch(val expression: Expression, val cases: Stack<Case>) { override fun toString() = script.toString() }
+data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Function(val paramType: Type, val body: Body) { override fun toString() = scriptLine.toString() }
+data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
+data class Variable(val type: Type) { override fun toString() = script.toString() }
+
+sealed class Body { override fun toString() = super.toString() }
+data class ExpressionBody(val expression: Expression): Body() { override fun toString() = script.toString() }
+data class FnBody(val valueFn: (Dictionary) -> Value): Body() { override fun toString() = script.toString() }
 
 fun expression(empty: Empty): Expression = EmptyExpression(empty)
 fun expression(link: Link): Expression = LinkExpression(link)
@@ -75,6 +76,6 @@ fun Expression.invoke(expression: Expression): Expression = expression(invoke(th
 
 fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
-fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == name) { line }
+fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == name) { expression }
 
 val Expression.linkOrNull: Link? get() = (this as? LinkExpression)?.link

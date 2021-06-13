@@ -10,6 +10,7 @@ import leo.Stateful
 import leo.Type
 import leo.TypeLine
 import leo.base.ifOrNull
+import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.beName
 import leo.bind
@@ -24,15 +25,23 @@ import leo.lineStack
 import leo.map
 import leo.matchInfix
 import leo.named.typed.TypedExpression
+import leo.named.typed.TypedField
 import leo.named.typed.TypedLine
 import leo.named.typed.do_
 import leo.named.typed.doingTypedLine
+import leo.named.typed.fieldTo
 import leo.named.typed.invoke
+import leo.named.typed.line
 import leo.named.typed.lineTo
+import leo.named.typed.name
 import leo.named.typed.plus
+import leo.named.typed.reflectTypedExpression
+import leo.named.typed.rhs
 import leo.named.typed.typedExpression
+import leo.named.typed.typedLine
 import leo.onlyLineOrNull
 import leo.reverse
+import leo.script
 import leo.seq
 import leo.stateful
 import leo.switchName
@@ -40,6 +49,7 @@ import leo.takeName
 import leo.theName
 import leo.toName
 import leo.type.compiler.type
+import leo.typeName
 
 typealias Compilation<V> = Stateful<Environment, V>
 fun <V> V.compilation(): Compilation<V> = stateful()
@@ -60,7 +70,7 @@ fun Context.typedLineCompilation(scriptField: ScriptField): Compilation<TypedLin
 	typedExpressionCompilation(scriptField.rhs).map { scriptField.name lineTo it }
 
 fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
-	typedExpression(literal).compilation()
+	typedLine(literal).compilation()
 
 fun Context.typedLineCompilation(script: Script): Compilation<TypedLine> =
 	typedExpressionCompilation(script).map { it.compileOnlyLine }
@@ -82,7 +92,7 @@ fun  Compiler.plusCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
 	}
 
 fun Compiler.plusCompilation(literal: Literal): Compilation<Compiler> =
-	plusResolveCompilation(typedExpression(literal))
+	plusResolveCompilation(typedLine(literal))
 
 fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	null
@@ -100,12 +110,12 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		switchName -> plusSwitchCompilation(scriptField.rhs)
 		takeName -> plusTakeCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
-		else -> plusGetCompilationOrNull(scriptField)
+		else -> null
 	}
 
-fun Compiler.plusGetCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
-	ifOrNull(scriptField.rhs.isEmpty) {
-		bodyTypedExpression.getOrNull(scriptField.name)?.let {
+fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
+	ifOrNull(bodyTypedExpression.type.isEmpty) {
+		typedField.rhs.getOrNull(typedField.name)?.let {
 			set(it).compilation()
 		}
 	}
@@ -154,9 +164,13 @@ fun Compiler.plusTakeCompilation(script: Script): Compilation<Compiler> =
 		set(it.invoke(bodyTypedExpression))
 	}
 
-
 fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
 	context.typedLineCompilation(script.compileLine).map { plus(it) }
+
+fun Compiler.plusTypeCompilationOrNull(typed: TypedExpression): Compilation<Compiler>? =
+	notNullIf(bodyTypedExpression.type.isEmpty) {
+		set(typed.type.script.reflectTypedExpression).compilation()
+	}
 
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	context.typeCompilation(lhs).bind { type ->
@@ -179,15 +193,27 @@ fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compile
 	}
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.name)
+	if (scriptField.rhs.isEmpty) set(typedExpression()).plusResolveCompilation(scriptField.name fieldTo bodyTypedExpression)
 	else plusFieldCompilation(scriptField)
 
 fun Compiler.plusCompilation(name: String): Compilation<Compiler> =
 	context.resolveCompilation(typedExpression(name lineTo bodyTypedExpression)).map { set(it) }
 
 fun Compiler.plusFieldCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	context.typedExpressionCompilation(scriptField.rhs).bind { tuple ->
-		plusResolveCompilation(scriptField.name lineTo tuple)
+	context.typedExpressionCompilation(scriptField.rhs).bind { typedExpression ->
+		plusResolveCompilation(scriptField.name fieldTo typedExpression)
+	}
+
+fun Compiler.plusResolveCompilation(typed: TypedField): Compilation<Compiler> =
+	null
+		?: plusGetCompilationOrNull(typed)
+		?: plusResolveStaticCompilationOrNull(typed)
+		?: context.resolveCompilation(bodyTypedExpression.plus(typed.line)).map { set(it) }
+
+fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
+	when (typedField.name) {
+		typeName -> plusTypeCompilationOrNull(typedField.rhs)
+		else -> null
 	}
 
 fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
