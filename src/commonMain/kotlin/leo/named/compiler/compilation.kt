@@ -48,7 +48,7 @@ fun <T> Context<T>.typedExpressionCompilation(script: Script): Compilation<T, Ty
 	compiler
 		.compilation<T, Compiler<T>>()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
-		.map { it.bodyTypedExpression }
+		.map { it.typedExpression }
 
 fun <T> Context<T>.typedLineCompilation(scriptLine: ScriptLine): Compilation<T, TypedLine<T>> =
 	when (scriptLine) {
@@ -65,6 +65,7 @@ fun <T> typedLineCompilation(literal: Literal): Compilation<T, TypedLine<T>> =
 fun <T> Context<T>.typedLineCompilation(script: Script): Compilation<T, TypedLine<T>> =
 	typedExpressionCompilation(script).map { it.compileOnlyLine }
 
+@Suppress("unused")
 fun <T> Context<T>.typeCompilation(script: Script): Compilation<T, Type> =
 	script.type.compilation()
 

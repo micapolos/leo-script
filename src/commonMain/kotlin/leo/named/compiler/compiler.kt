@@ -16,9 +16,14 @@ data class Compiler<out T>(
 	val bodyTypedExpression: TypedExpression<T>
 )
 
-fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> = copy(context = context)
-fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> = copy(bodyTypedExpression = typedExpression)
-val <T> Context<T>.compiler: Compiler<T> get() = Compiler(this, typedExpression())
+val <T> Context<T>.compiler: Compiler<T> get() =
+	Compiler(this, typedExpression())
+
+fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> =
+	copy(context = context)
+
+fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> =
+	copy(bodyTypedExpression = typedExpression)
 
 val <T> Compiler<T>.typedExpression: TypedExpression<T>
 	get() =

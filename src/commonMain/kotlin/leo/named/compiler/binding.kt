@@ -10,6 +10,7 @@ import leo.named.typed.TypedExpression
 import leo.named.typed.typed
 
 data class Binding(val type: Type, val isConstant: Boolean)
+
 fun binding(type: Type, isConstant: Boolean): Binding = Binding(type, isConstant)
 fun constantBinding(type: Type) = binding(type, isConstant = true)
 fun functionBinding(type: Type) = binding(type, isConstant = false)
