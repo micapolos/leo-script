@@ -2,7 +2,6 @@ package leo.named.value
 
 import leo.base.assertEqualTo
 import leo.base.assertFails
-import leo.literal
 import org.junit.Test
 
 class ValueTest {
@@ -10,20 +9,20 @@ class ValueTest {
 	fun get() {
 		val structure = value(
 			"point" lineTo value(
-				"x" lineTo value(valueLine(literal(10))),
-				"y" lineTo value(valueLine(literal(20)))))
+				"x" lineTo numberValue(10),
+				"y" lineTo numberValue(20)))
 
 		structure
 			.get("x")
 			.assertEqualTo(
 				value(
-					"x" lineTo value(valueLine(literal(10)))))
+					"x" lineTo numberValue(10)))
 
 		structure
 			.get("y")
 			.assertEqualTo(
 				value(
-					"y" lineTo value(valueLine(literal(20)))))
+					"y" lineTo numberValue(20)))
 
 		assertFails {
 			structure.get("z")

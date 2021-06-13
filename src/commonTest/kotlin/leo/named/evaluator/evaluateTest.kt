@@ -14,7 +14,6 @@ import leo.named.value.lineTo
 import leo.named.value.numberPlusNumber
 import leo.named.value.numberValue
 import leo.named.value.value
-import leo.named.value.valueLine
 import leo.numberName
 import leo.numberTypeLine
 import leo.type
@@ -42,7 +41,7 @@ class EvaluateTest {
 			)))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo(value("foo" lineTo value(valueLine(literal(10)))))
+			.assertEqualTo(value("foo" lineTo 10.numberValue))
 	}
 
 	@Test
@@ -50,7 +49,7 @@ class EvaluateTest {
 		expression(line(
 			function(
 				type(numberTypeLine),
-				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.0.numberValue) })))
+				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.numberValue) })))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
 			.assertEqualTo(11.numberValue)

@@ -36,7 +36,6 @@ import leo.named.value.plus
 import leo.named.value.unsafeFunction
 import leo.named.value.unsafeLine
 import leo.named.value.value
-import leo.named.value.valueLine
 import leo.stateful
 
 typealias Evaluation<V> = Stateful<Dictionary, V>
@@ -79,7 +78,7 @@ val Field.lineEvaluation: Evaluation<ValueLine> get() =
 	expression.valueEvaluation.map { name lineTo it }
 
 fun Literal.lineEvaluation(): Evaluation<ValueLine> =
-	valueLine(this).evaluation()
+	any.anyValueLine.evaluation()
 
 val leo.named.expression.Function.lineEvaluation: Evaluation<ValueLine> get() =
 	line(function(body)).evaluation()

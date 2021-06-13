@@ -36,9 +36,9 @@ fun Dictionary.value(body: Body): Value =
 fun Dictionary.value(expression: Expression): Value =
 	expression.valueEvaluation.get(this)
 
-fun Dictionary.value(typeStructure: Type): Value =
+fun Dictionary.value(type: Type): Value =
 	definitionStack
-		.mapFirst { valueLineOrNull(typeStructure) }
+		.mapFirst { valueLineOrNull(type) }
 		.notNullOrError("$this.value($this)")
 
 fun Dictionary.get(name: String): Value =

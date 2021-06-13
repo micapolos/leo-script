@@ -1,18 +1,22 @@
 package leo.named.value
 
-import leo.Literal
-import leo.Number
 import leo.base.notNullOrError
-import leo.literal
-import leo.numberOrNull
 import leo.onlyOrNull
-import leo.stringOrNull
 
-val Double.numberValue get() = value(valueLine(literal(this)))
+fun numberValueLine(double: Double): ValueLine = anyValueLine(double)
+fun numberValueLine(int: Int): ValueLine = numberValueLine(int.toDouble())
+fun textValueLine(string: String): ValueLine = anyValueLine(string)
+
+fun numberValue(double: Double): Value = value(numberValueLine(double))
+fun numberValue(int: Int): Value = value(numberValueLine(int))
+fun textValue(string: String): Value = value(textValueLine(string))
+
+val Double.numberValue get() = value(anyValueLine(this))
 val Int.numberValue get() = toDouble().numberValue
-val String.textValue get() = value(valueLine(literal(this)))
+val String.textValue get() = value(anyValueLine(this))
 
-val Any?.anyValue: Value get() = value(anyValueLine(this))
+val Any?.anyValueLine: ValueLine get() = anyValueLine(this)
+val Any?.anyValue: Value get() = value(anyValueLine)
 
 val Value.unsafeLine: ValueLine get() =
 	lineStack.onlyOrNull.notNullOrError("$this not a single line")
@@ -20,17 +24,14 @@ val Value.unsafeLine: ValueLine get() =
 val Value.unsafeFunction: ValueFunction get() =
 	(unsafeLine as? FunctionValueLine)?.function.notNullOrError("$this not a function")
 
-val Value.unsafeLiteral: Literal get() =
-	(unsafeLine as LiteralValueLine).literal
-
-val Value.unsafeNumber: Number get() =
-	unsafeLiteral.numberOrNull!!
+val Value.unsafeAny: Any? get() =
+	unsafeLine.unsafeAny
 
 val Value.unsafeDouble: Double get() =
-	unsafeNumber.double
+	unsafeAny as Double
 
 val Value.unsafeString: String get() =
-	unsafeLiteral.stringOrNull!!
+	unsafeAny as String
 
 val ValueLine.unsafeAny: Any? get() =
 	(this as AnyValueLine).any

@@ -18,11 +18,14 @@ val ValueLine.scriptLine: ScriptLine get() =
 		is AnyValueLine -> any.anyScriptLine
 		is FieldValueLine -> field.scriptLine
 		is FunctionValueLine -> function.scriptLine
-		is LiteralValueLine -> literal.line
 	}
 
 val Any?.anyScriptLine: ScriptLine get() =
-	nativeName lineTo script(literal("$this"))
+	when (this) {
+		is String -> line(literal(this))
+		is Double -> line(literal(this))
+		else -> nativeName lineTo script(literal("$this"))
+	}
 
 val ValueField.scriptLine: ScriptLine get() =
 	name lineTo value.script
