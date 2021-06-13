@@ -29,13 +29,14 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(line(
+					expression(
 						get(
-							"point" lineTo expression(
-								"x" lineTo expression(expressionLine<Unit>(literal(10))),
-								"y" lineTo expression(expressionLine(literal(20)))
-							),
-							"x"))),
+							expression(
+								"point" lineTo expression(
+									"x" lineTo expression(expressionLine(literal(10))),
+									"y" lineTo expression(expressionLine(literal(20)))
+								)),
+							"x")),
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -86,7 +87,8 @@ class CompileTest {
 					expression(line(
 						function(
 							type("x" lineTo type(numberTypeLine)),
-							expression(line<Unit>(variable(type("x")))))))
+							expression<Unit>(variable(type("x")))
+						)))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					type("x" lineTo type(numberTypeLine))))
 	}

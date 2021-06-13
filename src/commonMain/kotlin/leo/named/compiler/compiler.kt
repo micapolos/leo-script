@@ -26,11 +26,9 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 			.fold(context.paramExpressionStack) { paramTypedExpression ->
 				typed(
 					expression(
-						line(
-							invoke(
-								expression(line(function(paramTypedExpression.type, expression))),
-								paramTypedExpression.expression)
-							)
+						invoke(
+							expression(line(function(paramTypedExpression.type, expression))),
+							paramTypedExpression.expression)
 						),
 					type)
 			}

@@ -1,12 +1,9 @@
 package leo.named.compiler
 
 import leo.Type
-import leo.TypeChoice
-import leo.TypeLine
 import leo.TypeStructure
 import leo.atom
 import leo.base.notNullOrError
-import leo.choiceOrNull
 import leo.fieldOrNull
 import leo.getOrNull
 import leo.indexed.typed.Typed
@@ -14,11 +11,10 @@ import leo.indexed.typed.TypedTuple
 import leo.indexed.typed.onlyTypedOrNull
 import leo.linkOrNull
 import leo.named.expression.get
+import leo.named.expression.linkOrNull
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.typed
-import leo.onlyLineOrNull
-import leo.onlyOrNull
 import leo.structure
 import leo.structureOrNull
 import leo.type
@@ -31,8 +27,8 @@ val <T> TypedTuple<T>.compileTyped: Typed<T>
 	onlyTypedOrNull.notNullOrError("$this not expression")
 
 val <T> TypedExpression<T>.compileOnlyLine: TypedLine<T> get() =
-	type.onlyLineOrNull!!.let { typeLine ->
-		typed(expression.lineStack.onlyOrNull!!, typeLine)
+	type.compileLine.let { typeLine ->
+		typed(expression.linkOrNull!!.line, typeLine)
 	}
 
 fun <R> Type.resolveInfix(fn: (Type, String, Type) -> R?): R? =
@@ -45,23 +41,7 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 		}
 	}
 
-val <T> TypedExpression<T>.onlyLineOrNull: TypedLine<T>? get() =
-	type.onlyLineOrNull?.let {
-		typed(expression.lineStack.onlyOrNull!!, it)
-	}
-
 fun <T> TypedExpression<T>.getOrNull(name: String): TypedExpression<T>? =
 	type.getOrNull(name)?.let {
 		typed(expression.get(name), it)
 	}
-
-val Type.compileStructure: TypeStructure get() =
-	structureOrNull.notNullOrError("$this not structure")
-
-val Type.compileChoice: TypeChoice
-	get() =
-	choiceOrNull.notNullOrError("$this not choice")
-
-val TypeStructure.compileOnlyExpression: TypeLine get() =
-	onlyLineOrNull.notNullOrError("$this not a line")
-

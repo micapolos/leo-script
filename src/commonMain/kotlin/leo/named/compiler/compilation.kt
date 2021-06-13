@@ -120,11 +120,9 @@ fun <T> Compiler<T>.plusDoCompilation(script: Script): Compilation<T, Compiler<T
 			set(
 					typed(
 						expression(
-						line(
 							invoke(
 								expression(line(function(bodyTypedExpression.type, typed.expression))),
-								bodyTypedExpression.expression)
-						)),
+								bodyTypedExpression.expression)),
 						typed.type)
 			)
 		}

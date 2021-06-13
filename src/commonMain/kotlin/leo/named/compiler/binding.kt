@@ -5,7 +5,6 @@ import leo.base.runIf
 import leo.named.expression.Expression
 import leo.named.expression.expression
 import leo.named.expression.invoke
-import leo.named.expression.line
 import leo.named.expression.variable
 import leo.named.typed.TypedExpression
 import leo.named.typed.typed
@@ -19,5 +18,5 @@ fun <T> Binding.resolve(typedExpression: TypedExpression<T>): TypedExpression<T>
 	typed(expression(typedExpression), type)
 
 fun <T> Binding.expression(typedExpression: TypedExpression<T>): Expression<T> =
-	expression(line<T>(variable(typedExpression.type)))
+	expression<T>(variable(typedExpression.type))
 		.runIf(!isConstant) { invoke(typedExpression.expression) }

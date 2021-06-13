@@ -35,7 +35,7 @@ class EvaluateTest {
 		expression(line(
 			function<Unit>(
 				type(numberTypeLine),
-				expression("foo" lineTo expression(line(variable(type(numberName)))))
+				expression("foo" lineTo expression(variable(type(numberName))))
 			)))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
