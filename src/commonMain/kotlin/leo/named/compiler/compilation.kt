@@ -176,7 +176,8 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 			}
 		}.notNullOrError("$script let error")
 
-fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
+@Suppress("unused")
+fun Compiler.plusSwitchCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
 	TODO()
 
 fun Compiler.plusTakeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
