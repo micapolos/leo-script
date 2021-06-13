@@ -5,10 +5,12 @@ import leo.Stack
 import leo.StructureType
 import leo.Type
 import leo.TypeStructure
+import leo.fold
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.typedExpression
 import leo.push
+import leo.reverse
 import leo.stack
 
 data class Context(
@@ -40,3 +42,6 @@ fun Context.plusParam(typedLine: TypedExpression): Context =
 
 fun Context.bind(typedLine: TypedLine): Context =
 	plus(typedLine.typeLine.nameDefinition).plusParam(typedExpression(typedLine))
+
+fun Context.bind(typedLineStack: Stack<TypedLine>): Context =
+	fold(typedLineStack.reverse) { bind(it) }

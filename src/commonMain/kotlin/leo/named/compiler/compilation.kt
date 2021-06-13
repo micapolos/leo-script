@@ -6,6 +6,7 @@ import leo.LiteralScriptLine
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
+import leo.Stack
 import leo.Stateful
 import leo.Type
 import leo.TypeLine
@@ -19,7 +20,6 @@ import leo.castName
 import leo.doName
 import leo.doingName
 import leo.flat
-import leo.fold
 import leo.foldStateful
 import leo.giveName
 import leo.isEmpty
@@ -53,11 +53,11 @@ import leo.type.compiler.type
 import leo.typeName
 
 typealias Compilation<V> = Stateful<Environment, V>
-fun <V> V.compilation(): Compilation<V> = stateful()
+val <V> V.compilation: Compilation<V> get() = stateful()
 
 fun Context.typedExpressionCompilation(script: Script): Compilation<TypedExpression> =
 	compiler
-		.compilation()
+		.compilation
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.typedExpression }
 
@@ -71,20 +71,23 @@ fun Context.typedLineCompilation(scriptField: ScriptField): Compilation<TypedLin
 	typedExpressionCompilation(scriptField.rhs).map { scriptField.name lineTo it }
 
 fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
-	typedLine(literal).compilation()
+	typedLine(literal).compilation
 
 fun Context.typedLineCompilation(script: Script): Compilation<TypedLine> =
 	typedExpressionCompilation(script).map { it.compileOnlyLine }
 
 @Suppress("unused")
 fun Context.typeCompilation(script: Script): Compilation<Type> =
-	script.type.compilation()
+	script.type.compilation
 
 fun Context.typeLineCompilation(script: Script): Compilation<TypeLine> =
 	typeCompilation(script).map { it.onlyLineOrNull.notNullOrError("$this not line") }
 
+fun Context.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
+	script.lineStack.map { typedLineCompilation(this) }.flat
+
 fun Compiler.plusCompilation(script: Script): Compilation<Compiler> =
-	compilation<Compiler>().foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
+	compilation.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 
 fun  Compiler.plusCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
 	when (scriptLine) {
@@ -107,10 +110,8 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		castName -> plusCastCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
-		giveName -> plusGiveCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
-		takeName -> plusTakeCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
 	}
@@ -118,7 +119,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
 	ifOrNull(bodyTypedExpression.type.isEmpty) {
 		typedField.rhs.getOrNull(typedField.name)?.let {
-			set(it).compilation()
+			set(it).compilation
 		}
 	}
 
@@ -143,10 +144,8 @@ fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
 		}
 	}.notNullOrError("$script is not function body")
 
-fun Compiler.plusGiveCompilation(script: Script): Compilation<Compiler> =
-	context.typedExpressionCompilation(script).map {
-		set(bodyTypedExpression.invoke(it))
-	}
+fun Compiler.plusGiveCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
+	set(bodyTypedExpression.invoke(typedExpression)).compilation
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	script
@@ -161,17 +160,15 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
 	TODO()
 
-fun Compiler.plusTakeCompilation(script: Script): Compilation<Compiler> =
-	context.typedExpressionCompilation(script).map {
-		set(it.invoke(bodyTypedExpression))
-	}
+fun Compiler.plusTakeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
+	set(typedExpression.invoke(bodyTypedExpression)).compilation
 
 fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
 	context.typedLineCompilation(script.compileLine).map { plus(it) }
 
 fun Compiler.plusTypeCompilationOrNull(typed: TypedExpression): Compilation<Compiler>? =
 	notNullIf(bodyTypedExpression.type.isEmpty) {
-		set(typed.type.typedExpression).compilation()
+		set(typed.type.typedExpression).compilation
 	}
 
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
@@ -214,14 +211,14 @@ fun Compiler.plusResolveCompilation(typed: TypedField): Compilation<Compiler> =
 
 fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
 	when (typedField.name) {
+		giveName -> plusGiveCompilation(typedField.rhs)
+		takeName -> plusTakeCompilation(typedField.rhs)
 		typeName -> plusTypeCompilationOrNull(typedField.rhs)
 		else -> null
 	}
 
-fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler>? =
-	script.lineStack.map { context.typedLineCompilation(this) }.flat.map { typedLineStack ->
-		set(context.fold(typedLineStack.reverse) { bind(it) })
-	}
+fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
+	context.typedLineStackCompilation(script).map { set(context.bind(it)) }
 
 fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
 	context.resolveCompilation(bodyTypedExpression.plus(typed)).map { set(it) }
@@ -229,7 +226,7 @@ fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
 fun Context.resolveCompilation(typedExpression: TypedExpression): Compilation<TypedExpression> =
 	null
 		?: resolveCompilationOrNull(typedExpression)
-		?: typedExpression.resolve.compilation()
+		?: typedExpression.resolve.compilation
 
 fun Context.resolveCompilationOrNull(typedExpression: TypedExpression): Compilation<TypedExpression>? =
-	resolveOrNull(typedExpression)?.compilation()
+	resolveOrNull(typedExpression)?.compilation
