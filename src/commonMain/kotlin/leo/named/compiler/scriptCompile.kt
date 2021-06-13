@@ -6,4 +6,4 @@ import leo.base.notNullOrError
 import leo.onlyLineOrNull
 
 val Script.compileOnlyLine: ScriptLine get() =
-	onlyLineOrNull.notNullOrError("$this.compileOnlyLineó")
+	onlyLineOrNull.notNullOrError("$this.compileOnlyLine")

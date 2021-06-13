@@ -15,7 +15,8 @@ data class Context<out T>(
 	val paramExpressionStack: Stack<TypedExpression<T>>
 )
 
-val <T> Environment<T>.context get() = Context(this, dictionary(), stack())
+val <T> Environment<T>.context get() =
+	Context(this, dictionary(), stack())
 
 fun <T> Context<T>.plusNames(type: Type): Context<T> =
 	// TODO: Add "content"

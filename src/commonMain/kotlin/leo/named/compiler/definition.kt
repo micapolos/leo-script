@@ -8,8 +8,11 @@ import leo.type
 
 data class Definition(val structure: Type, val binding: Binding)
 
-fun definition(type: Type, binding: Binding) = Definition(type, binding)
-fun TypeLine.nameDefinition(): Definition = definition(type(name), constantBinding(type(this)))
+fun definition(type: Type, binding: Binding) =
+	Definition(type, binding)
+
+fun TypeLine.nameDefinition(): Definition =
+	definition(type(name), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =
 	binding.orNullIf(this.structure != type)
