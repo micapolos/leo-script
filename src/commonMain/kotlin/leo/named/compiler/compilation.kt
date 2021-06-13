@@ -20,6 +20,7 @@ import leo.castName
 import leo.doName
 import leo.doingName
 import leo.flat
+import leo.fold
 import leo.foldStateful
 import leo.giveName
 import leo.isEmpty
@@ -105,7 +106,6 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	when (scriptField.name) {
-		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
 		castName -> plusCastCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
@@ -123,8 +123,8 @@ fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compi
 		}
 	}
 
-fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
-	context.typedLineCompilation(script).map { set(typedExpression(it)) }
+fun Compiler.plusBeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
+	set(typedExpression).compilation
 
 fun Compiler.plusCastCompilation(script: Script): Compilation<Compiler> =
 	TODO()
@@ -164,7 +164,9 @@ fun Compiler.plusTakeCompilation(typedExpression: TypedExpression): Compilation<
 	set(typedExpression.invoke(bodyTypedExpression)).compilation
 
 fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
-	context.typedLineCompilation(script.compileLine).map { plus(it) }
+	context.typedLineStackCompilation(script).map { typedLineStack ->
+		fold(typedLineStack.reverse) { plus(it) }
+	}
 
 fun Compiler.plusTypeCompilationOrNull(typed: TypedExpression): Compilation<Compiler>? =
 	notNullIf(bodyTypedExpression.type.isEmpty) {
@@ -211,6 +213,7 @@ fun Compiler.plusResolveCompilation(typed: TypedField): Compilation<Compiler> =
 
 fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
 	when (typedField.name) {
+		beName -> plusBeCompilation(typedField.rhs)
 		giveName -> plusGiveCompilation(typedField.rhs)
 		takeName -> plusTakeCompilation(typedField.rhs)
 		typeName -> plusTypeCompilationOrNull(typedField.rhs)
