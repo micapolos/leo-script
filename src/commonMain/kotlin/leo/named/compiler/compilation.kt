@@ -142,7 +142,7 @@ fun <T> Compiler<T>.plusSwitchCompilation(script: Script): Compilation<T, Compil
 	TODO()
 
 fun <T> Compiler<T>.plusTheCompilation(script: Script): Compilation<T, Compiler<T>> =
-	context.typedLineCompilation(script.compileOnlyLine).map { plus(it) }
+	context.typedLineCompilation(script.compileLine).map { plus(it) }
 
 fun <T> Compiler<T>.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<T, Compiler<T>> =
 	context.typeCompilation(lhs).bind { type ->
