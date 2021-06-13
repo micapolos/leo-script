@@ -3,6 +3,7 @@ package leo.named.compiler
 import leo.ScriptLine
 import leo.lineTo
 import leo.map
+import leo.named.expression.scriptLine
 import leo.named.typed.scriptLine
 import leo.plus
 import leo.script
