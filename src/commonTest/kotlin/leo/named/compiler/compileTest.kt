@@ -171,5 +171,4 @@ class CompileTest {
 				typedExpression(type("ping") doingTypedLine typedExpression("pong" lineTo typedExpression()))
 					.invoke(typedExpression("ping" lineTo typedExpression())))
 	}
-
 }
