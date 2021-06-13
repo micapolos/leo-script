@@ -9,7 +9,8 @@ import leo.plus
 import leo.script
 
 val Dictionary.scriptLine: ScriptLine get() =
-	"dictionary" lineTo definitionStack.map { scriptLine }.script
+	"dictionary" lineTo script(
+		"definitions" lineTo definitionStack.map { scriptLine }.script)
 
 val Definition.scriptLine: ScriptLine get() =
 	"let" lineTo type.script.plus(binding.scriptLine)
@@ -27,4 +28,5 @@ val Compiler.scriptLine: ScriptLine get() =
 	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)
 
 val Scope.scriptLine: ScriptLine get() =
-	"scope" lineTo expressionStack.map { scriptLine }.script
+	"scope" lineTo script(
+		"expressions" lineTo expressionStack.map { scriptLine }.script)
