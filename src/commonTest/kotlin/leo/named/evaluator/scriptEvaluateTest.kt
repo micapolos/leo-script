@@ -4,9 +4,12 @@ import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
 import leo.doName
+import leo.doingName
+import leo.giveName
 import leo.lineTo
 import leo.literal
 import leo.script
+import leo.toName
 import kotlin.test.Test
 
 class ScriptEvaluateTest {
@@ -76,5 +79,16 @@ class ScriptEvaluateTest {
 			doName lineTo script("x" lineTo script()))
 			.evaluate
 			.assertEqualTo(script("x" lineTo script(literal(10))))
+	}
+
+	@Test
+	fun doingGive() {
+		script(
+			doingName lineTo script(
+				"ping" lineTo script(),
+				toName lineTo script("pong" lineTo script())),
+			giveName lineTo script("ping"))
+			.evaluate
+			.assertEqualTo(script("pong"))
 	}
 }
