@@ -1,6 +1,8 @@
 package leo.named.compiler
 
+import leo.ChoiceType
 import leo.Stack
+import leo.StructureType
 import leo.Type
 import leo.TypeLine
 import leo.TypeStructure
@@ -20,6 +22,13 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 
 fun Dictionary.plusName(typeLine: TypeLine): Dictionary =
 	plus(typeLine.nameDefinition)
+
+fun Dictionary.plusNames(type: Type): Dictionary =
+	// TODO: Add "content"
+	when (type) {
+		is ChoiceType -> this
+		is StructureType -> plusNames(type.structure)
+	}
 
 fun Dictionary.plusNames(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plusName(it) }

@@ -1,10 +1,7 @@
 package leo.named.compiler
 
-import leo.ChoiceType
 import leo.Stack
-import leo.StructureType
 import leo.Type
-import leo.TypeStructure
 import leo.fold
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
@@ -22,14 +19,7 @@ val Dictionary.context: Context get() = Context(this, stack())
 fun context(): Context = dictionary().context
 
 fun Context.plusNames(type: Type): Context =
-	// TODO: Add "content"
-	when (type) {
-		is ChoiceType -> this
-		is StructureType -> plusNames(type.structure)
-	}
-
-fun Context.plusNames(typeStructure: TypeStructure): Context =
-	copy(dictionary = dictionary.plusNames(typeStructure))
+	copy(dictionary = dictionary.plusNames(type))
 
 fun Context.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	dictionary.resolveOrNull(typedExpression)
