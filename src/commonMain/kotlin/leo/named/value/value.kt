@@ -3,6 +3,7 @@ package leo.named.value
 import leo.Literal
 import leo.Stack
 import leo.named.expression.Expression
+import leo.push
 import leo.stack
 
 data class Value<out T>(val lineStack: Stack<ValueLine<T>>)
@@ -25,4 +26,5 @@ infix fun <T> String.fieldTo(value: Value<T>) = ValueField(this, value)
 infix fun <T> String.lineTo(value: Value<T>) = line(this fieldTo value)
 fun <T> function(expression: Expression<T>) = ValueFunction(expression)
 
+fun <T> Value<T>.plus(line: ValueLine<T>): Value<T> = lineStack.push(line).let(::Value)
 fun <T> value(vararg lines: ValueLine<T>) = Value(stack(*lines))
