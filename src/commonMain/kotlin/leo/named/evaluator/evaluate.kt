@@ -4,6 +4,6 @@ import leo.get
 import leo.named.expression.Expression
 import leo.named.value.Value
 
-val <T> Expression<T>.evaluate: Value<T>
+val Expression.evaluate: Value
 	get() =
 		valueEvaluation.get(dictionary())

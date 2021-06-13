@@ -24,7 +24,7 @@ class EvaluateTest {
 	@Test
 	fun invoke_static() {
 		expression(line(
-			function<Unit>(
+			function(
 				type(numberTypeLine),
 				body(expression("foo" lineTo expression()))
 			)))
@@ -36,7 +36,7 @@ class EvaluateTest {
 	@Test
 	fun invoke_variable() {
 		expression(line(
-			function<Unit>(
+			function(
 				type(numberTypeLine),
 				body(expression("foo" lineTo expression(variable(type(numberName)))))
 			)))
@@ -48,11 +48,11 @@ class EvaluateTest {
 	@Test
 	fun invoke_native() {
 		expression(line(
-			function<Unit>(
+			function(
 				type(numberTypeLine),
-				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.numberValue()) })))
+				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.0.numberValue) })))
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
-			.assertEqualTo(11.numberValue())
+			.assertEqualTo(11.numberValue)
 	}
 }

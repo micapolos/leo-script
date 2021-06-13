@@ -8,13 +8,13 @@ import leo.named.value.name
 import leo.named.value.value
 import leo.type
 
-data class Definition<out T>(val type: Type, val value: Value<T>)
+data class Definition(val type: Type, val value: Value)
 
-fun <T> definition(typeStructure: Type, value: Value<T>) =
+fun definition(typeStructure: Type, value: Value) =
 	Definition(typeStructure, value)
 
-fun <T> Definition<T>.valueLineOrNull(type: Type): Value<T>? =
+fun Definition.valueLineOrNull(type: Type): Value? =
 	notNullIf(this.type == type) { value }
 
-val <T> ValueLine<T>.definition: Definition<T> get() =
+val ValueLine.definition: Definition get() =
 	definition(name.type, value(this))

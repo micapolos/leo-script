@@ -16,29 +16,29 @@ import leo.push
 import leo.reverse
 import leo.stack
 
-data class Dictionary<out T>(val definitionStack: Stack<Definition<T>>)
+data class Dictionary(val definitionStack: Stack<Definition>)
 
-fun <T> dictionary(): Dictionary<T> = Dictionary(stack())
+fun dictionary(): Dictionary = Dictionary(stack())
 
-fun <T> Dictionary<T>.plus(definition: Definition<T>): Dictionary<T> =
+fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
 
-fun <T> Dictionary<T>.plus(dictionary: Dictionary<T>): Dictionary<T> =
+fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	fold(dictionary.definitionStack.reverse) { plus(it) }
 
-fun <T> Dictionary<T>.value(body: Body<T>): Value<T> =
+fun Dictionary.value(body: Body): Value =
 	when (body) {
 		is ExpressionBody -> value(body.expression)
 		is FnBody -> body.valueFn(this)
 	}
 
-fun <T> Dictionary<T>.value(expression: Expression<T>): Value<T> =
+fun Dictionary.value(expression: Expression): Value =
 	expression.valueEvaluation.get(this)
 
-fun <T> Dictionary<T>.value(typeStructure: Type): Value<T> =
+fun Dictionary.value(typeStructure: Type): Value =
 	definitionStack
 		.mapFirst { valueLineOrNull(typeStructure) }
 		.notNullOrError("$this.value($this)")
 
-val <T> Value<T>.dictionary: Dictionary<T> get() =
+val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)

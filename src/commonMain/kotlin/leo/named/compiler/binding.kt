@@ -20,9 +20,9 @@ fun constantBinding(type: Type) =
 fun functionBinding(type: Type) =
 	binding(type, isConstant = false)
 
-fun <T> Binding.resolve(typedExpression: TypedExpression<T>): TypedExpression<T> =
+fun Binding.resolve(typedExpression: TypedExpression): TypedExpression =
 	typed(expression(typedExpression), type)
 
-fun <T> Binding.expression(typedExpression: TypedExpression<T>): Expression<T> =
-	expression<T>(variable(typedExpression.type))
+fun Binding.expression(typedExpression: TypedExpression): Expression =
+	expression(variable(typedExpression.type))
 		.runIf(!isConstant) { invoke(typedExpression.expression) }

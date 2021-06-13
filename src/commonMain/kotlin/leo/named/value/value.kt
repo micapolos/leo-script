@@ -6,25 +6,25 @@ import leo.named.expression.Body
 import leo.push
 import leo.stack
 
-data class Value<out T>(val lineStack: Stack<ValueLine<T>>)
+data class Value(val lineStack: Stack<ValueLine>)
 
-sealed class ValueLine<out T>
-data class LiteralValueLine<T>(val literal: Literal): ValueLine<T>()
-data class FieldValueLine<T>(val field: ValueField<T>): ValueLine<T>()
-data class FunctionValueLine<T>(val function: ValueFunction<T>): ValueLine<T>()
-data class AnyValueLine<T>(val any: T): ValueLine<T>()
+sealed class ValueLine
+data class LiteralValueLine(val literal: Literal): ValueLine()
+data class FieldValueLine(val field: ValueField): ValueLine()
+data class FunctionValueLine(val function: ValueFunction): ValueLine()
+data class AnyValueLine(val any: Any?): ValueLine()
 
-data class ValueField<out T>(val name: String, val value: Value<T>)
-data class ValueFunction<out T>(val body: Body<T>)
+data class ValueField(val name: String, val value: Value)
+data class ValueFunction(val body: Body)
 
-fun <T> anyValueLine(any: T): ValueLine<T> = AnyValueLine(any)
-fun <T> valueLine(literal: Literal): ValueLine<T> = LiteralValueLine(literal)
-fun <T> line(field: ValueField<T>): ValueLine<T> = FieldValueLine(field)
-fun <T> line(function: ValueFunction<T>): ValueLine<T> = FunctionValueLine(function)
+fun anyValueLine(any: Any?): ValueLine = AnyValueLine(any)
+fun valueLine(literal: Literal): ValueLine = LiteralValueLine(literal)
+fun line(field: ValueField): ValueLine = FieldValueLine(field)
+fun line(function: ValueFunction): ValueLine = FunctionValueLine(function)
 
-infix fun <T> String.fieldTo(value: Value<T>) = ValueField(this, value)
-infix fun <T> String.lineTo(value: Value<T>) = line(this fieldTo value)
-fun <T> function(body: Body<T>) = ValueFunction(body)
+infix fun String.fieldTo(value: Value) = ValueField(this, value)
+infix fun String.lineTo(value: Value) = line(this fieldTo value)
+fun function(body: Body) = ValueFunction(body)
 
-fun <T> Value<T>.plus(line: ValueLine<T>): Value<T> = lineStack.push(line).let(::Value)
-fun <T> value(vararg lines: ValueLine<T>) = Value(stack(*lines))
+fun Value.plus(line: ValueLine): Value = lineStack.push(line).let(::Value)
+fun value(vararg lines: ValueLine) = Value(stack(*lines))

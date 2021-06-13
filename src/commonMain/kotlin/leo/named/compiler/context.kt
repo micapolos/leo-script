@@ -9,29 +9,29 @@ import leo.named.typed.TypedExpression
 import leo.push
 import leo.stack
 
-data class Context<out T>(
+data class Context(
 	val dictionary: Dictionary,
-	val paramExpressionStack: Stack<TypedExpression<T>>
+	val paramExpressionStack: Stack<TypedExpression>
 )
 
-fun <T> Dictionary.context(): Context<T> = Context(this, stack())
-fun <T> context(): Context<T> = dictionary().context()
+fun Dictionary.context(): Context = Context(this, stack())
+fun context(): Context = dictionary().context()
 
-fun <T> Context<T>.plusNames(type: Type): Context<T> =
+fun Context.plusNames(type: Type): Context =
 	// TODO: Add "content"
 	when (type) {
 		is ChoiceType -> this
 		is StructureType -> plusNames(type.structure)
 	}
 
-fun <T> Context<T>.plusNames(typeStructure: TypeStructure): Context<T> =
+fun Context.plusNames(typeStructure: TypeStructure): Context =
 	copy(dictionary = dictionary.plusNames(typeStructure))
 
-fun <T> Context<T>.resolveOrNull(typedExpression: TypedExpression<T>): TypedExpression<T>? =
+fun Context.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	dictionary.resolveOrNull(typedExpression)
 
-fun <T> Context<T>.plus(definition: Definition): Context<T> =
+fun Context.plus(definition: Definition): Context =
 	copy(dictionary = dictionary.plus(definition))
 
-fun <T> Context<T>.plusParam(typedLine: TypedExpression<T>): Context<T> =
+fun Context.plusParam(typedLine: TypedExpression): Context =
 	copy(paramExpressionStack = paramExpressionStack.push(typedLine))

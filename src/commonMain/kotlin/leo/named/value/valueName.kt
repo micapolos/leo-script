@@ -8,7 +8,7 @@ import leo.nativeName
 import leo.numberName
 import leo.textName
 
-val <T> ValueLine<T>.name get() =
+val ValueLine.name get() =
 	when (this) {
 		is AnyValueLine -> nativeName
 		is FieldValueLine -> field.name

@@ -8,7 +8,7 @@ import org.junit.Test
 class ValueTest {
 	@Test
 	fun get() {
-		val structure = value<Unit>(
+		val structure = value(
 			"point" lineTo value(
 				"x" lineTo value(valueLine(literal(10))),
 				"y" lineTo value(valueLine(literal(20)))))

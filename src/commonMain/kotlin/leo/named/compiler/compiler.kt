@@ -12,21 +12,21 @@ import leo.named.typed.plus
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 
-data class Compiler<out T>(
-	val context: Context<T>,
-	val bodyTypedExpression: TypedExpression<T>
+data class Compiler(
+	val context: Context,
+	val bodyTypedExpression: TypedExpression
 )
 
-val <T> Context<T>.compiler: Compiler<T> get() =
+val Context.compiler: Compiler get() =
 	Compiler(this, typedExpression())
 
-fun <T> Compiler<T>.set(context: Context<T>): Compiler<T> =
+fun Compiler.set(context: Context): Compiler =
 	copy(context = context)
 
-fun <T> Compiler<T>.set(typedExpression: TypedExpression<T>): Compiler<T> =
+fun Compiler.set(typedExpression: TypedExpression): Compiler =
 	copy(bodyTypedExpression = typedExpression)
 
-val <T> Compiler<T>.typedExpression: TypedExpression<T>
+val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
 			.fold(context.paramExpressionStack) { paramTypedExpression ->
@@ -39,6 +39,6 @@ val <T> Compiler<T>.typedExpression: TypedExpression<T>
 					type)
 			}
 
-fun <T> Compiler<T>.plus(typedLine: TypedLine<T>): Compiler<T> =
+fun Compiler.plus(typedLine: TypedLine): Compiler =
 	set(bodyTypedExpression.plus(typedLine))
 

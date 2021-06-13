@@ -3,12 +3,8 @@ package leo.named.compiler
 import leo.Type
 import leo.TypeStructure
 import leo.atom
-import leo.base.notNullOrError
 import leo.fieldOrNull
 import leo.getOrNull
-import leo.indexed.typed.Typed
-import leo.indexed.typed.TypedTuple
-import leo.indexed.typed.onlyTypedOrNull
 import leo.linkOrNull
 import leo.named.expression.get
 import leo.named.expression.linkOrNull
@@ -19,14 +15,10 @@ import leo.structure
 import leo.structureOrNull
 import leo.type
 
-val <T> TypedExpression<T>.resolve: TypedExpression<T>
+val TypedExpression.resolve: TypedExpression
 	get() = this
 
-val <T> TypedTuple<T>.compileTyped: Typed<T>
-	get() =
-	onlyTypedOrNull.notNullOrError("$this not expression")
-
-val <T> TypedExpression<T>.compileOnlyLine: TypedLine<T> get() =
+val TypedExpression.compileOnlyLine: TypedLine get() =
 	type.compileLine.let { typeLine ->
 		typed(expression.linkOrNull!!.line, typeLine)
 	}
@@ -41,7 +33,7 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 		}
 	}
 
-fun <T> TypedExpression<T>.getOrNull(name: String): TypedExpression<T>? =
+fun TypedExpression.getOrNull(name: String): TypedExpression? =
 	type.getOrNull(name)?.let {
 		typed(expression.get(name), it)
 	}

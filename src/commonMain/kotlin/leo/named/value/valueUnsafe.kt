@@ -8,27 +8,38 @@ import leo.numberOrNull
 import leo.onlyOrNull
 import leo.stringOrNull
 
-fun <T> Double.numberValue(): Value<T> = value(valueLine(literal(this)))
-fun <T> Int.numberValue(): Value<T> = toDouble().numberValue()
-fun <T> String.textValue(): Value<T> = value(valueLine(literal(this)))
+val Double.numberValue get() = value(valueLine(literal(this)))
+val Int.numberValue get() = toDouble().numberValue
+val String.textValue get() = value(valueLine(literal(this)))
 
-val <T> Value<T>.unsafeLine: ValueLine<T> get() =
+val Any?.anyValue: Value get() = value(anyValueLine(this))
+
+val Value.unsafeLine: ValueLine get() =
 	lineStack.onlyOrNull.notNullOrError("$this not a single line")
 
-val <T> Value<T>.unsafeFunction: ValueFunction<T> get() =
-	(unsafeLine as? FunctionValueLine<T>)?.function.notNullOrError("$this not a function")
+val Value.unsafeFunction: ValueFunction get() =
+	(unsafeLine as? FunctionValueLine)?.function.notNullOrError("$this not a function")
 
-val <T> Value<T>.unsafeLiteral: Literal get() =
+val Value.unsafeLiteral: Literal get() =
 	(unsafeLine as LiteralValueLine).literal
 
-val <T> Value<T>.unsafeNumber: Number get() =
+val Value.unsafeNumber: Number get() =
 	unsafeLiteral.numberOrNull!!
 
-val <T> Value<T>.unsafeDouble: Double get() =
+val Value.unsafeDouble: Double get() =
 	unsafeNumber.double
 
-val <T> Value<T>.unsafeString: String get() =
+val Value.unsafeString: String get() =
 	unsafeLiteral.stringOrNull!!
 
-fun <T> Value<T>.numberPlusNumber(value: Value<T>): Value<T> =
-	unsafeDouble.plus(value.unsafeDouble).numberValue()
+val ValueLine.unsafeAny: Any? get() =
+	(this as AnyValueLine).any
+
+val Value.unsafeInt: Int get() =
+	(unsafeLine.unsafeAny as Int)
+
+fun Value.intPlusInt(value: Value): Value =
+	unsafeInt.plus(value.unsafeInt).anyValue
+
+fun Value.numberPlusNumber(value: Value): Value =
+	unsafeDouble.plus(value.unsafeDouble).numberValue

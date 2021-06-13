@@ -27,5 +27,5 @@ fun Dictionary.plusNames(structure: TypeStructure): Dictionary =
 fun Dictionary.bindingOrNull(structure: Type): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
 
-fun <T> Dictionary.resolveOrNull(typedExpression: TypedExpression<T>): TypedExpression<T>? =
+fun Dictionary.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	bindingOrNull(typedExpression.type)?.resolve(typedExpression)

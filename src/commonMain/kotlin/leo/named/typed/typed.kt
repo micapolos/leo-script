@@ -15,22 +15,22 @@ import leo.plusOrNull
 import leo.type
 import leo.typeLine
 
-data class TypedLine<out T>(val line: Line<T>, val typeLine: TypeLine)
-data class TypedExpression<out T>(val expression: Expression<T>, val type: Type)
+data class TypedLine(val line: Line, val typeLine: TypeLine)
+data class TypedExpression(val expression: Expression, val type: Type)
 
-fun <T> typed(line: Line<T>, typeLine: TypeLine) = TypedLine(line, typeLine)
-fun <T> typed(expression: Expression<T>, type: Type) = TypedExpression(expression, type)
+fun typed(line: Line, typeLine: TypeLine) = TypedLine(line, typeLine)
+fun typed(expression: Expression, type: Type) = TypedExpression(expression, type)
 
-fun <T> TypedExpression<T>.plus(typedLine: TypedLine<T>): TypedExpression<T> =
+fun TypedExpression.plus(typedLine: TypedLine): TypedExpression =
 	typed(expression.plus(typedLine.line), type.plusOrNull(typedLine.typeLine)!!)
 
-fun <T> typedExpression(vararg typedLine: TypedLine<T>) =
-	typed(expression<T>(), type()).fold(typedLine) { plus(it) }
+fun typedExpression(vararg typedLine: TypedLine) =
+	typed(expression(), type()).fold(typedLine) { plus(it) }
 
-infix fun <T> String.lineTo(typedExpression: TypedExpression<T>): TypedLine<T> =
+infix fun String.lineTo(typedExpression: TypedExpression): TypedLine =
 	typed(
 		this lineTo typedExpression.expression,
 		this lineTo typedExpression.type)
 
-fun <T> typedExpression(literal: Literal): TypedLine<T> =
+fun typedExpression(literal: Literal): TypedLine =
 	typed(expressionLine(literal), literal.typeLine)

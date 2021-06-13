@@ -37,18 +37,14 @@ import leo.named.value.unsafeFunction
 import leo.named.value.unsafeLine
 import leo.named.value.value
 import leo.named.value.valueLine
-import leo.setStateful
 import leo.stateful
-import leo.updateStateful
 
-typealias Evaluation<T, V> = Stateful<Dictionary<T>, V>
-fun <T, V> V.evaluation(): Evaluation<T, V> = stateful()
+typealias Evaluation<V> = Stateful<Dictionary, V>
+fun <V> V.evaluation(): Evaluation<V> = stateful()
 
-fun <T> dictionaryEvaluation(): Evaluation<T, Dictionary<T>> = getStateful()
-fun <T> Dictionary<T>.setEvaluation(): Evaluation<T, Unit> = setStateful(this)
-fun <T> updateDictionaryEvaluation(fn: (Dictionary<T>) -> Dictionary<T>): Evaluation<T, Unit> = updateStateful(fn)
+fun  dictionaryEvaluation(): Evaluation<Dictionary> = getStateful()
 
-val <T> leo.named.expression.Expression<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val leo.named.expression.Expression.valueEvaluation: Evaluation<Value> get() =
 	when (this) {
 		is EmptyExpression -> empty.valueEvaluation()
 		is LinkExpression -> link.valueEvaluation
@@ -56,20 +52,19 @@ val <T> leo.named.expression.Expression<T>.valueEvaluation: Evaluation<T, Value<
 		is InvokeExpression -> invoke.lineEvaluation
 		is SwitchExpression -> switch.valueEvaluation
 		is VariableExpression -> variable.valueEvaluation()
-
 	}
 
-fun <T> Empty.valueEvaluation(): Evaluation<T, Value<T>> =
-	value<T>().evaluation()
+fun Empty.valueEvaluation(): Evaluation<Value> =
+	value().evaluation()
 
-val <T> Link<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val Link.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.bind { value ->
 		line.lineEvaluation.map { line ->
 			value.plus(line)
 		}
 	}
 
-val <T> Line<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+val Line.lineEvaluation: Evaluation<ValueLine> get() =
 	when (this) {
 		is AnyLine -> any.anyLineEvaluation
 		is FieldLine -> field.lineEvaluation
@@ -77,26 +72,26 @@ val <T> Line<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
 		is FunctionLine -> function.lineEvaluation
 	}
 
-val <T> T.anyLineEvaluation: Evaluation<T, ValueLine<T>> get() =
+val Any?.anyLineEvaluation: Evaluation<ValueLine> get() =
 	anyValueLine(this).evaluation()
 
-val <T> Field<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+val Field.lineEvaluation: Evaluation<ValueLine> get() =
 	expression.valueEvaluation.map { name lineTo it }
 
-fun <T> Literal.lineEvaluation(): Evaluation<T, ValueLine<T>> =
-	valueLine<T>(this).evaluation()
+fun Literal.lineEvaluation(): Evaluation<ValueLine> =
+	valueLine(this).evaluation()
 
-val <T> leo.named.expression.Function<T>.lineEvaluation: Evaluation<T, ValueLine<T>> get() =
+val leo.named.expression.Function.lineEvaluation: Evaluation<ValueLine> get() =
 	line(function(body)).evaluation()
 
-val <T> Get<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val Get.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.map { it.get(name) }
 
-val <T> Invoke<T>.lineEvaluation: Evaluation<T, Value<T>> get() =
+val Invoke.lineEvaluation: Evaluation<Value> get() =
 	function.valueEvaluation.bind { functionValue ->
 		functionValue.unsafeFunction.let { function ->
 			params.valueEvaluation.bind { paramsValue ->
-				dictionaryEvaluation<T>().map { dictionary ->
+				dictionaryEvaluation().map { dictionary ->
 					dictionary
 						.plus(paramsValue.dictionary)
 						.value(function.body)
@@ -105,14 +100,14 @@ val <T> Invoke<T>.lineEvaluation: Evaluation<T, Value<T>> get() =
 		}
 	}
 
-val <T> Switch<T>.valueEvaluation: Evaluation<T, Value<T>> get() =
+val Switch.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.bind { value ->
 		value.unsafeLine.let { valueLine ->
-			dictionaryEvaluation<T>().map { dictionary ->
+			dictionaryEvaluation().map { dictionary ->
 				dictionary.plus(valueLine.definition).value(expression(valueLine.name))
 			}
 		}
 	}
 
-fun <T> Variable.valueEvaluation(): Evaluation<T, Value<T>> =
-	dictionaryEvaluation<T>().map { it.value(type) }
+fun Variable.valueEvaluation(): Evaluation<Value> =
+	dictionaryEvaluation().map { it.value(type) }
