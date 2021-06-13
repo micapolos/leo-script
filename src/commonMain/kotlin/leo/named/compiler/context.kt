@@ -10,13 +10,12 @@ import leo.push
 import leo.stack
 
 data class Context<out T>(
-	val environment: Environment<T>,
 	val dictionary: Dictionary,
 	val paramExpressionStack: Stack<TypedExpression<T>>
 )
 
-val <T> Environment<T>.context get() =
-	Context(this, dictionary(), stack())
+fun <T> Dictionary.context(): Context<T> = Context(this, stack())
+fun <T> context(): Context<T> = dictionary().context()
 
 fun <T> Context<T>.plusNames(type: Type): Context<T> =
 	// TODO: Add "content"

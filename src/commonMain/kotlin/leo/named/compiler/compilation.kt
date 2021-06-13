@@ -41,7 +41,7 @@ import leo.theName
 import leo.type
 import leo.type.compiler.type
 
-typealias Compilation<T, V> = Stateful<Context<T>, V>
+typealias Compilation<T, V> = Stateful<Environment<T>, V>
 fun <T, V> V.compilation(): Compilation<T, V> = stateful()
 
 fun <T> Context<T>.typedExpressionCompilation(script: Script): Compilation<T, TypedExpression<T>> =
