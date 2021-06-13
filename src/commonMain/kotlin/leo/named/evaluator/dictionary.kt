@@ -15,6 +15,7 @@ import leo.named.value.Value
 import leo.push
 import leo.reverse
 import leo.stack
+import leo.type
 
 data class Dictionary(val definitionStack: Stack<Definition>)
 
@@ -39,6 +40,9 @@ fun Dictionary.value(typeStructure: Type): Value =
 	definitionStack
 		.mapFirst { valueLineOrNull(typeStructure) }
 		.notNullOrError("$this.value($this)")
+
+fun Dictionary.get(name: String): Value =
+	value(type(name))
 
 val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)

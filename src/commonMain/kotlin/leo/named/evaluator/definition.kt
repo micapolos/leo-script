@@ -10,8 +10,8 @@ import leo.type
 
 data class Definition(val type: Type, val value: Value)
 
-fun definition(typeStructure: Type, value: Value) =
-	Definition(typeStructure, value)
+fun definition(type: Type, value: Value) =
+	Definition(type, value)
 
 fun Definition.valueLineOrNull(type: Type): Value? =
 	notNullIf(this.type == type) { value }
