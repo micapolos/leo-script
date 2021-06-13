@@ -26,4 +26,4 @@ val Compiler.scriptLine: ScriptLine get() =
 	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)
 
 val Scope.scriptLine: ScriptLine get() =
-	"scope" lineTo typedExpressionStack.map { scriptLine }.script
+	"scope" lineTo expressionStack.map { scriptLine }.script
