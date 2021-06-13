@@ -69,7 +69,7 @@ fun TypedExpression.get(name: String): TypedExpression =
 		typed(expression.get(name), it)
 	}
 
-fun Type.functionTypedExpression(bodyTypedExpression: TypedExpression): TypedExpression =
+infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 	typed(
-		expression(line(function(this, body(bodyTypedExpression.expression)))),
-		type(this.doingLineTo(bodyTypedExpression.type)))
+		line(function(this, body(bodyTypedExpression.expression))),
+		this.doingLineTo(bodyTypedExpression.type))

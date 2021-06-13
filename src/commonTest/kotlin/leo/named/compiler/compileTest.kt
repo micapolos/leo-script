@@ -2,6 +2,8 @@ package leo.named.compiler
 
 import leo.base.assertEqualTo
 import leo.doName
+import leo.doingName
+import leo.giveName
 import leo.lineTo
 import leo.literal
 import leo.named.expression.body
@@ -13,11 +15,17 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.variable
+import leo.named.typed.doingTypedLine
+import leo.named.typed.invoke
+import leo.named.typed.lineTo
 import leo.named.typed.typed
+import leo.named.typed.typedExpression
 import leo.numberTypeLine
 import leo.script
+import leo.toName
 import leo.type
 import kotlin.test.Test
+import kotlin.test.assertFails
 
 class CompileTest {
 	@Test
@@ -92,5 +100,60 @@ class CompileTest {
 						)))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					type("x" lineTo type(numberTypeLine))))
+	}
+
+	@Test
+	fun doing() {
+		script(
+			doingName lineTo script(
+				"x" lineTo script(),
+				toName lineTo script("y")))
+			.typedExpression
+			.assertEqualTo(
+				typedExpression(type("x") doingTypedLine typedExpression("y" lineTo typedExpression())))
+	}
+
+	@Test
+	fun doing_inline() {
+		script(
+			"foo" lineTo script(),
+			doingName lineTo script(
+				"x" lineTo script(),
+				toName lineTo script("y")))
+			.typedExpression
+			.assertEqualTo(
+				typedExpression(
+					"foo" lineTo typedExpression(),
+					type("x") doingTypedLine typedExpression("y" lineTo typedExpression())))
+	}
+
+	@Test
+	fun doing_missingTo() {
+		assertFails {
+			script(doingName lineTo script()).typedExpression
+		}
+	}
+
+	@Test
+	fun doingGive() {
+		script(
+			doingName lineTo script(
+				"x" lineTo script(),
+				toName lineTo script("y")),
+			giveName lineTo script("x"))
+			.typedExpression
+			.assertEqualTo(
+				typedExpression(type("x") doingTypedLine typedExpression("y" lineTo typedExpression()))
+					.invoke(typedExpression("x" lineTo typedExpression())))
+	}
+
+	@Test
+	fun doingGive_notFunction() {
+		assertFails {
+			script(
+				"x" lineTo script(),
+				giveName lineTo script("y"))
+				.typedExpression
+		}
 	}
 }
