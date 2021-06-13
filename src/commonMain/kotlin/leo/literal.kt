@@ -45,7 +45,7 @@ val String.literalString
 		appendableString { appendable ->
 			appendable
 				.append("\"")
-				.append(this)
+				.append(this.replace("\n", "\\n").replace("\"", "\\\""))
 				.append("\"")
 		}
 

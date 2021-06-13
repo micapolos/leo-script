@@ -32,7 +32,7 @@ val Line.scriptLine: ScriptLine get() =
 		is LiteralLine -> line(literal)
 	}
 
-val Get.script: Script get() = script(getName lineTo script(name))
+val Get.script: Script get() = expression.script.plus(getName lineTo script(name))
 val Invoke.script: Script get() = function.script.plus(giveName lineTo params.script)
 val Link.script: Script get() = expression.script.plus(line.scriptLine)
 val Switch.script: Script get() = expression.script.plus(switchName lineTo cases.map { scriptLine }.script)

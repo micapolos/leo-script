@@ -9,7 +9,6 @@ import leo.ScriptField
 import leo.ScriptLine
 import leo.ScriptLink
 import leo.UnitScript
-import leo.named.compiler.typedExpression
 
 val Script.reflectTypedExpression: TypedExpression get() =
 	when (this) {
@@ -18,7 +17,7 @@ val Script.reflectTypedExpression: TypedExpression get() =
 	}
 
 val ScriptLink.reflectTypedExpression: TypedExpression get() =
-	lhs.typedExpression.plus(line.reflectTypedLine)
+	lhs.reflectTypedExpression.plus(line.reflectTypedLine)
 
 val ScriptLine.reflectTypedLine: TypedLine get() =
 	when (this) {

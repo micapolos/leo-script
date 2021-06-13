@@ -6,7 +6,7 @@ import leo.base.orNullIf
 import leo.name
 import leo.type
 
-data class Definition(val structure: Type, val binding: Binding)
+data class Definition(val type: Type, val binding: Binding) { override fun toString() = scriptLine.toString() }
 
 fun definition(type: Type, binding: Binding) =
 	Definition(type, binding)
@@ -15,4 +15,4 @@ val TypeLine.nameDefinition: Definition get() =
 	definition(type(name), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =
-	binding.orNullIf(this.structure != type)
+	binding.orNullIf(this.type != type)

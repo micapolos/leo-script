@@ -12,7 +12,7 @@ import leo.reverse
 import leo.seq
 import leo.stack
 
-data class Dictionary(val definitionStack: Stack<Definition>)
+data class Dictionary(val definitionStack: Stack<Definition>) { override fun toString() = scriptLine.toString() }
 fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
 
 fun Dictionary.plus(definition: Definition): Dictionary =

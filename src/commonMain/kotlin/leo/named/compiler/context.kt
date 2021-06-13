@@ -18,8 +18,8 @@ data class Context(
 	val paramExpressionStack: Stack<TypedExpression>
 )
 
-fun Dictionary.context(): Context = Context(this, stack())
-fun context(): Context = dictionary().context()
+val Dictionary.context: Context get() = Context(this, stack())
+fun context(): Context = dictionary().context
 
 fun Context.plusNames(type: Type): Context =
 	// TODO: Add "content"

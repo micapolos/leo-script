@@ -17,6 +17,7 @@ import leo.beName
 import leo.bind
 import leo.bindName
 import leo.castName
+import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.flat
@@ -28,6 +29,7 @@ import leo.letName
 import leo.lineStack
 import leo.map
 import leo.matchInfix
+import leo.named.expression.script
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
 import leo.named.typed.TypedLine
@@ -39,11 +41,13 @@ import leo.named.typed.line
 import leo.named.typed.lineTo
 import leo.named.typed.name
 import leo.named.typed.plus
+import leo.named.typed.reflectTypedExpression
 import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.onlyLineOrNull
 import leo.reverse
+import leo.script
 import leo.seq
 import leo.stateful
 import leo.switchName
@@ -108,6 +112,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 	when (scriptField.name) {
 		bindName -> plusBindCompilation(scriptField.rhs)
 		castName -> plusCastCompilation(scriptField.rhs)
+		debugName -> plusDebugCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
@@ -128,6 +133,17 @@ fun Compiler.plusBeCompilation(typedExpression: TypedExpression): Compilation<Co
 
 fun Compiler.plusCastCompilation(script: Script): Compilation<Compiler> =
 	TODO()
+
+fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
+	when (script) {
+		script("body") -> set(bodyTypedExpression.expression.script.reflectTypedExpression).compilation
+		script("context") -> set(script(context.scriptLine).reflectTypedExpression).compilation
+		script("compiler") -> set(script(scriptLine).reflectTypedExpression).compilation
+		script("dictionary") -> set(script(context.dictionary.scriptLine).reflectTypedExpression).compilation
+		script("expression") -> set(typedExpression.expression.script.reflectTypedExpression).compilation
+		script("type") -> set(bodyTypedExpression.type.script.reflectTypedExpression).compilation
+		else -> error("$script is not debug command")
+	}
 
 fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler>? =
 	context

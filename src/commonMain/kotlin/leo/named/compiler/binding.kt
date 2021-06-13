@@ -9,7 +9,7 @@ import leo.named.expression.variable
 import leo.named.typed.TypedExpression
 import leo.named.typed.typed
 
-data class Binding(val type: Type, val isConstant: Boolean)
+data class Binding(val type: Type, val isConstant: Boolean) { override fun toString() = scriptLine.toString() }
 
 fun binding(type: Type, isConstant: Boolean): Binding =
 	Binding(type, isConstant)
