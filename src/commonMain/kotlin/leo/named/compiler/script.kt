@@ -4,6 +4,7 @@ import leo.ScriptLine
 import leo.lineTo
 import leo.map
 import leo.named.typed.script
+import leo.named.typed.scriptLine
 import leo.plus
 import leo.script
 
@@ -20,11 +21,10 @@ val Boolean.isConstantBindingName: String get() =
 	if (this) "be" else "do"
 
 val Context.scriptLine: ScriptLine get() =
-	"context" lineTo script(
-		dictionary.scriptLine,
-		"params" lineTo paramExpressionStack.map { "param" lineTo this.script }.script)
+	"context" lineTo script(dictionary.scriptLine, scope.scriptLine)
 
 val Compiler.scriptLine: ScriptLine get() =
-	"compiler" lineTo script(
-		context.scriptLine,
-		"body" lineTo bodyTypedExpression.script)
+	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)
+
+val Scope.scriptLine: ScriptLine get() =
+	"scope" lineTo typedExpressionStack.map { "typed" lineTo this.script }.script

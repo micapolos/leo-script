@@ -29,7 +29,7 @@ fun Compiler.set(typedExpression: TypedExpression): Compiler =
 val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
-			.fold(context.paramExpressionStack) { paramTypedExpression ->
+			.fold(context.scope.typedExpressionStack) { paramTypedExpression ->
 				typed(
 					expression(
 						invoke(
