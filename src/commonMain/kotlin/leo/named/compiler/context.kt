@@ -6,6 +6,8 @@ import leo.StructureType
 import leo.Type
 import leo.TypeStructure
 import leo.named.typed.TypedExpression
+import leo.named.typed.TypedLine
+import leo.named.typed.typedExpression
 import leo.push
 import leo.stack
 
@@ -35,3 +37,6 @@ fun Context.plus(definition: Definition): Context =
 
 fun Context.plusParam(typedLine: TypedExpression): Context =
 	copy(paramExpressionStack = paramExpressionStack.push(typedLine))
+
+fun Context.bind(typedLine: TypedLine): Context =
+	plus(typedLine.typeLine.nameDefinition).plusParam(typedExpression(typedLine))

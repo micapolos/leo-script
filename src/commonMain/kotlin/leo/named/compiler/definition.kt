@@ -11,7 +11,7 @@ data class Definition(val structure: Type, val binding: Binding)
 fun definition(type: Type, binding: Binding) =
 	Definition(type, binding)
 
-fun TypeLine.nameDefinition(): Definition =
+val TypeLine.nameDefinition: Definition get() =
 	definition(type(name), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =

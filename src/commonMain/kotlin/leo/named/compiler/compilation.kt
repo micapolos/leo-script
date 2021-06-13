@@ -14,9 +14,12 @@ import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.beName
 import leo.bind
+import leo.bindName
 import leo.castName
 import leo.doName
 import leo.doingName
+import leo.flat
+import leo.fold
 import leo.foldStateful
 import leo.giveName
 import leo.isEmpty
@@ -100,6 +103,7 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	when (scriptField.name) {
 		beName -> plusBeCompilation(scriptField.rhs)
+		bindName -> plusBindCompilation(scriptField.rhs)
 		castName -> plusCastCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
@@ -212,6 +216,11 @@ fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compila
 	when (typedField.name) {
 		typeName -> plusTypeCompilationOrNull(typedField.rhs)
 		else -> null
+	}
+
+fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler>? =
+	script.lineStack.map { context.typedLineCompilation(this) }.flat.map { typedLineStack ->
+		set(context.fold(typedLineStack.reverse) { bind(it) })
 	}
 
 fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =

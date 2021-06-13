@@ -3,6 +3,7 @@ package leo.named.evaluator
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
+import leo.bindName
 import leo.doName
 import leo.doingName
 import leo.giveName
@@ -119,5 +120,35 @@ class ScriptEvaluateTest {
 				script(
 					"name" lineTo script(textTypeScriptLine),
 					"age" lineTo script(numberTypeScriptLine)))
+	}
+
+	@Test
+	fun bind() {
+		script(
+			bindName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20)),
+				"x" lineTo script(literal(30))),
+			"x" lineTo script())
+			.evaluate
+			.assertEqualTo(script("x" lineTo script(literal(30))))
+
+		script(
+			bindName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20)),
+				"x" lineTo script(literal(30))),
+			"y" lineTo script())
+			.evaluate
+			.assertEqualTo(script("y" lineTo script(literal(20))))
+
+		script(
+			bindName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20)),
+				"x" lineTo script(literal(30))),
+			"z" lineTo script())
+			.evaluate
+			.assertEqualTo(script("z"))
 	}
 }

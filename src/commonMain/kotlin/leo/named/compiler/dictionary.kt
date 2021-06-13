@@ -19,7 +19,7 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
 
 fun Dictionary.plusName(typeLine: TypeLine): Dictionary =
-	plus(typeLine.nameDefinition())
+	plus(typeLine.nameDefinition)
 
 fun Dictionary.plusNames(structure: TypeStructure): Dictionary =
 	fold(structure.lineStack.reverse.seq) { plusName(it) }
