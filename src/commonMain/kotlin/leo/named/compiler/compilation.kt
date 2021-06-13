@@ -15,23 +15,18 @@ import leo.beName
 import leo.bind
 import leo.castName
 import leo.doName
-import leo.doingLineTo
 import leo.foldStateful
 import leo.isEmpty
 import leo.letName
 import leo.lineStack
 import leo.map
 import leo.matchInfix
-import leo.named.expression.body
-import leo.named.expression.expression
-import leo.named.expression.function
-import leo.named.expression.invoke
-import leo.named.expression.line
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
+import leo.named.typed.do_
+import leo.named.typed.functionTypedExpression
 import leo.named.typed.lineTo
 import leo.named.typed.plus
-import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.onlyLineOrNull
 import leo.reverse
@@ -39,7 +34,6 @@ import leo.seq
 import leo.stateful
 import leo.switchName
 import leo.theName
-import leo.type
 import leo.type.compiler.type
 
 typealias Compilation<V> = Stateful<Environment, V>
@@ -47,7 +41,7 @@ fun <V> V.compilation(): Compilation<V> = stateful()
 
 fun  Context.typedExpressionCompilation(script: Script): Compilation<TypedExpression> =
 	compiler
-		.compilation<Compiler>()
+		.compilation()
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.typedExpression }
 
@@ -118,16 +112,7 @@ fun  Compiler.plusDoCompilation(script: Script): Compilation<Compiler>? =
 	context
 		.plusNames(bodyTypedExpression.type)
 		.typedExpressionCompilation(script)
-		.map { typed ->
-			set(
-					typed(
-						expression(
-							invoke(
-								expression(line(function(bodyTypedExpression.type, body(typed.expression)))),
-								bodyTypedExpression.expression)),
-						typed.type)
-			)
-		}
+		.map { set(bodyTypedExpression.do_(it)) }
 
 fun  Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	script
@@ -160,11 +145,7 @@ fun  Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compil
 		context.plusNames(type).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
 				.plus(definition(type, functionBinding(bodyTyped.type)))
-				.plusParam(
-					typed(
-						expression(line(function(type, body(bodyTyped.expression)))),
-						type(type.doingLineTo(bodyTyped.type)))
-				)
+				.plusParam(type.functionTypedExpression(bodyTyped))
 				.compiler
 		}
 	}
@@ -184,10 +165,10 @@ fun  Compiler.plusFieldCompilation(scriptField: ScriptField): Compilation<Compil
 fun  Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
 	context.resolveCompilation(bodyTypedExpression.plus(typed)).map { set(it) }
 
-fun  Context.resolveCompilation(tuple: TypedExpression): Compilation<TypedExpression> =
+fun  Context.resolveCompilation(typedExpression: TypedExpression): Compilation<TypedExpression> =
 	null
-		?: resolveCompilationOrNull(tuple)
-		?: tuple.resolve.compilation()
+		?: resolveCompilationOrNull(typedExpression)
+		?: typedExpression.resolve.compilation()
 
-fun  Context.resolveCompilationOrNull(tuple: TypedExpression): Compilation<TypedExpression>? =
-	resolveOrNull(tuple)?.compilation()
+fun  Context.resolveCompilationOrNull(typedExpression: TypedExpression): Compilation<TypedExpression>? =
+	resolveOrNull(typedExpression)?.compilation()
