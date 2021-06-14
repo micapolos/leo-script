@@ -9,7 +9,6 @@ import leo.ScriptLine
 import leo.Stack
 import leo.Stateful
 import leo.Type
-import leo.TypeLine
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.base.notNullOrError
@@ -48,7 +47,6 @@ import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
-import leo.onlyLineOrNull
 import leo.quoteName
 import leo.reverse
 import leo.script
@@ -84,15 +82,9 @@ fun Dictionary.typedLineCompilation(scriptField: ScriptField): Compilation<Typed
 fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
 	typedLine(literal).compilation
 
-fun Dictionary.typedLineCompilation(script: Script): Compilation<TypedLine> =
-	typedExpressionCompilation(script).map { it.compileOnlyLine }
-
 @Suppress("unused")
 fun Dictionary.typeCompilation(script: Script): Compilation<Type> =
 	script.type.compilation
-
-fun Dictionary.typeLineCompilation(script: Script): Compilation<TypeLine> =
-	typeCompilation(script).map { it.onlyLineOrNull.notNullOrError("$this not line") }
 
 fun Dictionary.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
 	script.lineStack.map { typedLineCompilation(this) }.flat
@@ -224,9 +216,6 @@ fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compile
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	if (scriptField.rhs.isEmpty) set(typedExpression()).plusResolveCompilation(scriptField.name fieldTo bodyTypedExpression)
 	else plusFieldCompilation(scriptField)
-
-fun Compiler.plusCompilation(name: String): Compilation<Compiler> =
-	context.resolveCompilation(typedExpression(name lineTo bodyTypedExpression)).map { set(it) }
 
 fun Compiler.plusFieldCompilation(scriptField: ScriptField): Compilation<Compiler> =
 	context.dictionary.typedExpressionCompilation(scriptField.rhs).bind { typedExpression ->

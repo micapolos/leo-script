@@ -1,4 +1,5 @@
-let
-  lucky
-  do 123
-debug.compiler.context.definitions
+x 10
+y 20
+do
+  x.number
+  plus y.number
