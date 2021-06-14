@@ -38,3 +38,6 @@ fun TypedExpression.getOrNull(name: String): TypedExpression? =
 	type.getOrNull(name)?.let {
 		expression.get(name).of(it)
 	}
+
+fun TypedExpression.of(type: Type): TypedExpression =
+	this.type.checkOf(type).let { expression of it }

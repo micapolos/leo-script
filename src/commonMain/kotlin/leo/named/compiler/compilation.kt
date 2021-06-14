@@ -9,13 +9,13 @@ import leo.ScriptLine
 import leo.Stack
 import leo.Stateful
 import leo.Type
+import leo.TypeChoice
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.beName
 import leo.bind
 import leo.bindName
-import leo.castName
 import leo.debugName
 import leo.doName
 import leo.doingName
@@ -47,6 +47,7 @@ import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
+import leo.ofName
 import leo.quoteName
 import leo.reverse
 import leo.script
@@ -82,9 +83,11 @@ fun Dictionary.typedLineCompilation(scriptField: ScriptField): Compilation<Typed
 fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
 	typedLine(literal).compilation
 
-@Suppress("unused")
-fun Dictionary.typeCompilation(script: Script): Compilation<Type> =
+fun typeCompilation(script: Script): Compilation<Type> =
 	script.type.compilation
+
+fun typeChoiceCompilation(script: Script): Compilation<TypeChoice> =
+	script.type.compilation.map { it.compileChoice }
 
 fun Dictionary.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
 	script.lineStack.map { typedLineCompilation(this) }.flat
@@ -109,7 +112,7 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	when (scriptField.name) {
 		bindName -> plusBindCompilation(scriptField.rhs)
-		castName -> plusCastCompilation(scriptField.rhs)
+		ofName -> plusOfCompilation(scriptField.rhs)
 		debugName -> plusDebugCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
@@ -130,9 +133,10 @@ fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compi
 fun Compiler.plusBeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
 	set(typedExpression).compilation
 
-@Suppress("unused")
-fun Compiler.plusCastCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
-	TODO()
+fun Compiler.plusOfCompilation(script: Script): Compilation<Compiler> =
+	typeCompilation(script).map { type ->
+		set(bodyTypedExpression.of(type))
+	}
 
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
 	if (!script.isEmpty) error("debug")
@@ -150,7 +154,7 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler>? =
 
 fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
 	script.matchInfix(toName) { lhs, rhs ->
-		context.dictionary.typeCompilation(lhs).bind { type ->
+		typeCompilation(lhs).bind { type ->
 			context.dictionary.plusNames(type).typedExpressionCompilation(rhs).map { body ->
 				plus(type.doingTypedLine(body))
 			}
@@ -194,7 +198,7 @@ fun Compiler.plusWithCompilation(typed: TypedExpression): Compilation<Compiler> 
 	set(bodyTypedExpression.with(typed)).compilation
 
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
-	context.dictionary.typeCompilation(lhs).bind { type ->
+	typeCompilation(lhs).bind { type ->
 		context.dictionary.typedExpressionCompilation(rhs).map { typed ->
 			set(
 				context
@@ -204,7 +208,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 	}
 
 fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
-	context.dictionary.typeCompilation(lhs).bind { type ->
+	typeCompilation(lhs).bind { type ->
 		context.dictionary.plusNames(type).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
 				.plus(definition(type, functionBinding(bodyTyped.type)))

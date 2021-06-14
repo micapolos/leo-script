@@ -10,12 +10,14 @@ import leo.choiceOrNull
 import leo.doingOrNull
 import leo.equalName
 import leo.fieldOrNull
+import leo.first
 import leo.getLineOrNull
 import leo.getName
 import leo.getOrNull
 import leo.isName
 import leo.lineOrNull
 import leo.lineTo
+import leo.ofName
 import leo.onlyLineOrNull
 import leo.plus
 import leo.script
@@ -52,3 +54,10 @@ fun <R> Type.check(type: Type, fn: () -> R): R =
 
 fun Type.get(name: String): Type =
 	getOrNull(name).throwScriptIfNull { script.plus(getName lineTo script(name)) }
+
+fun Type.checkOf(type: Type): Type =
+	compileLine.let { line ->
+		type.compileChoice.lineStack.first { it == line }
+			.throwScriptIfNull { script.plus(ofName lineTo type.script) }
+			.let { type }
+	}
