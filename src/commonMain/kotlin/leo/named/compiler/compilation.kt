@@ -9,7 +9,6 @@ import leo.ScriptLine
 import leo.Stack
 import leo.Stateful
 import leo.Type
-import leo.TypeChoice
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.base.notNullOrError
@@ -47,6 +46,7 @@ import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
+import leo.normalizeRecursion
 import leo.ofName
 import leo.quoteName
 import leo.reverse
@@ -57,7 +57,7 @@ import leo.switchName
 import leo.takeName
 import leo.theName
 import leo.toName
-import leo.type.compiler.type
+import leo.type
 import leo.typeName
 import leo.withName
 
@@ -84,10 +84,7 @@ fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
 	typedLine(literal).compilation
 
 fun typeCompilation(script: Script): Compilation<Type> =
-	script.type.compilation
-
-fun typeChoiceCompilation(script: Script): Compilation<TypeChoice> =
-	script.type.compilation.map { it.compileChoice }
+	script.type.normalizeRecursion.compilation
 
 fun Dictionary.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
 	script.lineStack.map { typedLineCompilation(this) }.flat

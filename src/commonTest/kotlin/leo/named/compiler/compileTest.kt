@@ -2,6 +2,7 @@ package leo.named.compiler
 
 import leo.base.assertEqualTo
 import leo.choice
+import leo.choiceName
 import leo.doName
 import leo.doingName
 import leo.giveName
@@ -23,7 +24,6 @@ import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.numberTypeLine
 import leo.ofName
-import leo.orName
 import leo.script
 import leo.takeName
 import leo.textTypeLine
@@ -174,8 +174,9 @@ class CompileTest {
 		script(
 			"yes" lineTo script(),
 			ofName lineTo script(
-				"yes" lineTo script(),
-				orName lineTo script("no")))
+				choiceName lineTo script(
+					"yes" lineTo script(),
+					"no" lineTo script())))
 			.typedExpression
 			.assertEqualTo(
 				typedExpression("yes" lineTo typedExpression())
