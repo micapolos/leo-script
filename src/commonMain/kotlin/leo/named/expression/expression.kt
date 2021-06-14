@@ -9,7 +9,6 @@ import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.empty
 import leo.mapFirst
-import leo.named.evaluator.Definition
 import leo.named.evaluator.Dictionary
 import leo.named.value.Value
 import leo.stack
@@ -37,8 +36,9 @@ data class Switch(val expression: Expression, val cases: Stack<Case>) { override
 data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Function(val body: Body) { override fun toString() = scriptLine.toString() }
 data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
-data class Bind(val definition: Definition, val expression: Expression) { override fun toString() = script.toString() }
+data class Bind(val binding: Binding, val expression: Expression) { override fun toString() = script.toString() }
 data class Variable(val type: Type) { override fun toString() = script.toString() }
+data class Binding(val type: Type, val expression: Expression)
 
 sealed class Body { override fun toString() = super.toString() }
 data class ExpressionBody(val expression: Expression): Body() { override fun toString() = script.toString() }
@@ -73,10 +73,14 @@ fun function(body: Body) = Function(body)
 fun invoke(function: Expression, params: Expression) = Invoke(function, params)
 fun switch(lhs: Expression, cases: Stack<Case>) = Switch(lhs, cases)
 fun variable(type: Type) = Variable(type)
+fun bind(binding: Binding, expression: Expression) = Bind(binding, expression)
+fun binding(type: Type, expression: Expression) = Binding(type, expression)
 
 fun Expression.get(name: String): Expression = expression(get(this, name))
 fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, stack(*cases)))
 fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
+fun Binding.in_(expression: Expression): Expression = expression(bind(this, expression))
+fun get(type: Type): Expression = expression(variable(type))
 
 fun function(expression: Expression) = expression(line(function(body(expression))))
 fun function(name: String, fn: Dictionary.() -> Value) = expression(line(function(body(name, fn))))

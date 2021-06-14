@@ -9,11 +9,11 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.map
-import leo.named.evaluator.scriptLine
 import leo.named.value.anyScriptLine
 import leo.nativeName
 import leo.plus
 import leo.script
+import leo.scriptLine
 import leo.switchName
 
 val Expression.scriptLine: ScriptLine get() =
@@ -40,7 +40,7 @@ val Line.scriptLine: ScriptLine get() =
 
 val Get.script: Script get() = expression.script.plus(getName lineTo script(name))
 val Invoke.script: Script get() = function.script.plus(giveName lineTo params.script)
-val Bind.script: Script get() = script("bind" lineTo script(definition.scriptLine)).plus(expression.script)
+val Bind.script: Script get() = script("bind" lineTo script(binding.scriptLine)).plus(expression.script)
 val Link.script: Script get() = expression.script.plus(line.scriptLine)
 val Switch.script: Script get() = expression.script.plus(switchName lineTo cases.map { scriptLine }.script)
 val Case.scriptLine: ScriptLine get() = name lineTo expression.script
@@ -48,6 +48,7 @@ val Variable.script: Script get() = script("variable" lineTo type.script)
 
 val Field.scriptLine: ScriptLine get() = name lineTo expression.script
 val Function.scriptLine: ScriptLine get() = doingName lineTo body.script
+val Binding.scriptLine: ScriptLine get() = "binding" lineTo script(type.scriptLine, expression.scriptLine)
 
 val Body.script: Script get() =
 	when (this) {

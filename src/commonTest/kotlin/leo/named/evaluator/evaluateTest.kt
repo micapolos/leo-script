@@ -1,11 +1,15 @@
 package leo.named.evaluator
 
 import leo.base.assertEqualTo
+import leo.lineTo
 import leo.literal
+import leo.named.expression.binding
 import leo.named.expression.body
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.function
+import leo.named.expression.get
+import leo.named.expression.in_
 import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
@@ -15,6 +19,7 @@ import leo.named.value.lineTo
 import leo.named.value.numberValue
 import leo.named.value.value
 import leo.numberName
+import leo.numberTypeLine
 import leo.type
 import kotlin.test.Test
 
@@ -47,5 +52,15 @@ class EvaluateTest {
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
 			.assertEqualTo(11.numberValue)
+	}
+
+	@Test
+	fun bind() {
+		binding(
+			type("ping" lineTo type(numberTypeLine)),
+			expression("pong" lineTo get(type("ping" lineTo type(numberTypeLine))).get(numberName)))
+			.in_(expression("ping" lineTo expression(expressionLine(literal(10)))))
+			.evaluate
+			.assertEqualTo(value("pong" lineTo 10.numberValue))
 	}
 }
