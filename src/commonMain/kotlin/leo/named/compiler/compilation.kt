@@ -30,6 +30,7 @@ import leo.lineStack
 import leo.lineTo
 import leo.map
 import leo.matchInfix
+import leo.named.expression.binding
 import leo.named.expression.function
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
@@ -196,7 +197,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 			set(
 				context
 					.plus(definition(type, constantBinding(typed.type)))
-					.scopePlus(typed.expression))
+					.scopePlus(binding(type, typed.expression)))
 		}
 	}
 
@@ -205,7 +206,7 @@ fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compile
 		context.dictionary.plusNames(type).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
 				.plus(definition(type, functionBinding(bodyTyped.type)))
-				.scopePlus(function(bodyTyped.expression))
+				.scopePlus(binding(type, function(bodyTyped.expression)))
 				.compiler
 		}
 	}

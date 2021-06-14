@@ -35,7 +35,7 @@ import leo.typeLine
 data class TypedLine(val line: Line, val typeLine: TypeLine)
 data class TypedExpression(val expression: Expression, val type: Type) { override fun toString() = script.toString() }
 data class TypedField(val field: Field, val typeField: TypeField)
-data class TypedFunction(val exoression: Expression, val typeDoing: TypeDoing)
+data class TypedFunction(val expression: Expression, val typeDoing: TypeDoing)
 
 fun typed(line: Line, typeLine: TypeLine) = TypedLine(line, typeLine)
 fun typed(expression: Expression, type: Type) = TypedExpression(expression, type)

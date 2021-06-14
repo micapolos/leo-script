@@ -58,8 +58,8 @@ class EvaluateTest {
 	fun bind() {
 		binding(
 			type("ping" lineTo type(numberTypeLine)),
-			expression("pong" lineTo get(type("ping" lineTo type(numberTypeLine))).get(numberName)))
-			.in_(expression("ping" lineTo expression(expressionLine(literal(10)))))
+			expression("ping" lineTo expression(expressionLine(literal(10)))))
+			.in_(expression("pong" lineTo get(type("ping" lineTo type(numberTypeLine))).get(numberName)))
 			.evaluate
 			.assertEqualTo(value("pong" lineTo 10.numberValue))
 	}

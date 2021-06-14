@@ -29,4 +29,4 @@ val Compiler.scriptLine: ScriptLine get() =
 
 val Scope.scriptLine: ScriptLine get() =
 	"scope" lineTo script(
-		"expressions" lineTo expressionStack.map { scriptLine }.script)
+		"expressions" lineTo bindingStack.map { scriptLine }.script)

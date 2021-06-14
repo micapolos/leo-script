@@ -104,10 +104,10 @@ val Invoke.lineEvaluation: Evaluation<Value> get() =
 
 val Bind.lineEvaluation: Evaluation<Value> get() =
 	dictionaryEvaluation().bind { dictionary ->
-		expression.valueEvaluation.map { value ->
+		binding.expression.valueEvaluation.map { value ->
 			dictionary
 				.plus(definition(binding.type, value))
-				.value(binding.expression)
+				.value(expression)
 		}
 	}
 
