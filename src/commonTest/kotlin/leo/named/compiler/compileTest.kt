@@ -168,7 +168,6 @@ class CompileTest {
 			.assertEqualTo(type(textTypeLine).typedExpression)
 	}
 
-
 	@Test
 	fun of() {
 		script(
@@ -182,4 +181,28 @@ class CompileTest {
 				typedExpression("yes" lineTo typedExpression())
 					.of(type(choice("yes" lineTo type(), "no" lineTo type()))))
 	}
+
+//	@Test
+//	fun switch() {
+//		script(
+//			"boolean" lineTo script(
+//				"yes" lineTo script(),
+//					ofName lineTo script(
+//						choiceName lineTo script(
+//							"yes" lineTo script(),
+//							"no" lineTo script()))),
+//			switchName lineTo script(
+//				"yes" lineTo script(literal(10)),
+//				"no" lineTo script(literal(20))))
+//			.typedExpression
+//			.assertEqualTo(
+//				typedExpression(
+//					"boolean" lineTo typedExpression(
+//						"yes" lineTo typedExpression())
+//							.of(type(choice("yes" lineTo type(), "no" lineTo type()))))
+//					.switch(
+//						stack(
+//							typed("yes" caseTo expression(expressionLine(literal(10))), type(numberTypeLine)),
+//							typed("no" caseTo expression(expressionLine(literal(20))), type(numberTypeLine)))))
+//	}
 }

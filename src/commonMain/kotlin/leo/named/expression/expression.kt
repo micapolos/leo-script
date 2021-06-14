@@ -57,10 +57,11 @@ fun expression(variable: Variable): Expression = VariableExpression(variable)
 
 fun Expression.plus(line: Line) = expression(this linkTo line)
 fun expression(vararg lines: Line): Expression = expression(empty).fold(lines) { plus(it) }
+fun expression(name: String): Expression = expression(name lineTo expression())
 
 infix fun String.fieldTo(rhs: Expression) = Field(this, rhs)
 infix fun String.lineTo(rhs: Expression) = line(this fieldTo rhs)
-infix fun String.caseTo(line: Expression) = Case(this, line)
+infix fun String.caseTo(expression: Expression) = Case(this, expression)
 infix fun Expression.linkTo(line: Line) = Link(this, line)
 
 fun expressionLine(literal: Literal): Line = LiteralLine(literal)
@@ -82,6 +83,7 @@ fun with(lhs: Expression, rhs: Expression) = With(lhs, rhs)
 
 fun Expression.get(name: String): Expression = expression(get(this, name))
 fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, stack(*cases)))
+fun Expression.switch(caseStack: Stack<Case>): Expression = expression(switch(this, caseStack))
 fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
 fun Expression.with(expression: Expression): Expression = expression(with(this, expression))
 fun Binding.in_(expression: Expression): Expression = expression(bind(this, expression))

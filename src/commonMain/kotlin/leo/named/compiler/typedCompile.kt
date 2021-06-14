@@ -8,6 +8,7 @@ import leo.getOrNull
 import leo.linkOrNull
 import leo.named.expression.get
 import leo.named.expression.linkOrNull
+import leo.named.typed.TypedChoice
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.of
@@ -41,3 +42,6 @@ fun TypedExpression.getOrNull(name: String): TypedExpression? =
 
 fun TypedExpression.of(type: Type): TypedExpression =
 	this.type.checkOf(type).let { expression of it }
+
+val TypedExpression.choice: TypedChoice get() =
+	type.switchChoice.let { typed(expression.choiceLine, it) }

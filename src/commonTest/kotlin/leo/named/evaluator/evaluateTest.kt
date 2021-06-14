@@ -5,6 +5,7 @@ import leo.lineTo
 import leo.literal
 import leo.named.expression.binding
 import leo.named.expression.body
+import leo.named.expression.caseTo
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.function
@@ -13,6 +14,7 @@ import leo.named.expression.in_
 import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
+import leo.named.expression.switch
 import leo.named.expression.variable
 import leo.named.value.double
 import leo.named.value.lineTo
@@ -20,6 +22,7 @@ import leo.named.value.numberValue
 import leo.named.value.value
 import leo.numberName
 import leo.numberTypeLine
+import leo.textName
 import leo.type
 import kotlin.test.Test
 
@@ -62,5 +65,18 @@ class EvaluateTest {
 			.in_(expression("pong" lineTo get(type("ping" lineTo type(numberTypeLine))).get(numberName)))
 			.evaluate
 			.assertEqualTo(value("pong" lineTo 10.numberValue))
+	}
+
+	@Test
+	fun switch() {
+		expression(
+			"color" lineTo expression(
+				"red" lineTo expression(
+					expressionLine(literal(10)))))
+			.switch(
+				"red" caseTo get(type("red")).get(numberName),
+				"blue" caseTo get(type("blue")).get(textName))
+			.evaluate
+			.assertEqualTo(10.numberValue)
 	}
 }

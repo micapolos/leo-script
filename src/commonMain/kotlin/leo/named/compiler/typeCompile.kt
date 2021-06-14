@@ -1,11 +1,15 @@
 package leo.named.compiler
 
+import leo.Stack
 import leo.Type
 import leo.TypeChoice
 import leo.TypeDoing
 import leo.TypeLine
 import leo.TypeStructure
+import leo.any
 import leo.atom
+import leo.base.orNullIf
+import leo.choiceName
 import leo.choiceOrNull
 import leo.doingOrNull
 import leo.equalName
@@ -17,11 +21,13 @@ import leo.getOrNull
 import leo.isName
 import leo.lineOrNull
 import leo.lineTo
+import leo.linkOrNull
 import leo.ofName
 import leo.onlyLineOrNull
 import leo.plus
 import leo.script
 import leo.structureOrNull
+import leo.switchName
 import leo.throwScriptIfNull
 
 val Type.compileStructure: TypeStructure get() =
@@ -61,3 +67,12 @@ fun Type.checkOf(type: Type): Type =
 			.throwScriptIfNull { script.plus(ofName lineTo type.script) }
 			.let { type }
 	}
+
+fun checkType(typeStack: Stack<Type>): Type =
+	typeStack.linkOrNull
+		?.let { it.head.orNullIf(it.tail.any { this != it.head }) }
+		.throwScriptIfNull { script("type stack check") }
+
+val Type.switchChoice: TypeChoice get() =
+	onlyLineOrNull?.atom?.fieldOrNull?.rhsType?.choiceOrNull
+		.throwScriptIfNull { script.plus(switchName lineTo script(choiceName)) }

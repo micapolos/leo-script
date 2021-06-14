@@ -9,6 +9,7 @@ import leo.ScriptLine
 import leo.Stack
 import leo.Stateful
 import leo.Type
+import leo.TypeLine
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.base.notNullOrError
@@ -29,7 +30,9 @@ import leo.lineTo
 import leo.map
 import leo.matchInfix
 import leo.named.expression.binding
+import leo.named.expression.caseTo
 import leo.named.expression.function
+import leo.named.typed.TypedCase
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
 import leo.named.typed.TypedLine
@@ -43,6 +46,8 @@ import leo.named.typed.name
 import leo.named.typed.plus
 import leo.named.typed.reflectTypedExpression
 import leo.named.typed.rhs
+import leo.named.typed.switch
+import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
@@ -60,6 +65,7 @@ import leo.toName
 import leo.type
 import leo.typeName
 import leo.withName
+import leo.zip
 
 typealias Compilation<V> = Stateful<Environment, V>
 val <V> V.compilation: Compilation<V> get() = stateful()
@@ -174,9 +180,24 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
 	set(bodyTypedExpression.with(script.reflectTypedExpression)).compilation
 
-@Suppress("unused")
-fun Compiler.plusSwitchCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
-	TODO()
+fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
+	context.dictionary.switchCompilation(bodyTypedExpression, script).map { set(it) }
+
+fun Dictionary.switchCompilation(typedExpression: TypedExpression, script: Script): Compilation<TypedExpression> =
+	typedExpression.choice.let { typedChoice ->
+		zip(typedChoice.typeChoice.lineStack, script.lineStack)
+			.map { context
+				.dictionary
+				.typedCaseCompilation(first!!, second!!.compileField)
+			}
+			.flat
+			.map { typedExpression.switch(it) }
+	}
+
+fun Dictionary.typedCaseCompilation(caseLine: TypeLine, scriptField: ScriptField): Compilation<TypedCase> =
+	plusName(caseLine).typedExpressionCompilation(scriptField.rhs).map { typedExpression ->
+		typed(scriptField.name caseTo typedExpression.expression, typedExpression.type)
+	}
 
 fun Compiler.plusTakeCompilation(typedExpression: TypedExpression): Compilation<Compiler> =
 	set(typedExpression.invoke(bodyTypedExpression)).compilation

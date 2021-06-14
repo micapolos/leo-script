@@ -24,6 +24,9 @@ val Any?.anyValue: Value get() = value(anyValueLine)
 val Value.unsafeLine: ValueLine get() =
 	lineStack.onlyOrNull.notNullOrError("$this not a single line")
 
+val Value.unsafeSwitchLine: ValueLine get() =
+	unsafeLine.field.value.unsafeLine
+
 val Value.unsafeFunction: ValueFunction get() =
 	(unsafeLine as? FunctionValueLine)
 		?.function

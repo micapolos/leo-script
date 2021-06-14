@@ -39,7 +39,7 @@ import leo.named.value.lineTo
 import leo.named.value.name
 import leo.named.value.plus
 import leo.named.value.unsafeFunction
-import leo.named.value.unsafeLine
+import leo.named.value.unsafeSwitchLine
 import leo.named.value.value
 import leo.reverse
 import leo.stateful
@@ -125,7 +125,7 @@ val Bind.valueEvaluation: Evaluation<Value> get() =
 
 val Switch.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.bind { value ->
-		value.unsafeLine.let { valueLine ->
+		value.unsafeSwitchLine.let { valueLine ->
 			dictionaryEvaluation().map { dictionary ->
 				dictionary.plus(valueLine.definition).value(expression(valueLine.name))
 			}
