@@ -127,7 +127,7 @@ val Switch.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.bind { value ->
 		value.unsafeSwitchLine.let { valueLine ->
 			dictionaryEvaluation().map { dictionary ->
-				dictionary.plus(valueLine.definition).value(expression(valueLine.name))
+				dictionary.plus(valueLine.definition).value(this.expression(valueLine.name))
 			}
 		}
 	}
