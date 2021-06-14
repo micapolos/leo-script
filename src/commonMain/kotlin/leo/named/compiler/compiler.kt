@@ -27,7 +27,7 @@ val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
 			.fold(context.scope.expressionStack) { paramExpression ->
-				typed(expression.function.invoke(paramExpression), type)
+				typed(function(expression).invoke(paramExpression), type)
 			}
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =

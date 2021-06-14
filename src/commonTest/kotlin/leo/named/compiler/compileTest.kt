@@ -71,7 +71,7 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression("bar" lineTo expression()).function
+					function(expression("bar" lineTo expression()))
 						.invoke(expression("foo" lineTo expression())),
 					type("bar")))
 	}
@@ -84,7 +84,7 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(variable(type("x"))).function
+					function(expression(variable(type("x"))))
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					type("x" lineTo type(numberTypeLine))))
 	}

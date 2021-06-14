@@ -205,7 +205,7 @@ fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compile
 		context.dictionary.plusNames(type).typedExpressionCompilation(rhs).map { bodyTyped ->
 			context
 				.plus(definition(type, functionBinding(bodyTyped.type)))
-				.scopePlus(bodyTyped.expression.function)
+				.scopePlus(function(bodyTyped.expression))
 				.compiler
 		}
 	}

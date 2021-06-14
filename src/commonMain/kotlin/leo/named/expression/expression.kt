@@ -73,7 +73,9 @@ fun variable(type: Type) = Variable(type)
 fun Expression.get(name: String): Expression = expression(get(this, name))
 fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, stack(*cases)))
 fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
-val Expression.function: Expression get() = expression(line(function(body(this))))
+
+fun function(expression: Expression) = expression(line(function(body(expression))))
+fun function(fn: (Dictionary) -> Value) = expression(line(function(body(fn))))
 
 fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
