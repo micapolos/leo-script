@@ -19,6 +19,7 @@ import leo.named.expression.variable
 import leo.named.value.double
 import leo.named.value.lineTo
 import leo.named.value.numberValue
+import leo.named.value.textValue
 import leo.named.value.value
 import leo.numberName
 import leo.numberTypeLine
@@ -78,5 +79,15 @@ class EvaluateTest {
 				"blue" caseTo get(type("blue")).get(textName))
 			.evaluate
 			.assertEqualTo(10.numberValue)
+
+		expression(
+			"color" lineTo expression(
+				"blue" lineTo expression(
+					expressionLine(literal("foo")))))
+			.switch(
+				"red" caseTo get(type("red")).get(numberName),
+				"blue" caseTo get(type("blue")).get(textName))
+			.evaluate
+			.assertEqualTo("foo".textValue)
 	}
 }
