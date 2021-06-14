@@ -10,6 +10,7 @@ import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.quoteName
 import leo.script
 import leo.takeName
 import leo.toName
@@ -167,6 +168,23 @@ class ScriptEvaluateTest {
 				script(
 					"x" lineTo script(literal(10)),
 					"y" lineTo script(literal(20)))
+			)
+	}
+
+	@Test
+	fun quote() {
+		script(
+			line(literal(10)),
+			"x" lineTo script(),
+			quoteName lineTo script(
+				line(literal(20)),
+				"y" lineTo script()))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(literal(10)),
+					line(literal(20)),
+					"y" lineTo script())
 			)
 	}
 }

@@ -1,4 +1,5 @@
-doing
-  number any
-  to "ok"
-give jajko
+2
+plus 2
+quote
+  4
+  plus 4

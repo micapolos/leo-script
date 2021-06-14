@@ -49,6 +49,7 @@ import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
 import leo.onlyLineOrNull
+import leo.quoteName
 import leo.reverse
 import leo.script
 import leo.seq
@@ -121,6 +122,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
+		quoteName -> plusQuoteCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
@@ -175,6 +177,9 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 				else -> null
 			}
 		}.notNullOrError("$script let error")
+
+fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
+	set(bodyTypedExpression.with(script.reflectTypedExpression)).compilation
 
 @Suppress("unused")
 fun Compiler.plusSwitchCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =

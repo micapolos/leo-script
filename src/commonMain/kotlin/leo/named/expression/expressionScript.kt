@@ -47,7 +47,7 @@ val Link.script: Script get() = expression.script.plus(line.scriptLine)
 val With.script: Script get() = lhs.script.plus(withName lineTo rhs.script)
 val Switch.script: Script get() = expression.script.plus(switchName lineTo cases.map { scriptLine }.script)
 val Case.scriptLine: ScriptLine get() = name lineTo expression.script
-val Variable.script: Script get() = script("variable" lineTo type.script)
+val Variable.script: Script get() = script("variable" lineTo script(type.scriptLine))
 
 val Field.scriptLine: ScriptLine get() = name lineTo expression.script
 val Function.scriptLine: ScriptLine get() = doingName lineTo body.script
