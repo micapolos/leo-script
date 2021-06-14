@@ -4,15 +4,19 @@ import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
 import leo.bindName
+import leo.choiceName
 import leo.doName
 import leo.doingName
 import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.numberName
 import leo.numberTypeScriptLine
+import leo.ofName
 import leo.quoteName
 import leo.script
+import leo.switchName
 import leo.takeName
 import leo.textTypeScriptLine
 import leo.toName
@@ -186,5 +190,42 @@ class ScriptEvaluateTest {
 					line(literal(20)),
 					"y" lineTo script())
 			)
+	}
+
+	@Test
+	fun switch() {
+		script(
+			"color" lineTo script(
+				"red" lineTo script(literal(10)),
+				ofName lineTo script(
+					choiceName lineTo script(
+						"red" lineTo script(numberTypeScriptLine),
+						"blue" lineTo script(numberTypeScriptLine)))),
+			switchName lineTo script(
+				"red" lineTo script(
+					"red" lineTo script(),
+					numberName lineTo script()),
+				"blue" lineTo script(
+					"blue" lineTo script(),
+					numberName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(literal(10)))
+
+		script(
+			"color" lineTo script(
+				"blue" lineTo script(literal(20)),
+				ofName lineTo script(
+					choiceName lineTo script(
+						"red" lineTo script(numberTypeScriptLine),
+						"blue" lineTo script(numberTypeScriptLine)))),
+			switchName lineTo script(
+				"red" lineTo script(
+					"red" lineTo script(),
+					numberName lineTo script()),
+				"blue" lineTo script(
+					"blue" lineTo script(),
+					numberName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(literal(20)))
 	}
 }
