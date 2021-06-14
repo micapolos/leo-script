@@ -9,6 +9,7 @@ import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.empty
 import leo.mapFirst
+import leo.named.evaluator.Definition
 import leo.named.evaluator.Dictionary
 import leo.named.value.Value
 import leo.stack
@@ -20,6 +21,7 @@ data class LinkExpression(val link: Link): Expression() { override fun toString(
 data class GetExpression(val get: Get): Expression() { override fun toString() = super.toString() }
 data class SwitchExpression(val switch: Switch): Expression() { override fun toString() = super.toString() }
 data class InvokeExpression(val invoke: Invoke): Expression() { override fun toString() = super.toString() }
+data class BindExpression(val bind: Bind): Expression() { override fun toString() = super.toString() }
 data class VariableExpression(val variable: Variable): Expression() { override fun toString() = super.toString() }
 
 sealed class Line { override fun toString() = scriptLine.toString() }
@@ -35,6 +37,7 @@ data class Switch(val expression: Expression, val cases: Stack<Case>) { override
 data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Function(val body: Body) { override fun toString() = scriptLine.toString() }
 data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
+data class Bind(val definition: Definition, val expression: Expression) { override fun toString() = script.toString() }
 data class Variable(val type: Type) { override fun toString() = script.toString() }
 
 sealed class Body { override fun toString() = super.toString() }
@@ -46,6 +49,7 @@ fun expression(link: Link): Expression = LinkExpression(link)
 fun expression(get: Get): Expression = GetExpression(get)
 fun expression(switch: Switch): Expression = SwitchExpression(switch)
 fun expression(invoke: Invoke): Expression = InvokeExpression(invoke)
+fun expression(bind: Bind): Expression = BindExpression(bind)
 fun expression(variable: Variable): Expression = VariableExpression(variable)
 
 fun Expression.plus(line: Line) = expression(this linkTo line)

@@ -7,6 +7,8 @@ import leo.bind
 import leo.getStateful
 import leo.map
 import leo.named.expression.AnyLine
+import leo.named.expression.Bind
+import leo.named.expression.BindExpression
 import leo.named.expression.EmptyExpression
 import leo.named.expression.Field
 import leo.named.expression.FieldLine
@@ -49,6 +51,7 @@ val leo.named.expression.Expression.valueEvaluation: Evaluation<Value> get() =
 		is LinkExpression -> link.valueEvaluation
 		is GetExpression -> get.valueEvaluation
 		is InvokeExpression -> invoke.lineEvaluation
+		is BindExpression -> bind.lineEvaluation
 		is SwitchExpression -> switch.valueEvaluation
 		is VariableExpression -> variable.valueEvaluation()
 	}
@@ -97,6 +100,13 @@ val Invoke.lineEvaluation: Evaluation<Value> get() =
 				}
 			}
 		}
+	}
+
+val Bind.lineEvaluation: Evaluation<Value> get() =
+	dictionaryEvaluation().map { dictionary ->
+		dictionary
+			.plus(definition)
+			.value(expression)
 	}
 
 val Switch.valueEvaluation: Evaluation<Value> get() =
