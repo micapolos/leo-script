@@ -1,6 +1,7 @@
 package leo.named.compiler
 
 import leo.Type
+import leo.TypeDoing
 import leo.TypeLine
 import leo.base.orNullIf
 import leo.name
@@ -16,3 +17,6 @@ val TypeLine.nameDefinition: Definition get() =
 
 fun Definition.bindingOrNull(type: Type): Binding? =
 	binding.orNullIf(this.type != type)
+
+val TypeDoing.definition: Definition get() =
+	definition(lhsType, functionBinding(rhsType))

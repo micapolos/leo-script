@@ -6,6 +6,7 @@ import leo.fold
 import leo.named.expression.Expression
 import leo.named.expression.expression
 import leo.named.typed.TypedExpression
+import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.reverse
 
@@ -34,3 +35,6 @@ fun Context.bind(typedLine: TypedLine): Context =
 
 fun Context.bind(typedLineStack: Stack<TypedLine>): Context =
 	fold(typedLineStack.reverse) { bind(it) }
+
+fun Context.plusLetDo(typedFunction: TypedFunction): Context =
+	plus(typedFunction.typeDoing.definition).scopePlus(typedFunction.exoression)

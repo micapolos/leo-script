@@ -2,6 +2,7 @@ package leo.named.typed
 
 import leo.Literal
 import leo.Type
+import leo.TypeDoing
 import leo.TypeField
 import leo.TypeLine
 import leo.atom
@@ -34,12 +35,14 @@ import leo.typeLine
 data class TypedLine(val line: Line, val typeLine: TypeLine)
 data class TypedExpression(val expression: Expression, val type: Type) { override fun toString() = script.toString() }
 data class TypedField(val field: Field, val typeField: TypeField)
+data class TypedFunction(val exoression: Expression, val typeDoing: TypeDoing)
 
 fun typed(line: Line, typeLine: TypeLine) = TypedLine(line, typeLine)
 fun typed(expression: Expression, type: Type) = TypedExpression(expression, type)
 fun typed(field: Field, typeField: TypeField) = TypedField(field, typeField)
 
 infix fun Expression.of(type: Type) = typed(this, type)
+infix fun Expression.of(typeDoing: TypeDoing) = TypedFunction(this, typeDoing)
 
 fun TypedExpression.plus(typedLine: TypedLine): TypedExpression =
 	type.plus(typedLine.typeLine).let { expression.plus(typedLine.line).of(it) }
