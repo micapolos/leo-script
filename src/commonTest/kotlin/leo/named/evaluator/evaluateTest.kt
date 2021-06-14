@@ -10,8 +10,8 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.variable
+import leo.named.value.double
 import leo.named.value.lineTo
-import leo.named.value.numberPlusNumber
 import leo.named.value.numberValue
 import leo.named.value.value
 import leo.numberName
@@ -43,9 +43,7 @@ class EvaluateTest {
 
 	@Test
 	fun invoke_native() {
-		expression(line(
-			function(
-				body { dictionary -> dictionary.value(type(numberName)).numberPlusNumber(1.numberValue) })))
+		function("numberIncrement") { get(numberName).double.plus(1).numberValue }
 			.invoke(expression(expressionLine(literal(10))))
 			.evaluate
 			.assertEqualTo(11.numberValue)

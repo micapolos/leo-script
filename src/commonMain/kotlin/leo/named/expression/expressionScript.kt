@@ -7,8 +7,10 @@ import leo.getName
 import leo.giveName
 import leo.line
 import leo.lineTo
+import leo.literal
 import leo.map
 import leo.named.value.anyScriptLine
+import leo.nativeName
 import leo.plus
 import leo.script
 import leo.switchName
@@ -47,5 +49,5 @@ val Function.scriptLine: ScriptLine get() = doingName lineTo body.script
 val Body.script: Script get() =
 	when (this) {
 		is ExpressionBody -> expression.script
-		is FnBody -> script(valueFn.anyScriptLine)
+		is FnBody -> script(nativeName lineTo script(literal(name)))
 	}

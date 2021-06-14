@@ -39,7 +39,7 @@ data class Variable(val type: Type) { override fun toString() = script.toString(
 
 sealed class Body { override fun toString() = super.toString() }
 data class ExpressionBody(val expression: Expression): Body() { override fun toString() = script.toString() }
-data class FnBody(val valueFn: (Dictionary) -> Value): Body() { override fun toString() = script.toString() }
+data class FnBody(val name: String, val valueFn: (Dictionary) -> Value): Body() { override fun toString() = script.toString() }
 
 fun expression(empty: Empty): Expression = EmptyExpression(empty)
 fun expression(link: Link): Expression = LinkExpression(link)
@@ -62,7 +62,7 @@ fun line(function: Function): Line = FunctionLine(function)
 fun anyExpressionLine(any: Any?): Line = AnyLine(any)
 
 fun body(expression: Expression): Body = ExpressionBody(expression)
-fun body(fn: (Dictionary) -> Value): Body = FnBody(fn)
+fun body(name: String, fn: (Dictionary) -> Value): Body = FnBody(name, fn)
 
 fun get(expression: Expression, name: String) = Get(expression, name)
 fun function(body: Body) = Function(body)
@@ -75,7 +75,7 @@ fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, 
 fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
 
 fun function(expression: Expression) = expression(line(function(body(expression))))
-fun function(fn: (Dictionary) -> Value) = expression(line(function(body(fn))))
+fun function(name: String, fn: Dictionary.() -> Value) = expression(line(function(body(name, fn))))
 
 fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }

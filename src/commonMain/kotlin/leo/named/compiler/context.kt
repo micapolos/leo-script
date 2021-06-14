@@ -2,12 +2,14 @@ package leo.named.compiler
 
 import leo.Stack
 import leo.Type
+import leo.doing
 import leo.fold
 import leo.named.expression.Expression
 import leo.named.expression.expression
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
+import leo.named.typed.of
 import leo.reverse
 
 data class Context(
@@ -38,3 +40,6 @@ fun Context.bind(typedLineStack: Stack<TypedLine>): Context =
 
 fun Context.plusLetDo(typedFunction: TypedFunction): Context =
 	plus(typedFunction.typeDoing.definition).scopePlus(typedFunction.exoression)
+
+fun Context.plus(lhsType: Type, rhsType: Type, function: Expression): Context =
+	plusLetDo(function.of(lhsType doing rhsType))

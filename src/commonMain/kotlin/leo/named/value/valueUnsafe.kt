@@ -27,7 +27,7 @@ val Value.unsafeFunction: ValueFunction get() =
 val Value.unsafeAny: Any? get() =
 	unsafeLine.unsafeAny
 
-val Value.unsafeDouble: Double get() =
+val Value.double: Double get() =
 	unsafeAny as Double
 
 val Value.unsafeString: String get() =
@@ -43,4 +43,4 @@ fun Value.intPlusInt(value: Value): Value =
 	unsafeInt.plus(value.unsafeInt).anyValue
 
 fun Value.numberPlusNumber(value: Value): Value =
-	unsafeDouble.plus(value.unsafeDouble).numberValue
+	double.plus(value.double).numberValue

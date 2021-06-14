@@ -1,9 +1,9 @@
 package leo.named.evaluator
 
 import leo.Script
-import leo.get
-import leo.named.compiler.expression
+import leo.named.compiler.typedExpression
+import leo.named.library.preludeContext
 import leo.named.value.Value
 
 val Script.value: Value get() =
-	expression.valueEvaluation.get(dictionary())
+	typedExpression(preludeContext).expression.evaluate
