@@ -10,6 +10,7 @@ import leo.named.expression.get
 import leo.named.expression.linkOrNull
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
+import leo.named.typed.of
 import leo.named.typed.typed
 import leo.structure
 import leo.structureOrNull
@@ -35,5 +36,5 @@ fun <R> TypeStructure.resolveInfix(fn: (Type, String, Type) -> R?): R? =
 
 fun TypedExpression.getOrNull(name: String): TypedExpression? =
 	type.getOrNull(name)?.let {
-		typed(expression.get(name), it)
+		expression.get(name).of(it)
 	}

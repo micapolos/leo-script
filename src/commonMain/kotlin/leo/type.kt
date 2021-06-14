@@ -176,6 +176,7 @@ val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
 val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
 
 fun Type.plusOrNull(line: TypeLine): Type? = structureOrNull?.plus(line)?.type
+fun Type.plus(line: TypeLine): Type = plusOrNull(line).notNullOrError("$this.plus($line)")
 fun TypeStructure.plus(line: TypeLine): TypeStructure = TypeStructure(lineStack.push(line))
 fun TypeChoice.plus(line: TypeLine): TypeChoice = TypeChoice(lineStack.push(line))
 

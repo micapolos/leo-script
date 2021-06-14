@@ -26,7 +26,7 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.plus
-import leo.plusOrNull
+import leo.plus
 import leo.script
 import leo.type
 import leo.typeLine
@@ -39,8 +39,10 @@ fun typed(line: Line, typeLine: TypeLine) = TypedLine(line, typeLine)
 fun typed(expression: Expression, type: Type) = TypedExpression(expression, type)
 fun typed(field: Field, typeField: TypeField) = TypedField(field, typeField)
 
+infix fun Expression.of(type: Type) = typed(this, type)
+
 fun TypedExpression.plus(typedLine: TypedLine): TypedExpression =
-	typed(expression.plus(typedLine.line), type.plusOrNull(typedLine.typeLine)!!)
+	type.plus(typedLine.typeLine).let { expression.plus(typedLine.line).of(it) }
 
 fun typedExpression(vararg typedLine: TypedLine) =
 	typed(expression(), type()).fold(typedLine) { plus(it) }
@@ -59,28 +61,19 @@ fun typedLine(literal: Literal): TypedLine =
 	typed(expressionLine(literal), literal.typeLine)
 
 fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
-	typed(
-		expression(
-			invoke(
-				function(typedExpression.expression),
-				expression
-			)
-		),
-		typedExpression.type)
+	function(typedExpression.expression).invoke(expression).of(typedExpression.type)
 
 fun TypedExpression.invoke(typedExpression: TypedExpression): TypedExpression =
 	type.compileDoing.let { doing ->
 		doing.lhsType.check(typedExpression.type) {
-			typed(
-				expression.invoke(typedExpression.expression),
-				doing.rhsType)
+			expression.invoke(typedExpression.expression).of(doing.rhsType)
 		}
 	}
 
 @Suppress("ComplexRedundantLet") // Type.get(name) must be evaluated first.
 fun TypedExpression.get(name: String): TypedExpression =
 	type.get(name).let {
-		typed(expression.get(name), it)
+		expression.get(name).of(it)
 	}
 
 infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
@@ -90,6 +83,6 @@ infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 
 val TypedField.name: String get() = typeField.name
 val TypedField.line: TypedLine get() = typed(line(field), line(atom(typeField)))
-val TypedField.rhs: TypedExpression get() = typed(field.expression, typeField.rhsType)
+val TypedField.rhs: TypedExpression get() = field.expression.of(typeField.rhsType)
 
 val Type.typedExpression: TypedExpression get() = script.reflectTypedExpression

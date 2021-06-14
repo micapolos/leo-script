@@ -5,8 +5,8 @@ import leo.named.expression.function
 import leo.named.expression.invoke
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
+import leo.named.typed.of
 import leo.named.typed.plus
-import leo.named.typed.typed
 import leo.named.typed.typedExpression
 
 data class Compiler(
@@ -27,7 +27,7 @@ val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
 			.fold(context.scope.expressionStack) { paramExpression ->
-				typed(function(expression).invoke(paramExpression), type)
+				function(expression).invoke(paramExpression).of(type)
 			}
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =

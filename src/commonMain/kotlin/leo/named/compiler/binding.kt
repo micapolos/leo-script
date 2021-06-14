@@ -7,7 +7,7 @@ import leo.named.expression.expression
 import leo.named.expression.invoke
 import leo.named.expression.variable
 import leo.named.typed.TypedExpression
-import leo.named.typed.typed
+import leo.named.typed.of
 
 data class Binding(val type: Type, val isConstant: Boolean) { override fun toString() = scriptLine.toString() }
 
@@ -21,7 +21,7 @@ fun functionBinding(type: Type) =
 	binding(type, isConstant = false)
 
 fun Binding.resolve(typedExpression: TypedExpression): TypedExpression =
-	typed(expression(typedExpression), type)
+	expression(typedExpression).of(type)
 
 fun Binding.expression(typedExpression: TypedExpression): Expression =
 	expression(variable(typedExpression.type))

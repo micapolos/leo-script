@@ -17,7 +17,7 @@ import leo.named.typed.doingTypedLine
 import leo.named.typed.get
 import leo.named.typed.invoke
 import leo.named.typed.lineTo
-import leo.named.typed.typed
+import leo.named.typed.of
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.numberTypeLine
@@ -70,10 +70,9 @@ class CompileTest {
 			doName lineTo script("bar"))
 			.typedExpression
 			.assertEqualTo(
-				typed(
-					function(expression("bar" lineTo expression()))
-						.invoke(expression("foo" lineTo expression())),
-					type("bar")))
+				function(expression("bar" lineTo expression()))
+					.invoke(expression("foo" lineTo expression()))
+					.of(type("bar")))
 	}
 
 	@Test
@@ -83,10 +82,9 @@ class CompileTest {
 			doName lineTo script("x"))
 			.typedExpression
 			.assertEqualTo(
-				typed(
 					function(expression(variable(type("x"))))
-						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
-					type("x" lineTo type(numberTypeLine))))
+						.invoke(expression("x" lineTo expression(expressionLine(literal(10)))))
+						.of(type("x" lineTo type(numberTypeLine))))
 	}
 
 	@Test
