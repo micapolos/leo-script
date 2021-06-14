@@ -6,28 +6,34 @@ import leo.TypeDoing
 import leo.TypeLine
 import leo.TypeStructure
 import leo.atom
-import leo.base.notNullOrError
 import leo.choiceOrNull
 import leo.doingOrNull
+import leo.equalName
 import leo.fieldOrNull
 import leo.getLineOrNull
+import leo.getName
 import leo.getOrNull
+import leo.isName
 import leo.lineOrNull
+import leo.lineTo
 import leo.onlyLineOrNull
+import leo.plus
+import leo.script
 import leo.structureOrNull
+import leo.throwScriptIfNull
 
 val Type.compileStructure: TypeStructure get() =
-	structureOrNull.notNullOrError("$this not a structure")
+	structureOrNull.throwScriptIfNull { script("structure" lineTo script) }
 
 val Type.compileChoice: TypeChoice
 	get() =
-		choiceOrNull.notNullOrError("$this not a choice")
+		choiceOrNull.throwScriptIfNull { script("choice" lineTo script) }
 
 val Type.compileLine: TypeLine get() =
 	compileStructure.compileLine
 
 val TypeStructure.compileLine: TypeLine get() =
-	onlyLineOrNull.notNullOrError("$this.typeLine")
+	onlyLineOrNull.throwScriptIfNull { script("line" lineTo script) }
 
 fun TypeLine.lineOrNull(name: String): TypeLine? =
 	structureOrNull?.lineOrNull(name)
@@ -38,11 +44,11 @@ val TypeLine.resolveGetOrNull: TypeLine? get() =
 	}
 
 val Type.compileDoing: TypeDoing get() =
-	doingOrNull.notNullOrError("$this not a function")
+	doingOrNull.throwScriptIfNull { script("doing" lineTo script) }
 
 fun <R> Type.check(type: Type, fn: () -> R): R =
-	if (this != type) error("$this is not $type")
+	if (this != type) (null as R?).throwScriptIfNull { script.plus(isName lineTo script(equalName lineTo type.script)) }
 	else fn()
 
 fun Type.get(name: String): Type =
-	getOrNull(name).notNullOrError("$this does not have field $name")
+	getOrNull(name).throwScriptIfNull { script.plus(getName lineTo script(name)) }

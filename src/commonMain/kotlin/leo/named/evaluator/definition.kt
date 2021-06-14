@@ -8,7 +8,7 @@ import leo.named.value.name
 import leo.named.value.value
 import leo.type
 
-data class Definition(val type: Type, val value: Value)
+data class Definition(val type: Type, val value: Value) { override fun toString() = scriptLine.toString() }
 
 fun definition(type: Type, value: Value) =
 	Definition(type, value)

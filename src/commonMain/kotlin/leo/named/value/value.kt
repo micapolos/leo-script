@@ -5,7 +5,7 @@ import leo.named.expression.Body
 import leo.push
 import leo.stack
 
-data class Value(val lineStack: Stack<ValueLine>)
+data class Value(val lineStack: Stack<ValueLine>) { override fun toString() = scriptLine.toString() }
 
 sealed class ValueLine
 data class FieldValueLine(val field: ValueField): ValueLine()

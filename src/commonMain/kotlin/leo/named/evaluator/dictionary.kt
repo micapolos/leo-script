@@ -2,9 +2,9 @@ package leo.named.evaluator
 
 import leo.Stack
 import leo.Type
-import leo.base.notNullOrError
 import leo.fold
 import leo.get
+import leo.lineTo
 import leo.map
 import leo.mapFirst
 import leo.named.expression.Body
@@ -14,10 +14,13 @@ import leo.named.expression.FnBody
 import leo.named.value.Value
 import leo.push
 import leo.reverse
+import leo.script
+import leo.scriptLine
 import leo.stack
+import leo.throwScriptIfNull
 import leo.type
 
-data class Dictionary(val definitionStack: Stack<Definition>)
+data class Dictionary(val definitionStack: Stack<Definition>) { override fun toString() = scriptLine.toString() }
 
 fun dictionary(): Dictionary = Dictionary(stack())
 
@@ -39,7 +42,7 @@ fun Dictionary.value(expression: Expression): Value =
 fun Dictionary.value(type: Type): Value =
 	definitionStack
 		.mapFirst { valueLineOrNull(type) }
-		.notNullOrError("$this.value($this)")
+		.throwScriptIfNull { script(scriptLine, "value" lineTo script(type.scriptLine)) }
 
 fun Dictionary.get(name: String): Value =
 	value(type(name))

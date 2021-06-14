@@ -7,8 +7,12 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.map
+import leo.named.expression.script
 import leo.nativeName
 import leo.script
+
+val Value.scriptLine: ScriptLine get() =
+	"value" lineTo lineStack.map { scriptLine }.script
 
 val Value.script: Script get() =
 	lineStack.map { scriptLine }.script
@@ -31,4 +35,4 @@ val ValueField.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
 val ValueFunction.scriptLine get() =
-	doingName lineTo script(body.anyScriptLine)
+	doingName lineTo body.script

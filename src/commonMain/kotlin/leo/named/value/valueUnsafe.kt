@@ -1,7 +1,10 @@
 package leo.named.value
 
 import leo.base.notNullOrError
+import leo.lineTo
 import leo.onlyOrNull
+import leo.script
+import leo.throwScriptIfNull
 
 fun numberValueLine(double: Double): ValueLine = anyValueLine(double)
 fun numberValueLine(int: Int): ValueLine = numberValueLine(int.toDouble())
@@ -22,16 +25,18 @@ val Value.unsafeLine: ValueLine get() =
 	lineStack.onlyOrNull.notNullOrError("$this not a single line")
 
 val Value.unsafeFunction: ValueFunction get() =
-	(unsafeLine as? FunctionValueLine)?.function.notNullOrError("$this not a function")
+	(unsafeLine as? FunctionValueLine)
+		?.function
+		.throwScriptIfNull { script("function" lineTo script) }
 
 val Value.unsafeAny: Any? get() =
 	unsafeLine.unsafeAny
 
 val Value.double: Double get() =
-	unsafeAny as Double
+	(unsafeAny as? Double).throwScriptIfNull { script("double" lineTo script) }
 
 val Value.unsafeString: String get() =
-	unsafeAny as String
+	(unsafeAny as? String).throwScriptIfNull { script("string" lineTo script) }
 
 val ValueLine.unsafeAny: Any? get() =
 	(this as AnyValueLine).any

@@ -203,12 +203,6 @@ val TypeLine.choiceOrNull: TypeChoice? get() = atomOrNull?.fieldOrNull?.rhsType?
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
 val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom
 
-fun TypeLine.get(name: String): TypeLine =
-	structureOrNull
-		.notNullOrError("$this is not structure")
-		.lineOrNull(name)
-		.notNullOrError("$this does not have field: $name")
-
 val String.typeStructure: TypeStructure get() =
 	typeStructure(this lineTo type())
 

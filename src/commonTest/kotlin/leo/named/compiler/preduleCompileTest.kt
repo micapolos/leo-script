@@ -16,6 +16,6 @@ class PreludeCompileTest {
 			line(literal(10)),
 			plusName lineTo script(literal(20)))
 			.typedExpression(preludeContext)
-			.assertNotNull // TODO()
+			.assertNotNull
 	}
 }

@@ -36,3 +36,6 @@ fun <T> Value.throwError(): T =
 
 fun <T> T?.notNullOrThrow(fn: () -> Value): T =
 	this ?: fn().throwError()
+
+fun <T> T?.throwScriptIfNull(fn: () -> Script): T =
+	this ?: error(fn().toString())
