@@ -1,6 +1,6 @@
 boolean
   yes
-  of
+  of choice
     yes
-    or no
+    no
 type
