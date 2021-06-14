@@ -10,12 +10,12 @@ import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.numberTypeScriptLine
 import leo.quoteName
 import leo.script
 import leo.takeName
+import leo.textTypeScriptLine
 import leo.toName
-import leo.type.compiler.numberTypeScriptLine
-import leo.type.compiler.textTypeScriptLine
 import leo.typeName
 import leo.withName
 import kotlin.test.Test

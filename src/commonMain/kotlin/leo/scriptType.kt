@@ -1,8 +1,7 @@
 package leo
 
-import leo.type.compiler.numberTypeScriptLine
-import leo.type.compiler.textTypeScriptLine
-import leo.type.compiler.typeLiteralOrNull
+val textTypeScriptLine get() = textName lineTo script()
+val numberTypeScriptLine get() = numberName lineTo script()
 
 val Script.type: Type get() =
 	null

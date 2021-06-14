@@ -5,9 +5,11 @@ import leo.choice
 import leo.choiceName
 import leo.lineTo
 import leo.numberTypeLine
+import leo.numberTypeScriptLine
 import leo.orName
 import leo.script
 import leo.textTypeLine
+import leo.textTypeScriptLine
 import leo.type
 import kotlin.test.Test
 import kotlin.test.assertFails

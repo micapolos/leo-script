@@ -1,7 +1,6 @@
 package leo
 
 import leo.base.assertEqualTo
-import leo.type.compiler.numberTypeScriptLine
 import kotlin.test.Test
 
 class TypeScriptTest {
