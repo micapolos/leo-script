@@ -1,5 +1,4 @@
-2
-plus 2
-quote
-  4
-  plus 4
+let
+  lucky
+  do 123
+debug.compiler.context.definitions

@@ -1,6 +1,5 @@
 package leo.type.compiler
 
-import leo.anyName
 import leo.base.assertEqualTo
 import leo.choice
 import leo.lineTo
@@ -8,7 +7,6 @@ import leo.numberName
 import leo.numberTypeLine
 import leo.orName
 import leo.script
-import leo.textName
 import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
@@ -76,8 +74,8 @@ class ScriptTest {
 	@Test
 	fun literal() {
 		script(
-			textName lineTo script(anyName),
-			numberName lineTo script(anyName))
+			textTypeScriptLine,
+			numberTypeScriptLine)
 			.type
 			.assertEqualTo(type(textTypeLine, numberTypeLine))
 	}
