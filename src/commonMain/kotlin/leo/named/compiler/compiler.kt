@@ -30,13 +30,7 @@ val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
 			.fold(context.scope.expressionStack) { paramExpression ->
-				typed(
-					expression(
-						invoke(
-							expression(line(function(body(expression)))),
-							paramExpression)
-						),
-					type)
+				typed(expression(line(function(body(expression)))).invoke(paramExpression), type)
 			}
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =
