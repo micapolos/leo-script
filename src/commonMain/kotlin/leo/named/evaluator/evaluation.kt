@@ -4,6 +4,7 @@ import leo.Empty
 import leo.Literal
 import leo.Stateful
 import leo.bind
+import leo.fold
 import leo.getStateful
 import leo.map
 import leo.named.expression.AnyLine
@@ -25,6 +26,8 @@ import leo.named.expression.Switch
 import leo.named.expression.SwitchExpression
 import leo.named.expression.Variable
 import leo.named.expression.VariableExpression
+import leo.named.expression.With
+import leo.named.expression.WithExpression
 import leo.named.expression.expression
 import leo.named.value.Value
 import leo.named.value.ValueLine
@@ -38,6 +41,7 @@ import leo.named.value.plus
 import leo.named.value.unsafeFunction
 import leo.named.value.unsafeLine
 import leo.named.value.value
+import leo.reverse
 import leo.stateful
 
 typealias Evaluation<V> = Stateful<Dictionary, V>
@@ -50,8 +54,9 @@ val leo.named.expression.Expression.valueEvaluation: Evaluation<Value> get() =
 		is EmptyExpression -> empty.valueEvaluation()
 		is LinkExpression -> link.valueEvaluation
 		is GetExpression -> get.valueEvaluation
-		is InvokeExpression -> invoke.lineEvaluation
-		is BindExpression -> bind.lineEvaluation
+		is InvokeExpression -> invoke.valueEvaluation
+		is WithExpression -> with.valueEvaluation
+		is BindExpression -> bind.valueEvaluation
 		is SwitchExpression -> switch.valueEvaluation
 		is VariableExpression -> variable.valueEvaluation()
 	}
@@ -63,6 +68,13 @@ val Link.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.bind { value ->
 		line.lineEvaluation.map { line ->
 			value.plus(line)
+		}
+	}
+
+val With.valueEvaluation: Evaluation<Value> get() =
+	lhs.valueEvaluation.bind { lhsValue ->
+		rhs.valueEvaluation.map { rhsValue ->
+			lhsValue.fold(rhsValue.lineStack.reverse) { plus(it) }
 		}
 	}
 
@@ -89,7 +101,7 @@ val leo.named.expression.Function.lineEvaluation: Evaluation<ValueLine> get() =
 val Get.valueEvaluation: Evaluation<Value> get() =
 	expression.valueEvaluation.map { it.get(name) }
 
-val Invoke.lineEvaluation: Evaluation<Value> get() =
+val Invoke.valueEvaluation: Evaluation<Value> get() =
 	function.valueEvaluation.bind { functionValue ->
 		functionValue.unsafeFunction.let { function ->
 			params.valueEvaluation.bind { paramsValue ->
@@ -102,7 +114,7 @@ val Invoke.lineEvaluation: Evaluation<Value> get() =
 		}
 	}
 
-val Bind.lineEvaluation: Evaluation<Value> get() =
+val Bind.valueEvaluation: Evaluation<Value> get() =
 	dictionaryEvaluation().bind { dictionary ->
 		binding.expression.valueEvaluation.map { value ->
 			dictionary

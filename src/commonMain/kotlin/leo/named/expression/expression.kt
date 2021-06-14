@@ -17,6 +17,7 @@ sealed class Expression { override fun toString() = script.toString() }
 
 data class EmptyExpression(val empty: Empty): Expression() { override fun toString() = super.toString() }
 data class LinkExpression(val link: Link): Expression() { override fun toString() = super.toString() }
+data class WithExpression(val with: With): Expression() { override fun toString() = super.toString() }
 data class GetExpression(val get: Get): Expression() { override fun toString() = super.toString() }
 data class SwitchExpression(val switch: Switch): Expression() { override fun toString() = super.toString() }
 data class InvokeExpression(val invoke: Invoke): Expression() { override fun toString() = super.toString() }
@@ -30,6 +31,7 @@ data class FunctionLine(val function: Function): Line() { override fun toString(
 data class AnyLine(val any: Any?): Line() { override fun toString() = super.toString() }
 
 data class Link(val expression: Expression, val line: Line) { override fun toString() = script.toString() }
+data class With(val lhs: Expression, val rhs: Expression) { override fun toString() = script.toString() }
 data class Field(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Get(val expression: Expression, val name: String) { override fun toString() = script.toString() }
 data class Switch(val expression: Expression, val cases: Stack<Case>) { override fun toString() = script.toString() }
@@ -49,6 +51,7 @@ fun expression(link: Link): Expression = LinkExpression(link)
 fun expression(get: Get): Expression = GetExpression(get)
 fun expression(switch: Switch): Expression = SwitchExpression(switch)
 fun expression(invoke: Invoke): Expression = InvokeExpression(invoke)
+fun expression(with: With): Expression = WithExpression(with)
 fun expression(bind: Bind): Expression = BindExpression(bind)
 fun expression(variable: Variable): Expression = VariableExpression(variable)
 
@@ -75,10 +78,12 @@ fun switch(lhs: Expression, cases: Stack<Case>) = Switch(lhs, cases)
 fun variable(type: Type) = Variable(type)
 fun bind(binding: Binding, expression: Expression) = Bind(binding, expression)
 fun binding(type: Type, expression: Expression) = Binding(type, expression)
+fun with(lhs: Expression, rhs: Expression) = With(lhs, rhs)
 
 fun Expression.get(name: String): Expression = expression(get(this, name))
 fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, stack(*cases)))
 fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
+fun Expression.with(expression: Expression): Expression = expression(with(this, expression))
 fun Binding.in_(expression: Expression): Expression = expression(bind(this, expression))
 fun get(type: Type): Expression = expression(variable(type))
 

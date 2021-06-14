@@ -27,6 +27,7 @@ import leo.named.expression.invoke
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.plus
+import leo.named.expression.with
 import leo.plus
 import leo.script
 import leo.type
@@ -83,6 +84,9 @@ infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 	typed(
 		line(function(body(bodyTypedExpression.expression))),
 		this.doingLineTo(bodyTypedExpression.type))
+
+fun TypedExpression.with(typedExpression: TypedExpression): TypedExpression =
+	typed(expression.with(typedExpression.expression), type.plus(typedExpression.type))
 
 val TypedField.name: String get() = typeField.name
 val TypedField.line: TypedLine get() = typed(line(field), line(atom(typeField)))

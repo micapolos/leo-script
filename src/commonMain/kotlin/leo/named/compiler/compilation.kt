@@ -47,6 +47,7 @@ import leo.named.typed.reflectTypedExpression
 import leo.named.typed.rhs
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
+import leo.named.typed.with
 import leo.onlyLineOrNull
 import leo.reverse
 import leo.script
@@ -58,6 +59,7 @@ import leo.theName
 import leo.toName
 import leo.type.compiler.type
 import leo.typeName
+import leo.withName
 
 typealias Compilation<V> = Stateful<Environment, V>
 val <V> V.compilation: Compilation<V> get() = stateful()
@@ -191,6 +193,9 @@ fun Compiler.plusTypeCompilationOrNull(typed: TypedExpression): Compilation<Comp
 		set(typed.type.typedExpression).compilation
 	}
 
+fun Compiler.plusWithCompilation(typed: TypedExpression): Compilation<Compiler> =
+	set(bodyTypedExpression.with(typed)).compilation
+
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	context.dictionary.typeCompilation(lhs).bind { type ->
 		context.dictionary.typedExpressionCompilation(rhs).map { typed ->
@@ -235,6 +240,7 @@ fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compila
 		giveName -> plusGiveCompilation(typedField.rhs)
 		takeName -> plusTakeCompilation(typedField.rhs)
 		typeName -> plusTypeCompilationOrNull(typedField.rhs)
+		withName -> plusWithCompilation(typedField.rhs)
 		else -> null
 	}
 

@@ -7,6 +7,7 @@ import leo.bindName
 import leo.doName
 import leo.doingName
 import leo.giveName
+import leo.line
 import leo.lineTo
 import leo.literal
 import leo.script
@@ -15,6 +16,7 @@ import leo.toName
 import leo.type.compiler.numberTypeScriptLine
 import leo.type.compiler.textTypeScriptLine
 import leo.typeName
+import leo.withName
 import kotlin.test.Test
 
 class ScriptEvaluateTest {
@@ -150,5 +152,21 @@ class ScriptEvaluateTest {
 			"z" lineTo script())
 			.evaluate
 			.assertEqualTo(script("z"))
+	}
+
+	@Test
+	fun with() {
+		script(
+			line(literal(10)),
+			"x" lineTo script(),
+			withName lineTo script(
+				line(literal(20)),
+				"y" lineTo script()))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20)))
+			)
 	}
 }
