@@ -1,11 +1,8 @@
 package leo.named.compiler
 
 import leo.fold
-import leo.named.expression.body
-import leo.named.expression.expression
 import leo.named.expression.function
 import leo.named.expression.invoke
-import leo.named.expression.line
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.plus
@@ -30,7 +27,7 @@ val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
 			.fold(context.scope.expressionStack) { paramExpression ->
-				typed(expression(line(function(body(expression)))).invoke(paramExpression), type)
+				typed(expression.function.invoke(paramExpression), type)
 			}
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =

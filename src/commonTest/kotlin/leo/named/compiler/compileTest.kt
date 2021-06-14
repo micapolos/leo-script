@@ -7,12 +7,10 @@ import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.named.expression.body
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.function
 import leo.named.expression.invoke
-import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.variable
 import leo.named.typed.doingTypedLine
@@ -73,10 +71,7 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(line(
-						function(
-							body(expression("bar" lineTo expression()))
-						)))
+					expression("bar" lineTo expression()).function
 						.invoke(expression("foo" lineTo expression())),
 					type("bar")))
 	}
@@ -89,10 +84,7 @@ class CompileTest {
 			.typedExpression
 			.assertEqualTo(
 				typed(
-					expression(line(
-						function(
-							body(expression(variable(type("x"))))
-						)))
+					expression(variable(type("x"))).function
 						.invoke(expression("x" lineTo expression(expressionLine(literal(10))))),
 					type("x" lineTo type(numberTypeLine))))
 	}

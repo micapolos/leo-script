@@ -62,7 +62,7 @@ fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
 	typed(
 		expression(
 			invoke(
-				expression(line(function(body(typedExpression.expression)))),
+				typedExpression.expression.function,
 				expression
 			)
 		),
