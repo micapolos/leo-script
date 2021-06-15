@@ -5,6 +5,7 @@ import leo.Type
 import leo.fold
 import leo.get
 import leo.lineTo
+import leo.linkOrNull
 import leo.map
 import leo.mapFirst
 import leo.named.expression.Body
@@ -13,7 +14,6 @@ import leo.named.expression.ExpressionBody
 import leo.named.expression.FnBody
 import leo.named.value.Value
 import leo.named.value.line
-import leo.named.value.plus
 import leo.named.value.value
 import leo.push
 import leo.reverse
@@ -54,14 +54,18 @@ val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)
 
 fun Dictionary.value(type: Type): Value =
-	value(type, recursive(dictionary()))
+	binding(type).value(type)
 
-fun Dictionary.value(type: Type, recursive: Recursive): Value =
-	value(type, recursive, binding(type))
+fun Binding.value(type: Type): Value =
+	when (this) {
+		is RecursiveBinding -> recursive.dictionary.definitionStack.linkOrNull?.head
+			?.let { it.binding.bindRecursive(recursive.dictionary).value(type) }
+			?: recursive.binding.value(type)
+		is ValueBinding -> value
+		is FunctionBinding -> value(line(function))
+	}
 
-fun value(type: Type, recursive: Recursive, binding: Binding): Value =
-	when (binding) {
-		is RecursiveBinding -> binding.recursive.dictionary.value(type, recursive.plus(binding.recursive))
-		is ValueBinding -> binding.value
-		is FunctionBinding -> value(line(binding.function.plus(recursive)))
+fun Dictionary.plusRecursive(dictionary: Dictionary): Dictionary =
+	fold(dictionary.definitionStack.reverse) { definition ->
+		plus(definition.recursive(dictionary))
 	}

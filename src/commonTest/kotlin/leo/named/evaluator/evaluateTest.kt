@@ -18,7 +18,6 @@ import leo.named.expression.switch
 import leo.named.expression.variable
 import leo.named.value.double
 import leo.named.value.function
-import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.numberValue
 import leo.named.value.textValue
@@ -95,20 +94,21 @@ class EvaluateTest {
 
 	@Test
 	fun recursiveDictionary() {
-		val dictionary = dictionary(
-			definition(type("ping"), binding(function(dictionary(), body(get(type("pong")))))),
-			definition(type("pong"), binding(function(dictionary(), body(get(type("ping")))))))
+		val baseDictionary = dictionary(definition(type("foo"), binding(value("bar"))))
 
-		dictionary(
-			definition(type("ping"), binding(recursive(dictionary))),
-			definition(type("pong"), binding(recursive(dictionary))))
-			.value(get(type("ping")))
-			.assertEqualTo(value(line(function(dictionary, body(get(type("pong")))))))
+		val pingDefinition = definition(
+			type("ping"),
+			binding(function(baseDictionary, body(get(type("pong"))))))
+		val pingDictionary = baseDictionary.plus(pingDefinition)
 
-		dictionary(
-			definition(type("ping"), binding(recursive(dictionary))),
-			definition(type("pong"), binding(recursive(dictionary))))
-			.value(get(type("pong")))
-			.assertEqualTo(value(line(function(dictionary, body(get(type("ping")))))))
+		val pongDefinition = definition(
+			type("pong"),
+			binding(function(pingDictionary, body(get(type("ping"))))))
+
+		val finalDictionary = baseDictionary
+			.plusRecursive(dictionary(pingDefinition, pongDefinition))
+
+		finalDictionary
+			.value(type("ping"))
 	}
 }

@@ -39,7 +39,6 @@ import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.name
 import leo.named.value.plus
-import leo.named.value.unsafeFunction
 import leo.named.value.unsafeSwitchLine
 import leo.named.value.value
 import leo.reverse
@@ -106,10 +105,8 @@ val Get.valueEvaluation: Evaluation<Value> get() =
 
 val Invoke.valueEvaluation: Evaluation<Value> get() =
 	function.valueEvaluation.bind { functionValue ->
-		functionValue.unsafeFunction.let { function ->
-			params.valueEvaluation.map { paramsValue ->
-				function.invoke(paramsValue)
-			}
+		params.valueEvaluation.map { paramsValue ->
+			functionValue.invoke(paramsValue)
 		}
 	}
 

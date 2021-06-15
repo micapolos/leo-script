@@ -52,3 +52,6 @@ fun Value.intPlusInt(value: Value): Value =
 
 fun Value.numberPlusNumber(value: Value): Value =
 	double.plus(value.double).numberValue
+
+fun Value.invoke(value: Value): Value =
+	unsafeFunction.invoke(value)
