@@ -34,6 +34,7 @@ import leo.named.value.ValueLine
 import leo.named.value.anyValueLine
 import leo.named.value.function
 import leo.named.value.get
+import leo.named.value.invoke
 import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.name
@@ -107,9 +108,7 @@ val Invoke.valueEvaluation: Evaluation<Value> get() =
 	function.valueEvaluation.bind { functionValue ->
 		functionValue.unsafeFunction.let { function ->
 			params.valueEvaluation.map { paramsValue ->
-				function.dictionary
-					.plus(paramsValue.dictionary)
-					.value(function.body)
+				function.invoke(paramsValue)
 			}
 		}
 	}
@@ -118,7 +117,7 @@ val Bind.valueEvaluation: Evaluation<Value> get() =
 	dictionaryEvaluation.bind { dictionary ->
 		binding.expression.valueEvaluation.map { value ->
 			dictionary
-				.plus(definition(binding.type, value))
+				.plus(definition(binding.type, binding(value)))
 				.value(expression)
 		}
 	}

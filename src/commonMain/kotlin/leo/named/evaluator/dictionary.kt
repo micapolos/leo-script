@@ -12,6 +12,8 @@ import leo.named.expression.Expression
 import leo.named.expression.ExpressionBody
 import leo.named.expression.FnBody
 import leo.named.value.Value
+import leo.named.value.line
+import leo.named.value.value
 import leo.push
 import leo.reverse
 import leo.script
@@ -39,9 +41,9 @@ fun Dictionary.value(body: Body): Value =
 fun Dictionary.value(expression: Expression): Value =
 	expression.valueEvaluation.get(this)
 
-fun Dictionary.value(type: Type): Value =
+fun Dictionary.binding(type: Type): Binding =
 	definitionStack
-		.mapFirst { valueLineOrNull(type) }
+		.mapFirst { bindingOrNull(type) }
 		.throwScriptIfNull { script(scriptLine, "value" lineTo script(type.scriptLine)) }
 
 fun Dictionary.get(name: String): Value =
@@ -49,3 +51,13 @@ fun Dictionary.get(name: String): Value =
 
 val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)
+
+fun Dictionary.value(type: Type): Value =
+	value(binding(type))
+
+fun Dictionary.value(binding: Binding): Value =
+	when (binding) {
+		is RecursiveBinding -> plus(binding.recursive.dictionary).value(binding.recursive.binding)
+		is ValueBinding -> binding.value
+		is FunctionBinding -> value(line(binding.function))
+	}

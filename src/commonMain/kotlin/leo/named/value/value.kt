@@ -2,6 +2,9 @@ package leo.named.value
 
 import leo.Stack
 import leo.named.evaluator.Dictionary
+import leo.named.evaluator.dictionary
+import leo.named.evaluator.plus
+import leo.named.evaluator.value
 import leo.named.expression.Body
 import leo.push
 import leo.stack
@@ -26,3 +29,5 @@ fun function(dictionary: Dictionary, body: Body) = ValueFunction(dictionary, bod
 
 fun Value.plus(line: ValueLine): Value = lineStack.push(line).let(::Value)
 fun value(vararg lines: ValueLine) = Value(stack(*lines))
+
+fun ValueFunction.invoke(value: Value) = dictionary.plus(value.dictionary).value(body)
