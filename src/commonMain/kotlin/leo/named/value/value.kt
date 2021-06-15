@@ -1,6 +1,7 @@
 package leo.named.value
 
 import leo.Stack
+import leo.named.evaluator.Dictionary
 import leo.named.expression.Body
 import leo.push
 import leo.stack
@@ -13,7 +14,7 @@ data class FunctionValueLine(val function: ValueFunction): ValueLine()
 data class AnyValueLine(val any: Any?): ValueLine()
 
 data class ValueField(val name: String, val value: Value)
-data class ValueFunction(val body: Body)
+data class ValueFunction(val dictionary: Dictionary, val body: Body)
 
 fun anyValueLine(any: Any?): ValueLine = AnyValueLine(any)
 fun line(field: ValueField): ValueLine = FieldValueLine(field)
@@ -21,7 +22,7 @@ fun line(function: ValueFunction): ValueLine = FunctionValueLine(function)
 
 infix fun String.fieldTo(value: Value) = ValueField(this, value)
 infix fun String.lineTo(value: Value) = line(this fieldTo value)
-fun function(body: Body) = ValueFunction(body)
+fun function(dictionary: Dictionary, body: Body) = ValueFunction(dictionary, body)
 
 fun Value.plus(line: ValueLine): Value = lineStack.push(line).let(::Value)
 fun value(vararg lines: ValueLine) = Value(stack(*lines))
