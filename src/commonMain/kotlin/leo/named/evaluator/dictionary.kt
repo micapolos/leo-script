@@ -13,6 +13,7 @@ import leo.named.expression.ExpressionBody
 import leo.named.expression.FnBody
 import leo.named.value.Value
 import leo.named.value.line
+import leo.named.value.plus
 import leo.named.value.value
 import leo.push
 import leo.reverse
@@ -24,7 +25,7 @@ import leo.type
 
 data class Dictionary(val definitionStack: Stack<Definition>) { override fun toString() = scriptLine.toString() }
 
-fun dictionary(): Dictionary = Dictionary(stack())
+fun dictionary(vararg definitions: Definition): Dictionary = Dictionary(stack(*definitions))
 
 fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
@@ -53,11 +54,14 @@ val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)
 
 fun Dictionary.value(type: Type): Value =
-	value(binding(type))
+	value(type, recursive(dictionary()))
 
-fun Dictionary.value(binding: Binding): Value =
+fun Dictionary.value(type: Type, recursive: Recursive): Value =
+	value(type, recursive, binding(type))
+
+fun value(type: Type, recursive: Recursive, binding: Binding): Value =
 	when (binding) {
-		is RecursiveBinding -> plus(binding.recursive.dictionary).value(binding.recursive.binding)
+		is RecursiveBinding -> binding.recursive.dictionary.value(type, recursive.plus(binding.recursive))
 		is ValueBinding -> binding.value
-		is FunctionBinding -> value(line(binding.function))
+		is FunctionBinding -> value(line(binding.function.plus(recursive)))
 	}

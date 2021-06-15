@@ -2,6 +2,7 @@ package leo.named.value
 
 import leo.Stack
 import leo.named.evaluator.Dictionary
+import leo.named.evaluator.Recursive
 import leo.named.evaluator.dictionary
 import leo.named.evaluator.plus
 import leo.named.evaluator.value
@@ -29,5 +30,7 @@ fun function(dictionary: Dictionary, body: Body) = ValueFunction(dictionary, bod
 
 fun Value.plus(line: ValueLine): Value = lineStack.push(line).let(::Value)
 fun value(vararg lines: ValueLine) = Value(stack(*lines))
+fun value(name: String) = value(name lineTo value())
 
 fun ValueFunction.invoke(value: Value) = dictionary.plus(value.dictionary).value(body)
+fun ValueFunction.plus(recursive: Recursive) = copy(dictionary = dictionary.plus(recursive.dictionary))

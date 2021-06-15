@@ -7,6 +7,7 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.map
+import leo.named.evaluator.scriptLine
 import leo.named.expression.script
 import leo.nativeName
 import leo.script
@@ -35,4 +36,4 @@ val ValueField.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
 val ValueFunction.scriptLine get() =
-	doingName lineTo body.script
+	doingName lineTo script(dictionary.scriptLine, "body" lineTo body.script)

@@ -17,6 +17,8 @@ import leo.named.expression.lineTo
 import leo.named.expression.switch
 import leo.named.expression.variable
 import leo.named.value.double
+import leo.named.value.function
+import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.numberValue
 import leo.named.value.textValue
@@ -89,5 +91,24 @@ class EvaluateTest {
 				"blue" caseTo get(type("blue")).get(textName))
 			.evaluate
 			.assertEqualTo("foo".textValue)
+	}
+
+	@Test
+	fun recursiveDictionary() {
+		val dictionary = dictionary(
+			definition(type("ping"), binding(function(dictionary(), body(get(type("pong")))))),
+			definition(type("pong"), binding(function(dictionary(), body(get(type("ping")))))))
+
+		dictionary(
+			definition(type("ping"), binding(recursive(dictionary))),
+			definition(type("pong"), binding(recursive(dictionary))))
+			.value(get(type("ping")))
+			.assertEqualTo(value(line(function(dictionary, body(get(type("pong")))))))
+
+		dictionary(
+			definition(type("ping"), binding(recursive(dictionary))),
+			definition(type("pong"), binding(recursive(dictionary))))
+			.value(get(type("pong")))
+			.assertEqualTo(value(line(function(dictionary, body(get(type("ping")))))))
 	}
 }
