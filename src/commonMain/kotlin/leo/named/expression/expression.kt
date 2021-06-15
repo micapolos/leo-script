@@ -42,9 +42,9 @@ data class Bind(val binding: Binding, val expression: Expression) { override fun
 data class Variable(val type: Type) { override fun toString() = script.toString() }
 data class Binding(val type: Type, val expression: Expression)
 
-sealed class Body { override fun toString() = super.toString() }
-data class ExpressionBody(val expression: Expression): Body() { override fun toString() = script.toString() }
-data class FnBody(val name: String, val valueFn: (Dictionary) -> Value): Body() { override fun toString() = script.toString() }
+sealed class Body { override fun toString() = script.toString() }
+data class ExpressionBody(val expression: Expression): Body() { override fun toString() = super.toString() }
+data class FnBody(val name: String, val valueFn: (Dictionary) -> Value): Body() { override fun toString() = super.toString() }
 
 fun expression(empty: Empty): Expression = EmptyExpression(empty)
 fun expression(link: Link): Expression = LinkExpression(link)
