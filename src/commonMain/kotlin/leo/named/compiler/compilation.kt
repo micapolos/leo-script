@@ -54,6 +54,7 @@ import leo.named.typed.with
 import leo.normalizeRecursion
 import leo.ofName
 import leo.quoteName
+import leo.recursiveName
 import leo.reverse
 import leo.script
 import leo.seq
@@ -121,6 +122,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		doingName -> plusDoingCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		quoteName -> plusQuoteCompilation(scriptField.rhs)
+		recursiveName -> plusRecursive(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
@@ -179,6 +181,12 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
 	set(bodyTypedExpression.with(script.reflectTypedExpression)).compilation
+
+fun Compiler.plusRecursiveCompilation(script: Script): Compilation<Compiler> =
+	TODO()
+
+fun Compiler.plusRecursiveCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
+	TODO()
 
 fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
 	context.dictionary.switchCompilation(bodyTypedExpression, script).map { set(it) }
