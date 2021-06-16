@@ -21,7 +21,7 @@ val Boolean.isConstantBindingName: String get() =
 	if (this) "is" else "does"
 
 val Context.scriptLine: ScriptLine get() =
-	"context" lineTo script(dictionary.scriptLine, scope.scriptLine)
+	"context" lineTo script(module.scriptLine, scope.scriptLine)
 
 val Compiler.scriptLine: ScriptLine get() =
 	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)

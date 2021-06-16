@@ -4,9 +4,9 @@ import leo.ChoiceType
 import leo.Stack
 import leo.StructureType
 import leo.Type
-import leo.TypeLine
 import leo.TypeStructure
 import leo.base.fold
+import leo.fold
 import leo.mapFirst
 import leo.named.typed.TypedExpression
 import leo.push
@@ -20,21 +20,21 @@ fun dictionary(vararg definitions: Definition) = Dictionary(stack(*definitions))
 fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
 
-fun Dictionary.plusName(typeLine: TypeLine): Dictionary =
-	plus(typeLine.nameDefinition)
-
-fun Dictionary.plusNames(type: Type): Dictionary =
-	// TODO: Add "content"
-	when (type) {
-		is ChoiceType -> this
-		is StructureType -> plusNames(type.structure)
-	}
-
-fun Dictionary.plusNames(structure: TypeStructure): Dictionary =
-	fold(structure.lineStack.reverse.seq) { plusName(it) }
+fun Dictionary.plus(dictionary: Dictionary): Dictionary =
+	fold(dictionary.definitionStack.reverse) { plus(it) }
 
 fun Dictionary.bindingOrNull(structure: Type): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
 
 fun Dictionary.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	bindingOrNull(typedExpression.type)?.resolve(typedExpression)
+
+val Type.namesDictionary: Dictionary get() =
+	// TODO: Add "content"
+	when (this) {
+		is ChoiceType -> dictionary()
+		is StructureType -> structure.namesDictionary
+	}
+
+val TypeStructure.namesDictionary: Dictionary get() =
+	dictionary().fold(lineStack.reverse.seq) { plus(it.nameDefinition) }
