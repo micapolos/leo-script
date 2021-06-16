@@ -17,21 +17,21 @@ import leo.reverse
 import leo.type
 
 data class Context(
-	val module: Module,
+	val dictionary: Dictionary,
 	val scope: Scope
 )
 
-val Module.context: Context get() = Context(this, scope())
-fun context(): Context = module().context
+val Dictionary.context: Context get() = Context(this, scope())
+fun context(): Context = dictionary().context
 
 fun Context.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
-	module.resolveOrNull(typedExpression)
+	dictionary.resolveOrNull(typedExpression)
 
 fun Context.plus(definition: Definition): Context =
-	copy(module = module.plus(definition))
+	copy(dictionary = dictionary.plus(definition))
 
 fun Context.plus(dictionary: Dictionary): Context =
-	copy(module = module.plus(dictionary))
+	copy(dictionary = dictionary.plus(dictionary))
 
 fun Context.scopePlus(binding: Binding): Context =
 	copy(scope = scope.plus(binding))

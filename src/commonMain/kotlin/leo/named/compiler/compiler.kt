@@ -9,15 +9,15 @@ import leo.named.typed.plus
 import leo.named.typed.typedExpression
 
 data class Compiler(
-	val context: Context,
+	val module: Module,
 	val bodyTypedExpression: TypedExpression
 )
 
-val Context.compiler: Compiler get() =
+val Module.compiler: Compiler get() =
 	Compiler(this, typedExpression())
 
-fun Compiler.set(context: Context): Compiler =
-	copy(context = context)
+fun Compiler.set(module: Module): Compiler =
+	copy(module = module)
 
 fun Compiler.set(typedExpression: TypedExpression): Compiler =
 	copy(bodyTypedExpression = typedExpression)
@@ -25,7 +25,7 @@ fun Compiler.set(typedExpression: TypedExpression): Compiler =
 val Compiler.typedExpression: TypedExpression
 	get() =
 		bodyTypedExpression
-			.fold(context.scope.bindingStack) { binding ->
+			.fold(module.privateContext.scope.bindingStack) { binding ->
 				binding.in_(expression).of(type)
 			}
 

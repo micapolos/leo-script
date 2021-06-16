@@ -24,12 +24,12 @@ val Context.scriptLine: ScriptLine get() =
 	"context" lineTo script(module.scriptLine, scope.scriptLine)
 
 val Compiler.scriptLine: ScriptLine get() =
-	"compiler" lineTo script(context.scriptLine, bodyTypedExpression.scriptLine)
+	"compiler" lineTo script(module.scriptLine, bodyTypedExpression.scriptLine)
 
 val Scope.scriptLine: ScriptLine get() =
 	"bindings" lineTo bindingStack.map { scriptLine }.script
 
 val Module.scriptLine: ScriptLine get() =
 	"module" lineTo script(
-		"private" lineTo script(privateDictionary.scriptLine),
-		"public" lineTo script(publicDictionary.scriptLine))
+		"private" lineTo script(privateContext.scriptLine),
+		"public" lineTo script(publicContext.scriptLine))

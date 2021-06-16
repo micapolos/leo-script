@@ -13,8 +13,8 @@ val Script.expression: Expression get() =
 	typedExpression.expression
 
 fun Context.expression(script: Script): Expression =
-	compiler.plusCompilation(script).map { it.typedExpression.expression }.get(unitEnvironment)
+	module.compiler.plusCompilation(script).map { it.typedExpression.expression }.get(unitEnvironment)
 
 fun Script.typedExpression(context: Context): TypedExpression =
-	context.compiler.plusCompilation(this).map { it.typedExpression }.get(unitEnvironment)
+	context.module.compiler.plusCompilation(this).map { it.typedExpression }.get(unitEnvironment)
 

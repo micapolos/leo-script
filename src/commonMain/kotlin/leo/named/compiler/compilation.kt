@@ -73,10 +73,7 @@ typealias Compilation<V> = Stateful<Environment, V>
 val <V> V.compilation: Compilation<V> get() = stateful()
 
 fun Dictionary.typedExpressionCompilation(script: Script): Compilation<TypedExpression> =
-	module
-		.context
-		.compiler
-		.compilation
+	context.module.compiler.compilation
 		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 		.map { it.typedExpression }
 
@@ -162,7 +159,7 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler>? =
 fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
 	script.matchInfix(toName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
-			context.module.privateDictionary.plus(type.namesDictionary).typedExpressionCompilation(rhs).map { body ->
+			module.privateContext.dictionary.plus(type.namesDictionary).typedExpressionCompilation(rhs).map { body ->
 				plus(type.doingTypedLine(body))
 			}
 		}
@@ -182,8 +179,8 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 		}.notNullOrError("$script let error")
 
 fun Compiler.plusPrivateCompilation(script: Script): Compilation<Compiler> =
-	childDictionary.module.context.compiler.plusCompilation(script).map { compiler ->
-		set(context.plus(compiler.context.module.publicDictionary))
+	childDictionary.context.module.compiler.plusCompilation(script).map { compiler ->
+		set(module.plus(compiler.module.publicContext.dictionary))
 	}
 
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
@@ -232,7 +229,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 	typeCompilation(lhs).bind { type ->
 		childDictionary.typedExpressionCompilation(rhs).map { typed ->
 			set(
-				context
+				module
 					.plus(definition(type, constantBinding(typed.type)))
 					.scopePlus(binding(type, typed.expression)))
 		}
@@ -241,7 +238,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	typeCompilation(lhs).bind { type ->
 		childDictionary.plus(type.namesDictionary).typedExpressionCompilation(rhs).map { bodyTyped ->
-			context
+			module
 				.plus(definition(type, functionBinding(bodyTyped.type)))
 				.scopePlus(binding(type, function(bodyTyped.expression)))
 				.compiler
@@ -261,7 +258,7 @@ fun Compiler.plusResolveCompilation(typed: TypedField): Compilation<Compiler> =
 	null
 		?: plusGetCompilationOrNull(typed)
 		?: plusResolveStaticCompilationOrNull(typed)
-		?: context.resolveCompilation(bodyTypedExpression.plus(typed.line)).map { set(it) }
+		?: childDictionary.resolveCompilation(bodyTypedExpression.plus(typed.line)).map { set(it) }
 
 fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
 	when (typedField.name) {
@@ -274,17 +271,17 @@ fun Compiler.plusResolveStaticCompilationOrNull(typedField: TypedField): Compila
 	}
 
 fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
-	childDictionary.typedLineStackCompilation(script).map { set(context.bind(it)) }
+	childDictionary.typedLineStackCompilation(script).map { set(module.bind(it)) }
 
 fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
-	context.resolveCompilation(bodyTypedExpression.plus(typed)).map { set(it) }
+	childDictionary.resolveCompilation(bodyTypedExpression.plus(typed)).map { set(it) }
 
-fun Context.resolveCompilation(typedExpression: TypedExpression): Compilation<TypedExpression> =
+fun Dictionary.resolveCompilation(typedExpression: TypedExpression): Compilation<TypedExpression> =
 	null
 		?: resolveCompilationOrNull(typedExpression)
 		?: typedExpression.resolve.compilation
 
-fun Context.resolveCompilationOrNull(typedExpression: TypedExpression): Compilation<TypedExpression>? =
+fun Dictionary.resolveCompilationOrNull(typedExpression: TypedExpression): Compilation<TypedExpression>? =
 	resolveOrNull(typedExpression)?.compilation
 
-val Compiler.childDictionary get() = context.module.privateDictionary
+val Compiler.childDictionary get() = module.privateContext.dictionary
