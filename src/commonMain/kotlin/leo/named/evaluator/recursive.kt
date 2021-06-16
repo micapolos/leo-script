@@ -1,7 +1,10 @@
 package leo.named.evaluator
 
-data class Recursive(val binding: Binding, val dictionary: Dictionary)
+data class Recursive(
+	val binding: Binding,
+	val baseDictionary: Dictionary,
+	val recursiveDictionary: Dictionary)
 
-fun recursive(binding: Binding, dictionary: Dictionary) = Recursive(binding, dictionary)
+fun recursive(binding: Binding, baseDictionary: Dictionary, recursiveDictionary: Dictionary) = Recursive(binding, baseDictionary, recursiveDictionary)
 
-fun Recursive.plus(recursive: Recursive) = copy(dictionary = dictionary.plus(recursive.dictionary))
+fun Recursive.plus(recursive: Recursive) = copy(recursiveDictionary = recursiveDictionary.plus(recursive.recursiveDictionary))

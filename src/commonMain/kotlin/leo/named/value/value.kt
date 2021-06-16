@@ -33,4 +33,4 @@ fun value(vararg lines: ValueLine) = Value(stack(*lines))
 fun value(name: String) = value(name lineTo value())
 
 fun ValueFunction.invoke(value: Value) = dictionary.plus(value.dictionary).value(body)
-fun ValueFunction.plus(recursive: Recursive) = copy(dictionary = dictionary.plus(recursive.dictionary))
+fun ValueFunction.plus(recursive: Recursive) = copy(dictionary = dictionary.plus(recursive.recursiveDictionary))

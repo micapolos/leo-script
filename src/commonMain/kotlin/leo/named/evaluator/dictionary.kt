@@ -13,8 +13,6 @@ import leo.named.expression.Expression
 import leo.named.expression.ExpressionBody
 import leo.named.expression.FnBody
 import leo.named.value.Value
-import leo.named.value.line
-import leo.named.value.value
 import leo.push
 import leo.reverse
 import leo.script
@@ -42,7 +40,7 @@ fun Dictionary.value(body: Body): Value =
 fun Dictionary.value(expression: Expression): Value =
 	expression.valueEvaluation.get(this)
 
-fun Dictionary.binding(type: Type): Binding =
+fun Dictionary.rawBinding(type: Type): Binding =
 	definitionStack
 		.mapFirst { bindingOrNull(type) }
 		.throwScriptIfNull { script(scriptLine, "value" lineTo script(type.scriptLine)) }
@@ -54,18 +52,21 @@ val Value.dictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)
 
 fun Dictionary.value(type: Type): Value =
-	binding(type).value(type)
+	binding(type).value
 
-fun Binding.value(type: Type): Value =
+fun Dictionary.binding(type: Type): Binding =
+	rawBinding(type).resolve()
+
+fun Binding.resolve(): Binding =
 	when (this) {
-		is RecursiveBinding -> recursive.dictionary.definitionStack.linkOrNull?.head
-			?.let { it.binding.bindRecursive(recursive.dictionary).value(type) }
-			?: recursive.binding.value(type)
-		is ValueBinding -> value
-		is FunctionBinding -> value(line(function))
+		is RecursiveBinding -> recursive.recursiveDictionary.definitionStack.linkOrNull?.head
+			?.let { recursive.binding.plus(it.set(recursive.baseDictionary.plusRecursive(recursive.recursiveDictionary))) }
+			?: recursive.binding
+		is ValueBinding -> this
+		is FunctionBinding -> this
 	}
 
 fun Dictionary.plusRecursive(dictionary: Dictionary): Dictionary =
 	fold(dictionary.definitionStack.reverse) { definition ->
-		plus(definition.recursive(dictionary))
+		plus(definition.recursive(this, dictionary))
 	}

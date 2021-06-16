@@ -23,4 +23,4 @@ val Binding.scriptLine: ScriptLine get() =
 	}
 
 val Recursive.scriptLine: ScriptLine get() =
-	recursiveName lineTo script(dictionary.scriptLine)
+	recursiveName lineTo script(recursiveDictionary.scriptLine)

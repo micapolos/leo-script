@@ -18,5 +18,9 @@ fun Definition.bindingOrNull(type: Type): Binding? =
 val ValueLine.definition: Definition get() =
 	definition(name.type, binding(value(this)))
 
-fun Definition.recursive(dictionary: Dictionary): Definition =
-	definition(type, binding(recursive(binding, dictionary)))
+fun Definition.recursive(base: Dictionary, dictionary: Dictionary): Definition =
+	definition(type, binding(recursive(binding, base, dictionary)))
+
+fun Definition.set(dictionary: Dictionary): Definition =
+	definition(type, binding.setRecursive(dictionary))
+

@@ -18,6 +18,8 @@ import leo.named.expression.switch
 import leo.named.expression.variable
 import leo.named.value.double
 import leo.named.value.function
+import leo.named.value.invoke
+import leo.named.value.line
 import leo.named.value.lineTo
 import leo.named.value.numberValue
 import leo.named.value.textValue
@@ -27,6 +29,7 @@ import leo.numberTypeLine
 import leo.textName
 import leo.type
 import kotlin.test.Test
+import kotlin.test.fail
 
 class EvaluateTest {
 	@Test
@@ -98,17 +101,48 @@ class EvaluateTest {
 
 		val pingDefinition = definition(
 			type("ping"),
-			binding(function(baseDictionary, body(get(type("pong"))))))
+			binding(function(baseDictionary, body(get(type("pang"))))))
 		val pingDictionary = baseDictionary.plus(pingDefinition)
 
 		val pongDefinition = definition(
 			type("pong"),
 			binding(function(pingDictionary, body(get(type("ping"))))))
+		val pongDictionary = baseDictionary.plus(pongDefinition)
+
+		val pangDefinition = definition(
+			type("pang"),
+			binding(function(pongDictionary, body(get(type("pong"))))))
+
+		val recursiveDictionary = dictionary(
+			pingDefinition,
+			pongDefinition,
+			pangDefinition)
 
 		val finalDictionary = baseDictionary
-			.plusRecursive(dictionary(pingDefinition, pongDefinition))
+			.plusRecursive(recursiveDictionary)
 
 		finalDictionary
 			.value(type("ping"))
+			.assertEqualTo(
+				value(line(function(baseDictionary.plus(pangDefinition.set(baseDictionary.plusRecursive(recursiveDictionary))), body(get(type("pang")))))))
+	}
+
+	@Test
+	fun recursiveStackOverflow() {
+		val pingDefinition = definition(
+			type("ping"),
+			binding(function(dictionary(), body(get(type("ping")).invoke(expression())))))
+
+		val finalDictionary = dictionary()
+			.plusRecursive(dictionary(pingDefinition))
+
+		try {
+			finalDictionary
+				.value(type("ping"))
+				.invoke(value())
+			fail("Expected stack overflow")
+		} catch (stackOverflowError: StackOverflowError) {
+			// OK
+		}
 	}
 }
