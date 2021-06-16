@@ -228,4 +228,18 @@ class ScriptEvaluateTest {
 			.evaluate
 			.assertEqualTo(script(literal(20)))
 	}
+
+//	@Test
+//	fun private() {
+//		script(
+//			privateName lineTo script(
+//				bindName lineTo script("x" lineTo script(literal(10)))),
+//			withName lineTo script("x" lineTo script()),
+//			withName lineTo script("y" lineTo script()))
+//			.evaluate
+//			.assertEqualTo(
+//				script(
+//					"x" lineTo script(),
+//					"y" lineTo script("x" lineTo script(literal(10)))))
+//	}
 }

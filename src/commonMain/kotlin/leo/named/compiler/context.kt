@@ -30,6 +30,9 @@ fun Context.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 fun Context.plus(definition: Definition): Context =
 	copy(module = module.plus(definition))
 
+fun Context.plus(dictionary: Dictionary): Context =
+	copy(module = module.plus(dictionary))
+
 fun Context.scopePlus(binding: Binding): Context =
 	copy(scope = scope.plus(binding))
 

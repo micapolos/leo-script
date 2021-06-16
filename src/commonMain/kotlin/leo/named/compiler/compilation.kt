@@ -53,6 +53,7 @@ import leo.named.typed.typedLine
 import leo.named.typed.with
 import leo.normalizeRecursion
 import leo.ofName
+import leo.privateName
 import leo.quoteName
 import leo.recursiveName
 import leo.reverse
@@ -122,6 +123,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
+		privateName -> plusPrivateCompilation(scriptField.rhs)
 		quoteName -> plusQuoteCompilation(scriptField.rhs)
 		recursiveName -> plusRecursiveCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
@@ -178,6 +180,11 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 				else -> null
 			}
 		}.notNullOrError("$script let error")
+
+fun Compiler.plusPrivateCompilation(script: Script): Compilation<Compiler> =
+	childDictionary.module.context.compiler.plusCompilation(script).map { compiler ->
+		set(context.plus(compiler.context.module.publicDictionary))
+	}
 
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
 	set(bodyTypedExpression.with(script.reflectTypedExpression)).compilation
