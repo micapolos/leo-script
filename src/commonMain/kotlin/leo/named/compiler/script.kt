@@ -28,3 +28,8 @@ val Compiler.scriptLine: ScriptLine get() =
 
 val Scope.scriptLine: ScriptLine get() =
 	"bindings" lineTo bindingStack.map { scriptLine }.script
+
+val Module.scriptLine: ScriptLine get() =
+	"module" lineTo script(
+		"private" lineTo script(privateDictionary.scriptLine),
+		"public" lineTo script(publicDictionary.scriptLine))
