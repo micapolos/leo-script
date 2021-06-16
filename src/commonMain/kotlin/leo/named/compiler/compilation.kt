@@ -122,7 +122,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		doingName -> plusDoingCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		quoteName -> plusQuoteCompilation(scriptField.rhs)
-		recursiveName -> plusRecursive(scriptField.rhs)
+		recursiveName -> plusRecursiveCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		else -> null
