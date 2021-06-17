@@ -4,9 +4,12 @@ import leo.Type
 import leo.TypeStructure
 import leo.atom
 import leo.fieldOrNull
+import leo.fold
 import leo.getOrNull
 import leo.linkOrNull
+import leo.named.expression.Binding
 import leo.named.expression.get
+import leo.named.expression.in_
 import leo.named.expression.linkOrNull
 import leo.named.typed.TypedChoice
 import leo.named.typed.TypedExpression
@@ -45,3 +48,9 @@ fun TypedExpression.of(type: Type): TypedExpression =
 
 val TypedExpression.choice: TypedChoice get() =
 	type.switchChoice.let { typed(expression.choiceLine, it) }
+
+fun Binding.in_(typedExpression: TypedExpression): TypedExpression =
+	in_(typedExpression.expression).of(typedExpression.type)
+
+fun Scope.in_(typedExpression: TypedExpression): TypedExpression =
+	typedExpression.fold(bindingStack) { it.in_(this) }

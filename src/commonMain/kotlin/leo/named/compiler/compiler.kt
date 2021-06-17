@@ -1,10 +1,7 @@
 package leo.named.compiler
 
-import leo.fold
-import leo.named.expression.in_
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
-import leo.named.typed.of
 import leo.named.typed.plus
 import leo.named.typed.typedExpression
 
@@ -24,10 +21,7 @@ fun Compiler.set(typedExpression: TypedExpression): Compiler =
 
 val Compiler.typedExpression: TypedExpression
 	get() =
-		bodyTypedExpression
-			.fold(module.privateContext.scope.bindingStack) { binding ->
-				binding.in_(expression).of(type)
-			}
+		module.privateContext.scope.in_(bodyTypedExpression)
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =
 	set(bodyTypedExpression.plus(typedLine))
