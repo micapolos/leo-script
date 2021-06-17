@@ -40,7 +40,7 @@ data class Function(val body: Body) { override fun toString() = scriptLine.toStr
 data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
 data class Bind(val binding: Binding, val expression: Expression) { override fun toString() = script.toString() }
 data class Variable(val type: Type) { override fun toString() = script.toString() }
-data class Binding(val type: Type, val expression: Expression)
+data class Binding(val type: Type, val expression: Expression) { override fun toString() = scriptLine.toString() }
 
 sealed class Body { override fun toString() = script.toString() }
 data class ExpressionBody(val expression: Expression): Body() { override fun toString() = super.toString() }
