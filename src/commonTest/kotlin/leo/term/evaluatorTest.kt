@@ -6,15 +6,24 @@ import kotlin.test.Test
 class EvaluatorTest {
 	@Test
 	fun literals() {
-		nativeEvaluator
-			.value("foo".native.term)
-			.assertEqualTo("foo".native.value)
+		anyEvaluator
+			.value("foo".anyTerm)
+			.assertEqualTo("foo".anyValue)
 	}
 
 	@Test
 	fun stringPlusString() {
-		nativeEvaluator
-			.value(fn(fn(stringPlusString.native.term)).invoke("Hello, ".native.term).invoke("world!".native.term))
-			.assertEqualTo("Hello, world!".native.value)
+		val stringPlusStringFn = anyFn {
+			value(1.variable).native.anyString
+				.plus(value(0.variable).native.anyString)
+				.anyValue
+		}
+
+		anyEvaluator
+			.value(
+				fn(fn(stringPlusStringFn.anyTerm))
+				.invoke("Hello, ".anyTerm)
+				.invoke("world!".anyTerm))
+			.assertEqualTo("Hello, world!".anyValue)
 	}
 }

@@ -20,3 +20,6 @@ fun <T> function(scope: Scope<T>, term: Term<T>) = Function(scope, term)
 val <T> Value<T>.native: T get() = (this as NativeValue).native
 
 val <T> T.value: Value<T> get() = NativeValue(this)
+
+val Any?.anyValue: Value<Any?> get() = value
+val Any?.anyString: String get() = (this as String)
