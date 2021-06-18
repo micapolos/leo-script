@@ -2,9 +2,10 @@ package leo.term
 
 import leo.Script
 import leo.ScriptLine
+import leo.base.stak.map
+import leo.base.stak.stack
 import leo.lineTo
 import leo.literal
-import leo.map
 import leo.plus
 import leo.script
 
@@ -45,4 +46,4 @@ val <T> Function<T>.scriptLine get() =
 
 
 val <T> Scope<T>.scriptLine get() =
-	"scope" lineTo script("values" lineTo stack.map { scriptLine }.script)
+	"scope" lineTo script("values" lineTo valueStak.map { scriptLine }.stack.script)
