@@ -14,3 +14,4 @@ fun Scope<Native>.value(native: Native): Value<Native> =
 	}
 
 val nativeEvaluator: Evaluator<Native> get() = Evaluator { value(it) }
+
