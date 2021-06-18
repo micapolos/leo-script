@@ -14,7 +14,7 @@ class EvaluatorTest {
 	@Test
 	fun stringPlusString() {
 		nativeEvaluator
-			.value(fn(fn(StringPlusStringNative.term)).invoke("Hello, ".native.term).invoke("world!".native.term))
+			.value(fn(fn(stringPlusString.native.term)).invoke("Hello, ".native.term).invoke("world!".native.term))
 			.assertEqualTo("Hello, world!".native.value)
 	}
 }

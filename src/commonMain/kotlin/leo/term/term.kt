@@ -16,6 +16,7 @@ fun <T> term(application: TermApplication<T>): Term<T> = ApplicationTerm(applica
 fun <T> term(variable: TermVariable): Term<T> = VariableTerm(variable)
 
 fun variable(index: Int) = TermVariable(index)
+val Int.variable get() = TermVariable(this)
 
 // DSL
 val <T> T.term: Term<T> get() = NativeTerm(this)

@@ -1,15 +1,9 @@
 package leo.base.stak
 
-import leo.Stack
 import leo.base.assertEqualTo
 import leo.base.assertNull
 import leo.base.iterate
 import leo.base.nullOf
-import leo.base.printTime
-import leo.get
-import leo.push
-import leo.stack
-import kotlin.random.Random
 import kotlin.test.Test
 
 val s0 = node("zero", null)
@@ -111,73 +105,73 @@ class StakTest {
 		}
 	}
 
-	@Test
-	fun performance() {
-		val size = 1000000
-		val access = 100
-
-		repeat(5) {
-			println("======")
-
-			var stak0: Stak<Int>? = null
-			var stack0: Stack<Int>? = null
-			var list0: List<Int>? = null
-
-			print("Create Stack: ")
-			printTime {
-				stack0 = stack<Int>().iterate(size) { push(0) }
-			}
-
-			print("Create Stak: ")
-			printTime {
-				stak0 = emptyStak<Int>().iterate(size) { push(Random.nextInt()) }
-			}
-
-			print("Create List: ")
-			printTime {
-				list0 = mutableListOf<Int>().iterate(size) { also { add(Random.nextInt()) } }.toList()
-			}
-
-			var sum = 0
-			val stack = stack0!!
-			print("Random access Stack ($access): ")
-			printTime {
-				repeat(access) {
-					sum += stack.get(Random.nextInt(size))!!
-				}
-			}
-
-			val stak = stak0!!
-			print("Random access Stak ($access): ")
-			printTime {
-				repeat(access) {
-					sum += stak.top(Random.nextInt(size))!!
-				}
-			}
-
-			val list = list0!!
-			print("Random access List ($access): ")
-			printTime {
-				repeat(access) {
-					sum += list.get(Random.nextInt(size))
-				}
-			}
-
-			print("Random access Stak ($size): ")
-			printTime {
-				repeat(size) {
-					sum += stak.top(Random.nextInt(size))!!
-				}
-			}
-
-			print("Random access List ($size): ")
-			printTime {
-				repeat(size) {
-					sum += list.get(Random.nextInt(size))
-				}
-			}
-
-			println("Result: $sum")
-		}
-	}
+//	@Test
+//	fun performance() {
+//		val size = 1000000
+//		val access = 100
+//
+//		repeat(5) {
+//			println("======")
+//
+//			var stak0: Stak<Int>? = null
+//			var stack0: Stack<Int>? = null
+//			var list0: List<Int>? = null
+//
+//			print("Create Stack: ")
+//			printTime {
+//				stack0 = stack<Int>().iterate(size) { push(0) }
+//			}
+//
+//			print("Create Stak: ")
+//			printTime {
+//				stak0 = emptyStak<Int>().iterate(size) { push(Random.nextInt()) }
+//			}
+//
+//			print("Create List: ")
+//			printTime {
+//				list0 = mutableListOf<Int>().iterate(size) { also { add(Random.nextInt()) } }.toList()
+//			}
+//
+//			var sum = 0
+//			val stack = stack0!!
+//			print("Random access Stack ($access): ")
+//			printTime {
+//				repeat(access) {
+//					sum += stack.get(Random.nextInt(size))!!
+//				}
+//			}
+//
+//			val stak = stak0!!
+//			print("Random access Stak ($access): ")
+//			printTime {
+//				repeat(access) {
+//					sum += stak.top(Random.nextInt(size))!!
+//				}
+//			}
+//
+//			val list = list0!!
+//			print("Random access List ($access): ")
+//			printTime {
+//				repeat(access) {
+//					sum += list.get(Random.nextInt(size))
+//				}
+//			}
+//
+//			print("Random access Stak ($size): ")
+//			printTime {
+//				repeat(size) {
+//					sum += stak.top(Random.nextInt(size))!!
+//				}
+//			}
+//
+//			print("Random access List ($size): ")
+//			printTime {
+//				repeat(size) {
+//					sum += list.get(Random.nextInt(size))
+//				}
+//			}
+//
+//			println("Result: $sum")
+//		}
+//	}
 }
