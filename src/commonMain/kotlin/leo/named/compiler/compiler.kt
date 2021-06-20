@@ -58,6 +58,9 @@ fun Compiler.take(typedExpression: TypedExpression): Compiler =
 fun Compiler.with(typedExpression: TypedExpression): Compiler =
 	set(bodyTypedExpression.with(typedExpression))
 
+fun Compiler.be(typedExpression: TypedExpression): Compiler =
+	set(bodyTypedExpression.be(typedExpression))
+
 fun Compiler.letBe(type: Type, typedExpression: TypedExpression): Compiler =
 	Compiler(
 		module.plus(definition(type, constantBinding(typedExpression.type))),
@@ -80,3 +83,7 @@ fun Compiler.plusPrivate(compiler: Compiler): Compiler =
 		.set(bodyTypedExpression.expression
 			.plus(line(private(compiler.typedExpression.expression)))
 			.of(bodyTypedExpression.type))
+
+fun Compiler.of(type: Type): Compiler =
+	set(bodyTypedExpression.of(type))
+

@@ -141,19 +141,13 @@ fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compi
 	}
 
 fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
-	childDictionary.typedExpressionCompilation(script).map { typedExpression ->
-		set(bodyTypedExpression.be(typedExpression))
-	}
+	childDictionary.typedExpressionCompilation(script).map { be(it) }
 
 fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
-	childDictionary.typedExpressionCompilation(script).map {
-		bind(it)
-	}
+	childDictionary.typedExpressionCompilation(script).map { bind(it) }
 
 fun Compiler.plusOfCompilation(script: Script): Compilation<Compiler> =
-	typeCompilation(script).map { type ->
-		set(bodyTypedExpression.of(type))
-	}
+	typeCompilation(script).map { of(it) }
 
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
 	if (!script.isEmpty) error("debug")
