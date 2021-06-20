@@ -1,6 +1,11 @@
 let
-  increment number
-  do
-    increment.number
-    plus 1
-123.increment
+  boolean true
+  be boolean
+    true
+    of choice true.false
+let
+  boolean false
+  be boolean
+    false
+    of choice true.false
+debug

@@ -19,16 +19,13 @@ val Binding.scriptLine: ScriptLine get() =
 val Boolean.isConstantBindingName: String get() =
 	if (this) "is" else "does"
 
-val Context.scriptLine: ScriptLine get() =
-	"context" lineTo script(dictionary.scriptLine, scope.scriptLine)
-
 val Compiler.scriptLine: ScriptLine get() =
-	"compiler" lineTo script(module.scriptLine, bodyTypedExpression.scriptLine)
+	"compiler" lineTo script(module.scriptLine, typedExpression.scriptLine)
 
 val Scope.scriptLine: ScriptLine get() =
 	"bindings" lineTo bindingStack.map { scriptLine }.script
 
 val Module.scriptLine: ScriptLine get() =
 	"module" lineTo script(
-		"private" lineTo script(privateContext.scriptLine),
-		"public" lineTo script(publicContext.scriptLine))
+		"private" lineTo script(privateDictionary.scriptLine),
+		"public" lineTo script(publicDictionary.scriptLine))

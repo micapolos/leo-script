@@ -23,7 +23,7 @@ import leo.type
 
 data class Compiler(
 	val module: Module,
-	val bodyTypedExpression: TypedExpression
+	val typedExpression: TypedExpression
 )
 
 fun compiler() = Compiler(module(), typed(expression(), type()))
@@ -35,55 +35,56 @@ fun Compiler.set(module: Module): Compiler =
 	copy(module = module)
 
 fun Compiler.set(typedExpression: TypedExpression): Compiler =
-	copy(bodyTypedExpression = typedExpression)
+	copy(typedExpression = typedExpression)
 
 val Compiler.typedExpression: TypedExpression
 	get() =
-		module.privateContext.scope.in_(bodyTypedExpression)
+		typedExpression
 
 fun Compiler.plus(typedLine: TypedLine): Compiler =
-	set(bodyTypedExpression.plus(typedLine))
+	set(typedExpression.plus(typedLine))
 
 fun Compiler.bind(typedExpression: TypedExpression): Compiler =
 	this
 		.set(module.bind(typedExpression.type))
-		.set(bodyTypedExpression.bind(typedExpression))
+		.set(this.typedExpression.bind(typedExpression))
 
 fun Compiler.give(typedExpression: TypedExpression): Compiler =
-	set(bodyTypedExpression.give(typedExpression))
+	set(this.typedExpression.give(typedExpression))
 
 fun Compiler.take(typedExpression: TypedExpression): Compiler =
-	set(bodyTypedExpression.take(typedExpression))
+	set(this.typedExpression.take(typedExpression))
 
 fun Compiler.with(typedExpression: TypedExpression): Compiler =
-	set(bodyTypedExpression.with(typedExpression))
+	set(this.typedExpression.with(typedExpression))
 
 fun Compiler.be(typedExpression: TypedExpression): Compiler =
-	set(bodyTypedExpression.be(typedExpression))
+	set(this.typedExpression.be(typedExpression))
 
 fun Compiler.letBe(type: Type, typedExpression: TypedExpression): Compiler =
 	Compiler(
 		module.plus(definition(type, constantBinding(typedExpression.type))),
 		typed(
-			bodyTypedExpression.expression
+			this.typedExpression.expression
 				.plus(line(let(type, rhs(be(typedExpression.expression))))),
-			bodyTypedExpression.type))
+			this.typedExpression.type))
 
 fun Compiler.letDo(type: Type, typedExpression: TypedExpression): Compiler =
 	Compiler(
 		module.plus(definition(type, constantBinding(typedExpression.type))),
 		typed(
-			bodyTypedExpression.expression
+			this.typedExpression.expression
 				.plus(line(let(type, rhs(do_(body(typedExpression.expression)))))),
-			bodyTypedExpression.type))
+			this.typedExpression.type))
 
 fun Compiler.plusPrivate(compiler: Compiler): Compiler =
 	this
-		.set(module.plusPrivate(compiler.module.publicContext.dictionary))
-		.set(bodyTypedExpression.expression
+		.set(module.plusPrivate(compiler.module.publicDictionary))
+		.set(
+			typedExpression.expression
 			.plus(line(private(compiler.typedExpression.expression)))
-			.of(bodyTypedExpression.type))
+			.of(typedExpression.type))
 
 fun Compiler.of(type: Type): Compiler =
-	set(bodyTypedExpression.of(type))
+	set(typedExpression.of(type))
 

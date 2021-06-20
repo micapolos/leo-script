@@ -7,7 +7,6 @@ import leo.named.compiler.compiler
 import leo.named.compiler.definition
 import leo.named.compiler.functionBinding
 import leo.named.compiler.plus
-import leo.named.compiler.typedExpression
 import leo.named.expression.Body
 import leo.named.expression.do_
 import leo.named.expression.let
