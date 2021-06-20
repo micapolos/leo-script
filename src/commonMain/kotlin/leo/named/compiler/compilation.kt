@@ -165,7 +165,7 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
 	script.matchInfix(toName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
-			module.privateContext.dictionary.plus(type.givenDefinition).typedExpressionCompilation(rhs).map { body ->
+			module.privateContext.dictionary.plus(type.givenDictionary).typedExpressionCompilation(rhs).map { body ->
 				plus(type.doingTypedLine(body))
 			}
 		}
@@ -238,7 +238,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 
 fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	typeCompilation(lhs).bind { type ->
-		childDictionary.plus(type.givenDefinition).typedExpressionCompilation(rhs).map { typedExpression ->
+		childDictionary.plus(type.givenDictionary).typedExpressionCompilation(rhs).map { typedExpression ->
 			letDo(type, typedExpression)
 		}
 	}

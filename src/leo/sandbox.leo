@@ -1,3 +1,6 @@
-10
-plus 20
-times 10000
+let
+  increment number
+  do
+    increment.number
+    plus 1
+123.increment
