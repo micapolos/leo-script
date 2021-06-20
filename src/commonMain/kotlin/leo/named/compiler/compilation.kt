@@ -111,20 +111,20 @@ fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
 
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
 	when (scriptField.name) {
-		ofName -> plusOfCompilation(scriptField.rhs)
+		beName -> plusBeCompilation(scriptField.rhs)
+		bindName -> plusBindCompilation(scriptField.rhs)
 		debugName -> plusDebugCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		doingName -> plusDoingCompilation(scriptField.rhs)
+		giveName -> plusGiveCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
+		ofName -> plusOfCompilation(scriptField.rhs)
 		privateName -> plusPrivateCompilation(scriptField.rhs)
 		quoteName -> plusQuoteCompilation(scriptField.rhs)
 		recursiveName -> plusRecursiveCompilation(scriptField.rhs)
 		switchName -> plusSwitchCompilation(scriptField.rhs)
+		takeName -> plusTakeCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
-		beName -> plusBeCompilation(scriptField.rhs)
-		bindName -> plusBindCompilation(scriptField.rhs)
-		giveName -> plusGiveCompilation(scriptField.rhs)
-		takeName -> plusTakeCompilation(scriptField.rhs) // TODO: Convert to macro
 		typeName -> plusTypeCompilationOrNull(scriptField.rhs)
 		withName -> plusWithCompilation(scriptField.rhs)
 		else -> null

@@ -1,6 +1,3 @@
-bind x 10
-let
-  foo
-  do x
-bind x "foo"
-foo
+10
+plus 20
+times 10000

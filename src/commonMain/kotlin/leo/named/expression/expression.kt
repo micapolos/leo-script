@@ -32,6 +32,7 @@ data class MakeLine(val make: Make): Line() { override fun toString() = super.to
 data class PrivateLine(val private: Private): Line() { override fun toString() = super.toString() }
 data class RecursiveLine(val recursive: Recursive): Line() { override fun toString() = super.toString() }
 data class SwitchLine(val switch: Switch): Line() { override fun toString() = super.toString() }
+data class TakeLine(val take: Take): Line() { override fun toString() = super.toString() }
 data class WithLine(val with: With): Line() { override fun toString() = super.toString() }
 
 data class Be(val expression: Expression) { override fun toString() = scriptLine.toString() }
@@ -48,6 +49,7 @@ data class Make(val name: String) { override fun toString() = scriptLine.toStrin
 data class Private(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Recursive(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Switch(val cases: Stack<Case>) { override fun toString() = scriptLine.toString() }
+data class Take(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class With(val expression: Expression) { override fun toString() = scriptLine.toString() }
 
 sealed class LetRhs { override fun toString() = scriptLine.toString() }
@@ -61,19 +63,20 @@ data class FnBody(val valueFn: (Dictionary) -> Value): Body() { override fun toS
 fun expressionLine(literal: Literal): Line = LiteralLine(literal)
 fun anyExpressionLine(any: Any?): Line = AnyLine(any)
 fun line(be: Be): Line = BeLine(be)
-fun line(do_: Do): Line = DoLine(do_)
 fun line(bind: Bind): Line = BindLine(bind)
+fun line(do_: Do): Line = DoLine(do_)
+fun line(doing: Doing): Line = DoingLine(doing)
 fun line(field: Field): Line = FieldLine(field)
 fun line(get: Get): Line = GetLine(get)
-fun line(switch: Switch): Line = SwitchLine(switch)
 fun line(give: Give): Line = GiveLine(give)
-fun line(with: With): Line = WithLine(with)
 fun line(let: Let): Line = LetLine(let)
 fun line(make: Make): Line = MakeLine(make)
 fun line(invoke: Invoke): Line = InvokeLine(invoke)
-fun line(doing: Doing): Line = DoingLine(doing)
-fun line(recursive: Recursive): Line = RecursiveLine(recursive)
 fun line(private: Private): Line = PrivateLine(private)
+fun line(recursive: Recursive): Line = RecursiveLine(recursive)
+fun line(switch: Switch): Line = SwitchLine(switch)
+fun line(take: Take): Line = TakeLine(take)
+fun line(with: With): Line = WithLine(with)
 
 val Stack<Line>.expression get() = Expression(this)
 fun Expression.plus(line: Line) = lineStack.push(line).expression
@@ -96,11 +99,12 @@ fun give(expression: Expression) = Give(expression)
 fun invoke(type: Type) = Invoke(type)
 fun let(type: Type, rhs: LetRhs) = Let(type, rhs)
 fun make(name: String) = Make(name)
+fun private(expression: Expression) = Private(expression)
 fun recursive(expression: Expression) = Recursive(expression)
 fun switch(cases: Stack<Case>) = Switch(cases)
 fun switch(vararg cases: Case) = Switch(stack(*cases))
+fun take(expression: Expression) = Take(expression)
 fun with(rhs: Expression) = With(rhs)
-fun private(expression: Expression) = Private(expression)
 
 fun rhs(be: Be): LetRhs = BeLetRhs(be)
 fun rhs(do_: Do): LetRhs = DoLetRhs(do_)
@@ -115,6 +119,7 @@ fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == na
 val Expression.lineSeq get() = lineStack.reverse.seq
 
 fun Expression.give(expression: Expression): Expression = plus(line(leo.named.expression.give(expression)))
+fun Expression.take(expression: Expression): Expression = plus(line(leo.named.expression.take(expression)))
 fun Expression.be(expression: Expression): Expression = plus(line(leo.named.expression.be(expression)))
 fun Expression.bind(expression: Expression): Expression = plus(line(leo.named.expression.bind(expression)))
 fun Expression.make(name: String): Expression = plus(line(leo.named.expression.make(name)))

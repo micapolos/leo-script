@@ -57,3 +57,6 @@ fun Value.numberPlusNumber(value: Value): Value =
 
 fun Value.giveEvaluation(value: Value): Evaluation<Value> =
 	unsafeFunction.invokeEvaluation(value)
+
+fun Value.takeEvaluation(value: Value): Evaluation<Value> =
+	value.unsafeFunction.invokeEvaluation(this)

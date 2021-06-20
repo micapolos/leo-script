@@ -42,6 +42,8 @@ import leo.named.expression.Recursive
 import leo.named.expression.RecursiveLine
 import leo.named.expression.Switch
 import leo.named.expression.SwitchLine
+import leo.named.expression.Take
+import leo.named.expression.TakeLine
 import leo.named.expression.With
 import leo.named.expression.WithLine
 import leo.named.expression.expression
@@ -57,6 +59,7 @@ import leo.named.value.lineTo
 import leo.named.value.make
 import leo.named.value.name
 import leo.named.value.plus
+import leo.named.value.takeEvaluation
 import leo.named.value.unsafeSwitchLine
 import leo.named.value.with
 import leo.stateful
@@ -99,6 +102,7 @@ fun Evaluator.plusEvaluation(line: Line): Evaluation<Evaluator> =
 		is SwitchLine -> plusEvaluation(line.switch)
 		is WithLine -> plusEvaluation(line.with)
 		is RecursiveLine -> plusEvaluation(line.recursive)
+		is TakeLine -> plusEvaluation(line.take)
 		is PrivateLine -> plusEvaluation(line.private)
 	}
 
@@ -183,6 +187,12 @@ fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
 			.valueEvaluation(switch.expression(valueLine.name))
 			.map { set(it) }
 	}
+
+fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(take.expression).bind { doingValue ->
+		value.takeEvaluation(doingValue).map { set(it) }
+	}
+
 
 fun Dictionary.giveEvaluation(type: Type, value: Value): Evaluation<Value> =
 	binding(type).giveEvaluation(value)

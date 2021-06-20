@@ -25,6 +25,7 @@ import leo.named.expression.numberExpressionLine
 import leo.named.expression.private
 import leo.named.expression.recursive
 import leo.named.expression.rhs
+import leo.named.expression.take
 import leo.named.expression.textExpression
 import leo.named.expression.with
 import leo.named.value.double
@@ -287,6 +288,16 @@ class EvaluateTest {
 				line(invoke(type("ping"))))
 				.value
 		}
+	}
+
+	@Test
+	fun take() {
+		expression(
+			10.numberExpressionLine,
+			line(take(expression(
+				type(numberTypeLine) doingLineTo body(expression(line(invoke(type(givenName)))))))))
+			.value
+			.assertEqualTo(value(givenName lineTo 10.numberValue))
 	}
 
 	@Test

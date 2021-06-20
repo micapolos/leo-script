@@ -13,6 +13,7 @@ import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.give
 import leo.named.typed.plus
+import leo.named.typed.take
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.named.typed.with
@@ -50,7 +51,7 @@ fun Compiler.give(typedExpression: TypedExpression): Compiler =
 	set(bodyTypedExpression.give(typedExpression))
 
 fun Compiler.take(typedExpression: TypedExpression): Compiler =
-	set(typedExpression.give(bodyTypedExpression))
+	set(bodyTypedExpression.take(typedExpression))
 
 fun Compiler.with(typedExpression: TypedExpression): Compiler =
 	set(bodyTypedExpression.with(typedExpression))

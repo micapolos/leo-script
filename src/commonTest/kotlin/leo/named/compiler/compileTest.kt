@@ -31,6 +31,7 @@ import leo.named.expression.make
 import leo.named.expression.numberExpression
 import leo.named.expression.rhs
 import leo.named.expression.switch
+import leo.named.expression.take
 import leo.named.typed.get
 import leo.named.typed.lineTo
 import leo.named.typed.of
@@ -238,8 +239,9 @@ class CompileTest {
 			.assertEqualTo(
 				typed(
 					expression(
-						type("ping") doingLineTo body(expression(line(make("pong")))),
-						line(give(expression(line(make("ping")))))),
+						line(make("ping")),
+						line(take(expression(
+							type("ping") doingLineTo body(expression(line(make("pong")))))))),
 					type("pong")))
 	}
 

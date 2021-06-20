@@ -37,6 +37,7 @@ import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.plus
 import leo.named.expression.switch
+import leo.named.expression.take
 import leo.named.expression.with
 import leo.plus
 import leo.script
@@ -86,6 +87,13 @@ fun TypedExpression.give(typedExpression: TypedExpression): TypedExpression =
 	type.compileDoing.let { doing ->
 		doing.lhsType.check(typedExpression.type) {
 			expression.give(typedExpression.expression).of(doing.rhsType)
+		}
+	}
+
+fun TypedExpression.take(typedExpression: TypedExpression): TypedExpression =
+	typedExpression.type.compileDoing.let { doing ->
+		doing.lhsType.check(type) {
+			expression.take(typedExpression.expression).of(doing.rhsType)
 		}
 	}
 

@@ -1,8 +1,8 @@
 package leo
 
-import leo.named.evaluator.value as typedEvaluate
 import leo.base.print
 import leo.java.io.inString
+import leo.named.evaluator.preludeEvaluate
 import leo.natives.fileText
 import leo.parser.scriptOrThrow
 import java.io.File
@@ -12,7 +12,7 @@ val typed = true
 fun main(args: Array<String>) {
 	try {
 		readText(args).scriptOrThrow.run {
-			if (typed) typedEvaluate else evaluate
+			if (typed) preludeEvaluate else evaluate
 		}
 	} catch (e: ValueError) {
 		value("parser" fieldTo e.value).errorValue.string
