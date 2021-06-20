@@ -13,17 +13,16 @@ import leo.giveName
 import leo.letName
 import leo.line
 import leo.lineTo
-import leo.literal
 import leo.makeName
 import leo.map
 import leo.named.value.anyScriptLine
-import leo.nativeName
 import leo.natives.invokeName
 import leo.plus
 import leo.privateName
 import leo.recursiveName
 import leo.script
 import leo.switchName
+import leo.term.nativeScript
 import leo.toName
 import leo.withName
 
@@ -79,5 +78,5 @@ val LetRhs.scriptLine: ScriptLine get() =
 val Body.script: Script get() =
 	when (this) {
 		is ExpressionBody -> expression.script
-		is FnBody -> script(nativeName lineTo script(literal(name)))
+		is FnBody -> valueFn.nativeScript
 	}

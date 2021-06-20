@@ -56,7 +56,7 @@ data class DoLetRhs(val do_: Do): LetRhs() { override fun toString() = super.toS
 
 sealed class Body { override fun toString() = script.toString() }
 data class ExpressionBody(val expression: Expression): Body() { override fun toString() = super.toString() }
-data class FnBody(val name: String, val valueFn: (Dictionary) -> Value): Body() { override fun toString() = super.toString() }
+data class FnBody(val valueFn: (Dictionary) -> Value): Body() { override fun toString() = super.toString() }
 
 fun expressionLine(literal: Literal): Line = LiteralLine(literal)
 fun anyExpressionLine(any: Any?): Line = AnyLine(any)
@@ -85,7 +85,7 @@ infix fun String.lineTo(rhs: Expression) = line(this fieldTo rhs)
 infix fun String.caseTo(expression: Expression) = Case(this, expression)
 
 fun body(expression: Expression): Body = ExpressionBody(expression)
-fun body(name: String, fn: Dictionary.() -> Value): Body = FnBody(name, fn)
+fun body(name: String, fn: Dictionary.() -> Value): Body = FnBody(fn)
 
 fun be(expression: Expression) = Be(expression)
 fun bind(expression: Expression) = Bind(expression)
