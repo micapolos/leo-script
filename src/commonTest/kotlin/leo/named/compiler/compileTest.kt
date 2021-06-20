@@ -167,10 +167,13 @@ class CompileTest {
 	}
 
 	@Test
-	fun function_missingDoing() {
-		assertFails {
-			script(functionName lineTo script()).typedExpression
-		}
+	fun function_empty() {
+		script(functionName)
+			.typedExpression
+			.assertEqualTo(
+				typed(
+					expression(line(make(functionName))),
+					type(functionName)))
 	}
 
 	@Test

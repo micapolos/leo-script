@@ -117,7 +117,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		bindName -> plusBindCompilation(scriptField.rhs)
 		debugName -> plusDebugCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
-		functionName -> plusFunctionCompilation(scriptField.rhs)
+		functionName -> plusFunctionOrNullCompilation(scriptField.rhs)
 		giveName -> plusGiveCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		ofName -> plusOfCompilation(scriptField.rhs)
@@ -164,8 +164,9 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 		.typedExpressionCompilation(script)
 		.map { set(typedExpression.do_(it)) }
 
-fun Compiler.plusFunctionCompilation(script: Script): Compilation<Compiler> =
-	script.matchInfix(doingName) { lhs, rhs ->
+fun Compiler.plusFunctionOrNullCompilation(script: Script): Compilation<Compiler>? =
+	if (script.isEmpty) null
+	else script.matchInfix(doingName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
 			module.privateDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { body ->
 				plus(type.functionTypedLine(body))

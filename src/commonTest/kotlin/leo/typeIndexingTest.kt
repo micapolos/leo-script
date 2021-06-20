@@ -17,7 +17,7 @@ class TypeIndexingTest {
 			indexedLineOrNull("x").assertEqualTo(0 indexed ("x" lineTo type()))
 			indexedLineOrNull(textName).assertEqualTo(1 indexed textTypeLine)
 			indexedLineOrNull(numberName).assertEqualTo(2 indexed numberTypeLine)
-			indexedLineOrNull(doingName).assertEqualTo(3 indexed (type(textTypeLine) functionLineTo type(numberTypeLine)))
+			indexedLineOrNull(functionName).assertEqualTo(3 indexed (type(textTypeLine) functionLineTo type(numberTypeLine)))
 			indexedLineOrNull("foo").assertNull
 		}
 	}

@@ -2,7 +2,7 @@ package leo.named.value
 
 import leo.Script
 import leo.ScriptLine
-import leo.doingName
+import leo.functionName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -36,4 +36,4 @@ val ValueField.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
 val ValueFunction.scriptLine get() =
-	doingName lineTo script(dictionary.scriptLine, "body" lineTo doing.script)
+	functionName lineTo script(dictionary.scriptLine, "body" lineTo doing.script)

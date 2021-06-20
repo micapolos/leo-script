@@ -8,7 +8,7 @@ val TypeLine.name: String get() =
 
 val TypeAtom.name: String get() =
 	when (this) {
-		is FunctionTypeAtom -> doingName
+		is FunctionTypeAtom -> functionName
 		is PrimitiveTypeAtom -> primitive.name
 	}
 
