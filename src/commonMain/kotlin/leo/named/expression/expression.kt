@@ -88,7 +88,7 @@ infix fun String.lineTo(rhs: Expression) = line(this fieldTo rhs)
 infix fun String.caseTo(expression: Expression) = Case(this, expression)
 
 fun body(expression: Expression): Body = ExpressionBody(expression)
-fun body(name: String, fn: Dictionary.() -> Value): Body = FnBody(fn)
+fun body(fn: Dictionary.() -> Value): Body = FnBody(fn)
 
 fun be(expression: Expression) = Be(expression)
 fun bind(expression: Expression) = Bind(expression)
@@ -110,7 +110,7 @@ fun rhs(be: Be): LetRhs = BeLetRhs(be)
 fun rhs(do_: Do): LetRhs = DoLetRhs(do_)
 
 fun doing(type: Type, expression: Expression) = doing(type, body(expression))
-fun doing(type: Type, name: String, fn: Dictionary.() -> Value) = doing(type, body(name, fn))
+fun doing(type: Type, fn: Dictionary.() -> Value) = doing(type, body(fn))
 
 fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }

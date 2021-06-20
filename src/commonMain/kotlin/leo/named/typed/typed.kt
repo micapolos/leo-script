@@ -100,10 +100,12 @@ fun TypedExpression.take(typedExpression: TypedExpression): TypedExpression =
 fun TypedExpression.switch(casesStack: Stack<TypedCase>): TypedExpression =
 	zip(type.switchChoice.lineStack, casesStack)
 		.map {
-			if (first == null) error("exhausted")
-			else if (second == null) error("not exhaustive")
-			else if (first!!.name != second!!.case.name) error("case mismatch")
-			else true
+			let { (first, second) ->
+				if (first == null) error("exhausted")
+				else if (second == null) error("not exhaustive")
+				else if (first.name != second.case.name) error("case mismatch")
+				else true
+			}
 		}
 		.all { this }
 		.run { if (!this) error("dupa") }

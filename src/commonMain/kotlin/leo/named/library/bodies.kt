@@ -13,26 +13,26 @@ import leo.plusName
 import leo.textName
 
 val numberTextBody get() =
-	body("numberText") {
+	body {
 		get(textName).get(numberName).double.toString().textValue
 	}
 
 val numberPlusNumberBody get() =
-	body("numberPlusNumber") {
+	body {
 		get(numberName).double
 			.plus(get(plusName).get(numberName).double)
 			.numberValue
 	}
 
 val numberMinusNumberBody get() =
-	body("numberMinusNumber") {
+	body {
 		get(numberName).double
 			.minus(get(minusName).get(numberName).double)
 			.numberValue
 	}
 
 val numberTimesNumberBody get() =
-	body("numberTimesNumber") {
+	body {
 		get(numberName).double
 			.times(get(timesName).get(numberName).double)
 			.numberValue

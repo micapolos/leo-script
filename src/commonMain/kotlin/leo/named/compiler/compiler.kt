@@ -37,10 +37,6 @@ fun Compiler.set(module: Module): Compiler =
 fun Compiler.set(typedExpression: TypedExpression): Compiler =
 	copy(typedExpression = typedExpression)
 
-val Compiler.typedExpression: TypedExpression
-	get() =
-		typedExpression
-
 fun Compiler.plus(typedLine: TypedLine): Compiler =
 	set(typedExpression.plus(typedLine))
 

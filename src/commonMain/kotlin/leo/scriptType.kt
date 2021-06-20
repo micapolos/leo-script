@@ -44,9 +44,9 @@ val ScriptLine.typeAtom: TypeAtom get() =
 		?: typePrimitive.atom
 
 val ScriptLine.typeDoingOrNull: TypeDoing? get() =
-	match(doingName) { rhs ->
-		rhs.matchInfix(toName) { lhs, rhs ->
-			lhs.type doing rhs.type
+	match(doingName) { doing ->
+		doing.matchInfix(toName) { lhs, to ->
+			lhs.type doing to.type
 		}
 	}
 

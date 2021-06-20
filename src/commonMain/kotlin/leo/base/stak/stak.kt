@@ -102,21 +102,21 @@ fun <T : Any> Node<T>.pop(count: Int): Node<T>? =
 
 
 fun <T : Any> Link<T>.pop(count: Int): Node<T>? {
-	var count = count
+	var countVar = count
 	var depth = 1
 	var link: Link<T>? = this
 	while (true) {
 		if (link == null) return null
-		if (count == depth) return link.node
+		if (countVar == depth) return link.node
 		val nextLink = link.linkOrNull
 		if (nextLink == null) {
-			count -= depth
+			countVar -= depth
 			depth = 1
 			link = link.node.linkOrNull
 		} else {
 			val nextDepth = depth.shl(1)
-			if (count <= nextDepth) {
-				count -= depth
+			if (countVar <= nextDepth) {
+				countVar -= depth
 				depth = 1
 				link = link.node.linkOrNull
 			} else {

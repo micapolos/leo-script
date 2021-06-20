@@ -137,7 +137,7 @@ class EvaluateTest {
 		expression(
 			30.numberExpressionLine,
 			minusName lineTo 20.numberExpression,
-			line(do_(body("numberMinusNumber") {
+			line(do_(body {
 				get(numberName).double
 					.minus(get(minusName).get(numberName).double)
 					.numberValue
@@ -193,7 +193,7 @@ class EvaluateTest {
 	@Test
 	fun doingGive_native() {
 		expression(
-			type(numberTypeLine) doingLineTo body("numberIncrement") { get(numberName).double.plus(1).numberValue },
+			type(numberTypeLine) doingLineTo body { get(numberName).double.plus(1).numberValue },
 			line(give(expression(expressionLine(literal(10))))))
 			.value
 			.assertEqualTo(11.numberValue)
