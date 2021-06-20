@@ -1,6 +1,5 @@
 package leo.named.compiler
 
-import leo.Type
 import leo.fold
 import leo.reverse
 
@@ -22,7 +21,3 @@ fun Module.plusPrivate(definition: Definition) =
 
 fun Module.plusPrivate(dictionary: Dictionary) =
 	fold(dictionary.definitionStack.reverse) { plusPrivate(it) }
-
-fun Module.bind(type: Type): Module =
-	Module(privateDictionary.plus(type.linesDictionary), publicDictionary.plus(type.linesDictionary))
-

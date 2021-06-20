@@ -42,7 +42,7 @@ fun Compiler.plus(typedLine: TypedLine): Compiler =
 
 fun Compiler.bind(typedExpression: TypedExpression): Compiler =
 	this
-		.set(module.bind(typedExpression.type))
+		.set(module.plus(typedExpression.type.bindDictionary))
 		.set(this.typedExpression.bind(typedExpression))
 
 fun Compiler.give(typedExpression: TypedExpression): Compiler =

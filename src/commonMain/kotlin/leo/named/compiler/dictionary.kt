@@ -29,16 +29,16 @@ fun Dictionary.bindingOrNull(structure: Type): Binding? =
 fun Dictionary.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	bindingOrNull(typedExpression.type)?.resolve(typedExpression)
 
-val Type.givenDictionary: Dictionary
+val Type.doDictionary: Dictionary
 	get() =
-		dictionary().plus(givenDefinition).plus(linesDictionary)
+		dictionary().plus(givenDefinition).plus(bindDictionary)
 
-val Type.linesDictionary: Dictionary get() =
+val Type.bindDictionary: Dictionary get() =
 	// TODO: Add "content"
 	when (this) {
 		is ChoiceType -> dictionary()
-		is StructureType -> structure.linesDictionary
+		is StructureType -> structure.bindDictionary
 	}
 
-val TypeStructure.linesDictionary: Dictionary get() =
-	dictionary().fold(lineSeq) { plus(it.nameDefinition) }
+val TypeStructure.bindDictionary: Dictionary get() =
+	dictionary().fold(lineSeq) { plus(it.bindDefinition) }

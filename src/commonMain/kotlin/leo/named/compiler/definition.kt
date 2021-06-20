@@ -14,7 +14,7 @@ data class Definition(val type: Type, val binding: Binding) { override fun toStr
 fun definition(type: Type, binding: Binding) =
 	Definition(type, binding)
 
-val TypeLine.nameDefinition: Definition get() =
+val TypeLine.bindDefinition: Definition get() =
 	definition(type(name), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =
@@ -24,4 +24,4 @@ val TypeDoing.definition: Definition get() =
 	definition(lhsType, functionBinding(rhsType))
 
 val Type.givenDefinition: Definition get() =
-	(givenName lineTo this).nameDefinition
+	(givenName lineTo this).bindDefinition

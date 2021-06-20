@@ -160,14 +160,14 @@ val Compiler.plusDebugCompilation: Compilation<Compiler> get() =
 
 fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 	childDictionary
-		.plus(typedExpression.type.givenDictionary)
+		.plus(typedExpression.type.doDictionary)
 		.typedExpressionCompilation(script)
 		.map { set(typedExpression.do_(it)) }
 
 fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
 	script.matchInfix(toName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
-			module.privateDictionary.plus(type.givenDictionary).typedExpressionCompilation(rhs).map { body ->
+			module.privateDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { body ->
 				plus(type.doingTypedLine(body))
 			}
 		}
@@ -211,7 +211,7 @@ fun Dictionary.switchCompilation(typedExpression: TypedExpression, script: Scrip
 	}
 
 fun Dictionary.typedCaseCompilation(caseLine: TypeLine, scriptField: ScriptField): Compilation<TypedCase> =
-	plus(caseLine.nameDefinition).typedExpressionCompilation(scriptField.rhs).map { typedExpression ->
+	plus(caseLine.bindDefinition).typedExpressionCompilation(scriptField.rhs).map { typedExpression ->
 		typed(scriptField.name caseTo typedExpression.expression, typedExpression.type)
 	}
 
@@ -240,7 +240,7 @@ fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compile
 
 fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
 	typeCompilation(lhs).bind { type ->
-		childDictionary.plus(type.givenDictionary).typedExpressionCompilation(rhs).map { typedExpression ->
+		childDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { typedExpression ->
 			letDo(type, typedExpression)
 		}
 	}
