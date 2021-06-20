@@ -6,6 +6,7 @@ import leo.bindName
 import leo.choice
 import leo.choiceName
 import leo.doName
+import leo.doingName
 import leo.functionLineTo
 import leo.functionName
 import leo.giveName
@@ -44,7 +45,6 @@ import leo.switchName
 import leo.takeName
 import leo.textTypeLine
 import leo.theName
-import leo.toName
 import leo.type
 import leo.typeName
 import leo.withName
@@ -148,12 +148,12 @@ class CompileTest {
 	}
 
 	@Test
-	fun doing() {
+	fun function() {
 		script(
 			"foo" lineTo script(),
 			functionName lineTo script(
 				"ping" lineTo script(),
-				toName lineTo script("pong")))
+				doingName lineTo script("pong")))
 			.typedExpression
 			.assertEqualTo(
 				typed(
@@ -167,18 +167,18 @@ class CompileTest {
 	}
 
 	@Test
-	fun doing_missingTo() {
+	fun function_missingDoing() {
 		assertFails {
 			script(functionName lineTo script()).typedExpression
 		}
 	}
 
 	@Test
-	fun doingGive() {
+	fun functionGive() {
 		script(
 			functionName lineTo script(
 				"ping" lineTo script(),
-				toName lineTo script("pong")),
+				doingName lineTo script("pong")),
 			giveName lineTo script("ping"))
 			.typedExpression
 			.assertEqualTo(
@@ -190,7 +190,7 @@ class CompileTest {
 	}
 
 	@Test
-	fun doingGive_notFunction() {
+	fun functionGive_notFunction() {
 		assertFails {
 			script(
 				"ping" lineTo script(),
@@ -238,7 +238,7 @@ class CompileTest {
 			takeName lineTo script(
 				functionName lineTo script(
 					"ping" lineTo script(),
-					toName lineTo script("pong"))))
+					doingName lineTo script("pong"))))
 			.typedExpression
 			.assertEqualTo(
 				typed(

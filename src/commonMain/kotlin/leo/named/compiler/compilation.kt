@@ -18,6 +18,7 @@ import leo.bind
 import leo.bindName
 import leo.debugName
 import leo.doName
+import leo.doingName
 import leo.flat
 import leo.fold
 import leo.foldStateful
@@ -62,7 +63,6 @@ import leo.stateful
 import leo.switchName
 import leo.takeName
 import leo.theName
-import leo.toName
 import leo.type
 import leo.typeName
 import leo.withName
@@ -165,7 +165,7 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 		.map { set(typedExpression.do_(it)) }
 
 fun Compiler.plusFunctionCompilation(script: Script): Compilation<Compiler> =
-	script.matchInfix(toName) { lhs, rhs ->
+	script.matchInfix(doingName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
 			module.privateDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { body ->
 				plus(type.functionTypedLine(body))

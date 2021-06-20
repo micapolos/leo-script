@@ -6,6 +6,7 @@ import leo.beName
 import leo.bindName
 import leo.choiceName
 import leo.doName
+import leo.doingName
 import leo.functionName
 import leo.giveName
 import leo.line
@@ -20,7 +21,6 @@ import leo.script
 import leo.switchName
 import leo.takeName
 import leo.textTypeScriptLine
-import leo.toName
 import leo.typeName
 import leo.withName
 import kotlin.test.Test
@@ -95,24 +95,24 @@ class ScriptEvaluateTest {
 	}
 
 	@Test
-	fun doingGive() {
+	fun functionGive() {
 		script(
 			functionName lineTo script(
 				"ping" lineTo script(),
-				toName lineTo script("pong" lineTo script())),
+				doingName lineTo script("pong" lineTo script())),
 			giveName lineTo script("ping"))
 			.evaluate
 			.assertEqualTo(script("pong"))
 	}
 
 	@Test
-	fun takeDoing() {
+	fun takeFunction() {
 		script(
 			"ping" lineTo script(),
 			takeName lineTo script(
 				functionName lineTo script(
 					"ping" lineTo script(),
-					toName lineTo script("pong" lineTo script()))))
+					doingName lineTo script("pong" lineTo script()))))
 			.evaluate
 			.assertEqualTo(script("pong"))
 	}
