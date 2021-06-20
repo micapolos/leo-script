@@ -1,11 +1,8 @@
 package leo.named.compiler
 
 import leo.Type
-import leo.base.runIf
 import leo.named.expression.Expression
-import leo.named.expression.expression
 import leo.named.expression.invoke
-import leo.named.expression.variable
 import leo.named.typed.TypedExpression
 import leo.named.typed.of
 
@@ -24,5 +21,5 @@ fun Binding.resolve(typedExpression: TypedExpression): TypedExpression =
 	expression(typedExpression).of(type)
 
 fun Binding.expression(typedExpression: TypedExpression): Expression =
-	expression(variable(typedExpression.type))
-		.runIf(!isConstant) { invoke(typedExpression.expression) }
+	typedExpression.expression.invoke(typedExpression.type)
+		//.runIf(!isConstant) { give(typedExpression.expression) }

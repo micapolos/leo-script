@@ -1,99 +1,131 @@
 package leo.named.expression
 
-import leo.Empty
 import leo.Literal
 import leo.Stack
 import leo.Type
-import leo.base.fold
 import leo.base.notNullIf
 import leo.base.notNullOrError
-import leo.empty
+import leo.literal
 import leo.mapFirst
 import leo.named.evaluator.Dictionary
 import leo.named.value.Value
+import leo.push
+import leo.reverse
+import leo.seq
 import leo.stack
 
-sealed class Expression { override fun toString() = script.toString() }
-
-data class EmptyExpression(val empty: Empty): Expression() { override fun toString() = super.toString() }
-data class LinkExpression(val link: Link): Expression() { override fun toString() = super.toString() }
-data class WithExpression(val with: With): Expression() { override fun toString() = super.toString() }
-data class GetExpression(val get: Get): Expression() { override fun toString() = super.toString() }
-data class SwitchExpression(val switch: Switch): Expression() { override fun toString() = super.toString() }
-data class InvokeExpression(val invoke: Invoke): Expression() { override fun toString() = super.toString() }
-data class BindExpression(val bind: Bind): Expression() { override fun toString() = super.toString() }
-data class VariableExpression(val variable: Variable): Expression() { override fun toString() = super.toString() }
+data class Expression(val lineStack: Stack<Line>) { override fun toString() = scriptLine.toString() }
 
 sealed class Line { override fun toString() = scriptLine.toString() }
-data class LiteralLine(val literal: Literal): Line() { override fun toString() = super.toString() }
-data class FieldLine(val field: Field): Line() { override fun toString() = super.toString() }
-data class FunctionLine(val function: Function): Line() { override fun toString() = super.toString() }
 data class AnyLine(val any: Any?): Line() { override fun toString() = super.toString() }
+data class BeLine(val be: Be): Line() { override fun toString() = super.toString() }
+data class BindLine(val bind: Bind): Line() { override fun toString() = super.toString() }
+data class DoLine(val do_: Do): Line() { override fun toString() = super.toString() }
+data class DoingLine(val doing: Doing): Line() { override fun toString() = super.toString() }
+data class FieldLine(val field: Field): Line() { override fun toString() = super.toString() }
+data class GetLine(val get: Get): Line() { override fun toString() = super.toString() }
+data class GiveLine(val give: Give): Line() { override fun toString() = super.toString() }
+data class InvokeLine(val invoke: Invoke): Line() { override fun toString() = super.toString() }
+data class LiteralLine(val literal: Literal): Line() { override fun toString() = super.toString() }
+data class LetLine(val let: Let): Line() { override fun toString() = super.toString() }
+data class MakeLine(val make: Make): Line() { override fun toString() = super.toString() }
+data class PrivateLine(val private: Private): Line() { override fun toString() = super.toString() }
+data class RecursiveLine(val recursive: Recursive): Line() { override fun toString() = super.toString() }
+data class SwitchLine(val switch: Switch): Line() { override fun toString() = super.toString() }
+data class WithLine(val with: With): Line() { override fun toString() = super.toString() }
 
-data class Link(val expression: Expression, val line: Line) { override fun toString() = script.toString() }
-data class With(val lhs: Expression, val rhs: Expression) { override fun toString() = script.toString() }
-data class Field(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Get(val expression: Expression, val name: String) { override fun toString() = script.toString() }
-data class Switch(val expression: Expression, val cases: Stack<Case>) { override fun toString() = script.toString() }
+data class Be(val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Bind(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Function(val body: Body) { override fun toString() = scriptLine.toString() }
-data class Invoke(val function: Expression, val params: Expression) { override fun toString() = script.toString() }
-data class Bind(val binding: Binding, val expression: Expression) { override fun toString() = script.toString() }
-data class Variable(val type: Type) { override fun toString() = script.toString() }
-data class Binding(val type: Type, val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Do(val body: Body) { override fun toString() = scriptLine.toString() }
+data class Doing(val type: Type, val body: Body) { override fun toString() = scriptLine.toString() }
+data class Field(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Get(val name: String) { override fun toString() = scriptLine.toString() }
+data class Give(val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Invoke(val type: Type) { override fun toString() = scriptLine.toString() }
+data class Let(val type: Type, val rhs: LetRhs) { override fun toString() = scriptLine.toString() }
+data class Make(val name: String) { override fun toString() = scriptLine.toString() }
+data class Private(val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Recursive(val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class Switch(val cases: Stack<Case>) { override fun toString() = scriptLine.toString() }
+data class With(val expression: Expression) { override fun toString() = scriptLine.toString() }
+
+sealed class LetRhs { override fun toString() = scriptLine.toString() }
+data class BeLetRhs(val be: Be): LetRhs() { override fun toString() = super.toString() }
+data class DoLetRhs(val do_: Do): LetRhs() { override fun toString() = super.toString() }
 
 sealed class Body { override fun toString() = script.toString() }
 data class ExpressionBody(val expression: Expression): Body() { override fun toString() = super.toString() }
 data class FnBody(val name: String, val valueFn: (Dictionary) -> Value): Body() { override fun toString() = super.toString() }
 
-fun expression(empty: Empty): Expression = EmptyExpression(empty)
-fun expression(link: Link): Expression = LinkExpression(link)
-fun expression(get: Get): Expression = GetExpression(get)
-fun expression(switch: Switch): Expression = SwitchExpression(switch)
-fun expression(invoke: Invoke): Expression = InvokeExpression(invoke)
-fun expression(with: With): Expression = WithExpression(with)
-fun expression(bind: Bind): Expression = BindExpression(bind)
-fun expression(variable: Variable): Expression = VariableExpression(variable)
+fun expressionLine(literal: Literal): Line = LiteralLine(literal)
+fun anyExpressionLine(any: Any?): Line = AnyLine(any)
+fun line(be: Be): Line = BeLine(be)
+fun line(do_: Do): Line = DoLine(do_)
+fun line(bind: Bind): Line = BindLine(bind)
+fun line(field: Field): Line = FieldLine(field)
+fun line(get: Get): Line = GetLine(get)
+fun line(switch: Switch): Line = SwitchLine(switch)
+fun line(give: Give): Line = GiveLine(give)
+fun line(with: With): Line = WithLine(with)
+fun line(let: Let): Line = LetLine(let)
+fun line(make: Make): Line = MakeLine(make)
+fun line(invoke: Invoke): Line = InvokeLine(invoke)
+fun line(doing: Doing): Line = DoingLine(doing)
+fun line(recursive: Recursive): Line = RecursiveLine(recursive)
+fun line(private: Private): Line = PrivateLine(private)
 
-fun Expression.plus(line: Line) = expression(this linkTo line)
-fun expression(vararg lines: Line): Expression = expression(empty).fold(lines) { plus(it) }
+val Stack<Line>.expression get() = Expression(this)
+fun Expression.plus(line: Line) = lineStack.push(line).expression
+fun expression(vararg lines: Line): Expression = Expression(stack(*lines))
 fun expression(name: String): Expression = expression(name lineTo expression())
 
 infix fun String.fieldTo(rhs: Expression) = Field(this, rhs)
 infix fun String.lineTo(rhs: Expression) = line(this fieldTo rhs)
 infix fun String.caseTo(expression: Expression) = Case(this, expression)
-infix fun Expression.linkTo(line: Line) = Link(this, line)
-
-fun expressionLine(literal: Literal): Line = LiteralLine(literal)
-fun line(field: Field): Line = FieldLine(field)
-fun line(function: Function): Line = FunctionLine(function)
-fun anyExpressionLine(any: Any?): Line = AnyLine(any)
 
 fun body(expression: Expression): Body = ExpressionBody(expression)
-fun body(name: String, fn: (Dictionary) -> Value): Body = FnBody(name, fn)
+fun body(name: String, fn: Dictionary.() -> Value): Body = FnBody(name, fn)
 
-fun get(expression: Expression, name: String) = Get(expression, name)
-fun function(body: Body) = Function(body)
-fun invoke(function: Expression, params: Expression) = Invoke(function, params)
-fun switch(lhs: Expression, cases: Stack<Case>) = Switch(lhs, cases)
-fun variable(type: Type) = Variable(type)
-fun bind(binding: Binding, expression: Expression) = Bind(binding, expression)
-fun binding(type: Type, expression: Expression) = Binding(type, expression)
-fun with(lhs: Expression, rhs: Expression) = With(lhs, rhs)
+fun be(expression: Expression) = Be(expression)
+fun bind(expression: Expression) = Bind(expression)
+fun do_(body: Body) = Do(body)
+fun doing(type: Type, body: Body) = Doing(type, body)
+fun get(name: String) = Get(name)
+fun give(expression: Expression) = Give(expression)
+fun invoke(type: Type) = Invoke(type)
+fun let(type: Type, rhs: LetRhs) = Let(type, rhs)
+fun make(name: String) = Make(name)
+fun recursive(expression: Expression) = Recursive(expression)
+fun switch(cases: Stack<Case>) = Switch(cases)
+fun switch(vararg cases: Case) = Switch(stack(*cases))
+fun with(rhs: Expression) = With(rhs)
+fun private(expression: Expression) = Private(expression)
 
-fun Expression.get(name: String): Expression = expression(get(this, name))
-fun Expression.switch(vararg cases: Case): Expression = expression(switch(this, stack(*cases)))
-fun Expression.switch(caseStack: Stack<Case>): Expression = expression(switch(this, caseStack))
-fun Expression.invoke(expression: Expression): Expression = expression(invoke(this, expression))
-fun Expression.with(expression: Expression): Expression = expression(with(this, expression))
-fun Binding.in_(expression: Expression): Expression = expression(bind(this, expression))
-fun get(type: Type): Expression = expression(variable(type))
+fun rhs(be: Be): LetRhs = BeLetRhs(be)
+fun rhs(do_: Do): LetRhs = DoLetRhs(do_)
 
-fun function(expression: Expression) = expression(line(function(body(expression))))
-fun function(name: String, fn: Dictionary.() -> Value) = expression(line(function(body(name, fn))))
+fun doing(type: Type, expression: Expression) = doing(type, body(expression))
+fun doing(type: Type, name: String, fn: Dictionary.() -> Value) = doing(type, body(name, fn))
 
 fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
 fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
 fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == name) { expression }
 
-val Expression.linkOrNull: Link? get() = (this as? LinkExpression)?.link
+val Expression.lineSeq get() = lineStack.reverse.seq
+
+fun Expression.give(expression: Expression): Expression = plus(line(leo.named.expression.give(expression)))
+fun Expression.be(expression: Expression): Expression = plus(line(leo.named.expression.be(expression)))
+fun Expression.bind(expression: Expression): Expression = plus(line(leo.named.expression.bind(expression)))
+fun Expression.make(name: String): Expression = plus(line(leo.named.expression.make(name)))
+fun Expression.invoke(type: Type): Expression = plus(line(leo.named.expression.invoke(type)))
+infix fun Type.doingLineTo(body: Body): Line = line(doing(this, body))
+
+fun Expression.get(name: String): Expression = plus(line(leo.named.expression.get(name)))
+fun Expression.switch(caseStack: Stack<Case>) = plus(line(Switch(caseStack)))
+
+val Int.numberExpressionLine get() = expressionLine(literal(this))
+val String.textExpressionLine get() = expressionLine(literal(this))
+
+val Int.numberExpression get() = expression(numberExpressionLine)
+val String.textExpression get() = expression(textExpressionLine)

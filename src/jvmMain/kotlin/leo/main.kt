@@ -1,6 +1,6 @@
 package leo
 
-import leo.named.evaluator.evaluate as typedEvaluate
+import leo.named.evaluator.value as typedEvaluate
 import leo.base.print
 import leo.java.io.inString
 import leo.natives.fileText

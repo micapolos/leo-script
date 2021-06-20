@@ -26,12 +26,13 @@ import leo.named.expression.Expression
 import leo.named.expression.Field
 import leo.named.expression.Line
 import leo.named.expression.body
+import leo.named.expression.do_
+import leo.named.expression.doing
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.fieldTo
-import leo.named.expression.function
 import leo.named.expression.get
-import leo.named.expression.invoke
+import leo.named.expression.give
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.plus
@@ -79,12 +80,12 @@ fun typedLine(literal: Literal): TypedLine =
 	typed(expressionLine(literal), literal.typeLine)
 
 fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
-	function(typedExpression.expression).invoke(expression).of(typedExpression.type)
+	expression.plus(line(do_(body(typedExpression.expression)))).of(typedExpression.type)
 
-fun TypedExpression.invoke(typedExpression: TypedExpression): TypedExpression =
+fun TypedExpression.give(typedExpression: TypedExpression): TypedExpression =
 	type.compileDoing.let { doing ->
 		doing.lhsType.check(typedExpression.type) {
-			expression.invoke(typedExpression.expression).of(doing.rhsType)
+			expression.give(typedExpression.expression).of(doing.rhsType)
 		}
 	}
 
@@ -112,11 +113,11 @@ fun TypedExpression.get(name: String): TypedExpression =
 
 infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 	typed(
-		line(function(body(bodyTypedExpression.expression))),
+		line(doing(this, body(bodyTypedExpression.expression))),
 		this.doingLineTo(bodyTypedExpression.type))
 
 fun TypedExpression.with(typedExpression: TypedExpression): TypedExpression =
-	typed(expression.with(typedExpression.expression), type.plus(typedExpression.type))
+	typed(expression.plus(line(with(typedExpression.expression))), type.plus(typedExpression.type))
 
 val TypedField.name: String get() = typeField.name
 val TypedField.line: TypedLine get() = typed(line(field), line(atom(typeField)))

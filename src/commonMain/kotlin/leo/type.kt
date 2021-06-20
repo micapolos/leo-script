@@ -1,5 +1,6 @@
 package leo
 
+import leo.base.Seq
 import leo.base.notNullOrError
 import leo.base.orNullIf
 import leo.named.compiler.compileStructure
@@ -245,3 +246,6 @@ val TypeStructure.nameOrNull: String? get() =
 
 val Type.nameOrNull: String? get() =
 	structureOrNull?.nameOrNull
+
+val TypeStructure.lineSeq: Seq<TypeLine> get() =
+	lineStack.reverse.seq

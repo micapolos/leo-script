@@ -14,7 +14,7 @@ class PreludeEvaluateTest {
 		script(
 			line(literal(10)),
 			plusName lineTo script(literal(20)))
-			.evaluate
+			.preludeEvaluate
 			.assertEqualTo(script(literal(30)))
 	}
 }

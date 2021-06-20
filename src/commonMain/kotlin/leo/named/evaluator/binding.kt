@@ -1,5 +1,8 @@
 package leo.named.evaluator
 
+import leo.named.expression.BeLetRhs
+import leo.named.expression.DoLetRhs
+import leo.named.expression.LetRhs
 import leo.named.value.Value
 import leo.named.value.ValueFunction
 import leo.named.value.function
@@ -34,4 +37,10 @@ val Binding.value: Value get() =
 		is FunctionBinding -> value(line(function))
 		is RecursiveBinding -> error("$this.apply($value)")
 		is ValueBinding -> value
+	}
+
+val LetRhs.binding: Binding get() =
+	when (this) {
+		is BeLetRhs -> TODO()
+		is DoLetRhs -> TODO()
 	}

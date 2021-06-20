@@ -2,21 +2,19 @@ package leo.named.evaluator
 
 import leo.Stack
 import leo.Type
+import leo.base.Seq
+import leo.base.fold
 import leo.fold
-import leo.get
 import leo.lineTo
 import leo.linkOrNull
 import leo.map
 import leo.mapFirst
-import leo.named.expression.Body
-import leo.named.expression.Expression
-import leo.named.expression.ExpressionBody
-import leo.named.expression.FnBody
 import leo.named.value.Value
 import leo.push
 import leo.reverse
 import leo.script
 import leo.scriptLine
+import leo.seq
 import leo.stack
 import leo.throwScriptIfNull
 import leo.type
@@ -25,20 +23,14 @@ data class Dictionary(val definitionStack: Stack<Definition>) { override fun toS
 
 fun dictionary(vararg definitions: Definition): Dictionary = Dictionary(stack(*definitions))
 
+val Dictionary.definitionSeq: Seq<Definition> get() =
+	definitionStack.reverse.seq
+
 fun Dictionary.plus(definition: Definition): Dictionary =
 	definitionStack.push(definition).let(::Dictionary)
 
 fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	fold(dictionary.definitionStack.reverse) { plus(it) }
-
-fun Dictionary.value(body: Body): Value =
-	when (body) {
-		is ExpressionBody -> value(body.expression)
-		is FnBody -> body.valueFn(this)
-	}
-
-fun Dictionary.value(expression: Expression): Value =
-	expression.valueEvaluation.get(this)
 
 fun Dictionary.rawBinding(type: Type): Binding =
 	definitionStack
@@ -48,8 +40,14 @@ fun Dictionary.rawBinding(type: Type): Binding =
 fun Dictionary.get(name: String): Value =
 	value(type(name))
 
-val Value.dictionary: Dictionary get() =
+val Value.givenDictionary: Dictionary get() =
+	dictionary().plus(givenDefinition).plus(linesDictionary)
+
+val Value.linesDictionary: Dictionary get() =
 	lineStack.map { definition }.let(::Dictionary)
+
+fun Dictionary.bind(value: Value): Dictionary =
+	plus(value.linesDictionary)
 
 fun Dictionary.value(type: Type): Value =
 	binding(type).value
@@ -67,6 +65,6 @@ fun Binding.resolve(): Binding =
 	}
 
 fun Dictionary.plusRecursive(dictionary: Dictionary): Dictionary =
-	fold(dictionary.definitionStack.reverse) { definition ->
+	fold(dictionary.definitionSeq) { definition ->
 		plus(definition.recursive(this, dictionary))
 	}

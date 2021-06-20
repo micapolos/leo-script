@@ -2,6 +2,8 @@ package leo.named.value
 
 import leo.base.notNullOrError
 import leo.lineTo
+import leo.named.evaluator.Evaluation
+import leo.named.evaluator.invokeEvaluation
 import leo.onlyOrNull
 import leo.script
 import leo.throwScriptIfNull
@@ -53,5 +55,5 @@ fun Value.intPlusInt(value: Value): Value =
 fun Value.numberPlusNumber(value: Value): Value =
 	double.plus(value.double).numberValue
 
-fun Value.invoke(value: Value): Value =
-	unsafeFunction.invoke(value)
+fun Value.giveEvaluation(value: Value): Evaluation<Value> =
+	unsafeFunction.invokeEvaluation(value)

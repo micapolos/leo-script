@@ -4,6 +4,8 @@ import leo.Type
 import leo.TypeDoing
 import leo.TypeLine
 import leo.base.orNullIf
+import leo.givenName
+import leo.lineTo
 import leo.name
 import leo.type
 
@@ -20,3 +22,6 @@ fun Definition.bindingOrNull(type: Type): Binding? =
 
 val TypeDoing.definition: Definition get() =
 	definition(lhsType, functionBinding(rhsType))
+
+val Type.givenDefinition: Definition get() =
+	(givenName lineTo this).nameDefinition

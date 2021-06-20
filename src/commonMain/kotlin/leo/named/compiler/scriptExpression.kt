@@ -18,3 +18,6 @@ fun Context.expression(script: Script): Expression =
 fun Script.typedExpression(context: Context): TypedExpression =
 	context.module.compiler.plusCompilation(this).map { it.typedExpression }.get(unitEnvironment)
 
+fun Script.typedExpression(compiler: Compiler): TypedExpression =
+	compiler.plusCompilation(this).map { it.typedExpression }.get(unitEnvironment)
+

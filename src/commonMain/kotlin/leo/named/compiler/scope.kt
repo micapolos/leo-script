@@ -1,7 +1,6 @@
 package leo.named.compiler
 
 import leo.Stack
-import leo.named.expression.Binding
 import leo.push
 import leo.stack
 

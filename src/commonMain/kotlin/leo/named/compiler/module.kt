@@ -1,8 +1,8 @@
 package leo.named.compiler
 
 import leo.Stack
+import leo.Type
 import leo.fold
-import leo.named.expression.Binding
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.reverse
@@ -34,4 +34,7 @@ fun Module.bind(typedLine: TypedLine): Module =
 
 fun Module.bind(typedLineStack: Stack<TypedLine>): Module =
 	fold(typedLineStack.reverse) { bind(it) }
+
+fun Module.bind(type: Type): Module =
+	Module(privateContext.bind(type), publicContext.bind(type))
 

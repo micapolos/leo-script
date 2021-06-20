@@ -7,11 +7,11 @@ import leo.Type
 import leo.TypeStructure
 import leo.base.fold
 import leo.fold
+import leo.lineSeq
 import leo.mapFirst
 import leo.named.typed.TypedExpression
 import leo.push
 import leo.reverse
-import leo.seq
 import leo.stack
 
 data class Dictionary(val definitionStack: Stack<Definition>) { override fun toString() = scriptLine.toString() }
@@ -29,12 +29,16 @@ fun Dictionary.bindingOrNull(structure: Type): Binding? =
 fun Dictionary.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	bindingOrNull(typedExpression.type)?.resolve(typedExpression)
 
-val Type.namesDictionary: Dictionary get() =
+val Type.givenDictionary: Dictionary
+	get() =
+		dictionary().plus(givenDefinition).plus(linesDictionary)
+
+val Type.linesDictionary: Dictionary get() =
 	// TODO: Add "content"
 	when (this) {
 		is ChoiceType -> dictionary()
-		is StructureType -> structure.namesDictionary
+		is StructureType -> structure.linesDictionary
 	}
 
-val TypeStructure.namesDictionary: Dictionary get() =
-	dictionary().fold(lineStack.reverse.seq) { plus(it.nameDefinition) }
+val TypeStructure.linesDictionary: Dictionary get() =
+	dictionary().fold(lineSeq) { plus(it.nameDefinition) }

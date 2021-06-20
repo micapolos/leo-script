@@ -24,3 +24,15 @@ val Binding.scriptLine: ScriptLine get() =
 
 val Recursive.scriptLine: ScriptLine get() =
 	recursiveName lineTo script(recursiveDictionary.scriptLine)
+
+val Module.scriptLine: ScriptLine get() =
+	"module" lineTo script(private.scriptLine, public.scriptLine)
+
+val DictionaryPrivate.scriptLine: ScriptLine get() =
+	"private" lineTo script(dictionary.scriptLine)
+
+val DictionaryPublic.scriptLine: ScriptLine get() =
+	"public" lineTo script(dictionary.scriptLine)
+
+val Evaluator.scriptLine: ScriptLine get() =
+	"evaluator" lineTo script(module.scriptLine, value.scriptLine)
