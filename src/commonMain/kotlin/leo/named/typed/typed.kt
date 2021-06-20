@@ -10,8 +10,8 @@ import leo.TypeLine
 import leo.all
 import leo.atom
 import leo.base.fold
-import leo.doingLineTo
 import leo.fieldTo
+import leo.functionLineTo
 import leo.line
 import leo.lineTo
 import leo.map
@@ -121,10 +121,10 @@ fun TypedExpression.get(name: String): TypedExpression =
 		expression.get(name).of(it)
 	}
 
-infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
+infix fun Type.functionTypedLine(doingTypedExpression: TypedExpression): TypedLine =
 	typed(
-		line(function(this, doing(bodyTypedExpression.expression))),
-		this.doingLineTo(bodyTypedExpression.type))
+		line(function(this, doing(doingTypedExpression.expression))),
+		this.functionLineTo(doingTypedExpression.type))
 
 fun TypedExpression.with(typedExpression: TypedExpression): TypedExpression =
 	typed(expression.plus(line(with(typedExpression.expression))), type.plus(typedExpression.type))

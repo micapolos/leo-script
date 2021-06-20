@@ -6,8 +6,8 @@ import leo.bindName
 import leo.choice
 import leo.choiceName
 import leo.doName
-import leo.doingLineTo
-import leo.doingName
+import leo.functionLineTo
+import leo.functionName
 import leo.giveName
 import leo.givenName
 import leo.letName
@@ -151,7 +151,7 @@ class CompileTest {
 	fun doing() {
 		script(
 			"foo" lineTo script(),
-			doingName lineTo script(
+			functionName lineTo script(
 				"ping" lineTo script(),
 				toName lineTo script("pong")))
 			.typedExpression
@@ -163,20 +163,20 @@ class CompileTest {
 					),
 					type(
 						"foo" lineTo type(),
-						type("ping") doingLineTo type("pong"))))
+						type("ping") functionLineTo type("pong"))))
 	}
 
 	@Test
 	fun doing_missingTo() {
 		assertFails {
-			script(doingName lineTo script()).typedExpression
+			script(functionName lineTo script()).typedExpression
 		}
 	}
 
 	@Test
 	fun doingGive() {
 		script(
-			doingName lineTo script(
+			functionName lineTo script(
 				"ping" lineTo script(),
 				toName lineTo script("pong")),
 			giveName lineTo script("ping"))
@@ -236,7 +236,7 @@ class CompileTest {
 		script(
 			"ping" lineTo script(),
 			takeName lineTo script(
-				doingName lineTo script(
+				functionName lineTo script(
 					"ping" lineTo script(),
 					toName lineTo script("pong"))))
 			.typedExpression

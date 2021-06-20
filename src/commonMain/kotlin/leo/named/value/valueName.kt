@@ -1,6 +1,6 @@
 package leo.named.value
 
-import leo.doingName
+import leo.functionName
 import leo.nativeName
 import leo.numberName
 import leo.textName
@@ -21,4 +21,4 @@ val Any?.valueName: String get() =
 
 @Suppress("unused")
 val ValueFunction.name: String get() =
-	doingName
+	functionName

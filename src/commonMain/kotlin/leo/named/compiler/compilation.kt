@@ -18,10 +18,10 @@ import leo.bind
 import leo.bindName
 import leo.debugName
 import leo.doName
-import leo.doingName
 import leo.flat
 import leo.fold
 import leo.foldStateful
+import leo.functionName
 import leo.giveName
 import leo.isEmpty
 import leo.letName
@@ -36,8 +36,8 @@ import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
 import leo.named.typed.TypedLine
 import leo.named.typed.do_
-import leo.named.typed.doingTypedLine
 import leo.named.typed.fieldTo
+import leo.named.typed.functionTypedLine
 import leo.named.typed.line
 import leo.named.typed.lineTo
 import leo.named.typed.name
@@ -117,7 +117,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		bindName -> plusBindCompilation(scriptField.rhs)
 		debugName -> plusDebugCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
-		doingName -> plusDoingCompilation(scriptField.rhs)
+		functionName -> plusFunctionCompilation(scriptField.rhs)
 		giveName -> plusGiveCompilation(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		ofName -> plusOfCompilation(scriptField.rhs)
@@ -164,11 +164,11 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 		.typedExpressionCompilation(script)
 		.map { set(typedExpression.do_(it)) }
 
-fun Compiler.plusDoingCompilation(script: Script): Compilation<Compiler> =
+fun Compiler.plusFunctionCompilation(script: Script): Compilation<Compiler> =
 	script.matchInfix(toName) { lhs, rhs ->
 		typeCompilation(lhs).bind { type ->
 			module.privateDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { body ->
-				plus(type.doingTypedLine(body))
+				plus(type.functionTypedLine(body))
 			}
 		}
 	}.notNullOrError("$script is not function body")

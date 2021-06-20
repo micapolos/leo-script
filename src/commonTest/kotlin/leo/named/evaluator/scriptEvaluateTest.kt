@@ -6,7 +6,7 @@ import leo.beName
 import leo.bindName
 import leo.choiceName
 import leo.doName
-import leo.doingName
+import leo.functionName
 import leo.giveName
 import leo.line
 import leo.lineTo
@@ -97,7 +97,7 @@ class ScriptEvaluateTest {
 	@Test
 	fun doingGive() {
 		script(
-			doingName lineTo script(
+			functionName lineTo script(
 				"ping" lineTo script(),
 				toName lineTo script("pong" lineTo script())),
 			giveName lineTo script("ping"))
@@ -110,7 +110,7 @@ class ScriptEvaluateTest {
 		script(
 			"ping" lineTo script(),
 			takeName lineTo script(
-				doingName lineTo script(
+				functionName lineTo script(
 					"ping" lineTo script(),
 					toName lineTo script("pong" lineTo script()))))
 			.evaluate

@@ -143,7 +143,7 @@ fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
 infix fun Type.doing(type: Type) = TypeDoing(this, type)
-infix fun Type.doingLineTo(type: Type) = line(atom(this doing type))
+infix fun Type.functionLineTo(type: Type) = line(atom(this doing type))
 
 fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)

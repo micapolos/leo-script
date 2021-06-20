@@ -21,8 +21,8 @@ class TypeIsStaticTest {
 	fun nonStatic() {
 		type(textTypeLine).isStatic.assertFalse
 		type(numberTypeLine).isStatic.assertFalse
-		type(type() doingLineTo type(numberTypeLine)).isStatic.assertFalse
-		type(type(numberTypeLine) doingLineTo type(textTypeLine)).isStatic.assertFalse
+		type(type() functionLineTo type(numberTypeLine)).isStatic.assertFalse
+		type(type(numberTypeLine) functionLineTo type(textTypeLine)).isStatic.assertFalse
 		type("point" lineTo type(
 			"x" lineTo type(numberTypeLine),
 			"y" lineTo type(numberTypeLine))).isStatic.assertFalse
