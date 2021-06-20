@@ -29,7 +29,7 @@ val TypeRecursible.scriptLine: ScriptLine get() =
 
 val TypeAtom.scriptLine: ScriptLine get() =
 	when (this) {
-		is DoingTypeAtom -> doing.scriptLine
+		is FunctionTypeAtom -> function.scriptLine
 		is PrimitiveTypeAtom -> primitive.scriptLine
 	}
 
@@ -48,8 +48,8 @@ val TypeLiteral.scriptLine: ScriptLine get() =
 		is TextTypeLiteral -> textTypeScriptLine
 	}
 
-val TypeDoing.scriptLine: ScriptLine get() =
-	doingName lineTo lhsType.script.plus(toName lineTo rhsType.script)
+val TypeFunction.scriptLine: ScriptLine get() =
+	functionName lineTo lhsType.script.plus(givesName lineTo rhsType.script)
 
 val TypeRecursive.scriptLine: ScriptLine get() =
 	recursiveName lineTo script(line.scriptLine)

@@ -57,7 +57,7 @@ data class PrimitiveTypeAtom(val primitive: TypePrimitive): TypeAtom() {
 	override fun toString() = super.toString()
 }
 
-data class DoingTypeAtom(val doing: TypeDoing): TypeAtom() {
+data class FunctionTypeAtom(val function: TypeFunction): TypeAtom() {
 	override fun toString() = super.toString()
 }
 
@@ -89,7 +89,7 @@ data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral() {
 	override fun toString() = super.toString()
 }
 
-data class TypeDoing(val lhsType: Type, val rhsType: Type) {
+data class TypeFunction(val lhsType: Type, val rhsType: Type) {
 	override fun toString() = scriptLine.toString()
 }
 
@@ -142,17 +142,17 @@ fun recursiveLine(line: TypeLine) = line(recursive(line))
 fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
 fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
 
-infix fun Type.doing(type: Type) = TypeDoing(this, type)
-infix fun Type.functionLineTo(type: Type) = line(atom(this doing type))
+infix fun Type.functionTo(type: Type) = TypeFunction(this, type)
+infix fun Type.functionLineTo(type: Type) = line(atom(this functionTo type))
 
-fun atom(doing: TypeDoing): TypeAtom = DoingTypeAtom(doing)
+fun atom(function: TypeFunction): TypeAtom = FunctionTypeAtom(function)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)
 fun atom(field: TypeField): TypeAtom = field.primitive.atom
 fun atom(literal: TypeLiteral): TypeAtom = literal.primitive.atom
 
 val TypeField.atom: TypeAtom get() = atom(this)
 val TypePrimitive.atom: TypeAtom get() = atom(this)
-val TypeDoing.atom: TypeAtom get() = atom(this)
+val TypeFunction.atom: TypeAtom get() = atom(this)
 
 fun line(recursible: TypeRecursible): TypeLine = RecursibleTypeLine(recursible)
 fun line(recursive: TypeRecursive): TypeLine = RecursiveTypeLine(recursive)
@@ -193,13 +193,13 @@ val Literal.typeAtom: TypeAtom get() =
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
 val Type.choiceOrNull: TypeChoice? get() = (this as? ChoiceType)?.choice
-val Type.doingOrNull: TypeDoing? get() = structureOrNull?.onlyLineOrNull?.atom?.doingOrNull
+val Type.functionOrNull: TypeFunction? get() = structureOrNull?.onlyLineOrNull?.atom?.functionOrNull
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
 val TypeLine.recursibleOrNull: TypeRecursible? get() = (this as? RecursibleTypeLine)?.recursible
 val TypeLine.recursiveOrNull: TypeRecursive? get() = (this as? RecursiveTypeLine)?.recursive
 val TypeLine.atomOrNull: TypeAtom? get() = recursibleOrNull?.atomOrNull
 val TypeAtom.primitiveOrNull: TypePrimitive? get() = (this as? PrimitiveTypeAtom)?.primitive
-val TypeAtom.doingOrNull: TypeDoing? get() = (this as? DoingTypeAtom)?.doing
+val TypeAtom.functionOrNull: TypeFunction? get() = (this as? FunctionTypeAtom)?.function
 val TypeAtom.fieldOrNull: TypeField? get() = primitiveOrNull?.fieldOrNull
 val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rhsType?.structureOrNull
 val TypeLine.choiceOrNull: TypeChoice? get() = atomOrNull?.fieldOrNull?.rhsType?.choiceOrNull

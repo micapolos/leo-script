@@ -40,13 +40,13 @@ val ScriptLine.typeRecurseOrNull: TypeRecurse? get() =
 
 val ScriptLine.typeAtom: TypeAtom get() =
 	null
-		?: typeDoingOrNull?.atom
+		?: typeFunctionOrNull?.atom
 		?: typePrimitive.atom
 
-val ScriptLine.typeDoingOrNull: TypeDoing? get() =
-	match(doingName) { doing ->
-		doing.matchInfix(toName) { lhs, to ->
-			lhs.type doing to.type
+val ScriptLine.typeFunctionOrNull: TypeFunction? get() =
+	match(functionName) { doing ->
+		doing.matchInfix(givesName) { lhs, to ->
+			lhs.type functionTo to.type
 		}
 	}
 

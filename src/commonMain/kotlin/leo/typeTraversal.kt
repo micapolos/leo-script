@@ -27,7 +27,7 @@ val TypeRecursible.shiftRecursion: TypeRecursible get() =
 
 val TypeAtom.shiftRecursion: TypeAtom get() =
 	when (this) {
-		is DoingTypeAtom -> this
+		is FunctionTypeAtom -> this
 		is PrimitiveTypeAtom -> primitive.shiftRecursion.atom
 	}
 
@@ -87,7 +87,7 @@ val TypeRecursible.unshiftRecursionOrNull: TypeRecursible? get() =
 
 val TypeAtom.unshiftRecursion: TypeAtom? get() =
 	when (this) {
-		is DoingTypeAtom -> null
+		is FunctionTypeAtom -> null
 		is PrimitiveTypeAtom -> primitive.unshiftRecursion?.atom
 	}
 
@@ -175,7 +175,7 @@ fun TypeRecursible.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine):
 
 fun TypeAtom.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeAtom? =
 	when (this) {
-		is DoingTypeAtom -> null
+		is FunctionTypeAtom -> null
 		is PrimitiveTypeAtom -> primitive.replaceNonRecursiveOrNull(line, newLine)?.atom
 	}
 

@@ -23,7 +23,7 @@ val TypeRecursible.isStatic: Boolean get() =
 
 val TypeAtom.isStatic: Boolean get() =
 	when (this) {
-		is DoingTypeAtom -> doing.isStatic
+		is FunctionTypeAtom -> function.isStatic
 		is PrimitiveTypeAtom -> primitive.isStatic
 	}
 
@@ -37,4 +37,4 @@ val TypeField.isStatic: Boolean get() = rhsType.isStatic
 val TypeLiteral.isStatic: Boolean get() = false
 val TypeRecurse.isStatic: Boolean get() = false
 val TypeRecursive.isStatic: Boolean get() = false
-val TypeDoing.isStatic: Boolean get() = false
+val TypeFunction.isStatic: Boolean get() = false

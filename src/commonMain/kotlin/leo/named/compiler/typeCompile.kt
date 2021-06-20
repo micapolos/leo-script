@@ -3,7 +3,7 @@ package leo.named.compiler
 import leo.Stack
 import leo.Type
 import leo.TypeChoice
-import leo.TypeDoing
+import leo.TypeFunction
 import leo.TypeLine
 import leo.TypeStructure
 import leo.any
@@ -11,10 +11,10 @@ import leo.atom
 import leo.base.orNullIf
 import leo.choiceName
 import leo.choiceOrNull
-import leo.doingOrNull
 import leo.equalName
 import leo.fieldOrNull
 import leo.first
+import leo.functionOrNull
 import leo.getLineOrNull
 import leo.getName
 import leo.getOrNull
@@ -51,8 +51,8 @@ val TypeLine.resolveGetOrNull: TypeLine? get() =
 		field.rhsType.structureOrNull?.getLineOrNull(field.name)
 	}
 
-val Type.compileDoing: TypeDoing get() =
-	doingOrNull.throwScriptIfNull { script("doing" lineTo script) }
+val Type.compileDoing: TypeFunction get() =
+	functionOrNull.throwScriptIfNull { script("doing" lineTo script) }
 
 fun <R> Type.check(type: Type, fn: () -> R): R =
 	if (this != type) (null as R?).throwScriptIfNull { script.plus(isName lineTo script(equalName lineTo type.script)) }

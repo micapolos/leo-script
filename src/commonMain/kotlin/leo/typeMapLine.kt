@@ -34,12 +34,12 @@ fun TypeRecursive.updateLine(fn: (TypeLine) -> TypeLine): TypeRecursive  =
 
 fun TypeAtom.updateLine(fn: (TypeLine) -> TypeLine): TypeAtom  =
 	when (this) {
-		is DoingTypeAtom -> doing.updateLine(fn).atom
+		is FunctionTypeAtom -> function.updateLine(fn).atom
 		is PrimitiveTypeAtom -> primitive.updateLine(fn).atom
 	}
 
-fun TypeDoing.updateLine(fn: (TypeLine) -> TypeLine): TypeDoing  =
-	lhsType.updateLine(fn) doing rhsType.updateLine(fn)
+fun TypeFunction.updateLine(fn: (TypeLine) -> TypeLine): TypeFunction  =
+	lhsType.updateLine(fn) functionTo rhsType.updateLine(fn)
 
 fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive  =
 	when (this) {
