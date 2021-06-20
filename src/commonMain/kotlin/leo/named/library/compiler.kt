@@ -6,7 +6,7 @@ import leo.named.compiler.Compiler
 import leo.named.compiler.compiler
 import leo.named.compiler.definition
 import leo.named.compiler.functionBinding
-import leo.named.compiler.plus
+import leo.named.compiler.plusPrivate
 import leo.named.expression.Body
 import leo.named.expression.do_
 import leo.named.expression.let
@@ -24,7 +24,7 @@ import leo.type
 
 fun Compiler.plus(lhsType: Type, rhsType: Type, body: Body): Compiler =
 	Compiler(
-		module.plus(definition(lhsType, functionBinding(rhsType))),
+		module.plusPrivate(definition(lhsType, functionBinding(rhsType))),
 		typed(
 			typedExpression.expression.plus(line(let(lhsType, rhs(do_(body))))),
 			typedExpression.type))
