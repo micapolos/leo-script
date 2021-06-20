@@ -14,6 +14,7 @@ import leo.literal
 import leo.numberName
 import leo.numberTypeScriptLine
 import leo.ofName
+import leo.privateName
 import leo.quoteName
 import leo.script
 import leo.switchName
@@ -229,11 +230,28 @@ class ScriptEvaluateTest {
 			.assertEqualTo(script(literal(20)))
 	}
 
+	@Test
+	fun private() {
+		script(
+			privateName lineTo script(
+				bindName lineTo script("x" lineTo script(literal(10))),
+				bindName lineTo script("y" lineTo script("x"))),
+			withName lineTo script("x" lineTo script()),
+			withName lineTo script("y" lineTo script()))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script("x" lineTo script(literal(10)))))
+	}
+
 //	@Test
-//	fun private() {
+//	fun privatePrivate() {
 //		script(
 //			privateName lineTo script(
-//				bindName lineTo script("x" lineTo script(literal(10)))),
+//				privateName lineTo script(
+//					bindName lineTo script("x" lineTo script(literal(10)))),
+//				bindName lineTo script("y" lineTo script("x"))),
 //			withName lineTo script("x" lineTo script()),
 //			withName lineTo script("y" lineTo script()))
 //			.evaluate

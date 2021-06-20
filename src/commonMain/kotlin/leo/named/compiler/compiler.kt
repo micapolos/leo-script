@@ -8,10 +8,12 @@ import leo.named.expression.expression
 import leo.named.expression.let
 import leo.named.expression.line
 import leo.named.expression.plus
+import leo.named.expression.private
 import leo.named.expression.rhs
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedLine
 import leo.named.typed.give
+import leo.named.typed.of
 import leo.named.typed.plus
 import leo.named.typed.take
 import leo.named.typed.typed
@@ -72,3 +74,9 @@ fun Compiler.letDo(type: Type, typedExpression: TypedExpression): Compiler =
 				.plus(line(let(type, rhs(do_(body(typedExpression.expression)))))),
 			bodyTypedExpression.type))
 
+fun Compiler.plusPrivate(compiler: Compiler): Compiler =
+	this
+		.set(module.plusPrivate(compiler.module.publicContext.dictionary))
+		.set(bodyTypedExpression.expression
+			.plus(line(private(compiler.typedExpression.expression)))
+			.of(bodyTypedExpression.type))

@@ -23,6 +23,9 @@ fun Module.plus(dictionary: Dictionary) =
 fun Module.plusPrivate(definition: Definition) =
 	Module(privateContext.plus(definition), publicContext)
 
+fun Module.plusPrivate(dictionary: Dictionary) =
+	fold(dictionary.definitionStack.reverse) { plusPrivate(it) }
+
 fun Module.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	privateContext.resolveOrNull(typedExpression)
 

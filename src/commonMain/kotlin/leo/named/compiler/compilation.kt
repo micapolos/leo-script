@@ -191,9 +191,7 @@ fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 		}.notNullOrError("$script let error")
 
 fun Compiler.plusPrivateCompilation(script: Script): Compilation<Compiler> =
-	childDictionary.context.module.compiler.plusCompilation(script).map { compiler ->
-		set(module.plus(compiler.module.publicContext.dictionary))
-	}
+	childDictionary.context.module.compiler.plusCompilation(script).map { plusPrivate(it) }
 
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
 	set(bodyTypedExpression.with(script.reflectTypedExpression)).compilation
