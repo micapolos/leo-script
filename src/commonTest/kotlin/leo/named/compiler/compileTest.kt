@@ -44,9 +44,11 @@ import leo.script
 import leo.switchName
 import leo.takeName
 import leo.textTypeLine
+import leo.theName
 import leo.toName
 import leo.type
 import leo.typeName
+import leo.withName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -260,8 +262,9 @@ class CompileTest {
 			"yes" lineTo script(),
 			ofName lineTo script(
 				choiceName lineTo script(
-					"yes" lineTo script(),
-					"no" lineTo script())))
+					theName lineTo script(
+						"yes" lineTo script(),
+						"no" lineTo script()))))
 			.typedExpression
 			.assertEqualTo(
 				expression().make("yes").of(type(choice("yes" lineTo type(), "no" lineTo type()))))
@@ -274,8 +277,8 @@ class CompileTest {
 				"yes" lineTo script(),
 					ofName lineTo script(
 						choiceName lineTo script(
-							"yes" lineTo script(),
-							"no" lineTo script()))),
+							withName lineTo script("yes"),
+							withName lineTo script("no")))),
 			switchName lineTo script(
 				"yes" lineTo script(literal(10)),
 				"no" lineTo script(literal(20))))

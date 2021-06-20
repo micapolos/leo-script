@@ -29,6 +29,7 @@ import leo.lineStack
 import leo.lineTo
 import leo.map
 import leo.matchInfix
+import leo.named.evaluator.value
 import leo.named.expression.caseTo
 import leo.named.typed.TypedCase
 import leo.named.typed.TypedExpression
@@ -48,6 +49,7 @@ import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
 import leo.named.typed.with
+import leo.named.value.script
 import leo.normalizeRecursion
 import leo.ofName
 import leo.privateName
@@ -87,7 +89,7 @@ fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
 	typedLine(literal).compilation
 
 fun typeCompilation(script: Script): Compilation<Type> =
-	script.type.normalizeRecursion.compilation
+	script.value.script.type.normalizeRecursion.compilation
 
 fun Dictionary.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
 	script.lineStack.map { typedLineCompilation(this) }.flat
