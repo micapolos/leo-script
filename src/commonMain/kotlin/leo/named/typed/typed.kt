@@ -25,12 +25,12 @@ import leo.named.expression.Case
 import leo.named.expression.Expression
 import leo.named.expression.Field
 import leo.named.expression.Line
-import leo.named.expression.body
 import leo.named.expression.do_
 import leo.named.expression.doing
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.fieldTo
+import leo.named.expression.function
 import leo.named.expression.get
 import leo.named.expression.give
 import leo.named.expression.line
@@ -81,7 +81,7 @@ fun typedLine(literal: Literal): TypedLine =
 	typed(expressionLine(literal), literal.typeLine)
 
 fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
-	expression.plus(line(do_(body(typedExpression.expression)))).of(typedExpression.type)
+	expression.plus(line(do_(doing(typedExpression.expression)))).of(typedExpression.type)
 
 fun TypedExpression.give(typedExpression: TypedExpression): TypedExpression =
 	type.compileDoing.let { doing ->
@@ -123,7 +123,7 @@ fun TypedExpression.get(name: String): TypedExpression =
 
 infix fun Type.doingTypedLine(bodyTypedExpression: TypedExpression): TypedLine =
 	typed(
-		line(doing(this, body(bodyTypedExpression.expression))),
+		line(function(this, doing(bodyTypedExpression.expression))),
 		this.doingLineTo(bodyTypedExpression.type))
 
 fun TypedExpression.with(typedExpression: TypedExpression): TypedExpression =

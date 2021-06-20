@@ -1,7 +1,7 @@
 package leo.named.library
 
 import leo.named.evaluator.get
-import leo.named.expression.body
+import leo.named.expression.doing
 import leo.named.value.double
 import leo.named.value.get
 import leo.named.value.numberValue
@@ -13,26 +13,26 @@ import leo.plusName
 import leo.textName
 
 val numberTextBody get() =
-	body {
+	doing {
 		get(textName).get(numberName).double.toString().textValue
 	}
 
 val numberPlusNumberBody get() =
-	body {
+	doing {
 		get(numberName).double
 			.plus(get(plusName).get(numberName).double)
 			.numberValue
 	}
 
 val numberMinusNumberBody get() =
-	body {
+	doing {
 		get(numberName).double
 			.minus(get(minusName).get(numberName).double)
 			.numberValue
 	}
 
 val numberTimesNumberBody get() =
-	body {
+	doing {
 		get(numberName).double
 			.times(get(timesName).get(numberName).double)
 			.numberValue

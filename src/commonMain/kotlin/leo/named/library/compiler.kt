@@ -7,7 +7,7 @@ import leo.named.compiler.compiler
 import leo.named.compiler.definition
 import leo.named.compiler.functionBinding
 import leo.named.compiler.plusPrivate
-import leo.named.expression.Body
+import leo.named.expression.Doing
 import leo.named.expression.do_
 import leo.named.expression.let
 import leo.named.expression.line
@@ -22,11 +22,11 @@ import leo.textName
 import leo.textTypeLine
 import leo.type
 
-fun Compiler.plus(lhsType: Type, rhsType: Type, body: Body): Compiler =
+fun Compiler.plus(lhsType: Type, rhsType: Type, doing: Doing): Compiler =
 	Compiler(
 		module.plusPrivate(definition(lhsType, functionBinding(rhsType))),
 		typed(
-			typedExpression.expression.plus(line(let(lhsType, rhs(do_(body))))),
+			typedExpression.expression.plus(line(let(lhsType, rhs(do_(doing))))),
 			typedExpression.type))
 
 val preludeCompiler: Compiler get() =

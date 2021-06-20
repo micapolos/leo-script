@@ -20,14 +20,14 @@ fun binding(recursive: Recursive): Binding = RecursiveBinding(recursive)
 
 fun Binding.setRecursive(dictionary: Dictionary): Binding =
 	when (this) {
-		is FunctionBinding -> binding(function(dictionary, function.body))
+		is FunctionBinding -> binding(function(dictionary, function.doing))
 		is RecursiveBinding -> TODO()
 		is ValueBinding -> this
 	}
 
 fun Binding.plus(definition: Definition): Binding =
 	when (this) {
-		is FunctionBinding -> binding(function(function.dictionary.plus(definition), function.body))
+		is FunctionBinding -> binding(function(function.dictionary.plus(definition), function.doing))
 		is RecursiveBinding -> TODO()
 		is ValueBinding -> this
 	}

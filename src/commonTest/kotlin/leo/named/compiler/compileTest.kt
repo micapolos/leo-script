@@ -16,10 +16,9 @@ import leo.lineTo
 import leo.literal
 import leo.named.expression.be
 import leo.named.expression.bind
-import leo.named.expression.body
 import leo.named.expression.caseTo
 import leo.named.expression.do_
-import leo.named.expression.doingLineTo
+import leo.named.expression.doing
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.give
@@ -126,7 +125,7 @@ class CompileTest {
 				typed(
 					expression(
 						line(make("foo")),
-						line(do_(body(expression(line(make("bar"))))))),
+						line(do_(doing(expression(line(make("bar"))))))),
 					type("bar")))
 	}
 
@@ -140,9 +139,11 @@ class CompileTest {
 				typed(
 					expression(
 						"x" lineTo expression(expressionLine(literal(10))),
-						line(do_(body(expression(
-							line(make("x")),
-							line(invoke(type("x")))))))),
+						line(do_(
+							doing(expression(
+								line(make("x")),
+								line(invoke(type("x")))))
+						))),
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -158,7 +159,8 @@ class CompileTest {
 				typed(
 					expression(
 						line(make("foo")),
-						type("ping") doingLineTo body(expression(line(make("pong"))))),
+						type("ping") lineTo doing(expression(line(make("pong"))))
+					),
 					type(
 						"foo" lineTo type(),
 						type("ping") doingLineTo type("pong"))))
@@ -182,7 +184,7 @@ class CompileTest {
 			.assertEqualTo(
 				typed(
 					expression(
-						type("ping") doingLineTo body(expression(line(make("pong")))),
+						type("ping") lineTo doing(expression(line(make("pong")))),
 						line(give(expression(line(make("ping")))))),
 					type("pong")))
 	}
@@ -225,7 +227,7 @@ class CompileTest {
 				typed(
 					expression(
 						line(make("foo")),
-						line(let(type("ping"), rhs(do_(body(expression(line(make(givenName)), line(invoke(type(givenName)))))))))),
+						line(let(type("ping"), rhs(do_(doing(expression(line(make(givenName)), line(invoke(type(givenName)))))))))),
 					type("foo")))
 	}
 
@@ -243,7 +245,8 @@ class CompileTest {
 					expression(
 						line(make("ping")),
 						line(take(expression(
-							type("ping") doingLineTo body(expression(line(make("pong")))))))),
+							type("ping") lineTo doing(expression(line(make("pong"))))
+						)))),
 					type("pong")))
 	}
 

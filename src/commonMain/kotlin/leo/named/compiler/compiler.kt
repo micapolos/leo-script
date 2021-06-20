@@ -2,8 +2,8 @@ package leo.named.compiler
 
 import leo.Type
 import leo.named.expression.be
-import leo.named.expression.body
 import leo.named.expression.do_
+import leo.named.expression.doing
 import leo.named.expression.expression
 import leo.named.expression.let
 import leo.named.expression.line
@@ -70,7 +70,7 @@ fun Compiler.letDo(type: Type, typedExpression: TypedExpression): Compiler =
 		module.plus(definition(type, constantBinding(typedExpression.type))),
 		typed(
 			this.typedExpression.expression
-				.plus(line(let(type, rhs(do_(body(typedExpression.expression)))))),
+				.plus(line(let(type, rhs(do_(doing(typedExpression.expression)))))),
 			this.typedExpression.type))
 
 fun Compiler.plusPrivate(compiler: Compiler): Compiler =

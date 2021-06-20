@@ -36,4 +36,4 @@ val ValueField.scriptLine: ScriptLine get() =
 	name lineTo value.script
 
 val ValueFunction.scriptLine get() =
-	doingName lineTo script(dictionary.scriptLine, "body" lineTo body.script)
+	doingName lineTo script(dictionary.scriptLine, "body" lineTo doing.script)

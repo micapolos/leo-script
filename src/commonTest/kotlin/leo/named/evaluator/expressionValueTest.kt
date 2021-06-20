@@ -6,13 +6,12 @@ import leo.lineTo
 import leo.literal
 import leo.named.expression.be
 import leo.named.expression.bind
-import leo.named.expression.body
 import leo.named.expression.caseTo
 import leo.named.expression.do_
 import leo.named.expression.doing
-import leo.named.expression.doingLineTo
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
+import leo.named.expression.function
 import leo.named.expression.get
 import leo.named.expression.give
 import leo.named.expression.invoke
@@ -103,7 +102,7 @@ class EvaluateTest {
 		expression(
 			"x" lineTo expression(expressionLine(literal(10))),
 			"y" lineTo expression(expressionLine(literal(20))),
-			line(do_(body(expression("z" lineTo expression())))))
+			line(do_(doing(expression("z" lineTo expression())))))
 			.value
 			.assertEqualTo(value("z"))
 	}
@@ -113,7 +112,7 @@ class EvaluateTest {
 		expression(
 			"x" lineTo expression(expressionLine(literal(10))),
 			"y" lineTo expression(expressionLine(literal(20))),
-			line(do_(body(expression(line(invoke(type(givenName))))))))
+			line(do_(doing(expression(line(invoke(type(givenName))))))))
 			.value
 			.assertEqualTo(
 				value(
@@ -127,7 +126,7 @@ class EvaluateTest {
 		expression(
 			"x" lineTo expression(expressionLine(literal(10))),
 			"y" lineTo expression(expressionLine(literal(20))),
-			line(do_(body(expression(line(invoke(type("x"))))))))
+			line(do_(doing(expression(line(invoke(type("x"))))))))
 			.value
 			.assertEqualTo(value("x" lineTo 10.numberValue))
 	}
@@ -137,7 +136,7 @@ class EvaluateTest {
 		expression(
 			30.numberExpressionLine,
 			minusName lineTo 20.numberExpression,
-			line(do_(body {
+			line(do_(doing {
 				get(numberName).double
 					.minus(get(minusName).get(numberName).double)
 					.numberValue
@@ -167,15 +166,15 @@ class EvaluateTest {
 
 	@Test
 	fun doing() {
-		expression(line(doing(type(numberTypeLine), body(expression("foo")))))
+		expression(line(function(type(numberTypeLine), doing(expression("foo")))))
 			.value
-			.assertEqualTo(value(line(function(dictionary(), body(expression("foo"))))))
+			.assertEqualTo(value(line(function(dictionary(), doing(expression("foo"))))))
 	}
 
 	@Test
 	fun doingGive_withoutInvoke() {
 		expression(
-			line(doing(type(numberTypeLine), body(expression("foo")))),
+			line(function(type(numberTypeLine), doing(expression("foo")))),
 			line(give(10.numberExpression)))
 			.value
 			.assertEqualTo(value("foo"))
@@ -184,7 +183,7 @@ class EvaluateTest {
 	@Test
 	fun doingGive_withInvoke() {
 		expression(
-			type(numberTypeLine) doingLineTo body(expression(line(invoke(type(numberName))))),
+			type(numberTypeLine) lineTo doing(expression(line(invoke(type(numberName))))),
 			line(give(expression(expressionLine(literal(10))))))
 			.value
 			.assertEqualTo(10.numberValue)
@@ -193,7 +192,7 @@ class EvaluateTest {
 	@Test
 	fun doingGive_native() {
 		expression(
-			type(numberTypeLine) doingLineTo body { get(numberName).double.plus(1).numberValue },
+			type(numberTypeLine) lineTo doing { get(numberName).double.plus(1).numberValue },
 			line(give(expression(expressionLine(literal(10))))))
 			.value
 			.assertEqualTo(11.numberValue)
@@ -232,9 +231,11 @@ class EvaluateTest {
 			line(
 				let(
 					type("x" lineTo type(numberTypeLine)),
-					rhs(do_(body(expression(
-						line(invoke(type("x"))),
-						line(get(numberName)))))))),
+					rhs(do_(
+						doing(expression(
+							line(invoke(type("x"))),
+							line(get(numberName))))
+					)))),
 			"x" lineTo 10.numberExpression,
 			line(invoke(type("x" lineTo type(numberTypeLine)))))
 			.value
@@ -284,7 +285,7 @@ class EvaluateTest {
 		assertFailsWith<StackOverflowError> {
 			expression(
 				line(recursive(expression(
-					line(let(type("ping"), rhs(do_(body(expression(line(invoke(type("ping")))))))))))),
+					line(let(type("ping"), rhs(do_(doing(expression(line(invoke(type("ping")))))))))))),
 				line(invoke(type("ping"))))
 				.value
 		}
@@ -295,7 +296,8 @@ class EvaluateTest {
 		expression(
 			10.numberExpressionLine,
 			line(take(expression(
-				type(numberTypeLine) doingLineTo body(expression(line(invoke(type(givenName)))))))))
+				type(numberTypeLine) lineTo doing(expression(line(invoke(type(givenName)))))
+			))))
 			.value
 			.assertEqualTo(value(givenName lineTo 10.numberValue))
 	}

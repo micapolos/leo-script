@@ -2,8 +2,8 @@ package leo.named.evaluator
 
 import leo.base.assertEqualTo
 import leo.named.expression.be
-import leo.named.expression.body
 import leo.named.expression.do_
+import leo.named.expression.doing
 import leo.named.expression.expression
 import leo.named.expression.let
 import leo.named.expression.line
@@ -26,11 +26,11 @@ class ExpressionDictionaryTest {
 
 	@Test
 	fun letDo() {
-		expression(line(let(type("y"), rhs(do_(body(10.numberExpression))))))
+		expression(line(let(type("y"), rhs(do_(doing(10.numberExpression))))))
 			.dictionary
 			.assertEqualTo(
 				dictionary(
-					definition(type("y"), binding(function(dictionary(), body(10.numberExpression))))
+					definition(type("y"), binding(function(dictionary(), doing(10.numberExpression))))
 				)
 			)
 	}

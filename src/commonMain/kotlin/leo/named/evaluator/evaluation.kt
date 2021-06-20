@@ -12,17 +12,17 @@ import leo.named.expression.BeLetRhs
 import leo.named.expression.BeLine
 import leo.named.expression.Bind
 import leo.named.expression.BindLine
-import leo.named.expression.Body
 import leo.named.expression.Do
 import leo.named.expression.DoLetRhs
 import leo.named.expression.DoLine
 import leo.named.expression.Doing
-import leo.named.expression.DoingLine
 import leo.named.expression.Expression
-import leo.named.expression.ExpressionBody
+import leo.named.expression.ExpressionDoing
 import leo.named.expression.Field
 import leo.named.expression.FieldLine
-import leo.named.expression.FnBody
+import leo.named.expression.FnDoing
+import leo.named.expression.Function
+import leo.named.expression.FunctionLine
 import leo.named.expression.Get
 import leo.named.expression.GetLine
 import leo.named.expression.Give
@@ -67,10 +67,10 @@ import leo.stateful
 typealias Evaluation<V> = Stateful<Unit, V>
 fun <V> V.evaluation(): Evaluation<V> = stateful()
 
-fun Dictionary.valueEvaluation(body: Body): Evaluation<Value> =
-	when (body) {
-		is ExpressionBody -> valueEvaluation(body.expression)
-		is FnBody -> body.valueFn(this).evaluation()
+fun Dictionary.valueEvaluation(doing: Doing): Evaluation<Value> =
+	when (doing) {
+		is ExpressionDoing -> valueEvaluation(doing.expression)
+		is FnDoing -> doing.valueFn(this).evaluation()
 	}
 
 fun Dictionary.dictionaryEvaluation(expression: Expression): Evaluation<Dictionary> =
@@ -91,7 +91,7 @@ fun Evaluator.plusEvaluation(line: Line): Evaluation<Evaluator> =
 		is BeLine -> plusEvaluation(line.be)
 		is BindLine -> plusEvaluation(line.bind)
 		is DoLine -> plusEvaluation(line.do_)
-		is DoingLine -> plusEvaluation(line.doing)
+		is FunctionLine -> plusEvaluation(line.function)
 		is FieldLine -> plusEvaluation(line.field)
 		is GetLine -> plusEvaluation(line.get)
 		is GiveLine -> plusEvaluation(line.give)
@@ -118,7 +118,7 @@ fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
-	module.private.dictionary.plus(value.givenDictionary).valueEvaluation(do_.body).map { set(it) }
+	module.private.dictionary.plus(value.givenDictionary).valueEvaluation(do_.doing).map { set(it) }
 
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(with.expression).map {
@@ -146,8 +146,8 @@ fun Evaluator.plusEvaluation(literal: Literal): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(make: Make): Evaluation<Evaluator> =
 	set(value.make(make.name)).evaluation()
 
-fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
-	set(value.plus(line(function(dictionary, doing.body)))).evaluation()
+fun Evaluator.plusEvaluation(function: Function): Evaluation<Evaluator> =
+	set(value.plus(line(function(dictionary, function.doing)))).evaluation()
 
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	set(value.get(get.name)).evaluation()
@@ -175,7 +175,7 @@ fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
 	functionEvaluation(do_).map { binding(it) }
 
 fun Dictionary.functionEvaluation(do_: Do): Evaluation<ValueFunction> =
-	function(this, do_.body).evaluation()
+	function(this, do_.doing).evaluation()
 
 fun Evaluator.plusEvaluation(invoke: Invoke): Evaluation<Evaluator> =
 	dictionary.giveEvaluation(invoke.type, value).map { set(it) }
@@ -205,4 +205,4 @@ fun Binding.giveEvaluation(given: Value): Evaluation<Value> =
 	}
 
 fun ValueFunction.invokeEvaluation(value: Value): Evaluation<Value> =
-	dictionary.plus(value.givenDictionary).valueEvaluation(body)
+	dictionary.plus(value.givenDictionary).valueEvaluation(doing)

@@ -8,6 +8,7 @@ import leo.bindName
 import leo.doName
 import leo.doingName
 import leo.expressionName
+import leo.functionName
 import leo.getName
 import leo.giveName
 import leo.letName
@@ -24,7 +25,6 @@ import leo.script
 import leo.switchName
 import leo.takeName
 import leo.term.nativeScript
-import leo.toName
 import leo.withName
 
 val Expression.scriptLine: ScriptLine get() =
@@ -39,7 +39,7 @@ val Line.scriptLine: ScriptLine get() =
 		is BeLine -> be.scriptLine
 		is BindLine -> bind.scriptLine
 		is DoLine -> do_.scriptLine
-		is DoingLine -> doing.scriptLine
+		is FunctionLine -> function.scriptLine
 		is FieldLine -> field.scriptLine
 		is GetLine -> get.scriptLine
 		is GiveLine -> give.scriptLine
@@ -57,8 +57,8 @@ val Line.scriptLine: ScriptLine get() =
 val Be.scriptLine: ScriptLine get() = beName lineTo expression.script
 val Bind.scriptLine: ScriptLine get() = bindName lineTo expression.script
 val Case.scriptLine: ScriptLine get() = name lineTo expression.script
-val Do.scriptLine: ScriptLine get() = doName lineTo body.script
-val Doing.scriptLine: ScriptLine get() = doingName lineTo type.script.plus(toName lineTo body.script)
+val Do.scriptLine: ScriptLine get() = doName lineTo doing.script
+val Function.scriptLine: ScriptLine get() = functionName lineTo type.script.plus(doingName lineTo doing.script)
 val Field.scriptLine: ScriptLine get() = name lineTo expression.script
 val Get.scriptLine: ScriptLine get() = getName lineTo script(name)
 val Give.scriptLine: ScriptLine get() = giveName lineTo expression.script
@@ -78,8 +78,8 @@ val LetRhs.scriptLine: ScriptLine get() =
 		is DoLetRhs -> do_.scriptLine
 	}
 
-val Body.script: Script get() =
+val Doing.script: Script get() =
 	when (this) {
-		is ExpressionBody -> expression.script
-		is FnBody -> valueFn.nativeScript
+		is ExpressionDoing -> expression.script
+		is FnDoing -> valueFn.nativeScript
 	}

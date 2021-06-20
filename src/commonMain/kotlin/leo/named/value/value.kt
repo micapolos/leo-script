@@ -5,7 +5,7 @@ import leo.base.fold
 import leo.named.evaluator.Dictionary
 import leo.named.evaluator.Recursive
 import leo.named.evaluator.plus
-import leo.named.expression.Body
+import leo.named.expression.Doing
 import leo.push
 import leo.reverse
 import leo.seq
@@ -19,7 +19,7 @@ data class FunctionValueLine(val function: ValueFunction): ValueLine()
 data class AnyValueLine(val any: Any?): ValueLine()
 
 data class ValueField(val name: String, val value: Value)
-data class ValueFunction(val dictionary: Dictionary, val body: Body)
+data class ValueFunction(val dictionary: Dictionary, val doing: Doing)
 
 fun anyValueLine(any: Any?): ValueLine = AnyValueLine(any)
 fun line(field: ValueField): ValueLine = FieldValueLine(field)
@@ -27,7 +27,7 @@ fun line(function: ValueFunction): ValueLine = FunctionValueLine(function)
 
 infix fun String.fieldTo(value: Value) = ValueField(this, value)
 infix fun String.lineTo(value: Value) = line(this fieldTo value)
-fun function(dictionary: Dictionary, body: Body) = ValueFunction(dictionary, body)
+fun function(dictionary: Dictionary, doing: Doing) = ValueFunction(dictionary, doing)
 
 val Value.lineSeq get() = lineStack.reverse.seq
 
