@@ -38,3 +38,7 @@ fun value(vararg lines: ValueLine) = Value(stack(*lines))
 fun value(name: String) = value(name lineTo value())
 
 fun ValueFunction.plus(recursive: Recursive) = copy(dictionary = dictionary.plus(recursive.recursiveDictionary))
+
+val ValueLine.anyOrNull: Any? get() = (this as? AnyValueLine)?.any
+val ValueLine.fieldOrNull: ValueField? get() = (this as? FieldValueLine)?.field
+val ValueLine.functionOrNull: ValueFunction? get() = (this as? FunctionValueLine)?.function

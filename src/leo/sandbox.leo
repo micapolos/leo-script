@@ -1,7 +1,6 @@
-foo
-  function
-    number.increment
-    doing
-      increment.number
-      plus 1
 function
+  taking number.increment
+  giving number
+  doing
+    increment.number
+    plus 1

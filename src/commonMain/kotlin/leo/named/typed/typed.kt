@@ -45,6 +45,8 @@ import leo.type
 import leo.typeLine
 import leo.zip
 
+data class Typed<out V, out T>(val v: V, val t: T)
+
 data class TypedLine(val line: Line, val typeLine: TypeLine)
 data class TypedExpression(val expression: Expression, val type: Type) { override fun toString() = script.toString() }
 data class TypedField(val field: Field, val typeField: TypeField)
