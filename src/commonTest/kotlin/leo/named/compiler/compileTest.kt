@@ -11,6 +11,7 @@ import leo.functionLineTo
 import leo.functionName
 import leo.giveName
 import leo.givenName
+import leo.givingName
 import leo.letName
 import leo.line
 import leo.lineTo
@@ -43,6 +44,7 @@ import leo.ofName
 import leo.script
 import leo.switchName
 import leo.takeName
+import leo.takingName
 import leo.textTypeLine
 import leo.theName
 import leo.type
@@ -148,11 +150,11 @@ class CompileTest {
 	}
 
 	@Test
-	fun function() {
+	fun functionTakingDoing() {
 		script(
 			"foo" lineTo script(),
 			functionName lineTo script(
-				"ping" lineTo script(),
+				takingName lineTo script("ping"),
 				doingName lineTo script("pong")))
 			.typedExpression
 			.assertEqualTo(
@@ -164,6 +166,39 @@ class CompileTest {
 					type(
 						"foo" lineTo type(),
 						type("ping") functionLineTo type("pong"))))
+	}
+
+	@Test
+	fun functionTakingGivingDoing() {
+		script(
+			"foo" lineTo script(),
+			functionName lineTo script(
+				takingName lineTo script("ping"),
+				givingName lineTo script("pong"),
+				doingName lineTo script("pong")))
+			.typedExpression
+			.assertEqualTo(
+				typed(
+					expression(
+						line(make("foo")),
+						type("ping") lineTo doing(expression(line(make("pong"))))
+					),
+					type(
+						"foo" lineTo type(),
+						type("ping") functionLineTo type("pong"))))
+	}
+
+	@Test
+	fun functionTakingGivingDoing_typeError() {
+		assertFails {
+			script(
+				"foo" lineTo script(),
+				functionName lineTo script(
+					takingName lineTo script("ping"),
+					givingName lineTo script("pong"),
+					doingName lineTo script("pang")))
+				.typedExpression
+		}
 	}
 
 	@Test
@@ -180,7 +215,7 @@ class CompileTest {
 	fun functionGive() {
 		script(
 			functionName lineTo script(
-				"ping" lineTo script(),
+				takingName lineTo script("ping"),
 				doingName lineTo script("pong")),
 			giveName lineTo script("ping"))
 			.typedExpression
@@ -235,12 +270,12 @@ class CompileTest {
 	}
 
 	@Test
-	fun takeDoing() {
+	fun takeFunction() {
 		script(
 			"ping" lineTo script(),
 			takeName lineTo script(
 				functionName lineTo script(
-					"ping" lineTo script(),
+					takingName lineTo script("ping"),
 					doingName lineTo script("pong"))))
 			.typedExpression
 			.assertEqualTo(

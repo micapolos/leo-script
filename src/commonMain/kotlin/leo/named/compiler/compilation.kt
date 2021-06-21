@@ -24,12 +24,15 @@ import leo.fold
 import leo.foldStateful
 import leo.functionName
 import leo.giveName
+import leo.givingName
 import leo.isEmpty
 import leo.letName
 import leo.lineStack
 import leo.lineTo
 import leo.map
+import leo.matchEmpty
 import leo.matchInfix
+import leo.matchPrefix
 import leo.named.evaluator.value
 import leo.named.expression.caseTo
 import leo.named.typed.TypedCase
@@ -62,6 +65,7 @@ import leo.seq
 import leo.stateful
 import leo.switchName
 import leo.takeName
+import leo.takingName
 import leo.theName
 import leo.type
 import leo.typeName
@@ -165,14 +169,56 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 		.map { set(typedExpression.do_(it)) }
 
 fun Compiler.plusFunctionOrNullCompilation(script: Script): Compilation<Compiler>? =
-	if (script.isEmpty) null
-	else script.matchInfix(doingName) { lhs, rhs ->
-		typeCompilation(lhs).bind { type ->
-			module.privateDictionary.plus(type.doDictionary).typedExpressionCompilation(rhs).map { body ->
-				plus(type.functionTypedLine(body))
+	script.matchInfix(doingName) { lhs, doingScript ->
+		plusFunctionDoingOrNullCompilation(lhs, doingScript)
+	}
+
+fun Compiler.plusFunctionDoingOrNullCompilation(script: Script, doingScript: Script): Compilation<Compiler>? =
+	script.matchInfix { lhs, name, rhs ->
+		when (name) {
+			givingName -> plusFunctionGivingDoingOrNullCompilation(lhs, rhs, doingScript)
+			takingName -> plusFunctionTakingDoingOrNullCompilation(lhs, rhs, doingScript)
+			else -> null
+		}
+	}
+
+fun Compiler.plusFunctionGivingDoingOrNullCompilation(
+		script: Script,
+		givingScript: Script,
+		doingScript: Script): Compilation<Compiler>? =
+	script.matchPrefix(takingName) { takingScript ->
+		plusFunctionTakingGivingDoingOrNullCompilation(takingScript, givingScript, doingScript)
+	}
+
+fun Compiler.plusFunctionTakingDoingOrNullCompilation(
+		script: Script,
+		takingScript: Script,
+		doingScript: Script): Compilation<Compiler>? =
+	script.matchEmpty {
+		typeCompilation(takingScript).bind { takingType ->
+			module.privateDictionary
+				.plus(takingType.doDictionary)
+				.typedExpressionCompilation(doingScript)
+				.map { body ->
+					plus(takingType.functionTypedLine(body))
 			}
 		}
-	}.notNullOrError("$script is not function body")
+	}
+
+fun Compiler.plusFunctionTakingGivingDoingOrNullCompilation(
+		takingScript: Script, givingScript: Script, doingScript: Script): Compilation<Compiler> =
+	typeCompilation(takingScript).bind { takingType ->
+		typeCompilation(givingScript).bind { givingType ->
+			module.privateDictionary
+				.plus(takingType.doDictionary)
+				.typedExpressionCompilation(doingScript)
+				.map { body ->
+					body.type.check(givingType) {
+						plus(takingType.functionTypedLine(body))
+					}
+				}
+		}
+	}
 
 fun Compiler.plusGiveCompilation(script: Script): Compilation<Compiler> =
 	childDictionary.typedExpressionCompilation(script).map { give(it) }

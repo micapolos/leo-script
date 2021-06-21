@@ -20,6 +20,7 @@ import leo.quoteName
 import leo.script
 import leo.switchName
 import leo.takeName
+import leo.takingName
 import leo.textTypeScriptLine
 import leo.typeName
 import leo.withName
@@ -98,7 +99,7 @@ class ScriptEvaluateTest {
 	fun functionGive() {
 		script(
 			functionName lineTo script(
-				"ping" lineTo script(),
+				takingName lineTo script("ping"),
 				doingName lineTo script("pong" lineTo script())),
 			giveName lineTo script("ping"))
 			.evaluate
@@ -111,7 +112,7 @@ class ScriptEvaluateTest {
 			"ping" lineTo script(),
 			takeName lineTo script(
 				functionName lineTo script(
-					"ping" lineTo script(),
+					takingName lineTo script("ping"),
 					doingName lineTo script("pong" lineTo script()))))
 			.evaluate
 			.assertEqualTo(script("pong"))
