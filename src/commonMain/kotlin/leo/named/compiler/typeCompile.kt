@@ -11,15 +11,18 @@ import leo.atom
 import leo.base.orNullIf
 import leo.choiceName
 import leo.choiceOrNull
+import leo.equalName
 import leo.fieldOrNull
 import leo.first
 import leo.functionOrNull
 import leo.getLineOrNull
 import leo.getName
 import leo.getOrNull
+import leo.isName
 import leo.lineOrNull
 import leo.lineTo
 import leo.linkOrNull
+import leo.notName
 import leo.ofName
 import leo.onlyLineOrNull
 import leo.plus
@@ -27,6 +30,7 @@ import leo.script
 import leo.structureOrNull
 import leo.switchName
 import leo.throwScriptIfNull
+import leo.toName
 
 val Type.compileStructure: TypeStructure get() =
 	structureOrNull.throwScriptIfNull { script("structure" lineTo script) }
@@ -56,9 +60,12 @@ fun <R> Type.check(type: Type, fn: () -> R): R =
 	if (this != type) compileError {
 		script(
 			"type" lineTo script(
-				"mismatch" lineTo script(
-					"expected" lineTo type.script,
-					"was" lineTo script))) }
+				"mismatch" lineTo
+					script.plus(
+						isName lineTo script(
+							notName lineTo script(
+								equalName lineTo script(
+									toName lineTo type.script)))))) }
 	else fn()
 
 fun Type.get(name: String): Type =

@@ -133,8 +133,8 @@ fun Expression.make(name: String): Expression = plus(line(leo.named.expression.m
 fun Expression.invoke(type: Type): Expression = plus(line(leo.named.expression.invoke(type)))
 fun Expression.isEqualTo(expression: Expression): Expression = plus(line(equals_(expression)))
 val Expression.negate: Expression get() = plus(line(switch(
-	yesName caseTo isYesExpression,
-	noName caseTo isNoExpression)))
+	yesName caseTo isNoExpression,
+	noName caseTo isYesExpression)))
 infix fun Type.lineTo(doing: Doing): Line = line(function(this, doing))
 
 fun Expression.get(name: String): Expression = plus(line(leo.named.expression.get(name)))

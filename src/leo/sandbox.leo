@@ -1,2 +1,2 @@
 10
-is not equal to 10
+is equal to 12
