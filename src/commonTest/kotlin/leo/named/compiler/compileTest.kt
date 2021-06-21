@@ -7,11 +7,14 @@ import leo.choice
 import leo.choiceName
 import leo.doName
 import leo.doingName
+import leo.equalName
 import leo.functionLineTo
 import leo.functionName
 import leo.giveName
 import leo.givenName
 import leo.givingName
+import leo.isName
+import leo.isType
 import leo.letName
 import leo.line
 import leo.lineTo
@@ -25,10 +28,12 @@ import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.give
 import leo.named.expression.invoke
+import leo.named.expression.isEqualTo
 import leo.named.expression.let
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.make
+import leo.named.expression.negate
 import leo.named.expression.numberExpression
 import leo.named.expression.rhs
 import leo.named.expression.switch
@@ -39,6 +44,7 @@ import leo.named.typed.of
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
+import leo.notName
 import leo.numberTypeLine
 import leo.ofName
 import leo.script
@@ -47,6 +53,7 @@ import leo.takeName
 import leo.takingName
 import leo.textTypeLine
 import leo.theName
+import leo.toName
 import leo.type
 import leo.typeName
 import leo.withName
@@ -334,5 +341,23 @@ class CompileTest {
 							"no" caseTo 20.numberExpression)
 						)),
 					type(numberTypeLine)))
+	}
+
+	@Test
+	fun isEqualTo() {
+		script(
+			line(literal(10)),
+			isName lineTo script(equalName lineTo script(toName lineTo script(literal(20)))))
+			.typedExpression
+			.assertEqualTo(10.numberExpression.isEqualTo(20.numberExpression) of isType)
+	}
+
+	@Test
+	fun isNotEqualTo() {
+		script(
+			line(literal(10)),
+			isName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script(literal(20))))))
+			.typedExpression
+			.assertEqualTo(10.numberExpression.isEqualTo(20.numberExpression).negate of isType)
 	}
 }

@@ -5,14 +5,17 @@ import leo.Stack
 import leo.Type
 import leo.base.notNullIf
 import leo.base.notNullOrError
+import leo.isName
 import leo.literal
 import leo.mapFirst
 import leo.named.evaluator.Dictionary
 import leo.named.value.Value
+import leo.noName
 import leo.push
 import leo.reverse
 import leo.seq
 import leo.stack
+import leo.yesName
 
 data class Expression(val lineStack: Stack<Line>) { override fun toString() = scriptLine.toString() }
 
@@ -128,6 +131,10 @@ fun Expression.be(expression: Expression): Expression = plus(line(leo.named.expr
 fun Expression.bind(expression: Expression): Expression = plus(line(leo.named.expression.bind(expression)))
 fun Expression.make(name: String): Expression = plus(line(leo.named.expression.make(name)))
 fun Expression.invoke(type: Type): Expression = plus(line(leo.named.expression.invoke(type)))
+fun Expression.isEqualTo(expression: Expression): Expression = plus(line(equals_(expression)))
+val Expression.negate: Expression get() = plus(line(switch(
+	yesName caseTo isYesExpression,
+	noName caseTo isNoExpression)))
 infix fun Type.lineTo(doing: Doing): Line = line(function(this, doing))
 
 fun Expression.get(name: String): Expression = plus(line(leo.named.expression.get(name)))
@@ -135,6 +142,10 @@ fun Expression.switch(caseStack: Stack<Case>) = plus(line(Switch(caseStack)))
 
 val Int.numberExpressionLine get() = expressionLine(literal(this))
 val String.textExpressionLine get() = expressionLine(literal(this))
+val Boolean.isExpressionLine get() = isName lineTo expression(if (this) yesName else noName)
 
 val Int.numberExpression get() = expression(numberExpressionLine)
 val String.textExpression get() = expression(textExpressionLine)
+val Boolean.isExpression get() = expression(isExpressionLine)
+val isYesExpression get() = true.isExpression
+val isNoExpression get() = false.isExpression

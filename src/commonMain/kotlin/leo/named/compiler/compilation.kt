@@ -19,6 +19,7 @@ import leo.bindName
 import leo.debugName
 import leo.doName
 import leo.doingName
+import leo.equalName
 import leo.flat
 import leo.fold
 import leo.foldStateful
@@ -26,6 +27,7 @@ import leo.functionName
 import leo.giveName
 import leo.givingName
 import leo.isEmpty
+import leo.isName
 import leo.letName
 import leo.lineStack
 import leo.lineTo
@@ -55,6 +57,7 @@ import leo.named.typed.typedLine
 import leo.named.typed.with
 import leo.named.value.script
 import leo.normalizeRecursion
+import leo.notName
 import leo.ofName
 import leo.privateName
 import leo.quoteName
@@ -67,6 +70,7 @@ import leo.switchName
 import leo.takeName
 import leo.takingName
 import leo.theName
+import leo.toName
 import leo.type
 import leo.typeName
 import leo.withName
@@ -123,6 +127,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		doName -> plusDoCompilation(scriptField.rhs)
 		functionName -> plusFunctionOrNullCompilation(scriptField.rhs)
 		giveName -> plusGiveCompilation(scriptField.rhs)
+		isName -> plusIsCompilationOrNull(scriptField.rhs)
 		letName -> plusLetCompilation(scriptField.rhs)
 		ofName -> plusOfCompilation(scriptField.rhs)
 		privateName -> plusPrivateCompilation(scriptField.rhs)
@@ -222,6 +227,21 @@ fun Compiler.plusFunctionTakingGivingDoingOrNullCompilation(
 
 fun Compiler.plusGiveCompilation(script: Script): Compilation<Compiler> =
 	childDictionary.typedExpressionCompilation(script).map { give(it) }
+
+fun Compiler.plusIsCompilationOrNull(script: Script): Compilation<Compiler>? =
+	script
+		.matchPrefix(notName) { notScript -> plusNegableIsCompilationOrNull(notScript)?.map { it.plusNegate } }
+		?: plusNegableIsCompilationOrNull(script)
+
+fun Compiler.plusNegableIsCompilationOrNull(script: Script): Compilation<Compiler>? =
+	plusIsEqualToCompilationOrNull(script)
+
+fun Compiler.plusIsEqualToCompilationOrNull(script: Script): Compilation<Compiler>? =
+	script.matchPrefix(equalName) { equalScript ->
+		equalScript.matchPrefix(toName) { toScript ->
+			childDictionary.typedExpressionCompilation(toScript).map { plusIsEqualTo(it) }
+		}
+	}
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
 	script

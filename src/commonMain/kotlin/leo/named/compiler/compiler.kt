@@ -84,3 +84,10 @@ fun Compiler.plusPrivate(compiler: Compiler): Compiler =
 fun Compiler.of(type: Type): Compiler =
 	set(typedExpression.of(type))
 
+fun Compiler.plusIsEqualTo(typed: TypedExpression): Compiler =
+	set(typedExpression.isEqualTo(typed))
+
+val Compiler.plusNegate: Compiler get() =
+	set(typedExpression.negate)
+
+

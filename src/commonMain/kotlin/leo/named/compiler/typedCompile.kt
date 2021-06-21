@@ -5,13 +5,16 @@ import leo.TypeStructure
 import leo.atom
 import leo.fieldOrNull
 import leo.getOrNull
+import leo.isType
 import leo.linkOrNull
 import leo.make
 import leo.named.expression.be
 import leo.named.expression.bind
 import leo.named.expression.get
+import leo.named.expression.isEqualTo
 import leo.named.expression.line
 import leo.named.expression.make
+import leo.named.expression.negate
 import leo.named.expression.plus
 import leo.named.typed.TypedChoice
 import leo.named.typed.TypedExpression
@@ -59,3 +62,13 @@ fun TypedExpression.be(typedExpression: TypedExpression): TypedExpression =
 
 fun TypedExpression.bind(typedExpression: TypedExpression): TypedExpression =
 	expression.bind(typedExpression.expression).of(type)
+
+fun TypedExpression.isEqualTo(typed: TypedExpression): TypedExpression =
+	type.check(typed.type) {
+		expression.isEqualTo(typed.expression) of isType
+	}
+
+val TypedExpression.negate: TypedExpression get() =
+	type.check(isType) {
+		expression.negate of isType
+	}

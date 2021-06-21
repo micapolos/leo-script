@@ -212,6 +212,9 @@ val String.typeStructure: TypeStructure get() =
 val String.type: Type get() =
 	typeStructure.type
 
+val isType: Type get() =
+	type(isTypeLine)
+
 val isTypeLine: TypeLine get() =
 	line(atom(isTypeField))
 
