@@ -7,6 +7,7 @@ import leo.beName
 import leo.bindName
 import leo.doName
 import leo.doingName
+import leo.equalsName
 import leo.expressionName
 import leo.functionName
 import leo.getName
@@ -39,6 +40,7 @@ val Line.scriptLine: ScriptLine get() =
 		is BeLine -> be.scriptLine
 		is BindLine -> bind.scriptLine
 		is DoLine -> do_.scriptLine
+		is EqualsLine -> equals.scriptLine
 		is FunctionLine -> function.scriptLine
 		is FieldLine -> field.scriptLine
 		is GetLine -> get.scriptLine
@@ -58,6 +60,7 @@ val Be.scriptLine: ScriptLine get() = beName lineTo expression.script
 val Bind.scriptLine: ScriptLine get() = bindName lineTo expression.script
 val Case.scriptLine: ScriptLine get() = name lineTo expression.script
 val Do.scriptLine: ScriptLine get() = doName lineTo doing.script
+val Equals.scriptLine get() = equalsName lineTo expression.script
 val Function.scriptLine: ScriptLine get() = functionName lineTo type.script.plus(doingName lineTo doing.script)
 val Field.scriptLine: ScriptLine get() = name lineTo expression.script
 val Get.scriptLine: ScriptLine get() = getName lineTo script(name)

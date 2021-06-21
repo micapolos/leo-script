@@ -2,6 +2,7 @@ package leo
 
 import leo.base.print
 import leo.java.io.inString
+import leo.named.compiler.CompileError
 import leo.named.evaluator.preludeEvaluate
 import leo.natives.fileText
 import leo.parser.scriptOrThrow
@@ -16,6 +17,8 @@ fun main(args: Array<String>) {
 		}
 	} catch (e: ValueError) {
 		value("parser" fieldTo e.value).errorValue.string
+	} catch (e: CompileError) {
+		e.toString()
 	}.print
 }
 

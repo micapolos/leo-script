@@ -11,14 +11,12 @@ import leo.atom
 import leo.base.orNullIf
 import leo.choiceName
 import leo.choiceOrNull
-import leo.equalName
 import leo.fieldOrNull
 import leo.first
 import leo.functionOrNull
 import leo.getLineOrNull
 import leo.getName
 import leo.getOrNull
-import leo.isName
 import leo.lineOrNull
 import leo.lineTo
 import leo.linkOrNull
@@ -55,7 +53,12 @@ val Type.compileDoing: TypeFunction get() =
 	functionOrNull.throwScriptIfNull { script("doing" lineTo script) }
 
 fun <R> Type.check(type: Type, fn: () -> R): R =
-	if (this != type) (null as R?).throwScriptIfNull { script.plus(isName lineTo script(equalName lineTo type.script)) }
+	if (this != type) compileError {
+		script(
+			"type" lineTo script(
+				"mismatch" lineTo script(
+					"expected" lineTo type.script,
+					"was" lineTo script))) }
 	else fn()
 
 fun Type.get(name: String): Type =

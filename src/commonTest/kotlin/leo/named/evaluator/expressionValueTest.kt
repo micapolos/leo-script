@@ -9,6 +9,7 @@ import leo.named.expression.bind
 import leo.named.expression.caseTo
 import leo.named.expression.do_
 import leo.named.expression.doing
+import leo.named.expression.equals_
 import leo.named.expression.expression
 import leo.named.expression.expressionLine
 import leo.named.expression.function
@@ -66,7 +67,8 @@ class EvaluateTest {
 			.assertEqualTo(
 				value(
 					"x" lineTo 10.numberValue,
-					"y" lineTo 20.numberValue))
+					"y" lineTo 20.numberValue)
+			)
 	}
 
 	@Test
@@ -300,6 +302,21 @@ class EvaluateTest {
 			))))
 			.value
 			.assertEqualTo(value(givenName lineTo 10.numberValue))
+	}
+
+	@Test
+	fun equals() {
+		expression(
+			10.numberExpressionLine,
+			line(equals_(10.numberExpression)))
+			.value
+			.assertEqualTo(true.isValue)
+
+		expression(
+			10.numberExpressionLine,
+			line(equals_(20.numberExpression)))
+			.value
+			.assertEqualTo(false.isValue)
 	}
 
 	@Test

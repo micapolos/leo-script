@@ -1,6 +1,10 @@
-function
-  taking number.increment
-  giving number
+define macro
+  taking
+    if anything
+    then anything
+    else anything
   doing
-    increment.number
-    plus 1
+    if.thing
+    switch
+      yes then.thing
+      no else.thing

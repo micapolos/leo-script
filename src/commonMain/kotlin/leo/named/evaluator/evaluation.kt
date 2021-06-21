@@ -16,6 +16,8 @@ import leo.named.expression.Do
 import leo.named.expression.DoLetRhs
 import leo.named.expression.DoLine
 import leo.named.expression.Doing
+import leo.named.expression.Equals
+import leo.named.expression.EqualsLine
 import leo.named.expression.Expression
 import leo.named.expression.ExpressionDoing
 import leo.named.expression.Field
@@ -61,7 +63,6 @@ import leo.named.value.name
 import leo.named.value.plus
 import leo.named.value.takeEvaluation
 import leo.named.value.unsafeSwitchLine
-import leo.named.value.with
 import leo.stateful
 
 typealias Evaluation<V> = Stateful<Unit, V>
@@ -91,6 +92,7 @@ fun Evaluator.plusEvaluation(line: Line): Evaluation<Evaluator> =
 		is BeLine -> plusEvaluation(line.be)
 		is BindLine -> plusEvaluation(line.bind)
 		is DoLine -> plusEvaluation(line.do_)
+		is EqualsLine -> plusEvaluation(line.equals)
 		is FunctionLine -> plusEvaluation(line.function)
 		is FieldLine -> plusEvaluation(line.field)
 		is GetLine -> plusEvaluation(line.get)
@@ -120,10 +122,11 @@ fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	module.private.dictionary.plus(value.givenDictionary).valueEvaluation(do_.doing).map { set(it) }
 
+fun Evaluator.plusEvaluation(equals: Equals): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(equals.expression).map { isEqualTo(it) }
+
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(with.expression).map {
-		set(value.with(it))
-	}
+	dictionary.valueEvaluation(with.expression).map { with(it) }
 
 fun Evaluator.plusEvaluation(recursive: Recursive): Evaluation<Evaluator> =
 	dictionary.dictionaryEvaluation(recursive.expression).map {
