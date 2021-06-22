@@ -48,7 +48,6 @@ import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.named.typed.do_
 import leo.named.typed.fieldTo
-import leo.named.typed.functionTypedLine
 import leo.named.typed.line
 import leo.named.typed.lineTo
 import leo.named.typed.name
@@ -196,14 +195,14 @@ fun Compiler.plusDefineTypeCompilation(script: Script): Compilation<Compiler> =
 	typeCompilation(script).map { define(it) }
 
 fun Compiler.plusDefineFunctionCompilationOrNull(script: Script): Compilation<Compiler>? =
-	typedFunctionCompilationOrNull(script)?.map { define(it) }
+	childContext.typedFunctionCompilationOrNull(script)?.map { define(it) }
 
-fun Compiler.typedFunctionCompilationOrNull(script: Script): Compilation<TypedFunction>? =
+fun Context.typedFunctionCompilationOrNull(script: Script): Compilation<TypedFunction>? =
 	script.matchInfix(doingName) { lhs, doingScript ->
 		typedFunctionDoingCompilationOrNull(lhs, doingScript)
 	}
 
-fun Compiler.typedFunctionDoingCompilationOrNull(script: Script, doingScript: Script): Compilation<TypedFunction>? =
+fun Context.typedFunctionDoingCompilationOrNull(script: Script, doingScript: Script): Compilation<TypedFunction>? =
 	script.matchInfix { lhs, name, rhs ->
 		when (name) {
 			givingName -> typedFunctionGivingDoingCompilationOrNull(lhs, rhs, doingScript)
@@ -212,7 +211,7 @@ fun Compiler.typedFunctionDoingCompilationOrNull(script: Script, doingScript: Sc
 		}
 	}
 
-fun Compiler.typedFunctionGivingDoingCompilationOrNull(
+fun Context.typedFunctionGivingDoingCompilationOrNull(
 	script: Script,
 	givingScript: Script,
 	doingScript: Script): Compilation<TypedFunction>? =
@@ -220,14 +219,13 @@ fun Compiler.typedFunctionGivingDoingCompilationOrNull(
 		typedFunctionTakingGivingDoingCompilationOrNull(takingScript, givingScript, doingScript)
 	}
 
-fun Compiler.typedFunctionTakingDoingCompilationOrNull(
+fun Context.typedFunctionTakingDoingCompilationOrNull(
 	script: Script,
 	takingScript: Script,
 	doingScript: Script): Compilation<TypedFunction>? =
 	script.matchEmpty {
 		typeCompilation(takingScript).bind { takingType ->
-			childContext
-				.plus(takingType.doDictionary)
+			plus(takingType.doDictionary)
 				.typedExpressionCompilation(doingScript)
 				.map { body ->
 					typed(
@@ -237,12 +235,11 @@ fun Compiler.typedFunctionTakingDoingCompilationOrNull(
 		}
 	}
 
-fun Compiler.typedFunctionTakingGivingDoingCompilationOrNull(
+fun Context.typedFunctionTakingGivingDoingCompilationOrNull(
 	takingScript: Script, givingScript: Script, doingScript: Script): Compilation<TypedFunction> =
 	typeCompilation(takingScript).bind { takingType ->
 		typeCompilation(givingScript).bind { givingType ->
-			childContext
-				.plus(takingType.doDictionary)
+			plus(takingType.doDictionary)
 				.typedExpressionCompilation(doingScript)
 				.map { body ->
 					body.type.check(givingType) {
@@ -264,56 +261,7 @@ fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
 		.map { set(typedExpression.do_(it)) }
 
 fun Compiler.plusFunctionOrNullCompilation(script: Script): Compilation<Compiler>? =
-	script.matchInfix(doingName) { lhs, doingScript ->
-		plusFunctionDoingOrNullCompilation(lhs, doingScript)
-	}
-
-fun Compiler.plusFunctionDoingOrNullCompilation(script: Script, doingScript: Script): Compilation<Compiler>? =
-	script.matchInfix { lhs, name, rhs ->
-		when (name) {
-			givingName -> plusFunctionGivingDoingOrNullCompilation(lhs, rhs, doingScript)
-			takingName -> plusFunctionTakingDoingOrNullCompilation(lhs, rhs, doingScript)
-			else -> null
-		}
-	}
-
-fun Compiler.plusFunctionGivingDoingOrNullCompilation(
-		script: Script,
-		givingScript: Script,
-		doingScript: Script): Compilation<Compiler>? =
-	script.matchPrefix(takingName) { takingScript ->
-		plusFunctionTakingGivingDoingOrNullCompilation(takingScript, givingScript, doingScript)
-	}
-
-fun Compiler.plusFunctionTakingDoingOrNullCompilation(
-		script: Script,
-		takingScript: Script,
-		doingScript: Script): Compilation<Compiler>? =
-	script.matchEmpty {
-		typeCompilation(takingScript).bind { takingType ->
-			childContext
-				.plus(takingType.doDictionary)
-				.typedExpressionCompilation(doingScript)
-				.map { body ->
-					plus(takingType.functionTypedLine(body))
-			}
-		}
-	}
-
-fun Compiler.plusFunctionTakingGivingDoingOrNullCompilation(
-		takingScript: Script, givingScript: Script, doingScript: Script): Compilation<Compiler> =
-	typeCompilation(takingScript).bind { takingType ->
-		typeCompilation(givingScript).bind { givingType ->
-			childContext
-				.plus(takingType.doDictionary)
-				.typedExpressionCompilation(doingScript)
-				.map { body ->
-					body.type.check(givingType) {
-						plus(takingType.functionTypedLine(body))
-					}
-				}
-		}
-	}
+	childContext.typedFunctionCompilationOrNull(script)?.map { plus(it) }
 
 fun Compiler.plusGiveCompilation(script: Script): Compilation<Compiler> =
 	childContext.typedExpressionCompilation(script).map { give(it) }

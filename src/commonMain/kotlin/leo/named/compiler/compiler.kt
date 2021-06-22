@@ -117,3 +117,6 @@ fun Compiler.define(typed: TypedFunction) =
 			typedExpression.expression
 				.plus(line(let(typed.typeFunction.lhsType, rhs(do_(typed.function.doing))))),
 			typedExpression.type))
+
+fun Compiler.plus(typed: TypedFunction): Compiler =
+	set(typedExpression.plus(typed(line(typed.function), typed.typeFunction.atom.line)))
