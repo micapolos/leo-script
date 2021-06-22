@@ -1,5 +1,7 @@
 package leo
 
+import leo.base.runIf
+
 val Type.scriptLine: ScriptLine get() =
 	"type" lineTo script
 
@@ -40,6 +42,9 @@ val TypePrimitive.scriptLine: ScriptLine get() =
 	}
 
 val TypeField.scriptLine: ScriptLine get() =
+	unescapedScriptLine.runIf(name.isTypeKeyword) { theName lineTo script(this) }
+
+val TypeField.unescapedScriptLine: ScriptLine get() =
 	name lineTo rhsType.script
 
 val TypeLiteral.scriptLine: ScriptLine get() =
@@ -57,3 +62,15 @@ val TypeRecursive.scriptLine: ScriptLine get() =
 @Suppress("unused")
 val TypeRecurse.scriptLine: ScriptLine get() =
 	recurseName lineTo script()
+
+val String.isTypeKeyword: Boolean get() =
+	when (this) {
+		choiceName -> true
+		functionName -> true
+		numberName -> true
+		recurseName -> true
+		recursiveName -> true
+		textName -> true
+		theName -> true
+		else -> false
+	}

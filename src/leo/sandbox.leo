@@ -1,2 +1,1 @@
-is yes
-type
+the the name

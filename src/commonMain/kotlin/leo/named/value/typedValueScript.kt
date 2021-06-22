@@ -16,6 +16,7 @@ import leo.TypeLine
 import leo.TypeLiteral
 import leo.TypePrimitive
 import leo.atom
+import leo.base.runIf
 import leo.functionName
 import leo.givingName
 import leo.line
@@ -25,6 +26,7 @@ import leo.map
 import leo.named.typed.Typed
 import leo.script
 import leo.takingName
+import leo.theName
 
 val Typed<Value, Type>.scriptLine: ScriptLine
 	get() =
@@ -60,9 +62,20 @@ val Typed<Any?, TypeLiteral>.literalScriptLine: ScriptLine get() =
 
 val Typed<ValueField, TypeField>.fieldScriptLine: ScriptLine
 	get() =
-	  t.name lineTo rhs.script
+	  unescapedFieldScriptLine.runIf(t.name.isValueKeyword) { theName lineTo script(this) }
+
+val Typed<ValueField, TypeField>.unescapedFieldScriptLine: ScriptLine
+	get() =
+		t.name lineTo rhs.script
 
 val Typed<ValueFunction, TypeFunction>.functionScriptLine: ScriptLine get() =
 	functionName lineTo script(
 		takingName lineTo t.lhsType.script,
 		givingName lineTo t.rhsType.script)
+
+val String.isValueKeyword: Boolean get() =
+	when (this) {
+		functionName -> true
+		theName -> true
+		else -> false
+	}
