@@ -1,8 +1,6 @@
 package leo.named.compiler
 
 import leo.Type
-import leo.atom
-import leo.line
 import leo.named.expression.be
 import leo.named.expression.do_
 import leo.named.expression.doing
@@ -17,6 +15,7 @@ import leo.named.typed.TypedField
 import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.named.typed.give
+import leo.named.typed.line
 import leo.named.typed.of
 import leo.named.typed.plus
 import leo.named.typed.take
@@ -105,18 +104,13 @@ fun Compiler.define(type: Type) =
 
 fun Compiler.define(typed: TypedField) =
 	compiler(
-		module.plus(typed.typeField.atom.line.bindDefinition),
-		typed(
-			typedExpression.expression.plus(line(leo.named.expression.bind(expression(line(typed.field))))),
-			typedExpression.type))
+		module.define(typed.typeField),
+		typedExpression.define(typed))
 
 fun Compiler.define(typed: TypedFunction) =
 	compiler(
-		module.plus(typed.typeFunction.definition),
-		typed(
-			typedExpression.expression
-				.plus(line(let(typed.typeFunction.lhsType, rhs(do_(typed.function.doing))))),
-			typedExpression.type))
+		module.define(typed.typeFunction),
+		typedExpression.define(typed))
 
 fun Compiler.plus(typed: TypedFunction): Compiler =
-	set(typedExpression.plus(typed(line(typed.function), typed.typeFunction.atom.line)))
+	set(typedExpression.plus(typed.line))

@@ -137,3 +137,4 @@ val TypedField.line: TypedLine get() = typed(line(field), line(atom(typeField)))
 val TypedField.rhs: TypedExpression get() = field.expression.of(typeField.rhsType)
 
 val Type.typedExpression: TypedExpression get() = script.reflectTypedExpression
+val TypedFunction.line: TypedLine get() = typed(line(function), typeFunction.atom.line)

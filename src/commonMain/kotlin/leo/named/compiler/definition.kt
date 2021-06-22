@@ -1,10 +1,13 @@
 package leo.named.compiler
 
 import leo.Type
+import leo.TypeField
 import leo.TypeFunction
 import leo.TypeLine
+import leo.atom
 import leo.base.orNullIf
 import leo.givenName
+import leo.line
 import leo.lineTo
 import leo.name
 import leo.type
@@ -22,6 +25,9 @@ fun Definition.bindingOrNull(type: Type): Binding? =
 
 val TypeFunction.definition: Definition get() =
 	definition(lhsType, functionBinding(rhsType))
+
+val TypeField.definition: Definition get() =
+	atom.line.bindDefinition
 
 val Type.givenDefinition: Definition get() =
 	(givenName lineTo this).bindDefinition

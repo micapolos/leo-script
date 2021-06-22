@@ -6,10 +6,12 @@ import leo.atom
 import leo.fieldOrNull
 import leo.getOrNull
 import leo.isType
+import leo.line
 import leo.linkOrNull
 import leo.make
 import leo.named.expression.be
 import leo.named.expression.bind
+import leo.named.expression.do_
 import leo.named.expression.expression
 import leo.named.expression.get
 import leo.named.expression.isEqualTo
@@ -17,8 +19,11 @@ import leo.named.expression.line
 import leo.named.expression.make
 import leo.named.expression.negate
 import leo.named.expression.plus
+import leo.named.expression.rhs
 import leo.named.typed.TypedChoice
 import leo.named.typed.TypedExpression
+import leo.named.typed.TypedField
+import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.named.typed.of
 import leo.named.typed.typed
@@ -76,3 +81,12 @@ val TypedExpression.negate: TypedExpression get() =
 	type.check(isType) {
 		expression.negate of isType
 	}
+
+fun TypedExpression.define(typed: TypedField): TypedExpression =
+	bind(typed(expression(line(typed.field)), type(typed.typeField.atom.line)))
+
+fun TypedExpression.define(typed: TypedFunction): TypedExpression =
+	typed(
+		expression
+			.plus(line(leo.named.expression.let(typed.typeFunction.lhsType, rhs(do_(typed.function.doing))))),
+		type)

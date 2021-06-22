@@ -1,6 +1,8 @@
 package leo.named.compiler
 
 import leo.Type
+import leo.TypeField
+import leo.TypeFunction
 
 data class Module(
 	val privateContext: Context,
@@ -24,3 +26,9 @@ fun Module.plusPrivate(definition: Definition) =
 
 fun Module.plusPrivate(context: Context) =
 	Module(privateContext.plus(context), publicContext)
+
+fun Module.define(typeField: TypeField): Module =
+	plus(typeField.definition)
+
+fun Module.define(function: TypeFunction): Module =
+	plus(function.definition)
