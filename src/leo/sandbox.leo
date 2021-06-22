@@ -9,10 +9,10 @@ define
       increment.number
       plus 1
 
+bind
   x 10
   y 20
 
 vector
-  x 10
-  y 20
-type
+  with x
+  with y

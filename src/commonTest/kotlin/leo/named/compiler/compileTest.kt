@@ -39,7 +39,6 @@ import leo.named.expression.numberExpression
 import leo.named.expression.rhs
 import leo.named.expression.switch
 import leo.named.expression.take
-import leo.named.expression.with
 import leo.named.typed.get
 import leo.named.typed.lineTo
 import leo.named.typed.of
@@ -380,27 +379,6 @@ class CompileTest {
 						"red" lineTo type(),
 						"green" lineTo type(),
 						"blue" lineTo type())))))
-	}
-
-	@Test
-	fun defineField() {
-		script(
-			defineName lineTo script(
-				"x" lineTo script(literal(10)),
-				"y" lineTo script(literal(20))),
-			withName lineTo script("x"),
-			withName lineTo script("y"))
-			.typedExpression
-			.assertEqualTo(
-				typed(
-					expression(
-						line(bind(expression("x" lineTo 10.numberExpression))),
-						line(bind(expression("y" lineTo 20.numberExpression))),
-						line(with(expression(line(make("x")), line(invoke(type("x")))))),
-						line(with(expression(line(make("y")), line(invoke(type("y"))))))),
-					type(
-						"x" lineTo type(numberTypeLine),
-						"y" lineTo type(numberTypeLine))))
 	}
 
 	@Test

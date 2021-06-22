@@ -31,6 +31,7 @@ import leo.givingName
 import leo.isEmpty
 import leo.isName
 import leo.letName
+import leo.line
 import leo.lineStack
 import leo.lineTo
 import leo.map
@@ -183,13 +184,10 @@ fun Compiler.plusDefineCompilation(scriptField: ScriptField): Compilation<Compil
 		typeName -> plusDefineTypeCompilation(scriptField.rhs)
 		functionName -> plusDefineFunctionCompilationOrNull(scriptField.rhs)
 		else -> null
-	} ?: plusDefineFieldCompilation(scriptField)
+	} ?: compileError { script(defineName lineTo script(line(scriptField))) }
 
 fun Compiler.plusDefineCompilation(literal: Literal): Compilation<Compiler> =
 	typedLineCompilation(literal).map { bind(it) }
-
-fun Compiler.plusDefineFieldCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(scriptField.rhs).map { define(scriptField.name fieldTo it) }
 
 fun Compiler.plusDefineTypeCompilation(script: Script): Compilation<Compiler> =
 	typeCompilation(script).map { define(it) }
