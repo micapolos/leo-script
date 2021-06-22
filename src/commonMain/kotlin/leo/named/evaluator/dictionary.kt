@@ -65,6 +65,8 @@ fun Binding.resolve(): Binding =
 	}
 
 fun Dictionary.plusRecursive(dictionary: Dictionary): Dictionary =
-	fold(dictionary.definitionSeq) { definition ->
-		plus(definition.recursive(this, dictionary))
+	let { base ->
+		fold(dictionary.definitionSeq) { definition ->
+			plus(definition.recursive(base, dictionary))
+		}
 	}
