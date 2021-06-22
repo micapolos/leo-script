@@ -1,1 +1,2 @@
-the the name
+function jajko
+debug

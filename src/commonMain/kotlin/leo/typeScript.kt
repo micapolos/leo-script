@@ -19,6 +19,8 @@ val TypeChoice.script: Script get() =
 
 val TypeLine.scriptLine: ScriptLine get() =
 	when (this) {
+		numberName lineTo type() -> theName lineTo script(numberTypeScriptLine)
+		textName lineTo type() -> theName lineTo script(textTypeScriptLine)
 		is RecursiveTypeLine -> recursive.scriptLine
 		is RecursibleTypeLine -> recursible.scriptLine
 	}
@@ -67,10 +69,8 @@ val String.isTypeKeyword: Boolean get() =
 	when (this) {
 		choiceName -> true
 		functionName -> true
-		numberName -> true
 		recurseName -> true
 		recursiveName -> true
-		textName -> true
 		theName -> true
 		else -> false
 	}
