@@ -246,19 +246,19 @@ class ScriptEvaluateTest {
 					"y" lineTo script("x" lineTo script(literal(10)))))
 	}
 
-//	@Test
-//	fun privatePrivate() {
-//		script(
-//			privateName lineTo script(
-//				privateName lineTo script(
-//					bindName lineTo script("x" lineTo script(literal(10)))),
-//				bindName lineTo script("y" lineTo script("x"))),
-//			withName lineTo script("x" lineTo script()),
-//			withName lineTo script("y" lineTo script()))
-//			.evaluate
-//			.assertEqualTo(
-//				script(
-//					"x" lineTo script(),
-//					"y" lineTo script("x" lineTo script(literal(10)))))
-//	}
+	@Test
+	fun privatePrivate() {
+		script(
+			privateName lineTo script(
+				privateName lineTo script(
+					bindName lineTo script("x" lineTo script(literal(10)))),
+				bindName lineTo script("y" lineTo script("x"))),
+			withName lineTo script("x" lineTo script()),
+			withName lineTo script("y" lineTo script()))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(),
+					"y" lineTo script("x" lineTo script(literal(10)))))
+	}
 }

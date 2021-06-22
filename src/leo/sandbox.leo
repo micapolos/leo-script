@@ -1,18 +1,8 @@
-define 
-  type vector
-    x number
-    y number
-
+quote
+  2
+  plus 3
   function
-    taking number.increment
+    taking number
     doing
-      increment.number
-      plus 1
-
-bind
-  x 10
-  y 20
-
-vector
-  with x
-  with y
+      number
+      plus 2
