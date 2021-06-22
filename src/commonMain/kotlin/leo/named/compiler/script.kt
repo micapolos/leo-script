@@ -3,9 +3,11 @@ package leo.named.compiler
 import leo.ScriptLine
 import leo.lineTo
 import leo.map
+import leo.mapIt
 import leo.named.typed.scriptLine
 import leo.plus
 import leo.script
+import leo.scriptLine
 
 val Dictionary.scriptLine: ScriptLine get() =
 	"definitions" lineTo definitionStack.map { scriptLine }.script
@@ -27,5 +29,13 @@ val Scope.scriptLine: ScriptLine get() =
 
 val Module.scriptLine: ScriptLine get() =
 	"module" lineTo script(
-		"private" lineTo script(privateDictionary.scriptLine),
-		"public" lineTo script(publicDictionary.scriptLine))
+		"private" lineTo script(privateContext.scriptLine),
+		"public" lineTo script(publicContext.scriptLine))
+
+val Context.scriptLine: ScriptLine get() =
+	"context" lineTo script(
+		dictionary.scriptLine,
+		types.scriptLine)
+
+val Types.scriptLine: ScriptLine get() =
+	"types" lineTo stack.mapIt { it.scriptLine }.script

@@ -26,6 +26,9 @@ fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 fun Dictionary.bindingOrNull(structure: Type): Binding? =
 	definitionStack.mapFirst { bindingOrNull(structure) }
 
+fun Dictionary.resolve(typedExpression: TypedExpression): TypedExpression =
+	resolveOrNull(typedExpression) ?: typedExpression
+
 fun Dictionary.resolveOrNull(typedExpression: TypedExpression): TypedExpression? =
 	bindingOrNull(typedExpression.type)?.resolve(typedExpression)
 

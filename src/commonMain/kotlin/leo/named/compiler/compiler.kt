@@ -75,7 +75,7 @@ fun Compiler.letDo(type: Type, typedExpression: TypedExpression): Compiler =
 
 fun Compiler.plusPrivate(compiler: Compiler): Compiler =
 	this
-		.set(module.plusPrivate(compiler.module.publicDictionary))
+		.set(module.plusPrivate(compiler.module.publicContext))
 		.set(
 			typedExpression.expression
 			.plus(line(private(compiler.typedExpression.expression)))

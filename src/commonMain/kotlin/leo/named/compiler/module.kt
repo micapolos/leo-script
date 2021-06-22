@@ -1,23 +1,20 @@
 package leo.named.compiler
 
-import leo.fold
-import leo.reverse
-
 data class Module(
-	val privateDictionary: Dictionary,
-	val publicDictionary: Dictionary)
+	val privateContext: Context,
+	val publicContext: Context)
 
-val Dictionary.module get() =  Module(privateDictionary = this, publicDictionary = dictionary())
-fun module() = dictionary().module
+val Context.module get() =  Module(privateContext = this, publicContext = context())
+fun module() = context().module
 
 fun Module.plus(definition: Definition) =
-	Module(privateDictionary.plus(definition), publicDictionary.plus(definition))
+	Module(privateContext.plus(definition), publicContext.plus(definition))
 
 fun Module.plus(dictionary: Dictionary) =
-	Module(privateDictionary.plus(dictionary), publicDictionary.plus(dictionary))
+	Module(privateContext.plus(dictionary), publicContext.plus(dictionary))
 
 fun Module.plusPrivate(definition: Definition) =
-	Module(privateDictionary.plus(definition), publicDictionary)
+	Module(privateContext.plus(definition), publicContext)
 
-fun Module.plusPrivate(dictionary: Dictionary) =
-	fold(dictionary.definitionStack.reverse) { plusPrivate(it) }
+fun Module.plusPrivate(context: Context) =
+	Module(privateContext.plus(context), publicContext)

@@ -95,6 +95,9 @@ fun <T> Stack<T>.contains(value: T): Boolean =
 fun <T, R> Stack<T>.map(fn: T.() -> R): Stack<R> =
 	reverseMap(fn).reverse
 
+fun <T, R> Stack<T>.mapIt(fn: (T) -> R): Stack<R> =
+	reverseMap(fn).reverse
+
 fun <T, R> StackLink<T>.map(fn: T.() -> R): StackLink<R> =
 	tail.map(fn).linkTo(head.fn())
 
