@@ -1,2 +1,2 @@
-10
-is equal to 12
+is yes
+type

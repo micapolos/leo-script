@@ -1,9 +1,11 @@
 package leo.named.library
 
 import leo.Type
+import leo.isType
 import leo.lineTo
 import leo.named.compiler.Compiler
 import leo.named.compiler.compiler
+import leo.named.compiler.define
 import leo.named.compiler.definition
 import leo.named.compiler.functionBinding
 import leo.named.compiler.plusPrivate
@@ -31,6 +33,7 @@ fun Compiler.plus(lhsType: Type, rhsType: Type, doing: Doing): Compiler =
 
 val preludeCompiler: Compiler get() =
 	compiler()
+		.define(isType)
 		.plus(
 			type(textName lineTo type(numberTypeLine)),
 			type(textTypeLine),
