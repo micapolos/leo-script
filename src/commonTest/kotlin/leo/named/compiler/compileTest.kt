@@ -39,6 +39,7 @@ import leo.named.expression.numberExpression
 import leo.named.expression.rhs
 import leo.named.expression.switch
 import leo.named.expression.take
+import leo.named.expression.with
 import leo.named.typed.get
 import leo.named.typed.lineTo
 import leo.named.typed.of
@@ -363,14 +364,15 @@ class CompileTest {
 	}
 
 	@Test
-	fun define() {
+	fun defineType() {
 		script(
 			defineName lineTo script(
-				"color" lineTo script(
-					choiceName lineTo script(
-						withName lineTo script("red" lineTo script()),
-						withName lineTo script("green" lineTo script()),
-						withName lineTo script("blue" lineTo script())))))
+				typeName lineTo script(
+					"color" lineTo script(
+						choiceName lineTo script(
+							withName lineTo script("red" lineTo script()),
+							withName lineTo script("green" lineTo script()),
+							withName lineTo script("blue" lineTo script()))))))
 			.compiler.module.privateContext.types
 			.assertEqualTo(
 				types(type(
@@ -378,5 +380,44 @@ class CompileTest {
 						"red" lineTo type(),
 						"green" lineTo type(),
 						"blue" lineTo type())))))
+	}
+
+	@Test
+	fun defineField() {
+		script(
+			defineName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))),
+			withName lineTo script("x"),
+			withName lineTo script("y"))
+			.typedExpression
+			.assertEqualTo(
+				typed(
+					expression(
+						line(bind(expression("x" lineTo 10.numberExpression))),
+						line(bind(expression("y" lineTo 20.numberExpression))),
+						line(with(expression(line(make("x")), line(invoke(type("x")))))),
+						line(with(expression(line(make("y")), line(invoke(type("y"))))))),
+					type(
+						"x" lineTo type(numberTypeLine),
+						"y" lineTo type(numberTypeLine))))
+	}
+
+	@Test
+	fun defineFunction() {
+		script(
+			defineName lineTo script(
+				functionName lineTo script(
+					takingName lineTo script("foo"),
+					doingName lineTo script("bar"))),
+				"foo" lineTo script())
+			.typedExpression
+			.assertEqualTo(
+				typed(
+					expression(
+						line(let(type("foo"), rhs(do_(doing(expression(line(make("bar")))))))),
+						line(make("foo")),
+						line(invoke(type("foo")))),
+					type("bar")))
 	}
 }

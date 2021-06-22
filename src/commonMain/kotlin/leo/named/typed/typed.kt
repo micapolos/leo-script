@@ -24,6 +24,7 @@ import leo.named.compiler.switchChoice
 import leo.named.expression.Case
 import leo.named.expression.Expression
 import leo.named.expression.Field
+import leo.named.expression.Function
 import leo.named.expression.Line
 import leo.named.expression.do_
 import leo.named.expression.doing
@@ -50,10 +51,11 @@ data class Typed<out V, out T>(val v: V, val t: T)
 data class TypedLine(val line: Line, val typeLine: TypeLine)
 data class TypedExpression(val expression: Expression, val type: Type) { override fun toString() = script.toString() }
 data class TypedField(val field: Field, val typeField: TypeField)
-data class TypedFunction(val expression: Expression, val typeDoing: TypeFunction)
+data class TypedFunction(val function: Function, val typeFunction: TypeFunction)
 data class TypedChoice(val line: Line, val typeChoice: TypeChoice)
 data class TypedCase(val case: Case, val type: Type)
 
+fun typed(function: Function, typeFunction: TypeFunction) = TypedFunction(function, typeFunction)
 fun typed(line: Line, typeLine: TypeLine) = TypedLine(line, typeLine)
 fun typed(expression: Expression, type: Type) = TypedExpression(expression, type)
 fun typed(field: Field, typeField: TypeField) = TypedField(field, typeField)
@@ -61,7 +63,6 @@ fun typed(line: Line, typeChoice: TypeChoice) = TypedChoice(line, typeChoice)
 fun typed(case: Case, type: Type) = TypedCase(case, type)
 
 infix fun Expression.of(type: Type) = typed(this, type)
-infix fun Expression.of(typeDoing: TypeFunction) = TypedFunction(this, typeDoing)
 
 fun TypedExpression.plus(typedLine: TypedLine): TypedExpression =
 	type.plus(typedLine.typeLine).let { expression.plus(typedLine.line).of(it) }

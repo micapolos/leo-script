@@ -25,6 +25,7 @@ import leo.flat
 import leo.fold
 import leo.foldStateful
 import leo.functionName
+import leo.functionTo
 import leo.giveName
 import leo.givingName
 import leo.isEmpty
@@ -38,9 +39,12 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.named.evaluator.value
 import leo.named.expression.caseTo
+import leo.named.expression.doing
+import leo.named.expression.function
 import leo.named.typed.TypedCase
 import leo.named.typed.TypedExpression
 import leo.named.typed.TypedField
+import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.named.typed.do_
 import leo.named.typed.fieldTo
@@ -167,7 +171,88 @@ fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
 	else plusDebugCompilation
 
 fun Compiler.plusDefineCompilation(script: Script): Compilation<Compiler> =
+	compilation.foldStateful(script.lineStack.reverse.seq) { plusDefineCompilation(it) }
+
+fun Compiler.plusDefineCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
+	when (scriptLine) {
+		is FieldScriptLine -> plusDefineCompilation(scriptLine.field)
+		is LiteralScriptLine -> plusDefineCompilation(scriptLine.literal)
+	}
+
+fun Compiler.plusDefineCompilation(scriptField: ScriptField): Compilation<Compiler> =
+	when (scriptField.name) {
+		typeName -> plusDefineTypeCompilation(scriptField.rhs)
+		functionName -> plusDefineFunctionCompilationOrNull(scriptField.rhs)
+		else -> null
+	} ?: plusDefineFieldCompilation(scriptField)
+
+fun Compiler.plusDefineCompilation(literal: Literal): Compilation<Compiler> =
+	typedLineCompilation(literal).map { bind(it) }
+
+fun Compiler.plusDefineFieldCompilation(scriptField: ScriptField): Compilation<Compiler> =
+	childContext.typedExpressionCompilation(scriptField.rhs).map { define(scriptField.name fieldTo it) }
+
+fun Compiler.plusDefineTypeCompilation(script: Script): Compilation<Compiler> =
 	typeCompilation(script).map { define(it) }
+
+fun Compiler.plusDefineFunctionCompilationOrNull(script: Script): Compilation<Compiler>? =
+	typedFunctionCompilationOrNull(script)?.map { define(it) }
+
+fun Compiler.typedFunctionCompilationOrNull(script: Script): Compilation<TypedFunction>? =
+	script.matchInfix(doingName) { lhs, doingScript ->
+		typedFunctionDoingCompilationOrNull(lhs, doingScript)
+	}
+
+fun Compiler.typedFunctionDoingCompilationOrNull(script: Script, doingScript: Script): Compilation<TypedFunction>? =
+	script.matchInfix { lhs, name, rhs ->
+		when (name) {
+			givingName -> typedFunctionGivingDoingCompilationOrNull(lhs, rhs, doingScript)
+			takingName -> typedFunctionTakingDoingCompilationOrNull(lhs, rhs, doingScript)
+			else -> null
+		}
+	}
+
+fun Compiler.typedFunctionGivingDoingCompilationOrNull(
+	script: Script,
+	givingScript: Script,
+	doingScript: Script): Compilation<TypedFunction>? =
+	script.matchPrefix(takingName) { takingScript ->
+		typedFunctionTakingGivingDoingCompilationOrNull(takingScript, givingScript, doingScript)
+	}
+
+fun Compiler.typedFunctionTakingDoingCompilationOrNull(
+	script: Script,
+	takingScript: Script,
+	doingScript: Script): Compilation<TypedFunction>? =
+	script.matchEmpty {
+		typeCompilation(takingScript).bind { takingType ->
+			childContext
+				.plus(takingType.doDictionary)
+				.typedExpressionCompilation(doingScript)
+				.map { body ->
+					typed(
+						function(takingType, doing(body.expression)),
+						takingType functionTo body.type)
+				}
+		}
+	}
+
+fun Compiler.typedFunctionTakingGivingDoingCompilationOrNull(
+	takingScript: Script, givingScript: Script, doingScript: Script): Compilation<TypedFunction> =
+	typeCompilation(takingScript).bind { takingType ->
+		typeCompilation(givingScript).bind { givingType ->
+			childContext
+				.plus(takingType.doDictionary)
+				.typedExpressionCompilation(doingScript)
+				.map { body ->
+					body.type.check(givingType) {
+						typed(
+							function(takingType, doing(body.expression)),
+							takingType functionTo givingType)
+					}
+				}
+		}
+	}
 
 val Compiler.plusDebugCompilation: Compilation<Compiler> get() =
 	set(script("debug" lineTo script(scriptLine)).reflectTypedExpression).compilation

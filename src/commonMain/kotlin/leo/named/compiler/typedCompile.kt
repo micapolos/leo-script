@@ -10,6 +10,7 @@ import leo.linkOrNull
 import leo.make
 import leo.named.expression.be
 import leo.named.expression.bind
+import leo.named.expression.expression
 import leo.named.expression.get
 import leo.named.expression.isEqualTo
 import leo.named.expression.line
@@ -62,6 +63,9 @@ fun TypedExpression.be(typedExpression: TypedExpression): TypedExpression =
 
 fun TypedExpression.bind(typedExpression: TypedExpression): TypedExpression =
 	expression.bind(typedExpression.expression).of(type)
+
+fun TypedExpression.bind(typedLine: TypedLine): TypedExpression =
+	expression.plus(line(bind(expression(typedLine.line)))).of(type)
 
 fun TypedExpression.isEqualTo(typed: TypedExpression): TypedExpression =
 	type.check(typed.type) {

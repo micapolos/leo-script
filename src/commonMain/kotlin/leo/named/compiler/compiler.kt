@@ -1,6 +1,8 @@
 package leo.named.compiler
 
 import leo.Type
+import leo.atom
+import leo.line
 import leo.named.expression.be
 import leo.named.expression.do_
 import leo.named.expression.doing
@@ -11,6 +13,8 @@ import leo.named.expression.plus
 import leo.named.expression.private
 import leo.named.expression.rhs
 import leo.named.typed.TypedExpression
+import leo.named.typed.TypedField
+import leo.named.typed.TypedFunction
 import leo.named.typed.TypedLine
 import leo.named.typed.give
 import leo.named.typed.of
@@ -45,6 +49,11 @@ fun Compiler.bind(typedExpression: TypedExpression): Compiler =
 	this
 		.set(module.plus(typedExpression.type.bindDictionary))
 		.set(this.typedExpression.bind(typedExpression))
+
+fun Compiler.bind(typedLine: TypedLine): Compiler =
+	this
+		.set(module.plus(typedLine.typeLine.bindDefinition))
+		.set(this.typedExpression.bind(typedLine))
 
 fun Compiler.give(typedExpression: TypedExpression): Compiler =
 	set(this.typedExpression.give(typedExpression))
@@ -93,3 +102,18 @@ val Compiler.plusNegate: Compiler get() =
 
 fun Compiler.define(type: Type) =
 	set(module.plus(type))
+
+fun Compiler.define(typed: TypedField) =
+	compiler(
+		module.plus(typed.typeField.atom.line.bindDefinition),
+		typed(
+			typedExpression.expression.plus(line(leo.named.expression.bind(expression(line(typed.field))))),
+			typedExpression.type))
+
+fun Compiler.define(typed: TypedFunction) =
+	compiler(
+		module.plus(typed.typeFunction.definition),
+		typed(
+			typedExpression.expression
+				.plus(line(let(typed.typeFunction.lhsType, rhs(do_(typed.function.doing))))),
+			typedExpression.type))
