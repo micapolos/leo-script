@@ -9,6 +9,12 @@ import leo.named.typed.TypedExpression
 val Script.typedExpression: TypedExpression get() =
 	context().typedExpressionCompilation(this).get(unitEnvironment)
 
+val Script.compiler: Compiler get() =
+	context().module.compiler.plusCompilation(this).get(unitEnvironment)
+
+val Script.context: Context get() =
+	context().module.compiler.plusCompilation(this).map { it.module.publicContext }.get(unitEnvironment)
+
 val Script.expression: Expression get() =
 	typedExpression.expression
 

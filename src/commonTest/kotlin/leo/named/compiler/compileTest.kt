@@ -5,6 +5,7 @@ import leo.beName
 import leo.bindName
 import leo.choice
 import leo.choiceName
+import leo.defineName
 import leo.doName
 import leo.doingName
 import leo.equalName
@@ -359,5 +360,23 @@ class CompileTest {
 			isName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script(literal(20))))))
 			.typedExpression
 			.assertEqualTo(10.numberExpression.isEqualTo(20.numberExpression).negate of isType)
+	}
+
+	@Test
+	fun define() {
+		script(
+			defineName lineTo script(
+				"color" lineTo script(
+					choiceName lineTo script(
+						withName lineTo script("red" lineTo script()),
+						withName lineTo script("green" lineTo script()),
+						withName lineTo script("blue" lineTo script())))))
+			.compiler.module.privateContext.types
+			.assertEqualTo(
+				types(type(
+					"color" lineTo type(choice(
+						"red" lineTo type(),
+						"green" lineTo type(),
+						"blue" lineTo type())))))
 	}
 }

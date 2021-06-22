@@ -27,6 +27,7 @@ data class Compiler(
 )
 
 fun compiler() = Compiler(module(), typed(expression(), type()))
+fun compiler(module: Module, typedExpression: TypedExpression) = Compiler(module, typedExpression)
 
 val Module.compiler: Compiler get() =
 	Compiler(this, typedExpression())
@@ -90,4 +91,5 @@ fun Compiler.plusIsEqualTo(typed: TypedExpression): Compiler =
 val Compiler.plusNegate: Compiler get() =
 	set(typedExpression.negate)
 
-
+fun Compiler.define(type: Type) =
+	set(module.plus(type))

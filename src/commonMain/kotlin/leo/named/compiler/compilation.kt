@@ -17,6 +17,7 @@ import leo.beName
 import leo.bind
 import leo.bindName
 import leo.debugName
+import leo.defineName
 import leo.doName
 import leo.doingName
 import leo.equalName
@@ -124,6 +125,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		beName -> plusBeCompilation(scriptField.rhs)
 		bindName -> plusBindCompilation(scriptField.rhs)
 		debugName -> plusDebugCompilation(scriptField.rhs)
+		defineName -> plusDefineCompilation(scriptField.rhs)
 		doName -> plusDoCompilation(scriptField.rhs)
 		functionName -> plusFunctionOrNullCompilation(scriptField.rhs)
 		giveName -> plusGiveCompilation(scriptField.rhs)
@@ -163,6 +165,9 @@ fun Compiler.plusOfCompilation(script: Script): Compilation<Compiler> =
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
 	if (!script.isEmpty) error("debug")
 	else plusDebugCompilation
+
+fun Compiler.plusDefineCompilation(script: Script): Compilation<Compiler> =
+	typeCompilation(script).map { define(it) }
 
 val Compiler.plusDebugCompilation: Compilation<Compiler> get() =
 	set(script("debug" lineTo script(scriptLine)).reflectTypedExpression).compilation
