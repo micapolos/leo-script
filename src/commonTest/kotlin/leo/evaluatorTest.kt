@@ -868,9 +868,8 @@ class EvaluatorTest {
 	@Test
 	fun bind() {
 		script(
-			"point" lineTo script(
-				"x" lineTo script(line(literal(10))),
-				"y" lineTo script(line(literal(20)))),
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
 			bindName lineTo script(
 				"first" lineTo script("x"),
 				"second" lineTo script("y"),

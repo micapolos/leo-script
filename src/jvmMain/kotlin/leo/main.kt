@@ -8,7 +8,7 @@ import leo.natives.fileText
 import leo.parser.scriptOrThrow
 import java.io.File
 
-val typed = true
+val typed = false
 
 fun main(args: Array<String>) {
 	try {
