@@ -1,41 +1,41 @@
-define
+let
   empty.text
-  is ""
+  be ""
 
-define
+let
   any.text.text
-  does
+  do bind
     "\""
     append text.text
     append "\""
 
-define
+let
   any.literal.text
-  does text.literal.content.text
+  do literal.content.text
 
 recursive
-  define
+  let
     any.field.text
-    does
+    do bind
       text.field.word.text
       append "("
       append text.field.script.text
       append ")"
 
-  define
+  let
     any.line.text
-    does text.line.content.text
+    do line.content.text
 
-  define
+  let
     any.link.text
-    does
+    do bind
       text.link.lhs.script.text
       append "."
       append text.link.rhs.line.text
 
-  define
+  let
     any.script.text
-    does text.script.content.text
+    do script.content.text
 
 test
   "foo".text
