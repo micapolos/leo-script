@@ -9,5 +9,6 @@ test
       switch
         yes number
         no number.decrement.countdown
+  
   10.countdown
   is equal to 0

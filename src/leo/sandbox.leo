@@ -1,4 +1,4 @@
-123
-take doing
-  number
+0
+repeat
   plus 1
+  print

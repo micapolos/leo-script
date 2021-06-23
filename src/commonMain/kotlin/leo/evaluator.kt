@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.orNullIf
+import leo.base.print
 import leo.base.runIf
 import leo.parser.scriptOrThrow
 import leo.prelude.preludeDictionary
@@ -109,6 +110,7 @@ fun Evaluator.plusDynamicOrNullEvaluation(field: Field): Evaluation<Evaluator?> 
 		evaluateName -> plusEvaluateOrNullEvaluation(field.rhs)
 		hashName -> plusHashOrNullEvaluation(field.rhs)
 		headName -> plusHeadOrNullEvaluation(field.rhs)
+		printName -> plusPrintOrNullEvaluation(field.rhs)
 		tailName -> plusTailOrNullEvaluation(field.rhs)
 		textName -> plusTextOrNullEvaluation(field.rhs)
 		valueName -> plusValueOrNullEvaluation(field.rhs)
@@ -226,6 +228,13 @@ fun Evaluator.plusTailOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	value.orNullIf { !isEmpty }?.let {
 		rhs.valueOrNull?.linkOrNull?.value?.let { value ->
 			setEvaluation(value)
+		}
+	}?: evaluation(null)
+
+fun Evaluator.plusPrintOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
+	value.orNullIf { !isEmpty }?.let {
+		rhs.valueOrNull?.let { value ->
+			setEvaluation(value).also { value.script.print }
 		}
 	}?: evaluation(null)
 

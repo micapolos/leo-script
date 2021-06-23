@@ -22,6 +22,7 @@ use test repeat
 use test make
 use test name
 use test number
+use test print
 use test private
 use test quote
 use test recurse
