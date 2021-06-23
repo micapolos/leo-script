@@ -230,7 +230,7 @@ fun Evaluator.plusTailOrNullEvaluation(rhs: Rhs): Evaluation<Evaluator?> =
 	}?: evaluation(null)
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
-	setEvaluation(value.plus(quote.script.value))
+	setEvaluation(value.script.value.plus(quote.script.value))
 
 fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
 	dictionary.evaluation(value, switch).bind { setEvaluation(it) }

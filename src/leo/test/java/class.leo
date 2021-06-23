@@ -6,7 +6,7 @@ test
 
 test
   try "unknown".class.java
-  is matching try error any
+  is matching quote try error any
 
 test
   "Hello, world!".java.object.class
