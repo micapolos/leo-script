@@ -572,8 +572,9 @@ class EvaluatorTest {
 							"bar" lineTo script(),
 							isName lineTo script(
 								equalName lineTo script(
-									"zoo" lineTo script(),
-									"zar" lineTo script()
+									toName lineTo script(
+										"zoo" lineTo script(),
+										"zar" lineTo script())
 								)
 							)
 						),
@@ -581,7 +582,9 @@ class EvaluatorTest {
 							"bar" lineTo script("foo"),
 							isName lineTo script(
 								notName lineTo script(
-									equalName lineTo script("zar" lineTo script("zoo"))
+									equalName lineTo script(
+										toName lineTo script(
+											"zar" lineTo script("zoo")))
 								)
 							)
 						)

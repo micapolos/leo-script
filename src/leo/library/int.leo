@@ -1,24 +1,24 @@
 private
-  let
+  define
     integer.class
-    be "java.lang.Integer".class.java.class
+    is "java.lang.Integer".class.java.class
 
   test
     integer.class.quote
     is equal to "class java.lang.Integer".native.java.class
 
-  let
+  define
     kt int
     class
-    be "leo16.native.IntKt".class.java.class
+    is "leo16.native.IntKt".class.java.class
 
   test
     int.kt.class.quote
     is equal to "class leo16.native.IntKt".native.java.class
 
-  let
+  define
     int.class
-    be
+    is
       integer.class
       field "TYPE"
       get null.java
@@ -29,10 +29,10 @@ private
     is equal to "int".native.java.class
 
   private
-    let
+    define
       op text any
       method
-      do
+      does
         int.kt.class
         method
           op.text
@@ -41,43 +41,43 @@ private
             element int.class.java
             array.java
 
-  let
+  define
     plus.method
-    be "plus".op.method
+    is "plus".op.method
 
   test
     plus.method.quote
     is equal to "public static final int leo16.native.IntKt.plus(int,int)".native.java.method
 
-  let
+  define
     minus.method
-    be "minus".op.method
+    is "minus".op.method
 
   test
     minus.method.quote
     is equal to "public static final int leo16.native.IntKt.minus(int,int)".native.java.method
 
-  let
+  define
     times.method
-    be "times".op.method
+    is "times".op.method
 
   test
     times.method.quote
     is equal to "public static final int leo16.native.IntKt.times(int,int)".native.java.method
 
-let
+define
   number any
   int
-  do number.integer.java.int
+  does number.integer.java.int
 
 test
   123.int.quote
   is equal to "123".native.java.int
 
-let
+define
   int any
   plus int any
-  do
+  does
     quote plus
     method
     invoke
@@ -93,10 +93,10 @@ test
   plus 3.int
   is equal to 5.int
 
-let
+define
   int any
   minus int any
-  do
+  does
     quote minus
     method
     invoke
@@ -112,10 +112,10 @@ test
   minus 3.int
   is equal to 2.int
 
-let
+define
   int any
   times int any
-  do
+  does
     quote times
     method
     invoke

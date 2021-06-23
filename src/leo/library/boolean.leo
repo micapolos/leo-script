@@ -1,6 +1,6 @@
-let
+define
   any.boolean.negate
-  do
+  does
     boolean
     switch
       false be true.boolean
@@ -14,10 +14,10 @@ test
   true.boolean.negate
   is equal to false.boolean
 
-let
+define
   any.boolean
   and any.boolean
-  do bind
+  does bind
     boolean
     switch
       true be and.boolean
@@ -43,10 +43,10 @@ test
   and true.boolean
   is equal to true.boolean
 
-let
+define
   any.boolean
   or any.boolean
-  do bind
+  does bind
     boolean
     switch
       false be or.boolean

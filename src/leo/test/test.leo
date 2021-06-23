@@ -14,4 +14,4 @@ test
       is equal to bar
     cause
       foo
-      is not equal bar
+      is not equal to bar

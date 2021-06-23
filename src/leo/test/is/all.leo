@@ -1,2 +1,2 @@
-use test is equal to
+use test is equal
 use test is matching

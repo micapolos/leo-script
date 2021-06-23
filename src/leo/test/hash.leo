@@ -8,4 +8,4 @@ test
 
 test
   10.hash
-  is not equal 20.hash
+  is not equal to 20.hash

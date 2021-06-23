@@ -88,7 +88,7 @@ val Is.script get() =
 
 val IsRhs.script get() =
 	when (this) {
-		is EqualIsRhs -> script(equalName lineTo equal.script)
+		is EqualIsRhs -> script(equalName lineTo script(toName lineTo equal.script))
 		is MatchingIsRhs -> script(matchingName lineTo matching.script)
 		is SyntaxIsRhs -> syntax.script
 	}

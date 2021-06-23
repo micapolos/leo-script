@@ -1,6 +1,6 @@
-let
+define
   any.it
-  do content
+  does content
 
 test
   x 10

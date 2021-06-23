@@ -4,7 +4,7 @@ test
 
 test
   foo
-  is not equal bar
+  is not equal to bar
 
 test
   "Hello"
@@ -12,11 +12,11 @@ test
 
 test
   "Hello"
-  is not equal "world"
+  is not equal to "world"
 
 test
   "Hello"
-  is not equal 123
+  is not equal to 123
 
 test
   2
@@ -24,4 +24,4 @@ test
 
 test
   2
-  is not equal 3
+  is not equal to 3

@@ -146,7 +146,7 @@ fun Dictionary.valueEvaluation(rhs: IsRhs): Evaluation<Value> =
 	}
 
 fun Dictionary.valueEvaluation(equal: Equal): Evaluation<Value> =
-	valueEvaluation(equal.syntax).map { value(equalName fieldTo it) }
+	valueEvaluation(equal.syntax).map { value(equalName fieldTo value(toName fieldTo it)) }
 
 fun Dictionary.valueEvaluation(matching: Matching): Evaluation<Value> =
 	value(matchingName fieldTo matching.syntax.script.value).evaluation
