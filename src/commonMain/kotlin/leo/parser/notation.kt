@@ -8,7 +8,6 @@ import leo.LiteralAtom
 import leo.NameAtom
 import leo.Notation
 import leo.NotationLine
-import leo.NotationLink
 import leo.Stack
 import leo.array
 import leo.atom
@@ -16,7 +15,6 @@ import leo.chain
 import leo.fieldTo
 import leo.fold
 import leo.line
-import leo.linkTo
 import leo.notation
 import leo.plus
 import leo.reverse
@@ -47,14 +45,6 @@ val dottedNameStackParser: Parser<Stack<String>>
 val notationParser: Parser<Notation>
 	get() =
 		notationLineParser.stackParser.map { notation(*it.array) }
-
-val notationLinkParser: Parser<NotationLink>
-	get() =
-		notationLineParser.stackLinkParser.map {
-			it.reverse.let {
-				notation(*it.tail.array) linkTo it.head
-			}
-		}
 
 val notationLineParser: Parser<NotationLine>
 	get() =
