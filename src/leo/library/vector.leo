@@ -3,7 +3,7 @@ use library number
 let
   any.vector
   plus any.vector
-  do vector
+  do bind vector
     x
       vector.x.number
       plus plus.vector.x.number
