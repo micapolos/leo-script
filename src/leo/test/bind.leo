@@ -5,19 +5,19 @@ test
   x 10
   y 20
   bind
-    a text
-    a number
-    a doing
-    a x
-    a y
-    a content
+    my text
+    my number
+    my doing
+    my x
+    my y
+    my content
   is equal to
-    a "Hello, world!"
-    a 123
-    a doing foo
-    a x 10
-    a y 20
-    a
+    my "Hello, world!"
+    my 123
+    my doing foo
+    my x 10
+    my y 20
+    my
       "Hello, world!"
       123
       doing foo
