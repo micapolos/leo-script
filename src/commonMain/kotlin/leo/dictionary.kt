@@ -72,10 +72,10 @@ fun Dictionary.applyEvaluation(repeat: Repeat, given: Value): Evaluation<Value> 
 	}
 
 fun Dictionary.applyEvaluation(recursing: Recursing, value: Value): Evaluation<Value> =
-	plus(value).plusRecurse(recursing.syntax).valueEvaluation(recursing.syntax)
+	plusRecurse(recursing.syntax).context.evaluator(value).plusEvaluation(recursing.syntax).map { it.value }
 
 fun Dictionary.applyEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	plus(given).valueEvaluation(syntax)
+	context.evaluator(given).plusEvaluation(syntax).map { it.value }
 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(

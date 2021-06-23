@@ -3,7 +3,7 @@ use library number
 test 
   recursive let
     any.number.down.count
-    do
+    do bind
       count.down.number
       check equal 0
       switch

@@ -1,7 +1,7 @@
 test
   x 10
   y 20
-  take doing content
-  is equal
+  take doing point
+  is equal point
     x 10
     y 20

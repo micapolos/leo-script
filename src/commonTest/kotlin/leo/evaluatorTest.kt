@@ -145,21 +145,21 @@ class EvaluatorTest {
 	@Test
 	fun give() {
 		script(
-			doingName lineTo script(contentName),
+			doingName lineTo script("bar"),
 			giveName lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("foo"))
+			.assertEqualTo(script("bar" lineTo script("foo")))
 	}
 
 	@Test
 	fun take() {
 		script(
 			line("foo"),
-			takeName lineTo script(doingName lineTo script(contentName))
+			takeName lineTo script(doingName lineTo script("bar"))
 		)
 			.evaluate
-			.assertEqualTo(script("foo"))
+			.assertEqualTo(script("bar" lineTo script("foo")))
 	}
 
 	@Test
@@ -204,12 +204,12 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(anyName),
-				doName lineTo script(contentName)
+				doName lineTo script("id")
 			),
 			"name" lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("name" lineTo script("foo")))
+			.assertEqualTo(script("id" lineTo script("name" lineTo script("foo"))))
 	}
 
 	@Test
@@ -232,7 +232,6 @@ class EvaluatorTest {
 				numberName lineTo script(anyName),
 				"increment" lineTo script(),
 				doName lineTo script(
-					"increment" lineTo script(),
 					numberName lineTo script(),
 					"plus" lineTo script("one")
 				)
@@ -278,7 +277,6 @@ class EvaluatorTest {
 			"number" lineTo script("one"),
 			doName lineTo script(
 				recursingName lineTo script(
-					"number" lineTo script(),
 					switchName lineTo script(
 						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
 						"one" lineTo script(
@@ -853,16 +851,17 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun doContent() {
+	fun do_() {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			doName lineTo script(contentName))
+			doName lineTo script("point"))
 			.evaluate
 			.assertEqualTo(
 				script(
-					"x" lineTo script(line(literal(10))),
-					"y" lineTo script(line(literal(20)))))
+					"point" lineTo script(
+						"x" lineTo script(line(literal(10))),
+						"y" lineTo script(line(literal(20))))))
 	}
 
 	@Test
@@ -1009,7 +1008,6 @@ class EvaluatorTest {
 					"even" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(
-						"decrement" lineTo script(),
 						"even" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
@@ -1026,7 +1024,6 @@ class EvaluatorTest {
 					"odd" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(
-						"decrement" lineTo script(),
 						"odd" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
@@ -1056,7 +1053,7 @@ class EvaluatorTest {
 			recursiveName lineTo script(
 				letName lineTo script(
 					"say" lineTo script("ping" lineTo script()),
-					doName lineTo script("say" lineTo script("ping")))),
+					isName lineTo script("say" lineTo script("ping")))),
 			"say" lineTo script("ping" lineTo script()))
 			.evaluate
 			.isError
@@ -1069,10 +1066,10 @@ class EvaluatorTest {
 			recursiveName lineTo script(
 				letName lineTo script(
 					"ping" lineTo script(),
-					doName lineTo script("pong")),
+					isName lineTo script("pong")),
 				letName lineTo script(
 					"pong" lineTo script(),
-					doName lineTo script("ping"))))
+					isName lineTo script("ping"))))
 
 		script
 			.plus("ping" lineTo script())

@@ -1,7 +1,7 @@
 let
   any.number.increment
   do
-    increment.number
+    number
     plus 1
 
 test
@@ -11,7 +11,7 @@ test
 let
   any.number.decrement
   do
-    decrement.number
+    number
     minus 1
 
 test
@@ -20,7 +20,7 @@ test
 
 let
   any.number.squared
-  do
+  do bind
     squared.number
     times squared.number
 
