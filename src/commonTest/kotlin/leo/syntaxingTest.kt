@@ -172,7 +172,7 @@ class SyntaxCompilationTest {
 	fun isEqual() {
 		script(
 			line("point"),
-			isName lineTo script(equalName lineTo script(line("ok"))))
+			isName lineTo script(equalName lineTo script(toName lineTo script(line("ok")))))
 			.syntax
 			.assertEqualTo(
 				syntax(
@@ -184,7 +184,7 @@ class SyntaxCompilationTest {
 	fun isNotEqual() {
 		script(
 			line("point"),
-			isName lineTo script(notName lineTo script(equalName lineTo script(line("ok")))))
+			isName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script(line("ok"))))))
 			.syntax
 			.assertEqualTo(
 				syntax(

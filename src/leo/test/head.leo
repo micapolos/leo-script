@@ -3,4 +3,4 @@ test
   y 20
   z 30
   head
-  is equal z 30
+  is equal to z 30

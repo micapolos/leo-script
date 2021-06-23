@@ -15,4 +15,4 @@ test
           no.number
           minus 1
           recurse
-  is equal 987
+  is equal to 987

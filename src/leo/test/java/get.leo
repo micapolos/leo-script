@@ -4,4 +4,4 @@ test
   object null.java
   as java any
   quote
-  is equal java native "int"
+  is equal to java native "int"

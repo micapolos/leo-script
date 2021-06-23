@@ -3,6 +3,6 @@ test
   give
     x 10
     y 20
-  is equal point
+  is equal to point
     x 10
     y 20

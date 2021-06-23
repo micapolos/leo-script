@@ -3,17 +3,17 @@ use library number
 test
   2
   plus 3
-  is equal 5
+  is equal to 5
 
 test
   5
   minus 3
-  is equal 2
+  is equal to 2
 
 test
   2
   times 3
-  is equal 6
+  is equal to 6
 
 test
   4
@@ -37,16 +37,16 @@ test
 
 test
   0.sinus
-  is equal 0
+  is equal to 0
  
 test
   0.cosinus
-  is equal 1
+  is equal to 1
 
 test
   25.root
-  is equal 5
+  is equal to 5
 
 test
   123.text
-  is equal "123"
+  is equal to "123"

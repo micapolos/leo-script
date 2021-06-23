@@ -4,7 +4,7 @@ test
 
 test
   10.hash
-  is equal 10.hash
+  is equal to 10.hash
 
 test
   10.hash

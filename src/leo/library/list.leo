@@ -4,7 +4,7 @@ let
 
 test
   empty.list
-  is equal list
+  is equal to list
 
 let
   any.list.head
@@ -20,7 +20,7 @@ test
     y 20
     z 30
   head
-  is equal
+  is equal to
     z 30
 
 let
@@ -37,7 +37,7 @@ test
     y 20
     z 30
   tail
-  is equal
+  is equal to
     x 10
     y 20
 
@@ -54,7 +54,7 @@ test
     y 20
   append
     z 30
-  is equal list
+  is equal to list
     x 10
     y 20
     z 30
@@ -89,7 +89,7 @@ test
     doing bind
       text
       append other.text
-  is equal "Hello, heaven, hell, world!"
+  is equal to "Hello, heaven, hell, world!"
 
 let
   any.list.reverse
@@ -107,7 +107,7 @@ test
     20
     30
   reverse
-  is equal list
+  is equal to list
     30
     20
     10
@@ -131,7 +131,7 @@ test
     20
     30
   map doing plus 1
-  is equal list
+  is equal to list
     11
     21
     31
@@ -159,7 +159,7 @@ test
     20
     30
   separate with 0
-  is equal list
+  is equal to list
     10
     0
     20

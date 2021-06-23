@@ -3,4 +3,4 @@ test
   red
   comment second thing
   color
-  is equal color red
+  is equal to color red

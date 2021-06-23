@@ -5,7 +5,7 @@ private
 
   test
     integer.class.quote
-    is equal "class java.lang.Integer".native.java.class
+    is equal to "class java.lang.Integer".native.java.class
 
   let
     kt int
@@ -14,7 +14,7 @@ private
 
   test
     int.kt.class.quote
-    is equal "class leo16.native.IntKt".native.java.class
+    is equal to "class leo16.native.IntKt".native.java.class
 
   let
     int.class
@@ -26,7 +26,7 @@ private
 
   test
     int.class.quote
-    is equal "int".native.java.class
+    is equal to "int".native.java.class
 
   private
     let
@@ -47,7 +47,7 @@ private
 
   test
     plus.method.quote
-    is equal "public static final int leo16.native.IntKt.plus(int,int)".native.java.method
+    is equal to "public static final int leo16.native.IntKt.plus(int,int)".native.java.method
 
   let
     minus.method
@@ -55,7 +55,7 @@ private
 
   test
     minus.method.quote
-    is equal "public static final int leo16.native.IntKt.minus(int,int)".native.java.method
+    is equal to "public static final int leo16.native.IntKt.minus(int,int)".native.java.method
 
   let
     times.method
@@ -63,7 +63,7 @@ private
 
   test
     times.method.quote
-    is equal "public static final int leo16.native.IntKt.times(int,int)".native.java.method
+    is equal to "public static final int leo16.native.IntKt.times(int,int)".native.java.method
 
 let
   number any
@@ -72,7 +72,7 @@ let
 
 test
   123.int.quote
-  is equal "123".native.java.int
+  is equal to "123".native.java.int
 
 let
   int any
@@ -91,7 +91,7 @@ let
 test
   2.int
   plus 3.int
-  is equal 5.int
+  is equal to 5.int
 
 let
   int any
@@ -110,7 +110,7 @@ let
 test
   5.int
   minus 3.int
-  is equal 2.int
+  is equal to 2.int
 
 let
   int any
@@ -129,4 +129,4 @@ let
 test
   2.int
   times 3.int
-  is equal 6.int
+  is equal to 6.int

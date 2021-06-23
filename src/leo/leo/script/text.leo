@@ -39,40 +39,40 @@ recursive
 
 test
   "foo".text
-  is equal "\"foo\""
+  is equal to "\"foo\""
 
 test
   literal "foo"
   text
-  is equal "\"foo\""
+  is equal to "\"foo\""
 
 test
   literal 123
   text
-  is equal "123"
+  is equal to "123"
 
 test
   field
     word "foo"
     script empty
   text
-  is equal "foo()"
+  is equal to "foo()"
 
 test
   line field
     word "foo"
     script empty
   text
-  is equal "foo()"
+  is equal to "foo()"
 
 test
   line literal 123
   text
-  is equal "123"
+  is equal to "123"
 
 test
   empty.script.text
-  is equal ""
+  is equal to ""
 
 test
   script link
@@ -81,4 +81,4 @@ test
       word "foo"
       script empty
   text
-  is equal ".foo()"
+  is equal to ".foo()"

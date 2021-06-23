@@ -3,7 +3,7 @@ test
     x zero
     y one
   update x plus one
-  is equal point
+  is equal to point
     x
       zero
       plus one
@@ -17,7 +17,7 @@ test
   update
     x plus one
     z plus three
-  is equal point
+  is equal to point
     x
       zero
       plus one
@@ -33,4 +33,4 @@ test
       y one
     update
       z plus three
-  is equal quote try error no field z
+  is equal to quote try error no field z

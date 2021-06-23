@@ -18,6 +18,6 @@ test
   plus vector
     x 40
     y 60
-  is equal vector
+  is equal to vector
     x 50
     y 80

@@ -6,6 +6,6 @@ test
   x 10
   y 20
   it
-  is equal
+  is equal to
     x 10
     y 20

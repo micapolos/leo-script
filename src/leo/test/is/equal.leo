@@ -1,6 +1,6 @@
 test
   foo
-  is equal foo
+  is equal to foo
 
 test
   foo
@@ -8,7 +8,7 @@ test
 
 test
   "Hello"
-  is equal "Hello"
+  is equal to "Hello"
 
 test
   "Hello"
@@ -20,7 +20,7 @@ test
 
 test
   2
-  is equal 2
+  is equal to 2
 
 test
   2

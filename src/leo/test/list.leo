@@ -3,7 +3,7 @@ test
   switch
     empty
     link
-  is equal empty
+  is equal to empty
 
 test
   list
@@ -13,7 +13,7 @@ test
   switch
     empty
     link
-  is equal
+  is equal to
     link
       list
         x 10

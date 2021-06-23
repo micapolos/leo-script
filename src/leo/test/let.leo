@@ -4,7 +4,7 @@ test
     be pong
 
   ping
-  is equal pong
+  is equal to pong
 
 comment test
   let
@@ -14,7 +14,7 @@ comment test
 
   x 10
   y 20
-  is equal it
+  is equal to it
     x 10
     y 20
 
@@ -24,7 +24,7 @@ comment test
     any.number.factorial
     do recursing bind
       factorial.number
-      is equal 1
+      is equal to 1
       switch
         yes be factorial.number
         no be
@@ -36,5 +36,5 @@ comment test
             recurse
 
   5.factorial
-  is equal 120
+  is equal to 120
 

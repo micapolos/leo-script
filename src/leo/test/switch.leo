@@ -3,14 +3,14 @@ test
   switch
     circle radius.number
     rectangle height.number
-  is equal 10
+  is equal to 10
 
 test
   shape rectangle height 10
   switch
     circle radius.number
     rectangle height.number
-  is equal 10
+  is equal to 10
 
 test
   try
@@ -18,4 +18,4 @@ test
     switch
       circle radius.number
       rectangle height.number
-  is equal quote try error switch
+  is equal to quote try error switch

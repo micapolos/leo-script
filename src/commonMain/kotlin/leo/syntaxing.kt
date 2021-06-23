@@ -166,7 +166,7 @@ val Script.isRhsSyntaxing: Syntaxing<IsRhs> get() =
 	matchPrefix { name, rhs ->
 		when (name) {
 			matchingName -> rhs.matchingSyntaxing.map(::isRhs)
-			equalName -> rhs.equalSyntaxing.map(::isRhs)
+			equalName -> rhs.equalSyntaxing?.map(::isRhs)
 			else -> null
 		}
 	} ?: syntaxSyntaxing.map(::isRhs)
@@ -174,8 +174,10 @@ val Script.isRhsSyntaxing: Syntaxing<IsRhs> get() =
 val Script.matchingSyntaxing: Syntaxing<Matching> get() =
 	syntaxSyntaxing.map(::matching)
 
-val Script.equalSyntaxing: Syntaxing<Equal> get() =
-	syntaxSyntaxing.map(::equal)
+val Script.equalSyntaxing: Syntaxing<Equal>? get() =
+	matchPrefix(toName) { rhs ->
+		rhs.syntaxSyntaxing.map(::equal)
+	}
 
 val Script.recurseSyntaxing: Syntaxing<Recurse> get() =
 	syntaxSyntaxing.map(::recurse)

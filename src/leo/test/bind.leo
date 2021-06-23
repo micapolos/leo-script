@@ -11,7 +11,7 @@ test
     a x
     a y
     a content
-  is equal
+  is equal to
     a "Hello, world!"
     a 123
     a doing foo

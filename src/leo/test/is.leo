@@ -5,14 +5,14 @@ comment
 test
   foo
   is bar
-  is equal
+  is equal to
     foo
     is bar
 
 test
   foo
   is not bar
-  is equal
+  is equal to
     foo
     is not bar
 
@@ -21,24 +21,24 @@ let
   is greeting
   do bind
     text
-    is equal "Hello, world!"
+    is equal to "Hello, world!"
 
 test
   "Hello, world!"
   is greeting
-  is equal is yes
+  is equal to is yes
 
 test
   "Hello, hell!"
   is greeting
-  is equal is no
+  is equal to is no
 
 test
   "Hello, world!"
   is not greeting
-  is equal is no
+  is equal to is no
 
 test
   "Hello, hell!"
   is not greeting
-  is equal is yes
+  is equal to is yes

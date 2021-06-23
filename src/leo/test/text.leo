@@ -1,4 +1,4 @@
 test
   "Hello, "
   append "world!"
-  is equal "Hello, world!"
+  is equal to "Hello, world!"

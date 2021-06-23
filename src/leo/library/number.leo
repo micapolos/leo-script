@@ -6,7 +6,7 @@ let
 
 test
   2.increment
-  is equal 3
+  is equal to 3
 
 let
   any.number.decrement
@@ -16,7 +16,7 @@ let
 
 test
   2.decrement
-  is equal 1
+  is equal to 1
 
 let
   any.number.squared
@@ -26,4 +26,4 @@ let
 
 test
   10.squared
-  is equal 100
+  is equal to 100

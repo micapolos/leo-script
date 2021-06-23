@@ -1,12 +1,12 @@
 test
   use test used
   ping
-  is equal pong
+  is equal to pong
 
 test
   use test used
   foo
-  is equal foo
+  is equal to foo
 
 test
   try use test missing

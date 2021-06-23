@@ -13,7 +13,8 @@ class PerformanceTest {
 			repeatName lineTo script(
 				checkName lineTo script(
 					equalName lineTo script(
-						line(literal(0)))),
+						toName lineTo script(
+							line(literal(0))))),
 				switchName lineTo script(
 					yesName lineTo script(
 						numberName lineTo script(),

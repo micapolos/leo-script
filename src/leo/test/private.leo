@@ -5,10 +5,10 @@ private
       be pong
     test
       ping
-      is equal pong
+      is equal to pong
   test
     ping
-    is equal pong
+    is equal to pong
 test
   ping
-  is equal ping
+  is equal to ping

@@ -12,4 +12,4 @@ test
       array.java
   as java any
   quote
-  is equal java native "Hello, world!"
+  is equal to java native "Hello, world!"

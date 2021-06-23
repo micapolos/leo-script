@@ -16,4 +16,4 @@ test
     ".bar"
     ".zoo"
   text
-  is equal ".foo.bar.zoo"
+  is equal to ".foo.bar.zoo"

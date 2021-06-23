@@ -447,7 +447,7 @@ class EvaluatorTest {
 		script(
 			line(literal(10)),
 			line(hashName),
-			isName lineTo script(equalName lineTo script(line(literal(10)), line(hashName))))
+			isName lineTo script(equalName lineTo script(toName lineTo script(line(literal(10)), line(hashName)))))
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 	}
@@ -456,21 +456,21 @@ class EvaluatorTest {
 	fun isEqual() {
 		script(
 			"foo" lineTo script(),
-			isName lineTo script(equalName lineTo script("foo"))
+			isName lineTo script(equalName lineTo script(toName lineTo script("foo")))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 
 		script(
 			"foo" lineTo script(),
-			isName lineTo script(equalName lineTo script("bar"))
+			isName lineTo script(equalName lineTo script(toName lineTo script("bar")))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 
 		script(
 			line(literal("foo")),
-			isName lineTo script(equalName lineTo script(line(literal("foo"))))
+			isName lineTo script(equalName lineTo script(toName lineTo script(line(literal("foo")))))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
@@ -480,7 +480,7 @@ class EvaluatorTest {
 	fun isNotEqual() {
 		script(
 			"foo" lineTo script(),
-			isName lineTo script(notName lineTo script(equalName lineTo script("bar")))
+			isName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script("bar"))))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
@@ -523,8 +523,9 @@ class EvaluatorTest {
 				"bar" lineTo script(),
 				isName lineTo script(
 					equalName lineTo script(
-						"foo" lineTo script(),
-						"bar" lineTo script()
+						toName lineTo script(
+							"foo" lineTo script(),
+							"bar" lineTo script())
 					)
 				)
 			)
@@ -555,8 +556,9 @@ class EvaluatorTest {
 				"bar" lineTo script(),
 				isName lineTo script(
 					equalName lineTo script(
-						"zoo" lineTo script(),
-						"zar" lineTo script()
+						toName lineTo script(
+							"zoo" lineTo script(),
+							"zar" lineTo script())
 					)
 				)
 			)
@@ -922,25 +924,25 @@ class EvaluatorTest {
 	fun check() {
 		script(
 			line(literal(123)),
-			checkName lineTo script(equalName lineTo script(line(literal(123)))))
+			checkName lineTo script(equalName lineTo script(toName lineTo script(line(literal(123))))))
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(yesName lineTo script(line(literal(123))))))
 
 		script(
 			line(literal(123)),
-			checkName lineTo script(equalName lineTo script(line(literal(124)))))
+			checkName lineTo script(equalName lineTo script(toName lineTo script(line(literal(124))))))
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(noName lineTo script(line(literal(123))))))
 
 		script(
 			line(literal(123)),
-			checkName lineTo script(notName lineTo script(equalName lineTo script(line(literal(123))))))
+			checkName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script(line(literal(123)))))))
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(noName lineTo script(line(literal(123))))))
 
 		script(
 			line(literal(123)),
-			checkName lineTo script(notName lineTo script(equalName lineTo script(line(literal(124))))))
+			checkName lineTo script(notName lineTo script(equalName lineTo script(toName lineTo script(line(literal(124)))))))
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(yesName lineTo script(line(literal(123))))))
 	}
@@ -1011,7 +1013,8 @@ class EvaluatorTest {
 						"even" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
-							equalName lineTo script(literal(0))),
+							equalName lineTo script(
+								toName lineTo script(literal(0)))),
 						switchName lineTo script(
 							yesName lineTo script(numberName),
 							noName lineTo script(
@@ -1027,7 +1030,8 @@ class EvaluatorTest {
 						"odd" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
-							equalName lineTo script(literal(0))),
+							equalName lineTo script(
+								toName lineTo script(literal(0)))),
 						switchName lineTo script(
 							yesName lineTo script(numberName),
 							noName lineTo script(
