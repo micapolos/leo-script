@@ -14,7 +14,7 @@ use test hash
 use test head
 use test is
 use test is all
-comment use test java all
+use test java all
 use test let
 use test list
 use test recursive
