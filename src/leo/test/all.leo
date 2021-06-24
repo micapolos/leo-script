@@ -5,6 +5,7 @@ use test check
 use test comment
 use test content
 use test do
+use test doing
 use test evaluate
 use test example
 use test fail
