@@ -21,6 +21,7 @@ use test recursive
 use test repeat
 use test make
 use test name
+use test notation
 use test number
 use test print
 use test private
