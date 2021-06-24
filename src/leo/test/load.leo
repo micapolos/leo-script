@@ -1,3 +1,12 @@
+comment
+  load
+    evaluates
+      the script
+      at the given location
+    and
+      caches the result
+      for the subsequent loads
+
 test
   load test loaded
   is equal to "Hello, world!"
