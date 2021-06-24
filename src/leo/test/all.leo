@@ -1,3 +1,4 @@
+use test any
 use test as
 use test be
 use test bind
