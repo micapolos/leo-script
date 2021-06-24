@@ -335,8 +335,8 @@ fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(load: Load): Evaluation<Evaluator> =
 	Use(load.nameStackLink)
 		.stringEvaluation
-		.bind {  preludeDictionary.valueEvaluation(it.scriptOrThrow.syntax) }
-		.bind { setEvaluation(it) }
+		.bind { preludeDictionary.valueEvaluation(it.scriptOrThrow.syntax) }
+		.bind { setEvaluation(value.plus(it)) }
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))
