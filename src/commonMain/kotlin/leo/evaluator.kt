@@ -82,6 +82,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is GiveSyntaxLine -> plusEvaluation(line.give)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
+		is LoadSyntaxLine -> plusEvaluation(line.load)
 		is RepeatSyntaxLine -> plusEvaluation(line.repeat)
 		is MatchingSyntaxLine -> plusEvaluation(line.matching)
 		is PrivateSyntaxLine -> plusEvaluation(line.private)
@@ -330,6 +331,12 @@ val Evaluator.dictionary
 
 fun Evaluator.plusEvaluation(use: Use): Evaluation<Evaluator> =
 	use.dictionaryEvaluation.map { use(it) }
+
+fun Evaluator.plusEvaluation(load: Load): Evaluation<Evaluator> =
+	Use(load.nameStackLink)
+		.stringEvaluation
+		.bind {  preludeDictionary.valueEvaluation(it.scriptOrThrow.syntax) }
+		.bind { setEvaluation(it) }
 
 fun Evaluator.use(dictionary: Dictionary): Evaluator =
 	set(context.plusPrivate(dictionary))

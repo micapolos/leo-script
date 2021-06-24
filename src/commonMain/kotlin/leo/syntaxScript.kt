@@ -22,6 +22,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is GiveSyntaxLine -> giveName lineTo give.script
 		is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
+		is LoadSyntaxLine -> loadName lineTo load.script
 		is RepeatSyntaxLine -> repeatName lineTo repeat.script
 		is MatchingSyntaxLine -> matchingName lineTo matching.script
 		is PrivateSyntaxLine -> privateName lineTo private.script
@@ -52,6 +53,7 @@ val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
 val Give.script get() = syntax.script
 val Not.script get() = syntax.script
 val Let.script get() = syntax.script.plus(rhs.scriptLine)
+val Load.script get() = script().fold(stack(nameStackLink)) { script(it lineTo this) }
 val Repeat.script get() = syntax.script
 val Matching.script get() = syntax.script
 val Private.script get() = syntax.script

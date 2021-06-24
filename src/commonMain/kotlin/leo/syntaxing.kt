@@ -48,6 +48,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		isName -> rhs.isSyntaxing.map(::line)
 		matchingName -> rhs.matchingSyntaxing.map(::line)
 		letName -> rhs.letSyntaxing.map(::line)
+		loadName -> rhs.loadSyntaxing.map(::line)
 		repeatName -> rhs.repeatSyntaxing.map(::line)
 		privateName -> rhs.privateSyntaxing.map(::line)
 		recurseName -> rhs.recurseSyntaxing.map(::line)
@@ -170,6 +171,9 @@ val Script.isRhsSyntaxing: Syntaxing<IsRhs> get() =
 			else -> null
 		}
 	} ?: syntaxSyntaxing.map(::isRhs)
+
+val Script.loadSyntaxing: Syntaxing<Load> get() =
+	loadOrNull.notNullOrThrow { value(loadName fieldTo value) }.syntaxing
 
 val Script.matchingSyntaxing: Syntaxing<Matching> get() =
 	syntaxSyntaxing.map(::matching)
