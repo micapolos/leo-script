@@ -1,3 +1,8 @@
+comment
+  be
+    makes the current value
+    become the given value
+
 test
   ugly
   be pretty

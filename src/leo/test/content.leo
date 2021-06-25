@@ -1,3 +1,7 @@
+comment
+  content
+    gives all fields of the current value
+
 test
   point
     x 10

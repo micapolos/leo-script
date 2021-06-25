@@ -1,3 +1,7 @@
+comment
+  fail
+    throws an error
+
 test
   try
     frog

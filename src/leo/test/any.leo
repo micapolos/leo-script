@@ -1,3 +1,8 @@
+comment
+  any
+    matches any value
+    when used in a pattern
+
 test
   red.color
   is matching any.color

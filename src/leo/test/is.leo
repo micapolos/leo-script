@@ -1,6 +1,14 @@
 comment 
   is
-    does nothing by default
+    does nothing by itself
+  it can be used in combination with
+    equal to
+    matching
+  it is expected to evaluate to one of
+    is yes
+    is no
+  when used in combination with not
+    it negates the given value
 
 test
   foo

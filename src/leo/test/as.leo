@@ -1,3 +1,11 @@
+comment
+  as
+    throws an error
+      if the current value
+      does not match the given pattern
+    returns the current value
+      if it matches the given pattern
+
 test
   "Hello, world!"
   as any.text

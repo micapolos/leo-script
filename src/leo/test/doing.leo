@@ -1,3 +1,11 @@
+comment
+  doing
+    gives a function with a given body
+  details
+    the function can be executed with
+      keyword give
+      keyword take
+
 test
   doing plus 1
   give 123

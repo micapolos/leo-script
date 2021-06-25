@@ -1,3 +1,8 @@
+comment
+  evaluate
+    evaluates the current value
+    in the current context
+
 test
   quote
     point

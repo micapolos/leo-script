@@ -1,3 +1,8 @@
+comment
+  hash
+    gives hash number of the current value
+    the hash is stable only within the process
+
 test
   10.hash
   is matching quote hash number any

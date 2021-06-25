@@ -1,3 +1,11 @@
+comment
+  check
+    gives
+      check yes value
+        if the current value satisfies the given condition
+      check no value
+        if the current value does not satisfy the given condition
+
 test
   123
   check equal to 123

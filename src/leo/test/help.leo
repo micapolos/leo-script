@@ -1,3 +1,7 @@
+comment
+  help
+    gives the help value
+
 test
   help
   is matching help

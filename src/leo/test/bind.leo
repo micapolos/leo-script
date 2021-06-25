@@ -1,3 +1,20 @@
+comment
+  bind
+    binds
+      all fields of the current value
+      by their name
+      locally
+    and
+      executes the given script
+
+test
+  x 10
+  y 20
+  bind
+    x.number
+    plus y.number
+  is equal to 30
+
 test
   "Hello, world!"
   123

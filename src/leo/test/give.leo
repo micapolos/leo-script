@@ -1,3 +1,9 @@
+comment
+  give
+    gives the given value
+    to the current value
+    which must be a function
+
 test
   doing point
   give
