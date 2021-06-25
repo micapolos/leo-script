@@ -1,5 +1,6 @@
 package leo
 
+val absentName = "absent"
 val anyName = "any"
 val asName = "as"
 val beName = "be"
@@ -47,8 +48,10 @@ val noName = "no"
 val notName = "not"
 val numberName = "number"
 val ofName = "of"
+val optionName = "option"
 val orName = "or"
 val plusName = "plus"
+val presentName = "present"
 val printName = "print"
 val privateName = "private"
 val quoteName = "quote"

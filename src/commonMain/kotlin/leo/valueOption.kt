@@ -1,0 +1,29 @@
+package leo
+
+import leo.base.orIfNull
+
+val Value.optionOrNull: Value? get() =
+	resolvePrefixOrNull(optionName) { it }
+
+val Value.presentOrNull: Value? get() =
+	resolvePrefixOrNull(presentName) { it }
+
+val Value.presentOption: Value get() =
+	make(presentName).make(optionName)
+
+val absentOptionValue: Value get() =
+	value().make(absentName).make(optionName)
+
+val Value.liftToOption: Value get() =
+	resolvePrefixOrNull(optionName) { this }.orIfNull { presentOption }
+
+fun Value.optionBind(fn: (Value) -> Value): Value =
+	optionOrNull
+		?.let { optionValue ->
+			optionValue.presentOrNull
+				?.let { presentValue ->
+					fn(presentValue).liftToOption
+				}
+				?: absentOptionValue
+		}
+		?: fn(this)
