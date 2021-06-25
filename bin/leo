@@ -1,1 +1,1 @@
-java -jar ${BASH_SOURCE%/*}/../build/libs/leo-script-fat-0.25.jar $@
+java -jar ${BASH_SOURCE%/*}/../build/libs/leo-script-fat-0.25.2.jar $@
