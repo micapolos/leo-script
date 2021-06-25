@@ -3,7 +3,7 @@ comment
     absent
     present value
   option
-    is a monad
+    is a built in monad
     and will be lifted automatically
   todo
     implement a way
