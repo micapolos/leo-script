@@ -34,7 +34,7 @@ fun Dictionary.valueEvaluation(value: Value, syntax: Syntax): Evaluation<Value> 
 
 fun Dictionary.fieldEvaluation(field: SyntaxField): Evaluation<Field> =
 	valueEvaluation(field.rhsSyntax).map { rhs ->
-		field.name fieldTo rhs
+		rhs.optionBind { value(field.name fieldTo it) }.fieldOrNull!! // TODO: Update optionBind to return Field.
 	}
 
 fun Dictionary.fieldEvaluation(atom: SyntaxAtom): Evaluation<Field> =
@@ -197,7 +197,7 @@ fun Evaluator.plusValueEvaluation(syntaxField: SyntaxField): Evaluation<Value> =
 			it.plusValueEvaluation(syntaxField.name fieldTo value)
 		}
 	else dictionary.fieldEvaluation(syntaxField).bind { field ->
-		plusValueEvaluation(field)
+		value(field).optionBindEvaluation { plusValueEvaluation(it.fieldOrNull!!) }
 	}
 
 fun Evaluator.plusValueEvaluation(field: Field): Evaluation<Value> =

@@ -1183,40 +1183,86 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun option() {
+	fun numberPlusNumber() {
 		script(
-			optionName lineTo script(presentName lineTo script("x" lineTo script(literal(10)))),
-			"y" lineTo script(literal(20))
-		)
+			line(literal(10)),
+			plusName lineTo script(literal(20)))
 			.evaluate
-			.assertEqualTo(
-				script(
-					optionName lineTo script(
-						presentName lineTo script(
-							"x" lineTo script(literal(10)),
-							"y" lineTo script(literal(20))
-						)
-					)
-				)
-			)
-
-		script(
-			optionName lineTo script(absentName),
-			"y" lineTo script(literal(20))
-		)
-			.evaluate
-			.assertEqualTo(script(optionName lineTo script(absentName)))
-
-		// TODO: Adding option to non-option does not work yet.
+			.assertEqualTo(script(literal(30)))
 	}
 
 	@Test
-	fun option_addOptionToNonOption() {
+	fun numberPlusPresentNumber() {
 		script(
-			optionName lineTo script(presentName lineTo script(literal(10))),
+			line(literal(10)),
+			plusName lineTo script(literal(20)).presentOption
+		)
+			.evaluate
+			.assertEqualTo(script(literal(30)).presentOption)
+	}
+
+	@Test
+	fun numberPlusAbsent() {
+		script(
+			line(literal(10)),
+			plusName lineTo absentOptionScript)
+			.evaluate
+			.assertEqualTo(absentOptionScript)
+	}
+
+	@Test
+	fun presentNumberPlusNumber() {
+		script(
+			script(literal(10)).presentOptionLine,
 			plusName lineTo script(literal(20))
 		)
 			.evaluate
-			.assertEqualTo(script(optionName lineTo script(presentName lineTo script(literal(30)))))
+			.assertEqualTo(script(literal(30)).presentOption)
+	}
+
+	@Test
+	fun presentNumberPlusPresentNumber() {
+		script(
+			script(literal(10)).presentOptionLine,
+			plusName lineTo script(literal(20)).presentOption
+		)
+			.evaluate
+			.assertEqualTo(script(literal(30)).presentOption)
+	}
+
+	@Test
+	fun presentNumberPlusAbsent() {
+		script(
+			script(literal(10)).presentOptionLine,
+			plusName lineTo absentOptionScript)
+			.evaluate
+			.assertEqualTo(absentOptionScript)
+	}
+
+	@Test
+	fun absentPlusNumber() {
+		script(
+			absentOptionScriptLine,
+			plusName lineTo script(literal(20)))
+			.evaluate
+			.assertEqualTo(absentOptionScript)
+	}
+
+	@Test
+	fun absentPlusPresentNumber() {
+		script(
+			absentOptionScriptLine,
+			plusName lineTo script(literal(20)).presentOption)
+			.evaluate
+			.assertEqualTo(absentOptionScript)
+	}
+
+	@Test
+	fun absentPlusAbsent() {
+		script(
+			absentOptionScriptLine,
+			plusName lineTo absentOptionScript)
+			.evaluate
+			.assertEqualTo(absentOptionScript)
 	}
 }
