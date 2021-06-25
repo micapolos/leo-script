@@ -1,5 +1,7 @@
 comment
-  recursive fibonacci
+  recurse
+    performs recursion
+    inside do recursive block
 
 test
   16

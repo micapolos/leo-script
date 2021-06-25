@@ -1,3 +1,7 @@
+comment
+  recursive
+    allows defining mutually recursive functions
+
 use library number
 
 test 

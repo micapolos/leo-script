@@ -1,3 +1,8 @@
+comment
+  with
+    appends the given value
+    to the current value
+
 test
   x 10
   y 20

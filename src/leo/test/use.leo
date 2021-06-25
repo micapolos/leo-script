@@ -1,3 +1,8 @@
+comment
+  use
+    imports definitions
+    from the given file
+
 test
   use test used
   ping

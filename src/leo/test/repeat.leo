@@ -1,3 +1,9 @@
+comment
+  repeat
+    repeat the given script
+  end
+    ends repeating with the current value
+
 use library number
 
 test
