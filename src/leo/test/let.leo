@@ -1,3 +1,12 @@
+comment
+  let
+    defines local binding
+    matching the given pattern
+  let be
+    defines a constant binding
+  let do
+    defines a function binding
+
 test
   let
     ping
