@@ -6,20 +6,17 @@ test
   ping
   is equal to pong
 
-comment test
+test
   let
-    x any
-    y any
-    do it
+    10.increment
+    do
+      number
+      plus 1
 
-  x 10
-  y 20
-  is equal to it
-    x 10
-    y 20
+  10.increment
+  is equal to 11
 
-comment recursive function
-comment test
+test
   let
     any.number.factorial
     do recursing bind
