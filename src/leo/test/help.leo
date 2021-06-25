@@ -4,6 +4,6 @@ test
     leo
       version any
       author any
-    keyword list any
-    binding list any
+    command list any
+    function list any
     value any

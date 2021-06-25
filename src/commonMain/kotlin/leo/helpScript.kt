@@ -5,54 +5,54 @@ val Evaluator.helpScriptLine: ScriptLine get() =
 		"leo" lineTo script(
 			"version" lineTo script(literal("0.25.2")),
 			"author" lineTo script(literal("Michał Pociecha-Łoś"))),
-		"keyword" lineTo script(
+		"command" lineTo script(
 			listName lineTo script(
-				"keyword" lineTo script(anyName),
-				"keyword" lineTo script(asName),
-				"keyword" lineTo script(beName),
-				"keyword" lineTo script(bindName),
-				"keyword" lineTo script(checkName),
-				"keyword" lineTo script(commentName),
-				"keyword" lineTo script(contentName),
-				"keyword" lineTo script(debugName),
-				"keyword" lineTo script(doName),
-				"keyword" lineTo script(doingName),
-				"keyword" lineTo script(evaluateName),
-				"keyword" lineTo script(exampleName),
-				"keyword" lineTo script(failName),
-				"keyword" lineTo script(giveName),
-				"keyword" lineTo script(hashName),
-				"keyword" lineTo script(helpName),
-				"keyword" lineTo script(isName lineTo script(equalName lineTo script(toName))),
-				"keyword" lineTo script(isName lineTo script(matchingName)),
-				"keyword" lineTo script(isName lineTo script(notName)),
-				"keyword" lineTo script(letName lineTo script(beName)),
-				"keyword" lineTo script(letName lineTo script(doName)),
-				"keyword" lineTo script(listName),
-				"keyword" lineTo script(loadName),
-				"keyword" lineTo script(printName),
-				"keyword" lineTo script(privateName),
-				"keyword" lineTo script(quoteName),
-				"keyword" lineTo script(recurseName),
-				"keyword" lineTo script(recursiveName),
-				"keyword" lineTo script(repeatName),
-				"keyword" lineTo script(setName),
-				"keyword" lineTo script(switchName),
-				"keyword" lineTo script(takeName),
-				"keyword" lineTo script(testName),
-				"keyword" lineTo script(tryName),
-				"keyword" lineTo script(updateName),
-				"keyword" lineTo script(useName),
-				"keyword" lineTo script(withName))),
-		"binding" lineTo script(
-			listName lineTo context.privateDictionary.bindingListScript),
+				"command" lineTo script(anyName),
+				"command" lineTo script(asName),
+				"command" lineTo script(beName),
+				"command" lineTo script(bindName),
+				"command" lineTo script(checkName),
+				"command" lineTo script(commentName),
+				"command" lineTo script(contentName),
+				"command" lineTo script(debugName),
+				"command" lineTo script(doName),
+				"command" lineTo script(doingName),
+				"command" lineTo script(evaluateName),
+				"command" lineTo script(exampleName),
+				"command" lineTo script(failName),
+				"command" lineTo script(giveName),
+				"command" lineTo script(hashName),
+				"command" lineTo script(helpName),
+				"command" lineTo script(isName lineTo script(equalName lineTo script(toName))),
+				"command" lineTo script(isName lineTo script(matchingName)),
+				"command" lineTo script(isName lineTo script(notName)),
+				"command" lineTo script(letName lineTo script(beName)),
+				"command" lineTo script(letName lineTo script(doName)),
+				"command" lineTo script(listName),
+				"command" lineTo script(loadName),
+				"command" lineTo script(printName),
+				"command" lineTo script(privateName),
+				"command" lineTo script(quoteName),
+				"command" lineTo script(recurseName),
+				"command" lineTo script(recursiveName),
+				"command" lineTo script(repeatName),
+				"command" lineTo script(setName),
+				"command" lineTo script(switchName),
+				"command" lineTo script(takeName),
+				"command" lineTo script(testName),
+				"command" lineTo script(tryName),
+				"command" lineTo script(updateName),
+				"command" lineTo script(useName),
+				"command" lineTo script(withName))),
+		"function" lineTo script(
+			listName lineTo context.privateDictionary.functionListScript),
 		value.scriptLine)
 
-val Dictionary.bindingListScript: Script get() =
+val Dictionary.functionListScript: Script get() =
 	script().fold(definitionStack.reverse) { plus(it.bindingListScript) }
 
 val Definition.bindingListScript: Script get() =
 	when (this) {
-		is LetDefinition -> script("binding" lineTo let.value.script)
-		is RecursiveDefinition -> recursive.dictionary.bindingListScript
+		is LetDefinition -> script("function" lineTo let.value.script)
+		is RecursiveDefinition -> recursive.dictionary.functionListScript
 	}
