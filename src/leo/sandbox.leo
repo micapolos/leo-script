@@ -1,3 +1,1 @@
-x 10
-y 20
-do help
+123.sinus.help
