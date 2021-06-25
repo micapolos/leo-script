@@ -2,6 +2,9 @@ package leo
 
 import leo.base.runIf
 
+val Syntax.scriptLine: ScriptLine get() =
+	"syntax" lineTo script
+
 val Syntax.script: Script get() =
 	script(lineStack.map { scriptLine })
 
@@ -14,12 +17,14 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is BindSyntaxLine -> bindName lineTo bind.script
 		is CheckSyntaxLine -> checkName lineTo check.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
+		is DebugSyntaxLine -> debugName lineTo debug.script
 		is DoSyntaxLine -> doName lineTo do_.script
 		is DoingSyntaxLine -> doingName lineTo doing.script
 		is ExampleSyntaxLine -> exampleName lineTo example.script
 		is FailSyntaxLine -> failName lineTo fail.script
 		is GetSyntaxLine -> getName lineTo get.script
 		is GiveSyntaxLine -> giveName lineTo give.script
+		is HelpSyntaxLine -> helpName lineTo help.script
 		is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
 		is LoadSyntaxLine -> loadName lineTo load.script

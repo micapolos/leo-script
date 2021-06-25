@@ -39,12 +39,14 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		endName -> rhs.endSyntaxing.map(::line)
 		checkName -> rhs.checkSyntaxing.map(::line)
 		commentName -> rhs.commentSyntaxing.map(::line)
+		debugName -> rhs.debugSyntaxing.map(::line)
 		doName -> rhs.doSyntaxing.map(::line)
 		doingName -> rhs.doingSyntaxingOrNull?.map(::line)
 		exampleName -> rhs.exampleSyntaxing.map(::line)
 		failName -> rhs.failSyntaxing.map(::line)
 		getName -> rhs.getSyntaxing.map(::line)
 		giveName -> rhs.giveSyntaxing.map(::line)
+		helpName -> rhs.helpSyntaxing.map(::line)
 		isName -> rhs.isSyntaxing.map(::line)
 		matchingName -> rhs.matchingSyntaxing.map(::line)
 		letName -> rhs.letSyntaxing.map(::line)
@@ -118,6 +120,9 @@ val Script.checkSyntaxing: Syntaxing<Check> get() =
 val Script.commentSyntaxing: Syntaxing<Comment> get() =
 	comment(this).syntaxing
 
+val Script.debugSyntaxing: Syntaxing<Debug> get() =
+	debug(this).syntaxing
+
 val Script.doSyntaxing: Syntaxing<Do> get() =
 	blockSyntaxing.map(::do_)
 
@@ -137,6 +142,9 @@ val Script.getSyntaxing: Syntaxing<Get> get() =
 
 val Script.giveSyntaxing: Syntaxing<Give> get() =
 	syntaxSyntaxing.map(::give)
+
+val Script.helpSyntaxing: Syntaxing<Help> get() =
+	help(this).syntaxing
 
 val Script.letSyntaxing: Syntaxing<Let> get() =
 	matchInfix { lhs, name, rhs ->

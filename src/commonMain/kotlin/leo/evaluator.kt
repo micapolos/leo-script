@@ -77,12 +77,14 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is EndSyntaxLine -> plusEvaluation(line.end)
 		is CheckSyntaxLine -> plusEvaluation(line.check)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
+		is DebugSyntaxLine -> plusEvaluation(line.debug)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
 		is GiveSyntaxLine -> plusEvaluation(line.give)
+		is HelpSyntaxLine -> plusEvaluation(line.help)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
 		is LoadSyntaxLine -> plusEvaluation(line.load)
@@ -158,6 +160,9 @@ fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation
 
+fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") debug: Debug): Evaluation<Evaluator> =
+	setEvaluation(script(scriptLine).value)
+
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(do_.block, value).bind { setEvaluation(it) }
 
@@ -190,6 +195,9 @@ fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, give).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") help: Help): Evaluation<Evaluator> =
+	setEvaluation(value.plus(script(helpScriptLine).value))
 
 fun Evaluator.plusValueEvaluation(syntaxField: SyntaxField): Evaluation<Value> =
 	if (syntaxField.rhsSyntax.isEmpty)

@@ -5,6 +5,7 @@ use test bind
 use test check
 use test comment
 use test content
+use test debug
 use test do
 use test doing
 use test evaluate
@@ -14,6 +15,7 @@ use test get
 use test give
 use test hash
 use test head
+use test help
 use test is
 use test is all
 comment use test java all
