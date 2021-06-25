@@ -1090,4 +1090,23 @@ class EvaluatorTest {
 			.isError
 			.assertTrue
 	}
+
+	@Test
+	fun option_fields() {
+		script(
+			optionName lineTo script(presentName lineTo script("x" lineTo script(literal(10)))),
+			"y" lineTo script(literal(20)))
+			.evaluate
+			.assertEqualTo(script(optionName lineTo script(presentName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))))))
+
+		script(
+			optionName lineTo script(absentName),
+			"y" lineTo script(literal(20)))
+			.evaluate
+			.assertEqualTo(script(optionName lineTo script(absentName)))
+
+		// TODO: Adding option to non-option does not work yet.
+	}
 }

@@ -27,3 +27,14 @@ fun Value.optionBind(fn: (Value) -> Value): Value =
 				?: absentOptionValue
 		}
 		?: fn(this)
+
+fun Value.optionBindEvaluation(fn: (Value) -> Evaluation<Value>): Evaluation<Value> =
+	optionOrNull
+		?.let { optionValue ->
+			optionValue.presentOrNull
+				?.let { presentValue ->
+					fn(presentValue).map { it.liftToOption }
+				}
+				?: absentOptionValue.evaluation
+		}
+		?: fn(this)
