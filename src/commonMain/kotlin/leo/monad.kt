@@ -31,15 +31,11 @@ val optionMonad get() =
 		{ value, fn -> value.optionBindEvaluation(fn) })
 
 // TODO: Implement "one of" pattern.
-val presentOptionMonadDefinition =
+val optionMonadDefinition =
 	definition(
-		value(optionName fieldTo value(presentName fieldTo anyValue)),
+		value(optionName fieldTo value(
+			presentName fieldTo anyValue,
+			orName fieldTo value(absentName))),
 		optionMonad)
 
-val absentOptionMonadDefinition = definition(
-	value(optionName fieldTo value(absentName)),
-	optionMonad)
-
-val preludeMonadDictionary = dictionary(
-	presentOptionMonadDefinition,
-	absentOptionMonadDefinition)
+val preludeMonadDictionary = dictionary(optionMonadDefinition)
