@@ -147,7 +147,7 @@ fun Evaluator.plusEvaluation(apply: Apply): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, apply).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(applying: Applying): Evaluation<Evaluator> =
-	TODO()
+	plusResolveEvaluation(field(dictionary.applying(body(block(applying.syntax)))))
 
 fun Evaluator.plusEvaluation(end_: End): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, end_).bind { setEvaluation(it) }
@@ -220,7 +220,7 @@ fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(repeat, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
-	plusResolveEvaluation(field(dictionary.function(body(doing.block))))
+	plusResolveEvaluation(field(dictionary.doing(body(doing.block))))
 
 fun Evaluator.plusHashValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 	value.orNullIf { !isEmpty }?.let {

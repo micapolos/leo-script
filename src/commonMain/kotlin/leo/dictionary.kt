@@ -30,7 +30,7 @@ fun Dictionary.switchEvaluation(field: Field, link: Link): Evaluation<Value> =
 
 fun switchOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
 	ifOrNull(field.name == case.name) {
-		value(case).nativeValue(doingName).functionOrThrow.applyEvaluation(value(field))
+		value(case).nativeValue(doingName).valueDoingOrThrow.giveEvaluation(value(field))
 	} ?: evaluation(null)
 
 fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
@@ -186,16 +186,16 @@ fun Dictionary.unitEvaluation(test: Test): Evaluation<Unit> =
 	}
 
 fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
-	value.functionOrThrow.evaluation.bind { function ->
+	value.valueDoingOrThrow.evaluation.bind { doing ->
 		valueEvaluation(give.syntax).bind { given ->
-			function.applyEvaluation(given)
+			doing.giveEvaluation(given)
 		}
 	}
 
 fun Dictionary.valueEvaluation(value: Value, take: Take): Evaluation<Value> =
 	valueEvaluation(take.syntax).bind { taken ->
-		taken.functionOrThrow.evaluation.bind { function ->
-			function.applyEvaluation(value)
+		taken.valueDoingOrThrow.evaluation.bind { doing ->
+			doing.giveEvaluation(value)
 		}
 	}
 

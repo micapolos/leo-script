@@ -1,9 +1,10 @@
 package leo
 
-data class Function(val dictionary: Dictionary, val body: Body)
+data class ValueDoing(val dictionary: Dictionary, val body: Body)
+data class ValueApplying(val dictionary: Dictionary, val body: Body)
 
-fun Dictionary.function(body: Body): Function = Function(this, body)
+fun Dictionary.doing(body: Body): ValueDoing = ValueDoing(this, body)
+fun Dictionary.applying(body: Body): ValueApplying = ValueApplying(this, body)
 
-fun Function.applyEvaluation(value: Value): Evaluation<Value> = dictionary.applyEvaluation(body, value)
-
-fun Function.push(definitionLet: DefinitionLet) = copy(dictionary = dictionary.plus(LetDefinition(definitionLet)))
+fun ValueDoing.giveEvaluation(value: Value): Evaluation<Value> = dictionary.applyEvaluation(body, value)
+fun ValueDoing.push(definitionLet: DefinitionLet) = copy(dictionary = dictionary.plus(LetDefinition(definitionLet)))

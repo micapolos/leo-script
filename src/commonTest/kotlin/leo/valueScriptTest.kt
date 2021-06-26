@@ -12,7 +12,7 @@ class ValueScriptTest {
 
 	@Test
 	fun natives() {
-		value(field(dictionary().function(body(script("foo")))))
+		value(field(dictionary().doing(body(script("foo")))))
 			.script
 			.assertEqualTo(script(doingName lineTo script("foo")))
 	}

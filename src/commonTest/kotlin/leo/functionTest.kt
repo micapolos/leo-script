@@ -3,11 +3,11 @@ package leo
 import leo.base.assertEqualTo
 import kotlin.test.Test
 
-class ValueFunctionTest {
+class ValueValueDoingTest {
 	@Test
 	fun apply() {
-		dictionary().function(body(script("bar")))
-			.applyEvaluation(value(contentName)).get
+		dictionary().doing(body(script("bar")))
+			.giveEvaluation(value(contentName)).get
 			.assertEqualTo(value("bar"))
 	}
 }

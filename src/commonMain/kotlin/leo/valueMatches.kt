@@ -23,7 +23,8 @@ fun Field.matches(field: Field) =
 
 fun Rhs.matches(rhs: Rhs) =
 	rhs.isAny || when (rhs) {
-		is FunctionRhs -> (this is FunctionRhs) && this == rhs
+		is ApplyingRhs -> (this is ApplyingRhs) && this == rhs
+		is DoingRhs -> (this is DoingRhs) && this == rhs
 		is NativeRhs -> (this is NativeRhs) && this == rhs
 		is ValueRhs -> (this is ValueRhs) && value.matches(rhs.value)
 	}

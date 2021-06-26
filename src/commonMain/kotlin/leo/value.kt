@@ -31,14 +31,16 @@ value class Native(val any: Any?)
 
 sealed class Rhs
 data class ValueRhs(val value: Value) : Rhs()
-data class FunctionRhs(val function: Function) : Rhs()
+data class DoingRhs(val doing: ValueDoing) : Rhs()
+data class ApplyingRhs(val applying: ValueApplying) : Rhs()
 data class NativeRhs(val native: Native) : Rhs()
 
 data class Field(val name: String, val rhs: Rhs)
 data class Structure(val name: String, val value: Value)
 
 fun rhs(value: Value): Rhs = ValueRhs(value)
-fun rhs(function: Function): Rhs = FunctionRhs(function)
+fun rhs(applying: ValueApplying): Rhs = ApplyingRhs(applying)
+fun rhs(doing: ValueDoing): Rhs = DoingRhs(doing)
 fun rhs(native: Native): Rhs = NativeRhs(native)
 
 val Rhs.valueOrNull: Value? get() = (this as? ValueRhs)?.value
@@ -49,7 +51,7 @@ val Rhs.valueOrThrow: Value
 			isName fieldTo value(notName fieldTo value(valueName))
 		)
 	}
-val Rhs.functionOrNull: Function? get() = (this as? FunctionRhs)?.function
+val Rhs.valueDoingOrNull: ValueDoing? get() = (this as? DoingRhs)?.doing
 val Rhs.nativeOrNull: Native? get() = (this as? NativeRhs)?.native
 
 val Value.string: String get() = script.string
@@ -57,7 +59,8 @@ val Value.string: String get() = script.string
 infix fun String.fieldTo(rhs: Rhs): Field = Field(this, rhs)
 infix fun String.fieldTo(value: Value): Field = this fieldTo rhs(value)
 fun field(literal: Literal): Field = literal.field
-fun field(function: Function): Field = doingName fieldTo rhs(function)
+fun field(doing: ValueDoing): Field = doingName fieldTo rhs(doing)
+fun field(applying: ValueApplying): Field = applyingName fieldTo rhs(applying)
 infix fun String.structureTo(value: Value) = Structure(this, value)
 
 infix fun Value.linkTo(field: Field) = Link(this, field)
@@ -77,10 +80,10 @@ fun value(vararg fields: Field) = emptyValue.fold(fields) { plus(it) }
 fun value(name: String) = value(name fieldTo value())
 fun value(link: Link): Value = LinkValue(link)
 
-val Field.functionOrNull: Function? get() = rhs.functionOrNull
+val Field.valueDoingOrNull: ValueDoing? get() = rhs.valueDoingOrNull
 val Field.nativeOrNull: Native? get() = rhs.nativeOrNull
 
-val Value.functionOrNull: Function? get() = fieldOrNull?.functionOrNull
+val Value.valueDoingOrNull: ValueDoing? get() = fieldOrNull?.valueDoingOrNull
 val Value.fieldOrNull: Field? get() = linkOrNull?.run { notNullIf(value.isEmpty) { field } }
 val Value.structureOrNull: Structure?
 	get() = fieldOrNull?.let { field ->
@@ -106,8 +109,8 @@ val Value.resolve: Value
 val Value.resolveFunctionApplyOrNullEvaluation: Evaluation<Value?>
 	get() =
 		resolveOrNull(doingName, giveName) { rhs ->
-			functionOrNull?.let { function ->
-				function.applyEvaluation(rhs)
+			valueDoingOrNull?.let { function ->
+				function.giveEvaluation(rhs)
 			}
 		} ?: evaluation(null)
 
@@ -206,9 +209,9 @@ val Value.textOrThrow: String
 fun Value.isNotValue(name: String) =
 	plus(isName fieldTo value(notName fieldTo value(name)))
 
-val Value.functionOrThrow: Function
+val Value.valueDoingOrThrow: ValueDoing
 	get() =
-		functionOrNull.notNullOrThrow { isNotValue("function") }
+		valueDoingOrNull.notNullOrThrow { isNotValue("doing") }
 
 val Value.numberOrNull: Number?
 	get() =
@@ -434,4 +437,4 @@ fun Value.checkValue(boolean: Boolean): Value =
 	value(checkName fieldTo value(boolean.yesNoName fieldTo this))
 
 fun Value.invokeEvaluation(value: Value): Evaluation<Value> =
-	functionOrThrow.applyEvaluation(value)
+	valueDoingOrThrow.giveEvaluation(value)

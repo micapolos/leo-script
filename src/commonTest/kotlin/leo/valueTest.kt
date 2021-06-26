@@ -56,12 +56,12 @@ class ValueTest {
 
 	@Test
 	fun resolveFunction() {
-		value(field(dictionary().function(body(script("foo")))))
-			.functionOrNull
-			.assertEqualTo(dictionary().function(body(script("foo"))))
+		value(field(dictionary().doing(body(script("foo")))))
+			.valueDoingOrNull
+			.assertEqualTo(dictionary().doing(body(script("foo"))))
 
 		value("function" fieldTo value("foo"))
-			.functionOrNull
+			.valueDoingOrNull
 			.assertEqualTo(null)
 	}
 
@@ -76,14 +76,14 @@ class ValueTest {
 			.assertEqualTo(null)
 
 		value("text" fieldTo value("foo"))
-			.functionOrNull
+			.valueDoingOrNull
 			.assertEqualTo(null)
 	}
 
 	@Test
 	fun resolveFunctionApply_content() {
 		value(
-			field(dictionary().function(body(script("bar")))),
+			field(dictionary().doing(body(script("bar")))),
 			giveName fieldTo value(contentName)
 		)
 			.resolveFunctionApplyOrNullEvaluation
