@@ -28,7 +28,6 @@ use test make
 use test name
 use test notation
 use test number
-use test option
 use test print
 use test private
 use test quote

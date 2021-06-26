@@ -33,9 +33,7 @@ fun Dictionary.valueEvaluation(value: Value, syntax: Syntax): Evaluation<Value> 
 	context.evaluator(value).plusEvaluation(syntax).map { it.value }
 
 fun Dictionary.fieldEvaluation(field: SyntaxField): Evaluation<Field> =
-	valueEvaluation(field.rhsSyntax).map { rhs ->
-		rhs.optionBind { value(field.name fieldTo it) }.fieldOrNull!! // TODO: Update optionBind to return Field.
-	}
+	valueEvaluation(field.rhsSyntax).map { field.name fieldTo it }
 
 fun Dictionary.fieldEvaluation(atom: SyntaxAtom): Evaluation<Field> =
 	when (atom) {
@@ -105,9 +103,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
-	value
-		.optionBindEvaluation { set(it).plusValueEvaluation(atom) }
-		.map { set(it) }
+	plusValueEvaluation(atom).bind { setEvaluation(it) }
 
 fun Evaluator.plusValueEvaluation(atom: SyntaxAtom): Evaluation<Value> =
 	when (atom) {
@@ -204,8 +200,8 @@ fun Evaluator.plusValueEvaluation(syntaxField: SyntaxField): Evaluation<Value> =
 		setEvaluation(value()).bind {
 			it.plusValueEvaluation(syntaxField.name fieldTo value)
 		}
-	else dictionary.fieldEvaluation(syntaxField).bind { field ->
-		value(field).optionBindEvaluation { plusValueEvaluation(it.fieldOrNull!!) }
+	else dictionary.fieldEvaluation(syntaxField).bind {
+		plusValueEvaluation(it)
 	}
 
 fun Evaluator.plusValueEvaluation(field: Field): Evaluation<Value> =
