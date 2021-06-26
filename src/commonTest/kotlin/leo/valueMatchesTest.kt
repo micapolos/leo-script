@@ -56,4 +56,63 @@ class ValueMatchesTest {
 			.matches(value(numberAnyField))
 			.assertTrue
 	}
+
+	@Test
+	fun matchesOr() {
+		value(field(literal(10)))
+			.matches(
+				value(
+					numberName fieldTo anyValue,
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertTrue
+
+		value(field(literal("foo")))
+			.matches(
+				value(
+					numberName fieldTo anyValue,
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertTrue
+
+		value("foo")
+			.matches(
+				value(
+					numberName fieldTo anyValue,
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertFalse
+
+		value(field(literal(10)))
+			.matches(
+				value(
+					orName fieldTo value(numberName fieldTo anyValue),
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertTrue
+
+		value(field(literal("foo")))
+			.matches(
+				value(
+					orName fieldTo value(numberName fieldTo anyValue),
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertTrue
+
+		value("foo")
+			.matches(
+				value(
+					orName fieldTo value(numberName fieldTo anyValue),
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertFalse
+
+		value()
+			.matches(
+				value(
+					orName fieldTo value(numberName fieldTo anyValue),
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertFalse
+
+		value()
+			.matches(
+				value(
+					orName fieldTo value(),
+					orName fieldTo value(textName fieldTo anyValue)))
+			.assertTrue
+	}
 }

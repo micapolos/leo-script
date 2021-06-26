@@ -4,8 +4,16 @@ fun Value.matches(value: Value): Boolean =
 	when (value) {
 		anyValue -> true
 		EmptyValue -> isEmpty
-		is LinkValue -> linkOrNull?.matches(value.link)?:false
+		is LinkValue -> matches(value.link)
 	}
+
+fun Value.matches(link: Link): Boolean =
+	if (link.field.name == orName) link.field.rhs.valueOrNull?.let { matchesOr(link.value, it) } ?: false
+	else linkOrNull?.matches(link)?:false
+
+fun Value.matchesOr(lhs: Value, rhs: Value): Boolean =
+	if (lhs.isEmpty) matches(rhs)
+	else matches(lhs) || matches(rhs)
 
 fun Link.matches(link: Link): Boolean =
 	field.matches(link.field) && value.matches(link.value)
