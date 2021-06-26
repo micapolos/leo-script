@@ -9,7 +9,7 @@ test
 let
   any.list.head
   do
-    list
+    head.list
     switch
       empty fail
       link item.content

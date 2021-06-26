@@ -6,10 +6,11 @@ comment
 test
   16
   do recursing
+    number
     check less than 2
     switch
       yes number
-      no bind
+      no do
         no.number
         minus 2
         recurse

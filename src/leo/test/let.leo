@@ -17,9 +17,9 @@ test
 
 test
   let
-    10.increment
+    any.number.increment
     do
-      number
+      increment.number
       plus 1
 
   10.increment
@@ -28,7 +28,7 @@ test
 test
   let
     any.number.factorial
-    do recursing bind
+    do recursing
       factorial.number
       is equal to 1
       switch

@@ -2,17 +2,18 @@ comment
   recursive
     allows defining mutually recursive functions
 
-use library number
-
 test 
   recursive let
     any.number.countdown
     do
-      number
+      countdown.number
       check equal to 0
       switch
         yes number
-        no number.decrement.countdown
+        no
+          number
+          minus 1
+          countdown
   
   10.countdown
   is equal to 0

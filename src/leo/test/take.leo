@@ -1,7 +1,7 @@
 test
-  x 10
-  y 20
-  take doing point
-  is equal to point
-    x 10
-    y 20
+  "Hello, "
+  and "world!"
+  take doing
+    text
+    append and.text
+  is equal to "Hello, world!"

@@ -1,7 +1,7 @@
 use test any
+use test apply
 use test as
 use test be
-use test bind
 use test check
 use test comment
 use test content

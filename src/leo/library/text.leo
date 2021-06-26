@@ -2,11 +2,11 @@ use library list
 
 let
   any.list.text
-  do bind
+  do
     ""
     fold
       text.list.reverse
-      doing bind
+      doing
         text
         append other.text
 

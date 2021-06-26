@@ -278,6 +278,7 @@ class EvaluatorTest {
 			"number" lineTo script("one"),
 			doName lineTo script(
 				recursingName lineTo script(
+					"number" lineTo script(),
 					switchName lineTo script(
 						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
 						"one" lineTo script(

@@ -5,10 +5,10 @@ comment
     which must be a function
 
 test
-  doing point
+  doing
+    text
+    append and.text
   give
-    x 10
-    y 20
-  is equal to point
-    x 10
-    y 20
+    "Hello, "
+    and "world!"
+  is equal to "Hello, world!"
