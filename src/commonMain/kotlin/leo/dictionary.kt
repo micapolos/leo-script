@@ -213,9 +213,7 @@ fun Dictionary.valueEvaluation(value: Value, as_: As): Evaluation<Value> =
 	valueEvaluation(as_.syntax).map { value.as_(it) }
 
 fun Dictionary.valueEvaluation(value: Value, bind: Bind): Evaluation<Value> =
-	value.evaluation.bind { content ->
-		plus(content).valueEvaluation(bind.syntax)
-	}
+	plus(value).valueEvaluation(bind.syntax)
 
 fun Dictionary.valueEvaluation(value: Value, end_: End): Evaluation<Value> =
 	valueEvaluation(value, end_.syntax).map {
