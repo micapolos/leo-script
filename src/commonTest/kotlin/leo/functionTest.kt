@@ -7,7 +7,7 @@ class ValueFunctionTest {
 	@Test
 	fun apply() {
 		dictionary().function(body(script("bar")))
-			.applyEvaluation(value("foo")).get
-			.assertEqualTo(value("bar" fieldTo value("foo")))
+			.applyEvaluation(value(contentName)).get
+			.assertEqualTo(value("bar"))
 	}
 }

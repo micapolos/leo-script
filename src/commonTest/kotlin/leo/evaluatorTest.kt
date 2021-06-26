@@ -146,20 +146,20 @@ class EvaluatorTest {
 	fun give() {
 		script(
 			doingName lineTo script("bar"),
-			giveName lineTo script("foo")
+			giveName lineTo script(contentName)
 		)
 			.evaluate
-			.assertEqualTo(script("bar" lineTo script("foo")))
+			.assertEqualTo(script("bar"))
 	}
 
 	@Test
 	fun take() {
 		script(
 			line("foo"),
-			takeName lineTo script(doingName lineTo script("bar"))
+			takeName lineTo script(doingName lineTo script(contentName))
 		)
 			.evaluate
-			.assertEqualTo(script("bar" lineTo script("foo")))
+			.assertEqualTo(script("foo"))
 	}
 
 	@Test
@@ -204,12 +204,12 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(anyName),
-				doName lineTo script("id")
+				doName lineTo script(contentName)
 			),
 			"name" lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("id" lineTo script("name" lineTo script("foo"))))
+			.assertEqualTo(script("name" lineTo script("foo")))
 	}
 
 	@Test
@@ -232,6 +232,7 @@ class EvaluatorTest {
 				numberName lineTo script(anyName),
 				"increment" lineTo script(),
 				doName lineTo script(
+					"increment" lineTo script(),
 					numberName lineTo script(),
 					"plus" lineTo script("one")
 				)
@@ -888,21 +889,38 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun do_() {
+	fun doContent() {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			doName lineTo script("point")
+			doName lineTo script(contentName)
 		)
 			.evaluate
 			.assertEqualTo(
 				script(
-					"point" lineTo script(
-						"x" lineTo script(line(literal(10))),
-						"y" lineTo script(line(literal(20)))
-					)
+					"x" lineTo script(line(literal(10))),
+					"y" lineTo script(line(literal(20)))
 				)
 			)
+	}
+
+	@Test
+	fun doField() {
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			doName lineTo script("x")
+		)
+			.evaluate
+			.assertEqualTo(script("x" lineTo script(line(literal(10)))))
+
+		script(
+			"x" lineTo script(line(literal(10))),
+			"y" lineTo script(line(literal(20))),
+			doName lineTo script("y")
+		)
+			.evaluate
+			.assertEqualTo(script("y" lineTo script(line(literal(20)))))
 	}
 
 	@Test
@@ -910,23 +928,13 @@ class EvaluatorTest {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			bindName lineTo script(
-				"first" lineTo script("x"),
-				"second" lineTo script("y"),
-				"third" lineTo script("content")
-			)
-		)
+			bindName lineTo script("point"))
 			.evaluate
 			.assertEqualTo(
 				script(
-					"first" lineTo script("x" lineTo script(line(literal(10)))),
-					"second" lineTo script("y" lineTo script(line(literal(20)))),
-					"third" lineTo script(
+					"point" lineTo script(
 						"x" lineTo script(line(literal(10))),
-						"y" lineTo script(line(literal(20)))
-					)
-				)
-			)
+						"y" lineTo script(line(literal(20))))))
 	}
 
 	@Test
@@ -1083,6 +1091,7 @@ class EvaluatorTest {
 					"even" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(
+						"decrement" lineTo script(),
 						"even" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
@@ -1106,6 +1115,7 @@ class EvaluatorTest {
 					"odd" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(
+						"decrement" lineTo script(),
 						"odd" lineTo script(),
 						numberName lineTo script(),
 						checkName lineTo script(
