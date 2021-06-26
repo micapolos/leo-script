@@ -136,10 +136,10 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun function() {
-		script("function" lineTo script("foo"))
+	fun doing() {
+		script(doingName lineTo script("foo"))
 			.evaluate
-			.assertEqualTo(script("function" lineTo script("foo")))
+			.assertEqualTo(script(doingName lineTo script("foo")))
 	}
 
 	@Test
@@ -163,7 +163,7 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun apply_error() {
+	fun give_error() {
 		script(
 			"foo" lineTo script(),
 			giveName lineTo script("bar")
@@ -173,14 +173,14 @@ class EvaluatorTest {
 				script(
 					errorName lineTo script(
 						"foo" lineTo script(),
-						isName lineTo script(notName lineTo script("function"))
+						isName lineTo script(notName lineTo script(doingName))
 					)
 				)
 			)
 	}
 
 	@Test
-	fun functionGet() {
+	fun doingGet() {
 		script(
 			"map" lineTo script(doingName lineTo script("foo")),
 			doingName lineTo script()
