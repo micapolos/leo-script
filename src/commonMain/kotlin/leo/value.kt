@@ -34,6 +34,9 @@ data class ValueRhs(val value: Value) : Rhs()
 data class FunctionRhs(val function: Function) : Rhs()
 data class NativeRhs(val native: Native) : Rhs()
 
+data class Field(val name: String, val rhs: Rhs)
+data class Structure(val name: String, val value: Value)
+
 fun rhs(value: Value): Rhs = ValueRhs(value)
 fun rhs(function: Function): Rhs = FunctionRhs(function)
 fun rhs(native: Native): Rhs = NativeRhs(native)
@@ -48,9 +51,6 @@ val Rhs.valueOrThrow: Value
 	}
 val Rhs.functionOrNull: Function? get() = (this as? FunctionRhs)?.function
 val Rhs.nativeOrNull: Native? get() = (this as? NativeRhs)?.native
-
-data class Field(val name: String, val rhs: Rhs)
-data class Structure(val name: String, val value: Value)
 
 val Value.string: String get() = script.string
 
@@ -432,3 +432,6 @@ val numberAnyValue = value(numberAnyField)
 
 fun Value.checkValue(boolean: Boolean): Value =
 	value(checkName fieldTo value(boolean.yesNoName fieldTo this))
+
+fun Value.invokeEvaluation(value: Value): Evaluation<Value> =
+	functionOrThrow.applyEvaluation(value)
