@@ -10,16 +10,17 @@ val Syntax.script: Script get() =
 
 val SyntaxLine.scriptLine: ScriptLine get() =
 	when (this) {
-		is AtomSyntaxLine -> atom.scriptLine
+		is ApplySyntaxLine -> applyName lineTo apply.script
+		is ApplyingSyntaxLine -> applyingName lineTo applying.script
 		is AsSyntaxLine -> asName lineTo as_.script
+		is AtomSyntaxLine -> atom.scriptLine
 		is BeSyntaxLine -> beName lineTo be.script
-		is EndSyntaxLine -> endName lineTo end.script
-		is BindSyntaxLine -> bindName lineTo bind.script
 		is CheckSyntaxLine -> checkName lineTo check.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
 		is DebugSyntaxLine -> debugName lineTo debug.script
 		is DoSyntaxLine -> doName lineTo do_.script
 		is DoingSyntaxLine -> doingName lineTo doing.script
+		is EndSyntaxLine -> endName lineTo end.script
 		is ExampleSyntaxLine -> exampleName lineTo example.script
 		is FailSyntaxLine -> failName lineTo fail.script
 		is GetSyntaxLine -> getName lineTo get.script
@@ -45,9 +46,10 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 	}
 
 val End.script get() = syntax.script
+val Apply.script get() = syntax.script
+val Applying.script get() = syntax.script
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
-val Bind.script get() = syntax.script
 val Check.script get() = is_.script
 val Do.script get() = block.script
 val Doing.script get() = block.script

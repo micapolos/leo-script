@@ -924,11 +924,11 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun bind() {
+	fun apply() {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			bindName lineTo script("point"))
+			applyName lineTo script("point"))
 			.evaluate
 			.assertEqualTo(
 				script(

@@ -68,10 +68,11 @@ fun Evaluator.plusEvaluation(syntax: Syntax): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 	when (line) {
+		is ApplySyntaxLine -> plusEvaluation(line.apply)
+		is ApplyingSyntaxLine -> plusEvaluation(line.applying)
 		is AsSyntaxLine -> plusEvaluation(line.as_)
 		is AtomSyntaxLine -> plusEvaluation(line.atom)
 		is BeSyntaxLine -> plusEvaluation(line.be)
-		is BindSyntaxLine -> plusEvaluation(line.bind)
 		is EndSyntaxLine -> plusEvaluation(line.end)
 		is CheckSyntaxLine -> plusEvaluation(line.check)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
@@ -142,8 +143,11 @@ fun Evaluator.plusTextValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
 
-fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, bind).bind { setEvaluation(it) }
+fun Evaluator.plusEvaluation(apply: Apply): Evaluation<Evaluator> =
+	dictionary.valueEvaluation(value, apply).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(applying: Applying): Evaluation<Evaluator> =
+	TODO()
 
 fun Evaluator.plusEvaluation(end_: End): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, end_).bind { setEvaluation(it) }

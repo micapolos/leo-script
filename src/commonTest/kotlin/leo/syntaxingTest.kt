@@ -42,15 +42,15 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun bind() {
+	fun apply() {
 		script(
 			line(literal("Hello, ")),
-			bindName lineTo script(line(literal("world!"))))
+			applyName lineTo script(line(literal("world!"))))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, ")),
-					line(bind(syntax(syntaxLine(literal("world!")))))
+					line(apply(syntax(syntaxLine(literal("world!")))))
 				))
 	}
 
