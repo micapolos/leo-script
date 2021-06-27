@@ -6,6 +6,21 @@ comment
       locally
     and
       does the given script
+    content
+      is a special binding
+      which gives the entire input value
+
+test
+  x 10
+  y 20
+  do x
+  is equal to x 10
+
+test
+  x 10
+  y 20
+  do y
+  is equal to y 20
 
 test
   x 10
@@ -16,27 +31,29 @@ test
   is equal to 30
 
 test
-  "Hello, world!"
-  123
-  doing foo
   x 10
   y 20
-  do
-    my text
-    my number
-    my doing
-    my x
-    my y
-    my content
+  do content
   is equal to
-    my "Hello, world!"
-    my 123
-    my doing foo
-    my x 10
-    my y 20
-    my
-      "Hello, world!"
-      123
-      doing foo
-      x 10
-      y 20
+    x 10
+    y 20
+
+test
+  "Hello, world!"
+  do text
+  is equal to "Hello, world!"
+
+test
+  123
+  do number
+  is equal to 123
+
+test
+  doing number plus 1
+  do doing
+  is equal to doing number plus 1
+
+test
+  applying number plus 1
+  do applying
+  is equal to applying number plus 1
