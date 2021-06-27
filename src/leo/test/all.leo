@@ -3,6 +3,7 @@ use test apply
 use test applying
 use test as
 use test be
+use test being
 use test check
 use test comment
 use test content
