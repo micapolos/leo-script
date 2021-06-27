@@ -3,7 +3,7 @@ package leo
 val Evaluator.helpScriptLine: ScriptLine get() =
 	helpName lineTo script(
 		"leo" lineTo script(
-			"version" lineTo script(literal("0.25.2")),
+			"version" lineTo script(literal("0.25.3")),
 			"author" lineTo script(literal("Michał Pociecha-Łoś"))),
 		"command" lineTo script(
 			listName lineTo script(
