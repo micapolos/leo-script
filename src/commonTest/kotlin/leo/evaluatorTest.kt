@@ -143,6 +143,13 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun being() {
+		script(beingName lineTo script("cool"))
+			.evaluate
+			.assertEqualTo(script(beingName lineTo script("cool")))
+	}
+
+	@Test
 	fun applying() {
 		script(applyingName lineTo script("foo"))
 			.evaluate
@@ -150,13 +157,32 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun give() {
+	fun doingGive() {
 		script(
 			doingName lineTo script("bar"),
 			giveName lineTo script(contentName)
 		)
 			.evaluate
 			.assertEqualTo(script("bar"))
+	}
+
+	@Test
+	fun beingGive() {
+		script(
+			beingName lineTo script("cool"),
+			giveName lineTo script("anyone")
+		)
+			.evaluate
+			.assertEqualTo(script("cool"))
+	}
+
+	@Test
+	fun takeBeing() {
+		script(
+			"anyone" lineTo script(),
+			takeName lineTo script(beingName lineTo script("cool")))
+			.evaluate
+			.assertEqualTo(script("cool"))
 	}
 
 	@Test
@@ -184,6 +210,16 @@ class EvaluatorTest {
 					)
 				)
 			)
+	}
+
+	@Test
+	fun beingGet() {
+		script(
+			"keep" lineTo script(beingName lineTo script("cool")),
+			beingName lineTo script()
+		)
+			.evaluate
+			.assertEqualTo(script(beingName lineTo script("cool")))
 	}
 
 	@Test

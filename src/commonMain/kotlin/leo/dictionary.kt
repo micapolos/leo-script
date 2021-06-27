@@ -48,7 +48,7 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 fun Dictionary.applyEvaluation(value: Value, binder: Binder): Evaluation<Value> =
 	when (binder) {
 		is ApplyingBinder -> applyEvaluation(value, binder.applying.body)
-		is BeingBinder -> TODO()
+		is BeingBinder -> binder.being.value.evaluation
 		is CombiningBinder -> TODO()
 		is DoingBinder -> plus(value).applyEvaluation(value(), binder.doing.body)
 	}
