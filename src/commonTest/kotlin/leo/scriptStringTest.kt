@@ -86,4 +86,23 @@ class ScriptStringTest {
 			.string
 			.assertEqualTo("123\n")
 	}
+
+	@Test
+	fun numberInfinity() {
+		script(literal(Double.POSITIVE_INFINITY))
+			.string
+			.assertEqualTo("number infinity\n")
+	}
+	@Test
+	fun numberMinusInfinity() {
+		script(literal(Double.NEGATIVE_INFINITY))
+			.string
+			.assertEqualTo("number minus infinity\n")
+	}
+	@Test
+	fun numberNone() {
+		script(literal(Double.NaN))
+			.string
+			.assertEqualTo("number none\n")
+	}
 }

@@ -18,6 +18,8 @@ val trueName = "true"
 val typesName = "types"
 
 val appendName = "append"
+val byName = "by"
+val dividedName = "divided"
 val plusName = "plus"
 val minusName = "minus"
 val timesName = "times"

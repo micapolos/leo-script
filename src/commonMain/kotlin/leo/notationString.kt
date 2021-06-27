@@ -1,6 +1,12 @@
 package leo
 
-import leo.base.*
+import leo.base.AppendableIndented
+import leo.base.append
+import leo.base.appendableString
+import leo.base.indented
+import leo.base.runIf
+import leo.natives.minusName
+import kotlin.math.roundToLong
 
 val Notation.string get() = appendableString { it.append(this) }.addMissingNewline
 
@@ -47,4 +53,23 @@ fun AppendableIndented.append(atom: Atom): AppendableIndented =
 	}
 
 fun AppendableIndented.append(literal: Literal): AppendableIndented =
-	append(literal.toString())
+	when (literal) {
+		is NumberLiteral -> appendNumber(literal.number.double)
+		is StringLiteral -> appendText(literal.string)
+	}
+
+fun AppendableIndented.appendText(string: String): AppendableIndented =
+	append(string.literalString)
+
+fun AppendableIndented.append(number: Number): AppendableIndented =
+	appendNumber(number.double)
+
+fun AppendableIndented.appendNumber(double: Double): AppendableIndented =
+	when (double) {
+		Double.NEGATIVE_INFINITY -> append(numberName).append(' ').append(minusName).append(' ').append(infinityName)
+		Double.POSITIVE_INFINITY -> append(numberName).append(' ').append(infinityName)
+		else ->
+			if (double.isNaN()) append(numberName).append(' ').append(noneName)
+			else if (double == double.roundToLong().toDouble()) append(double.toLong().toString())
+			else append(double.toString())
+	}

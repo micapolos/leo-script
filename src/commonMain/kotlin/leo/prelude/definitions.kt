@@ -2,6 +2,7 @@ package leo.prelude
 
 import leo.compareTo
 import leo.cosinus
+import leo.div
 import leo.field
 import leo.fieldTo
 import leo.isName
@@ -9,6 +10,8 @@ import leo.isValue
 import leo.literal
 import leo.minus
 import leo.natives.appendName
+import leo.natives.byName
+import leo.natives.dividedName
 import leo.natives.lessName
 import leo.natives.minusName
 import leo.natives.nativeDefinition
@@ -98,6 +101,21 @@ val numberTimesNumberDefinition get() =
 				.numberOrThrow
 				.times(
 					it.nativeValue(timesName)
+						.nativeValue(numberName)
+						.numberOrThrow))))
+	}
+
+val numberDividedByNumberDefinition get() =
+	nativeDefinition(
+		value(
+			numberAnyField,
+			dividedName fieldTo value(byName fieldTo value(numberAnyField)))) {
+		value(field(literal(
+			it.nativeValue(numberName)
+				.numberOrThrow
+				.div(
+					it.nativeValue(dividedName)
+						.nativeValue(byName)
 						.nativeValue(numberName)
 						.numberOrThrow))))
 	}

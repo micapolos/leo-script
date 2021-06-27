@@ -35,6 +35,9 @@ operator fun Number.minus(number: Number) =
 operator fun Number.times(number: Number) =
 	number(double * number.double)
 
+operator fun Number.div(number: Number) =
+	number(double / number.double)
+
 operator fun Number.compareTo(number: Number) =
 	double.compareTo(number.double)
 

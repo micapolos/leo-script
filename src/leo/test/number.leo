@@ -14,6 +14,16 @@ test
   is equal to 6
 
 test
+  10
+  divided by 5
+  is equal to 2
+
+test
+  10
+  divided by 0
+  is equal to foo
+
+test
   4
   is less than 5
 

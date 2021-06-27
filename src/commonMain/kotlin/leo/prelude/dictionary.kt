@@ -11,6 +11,7 @@ val preludeDictionary: Dictionary
 		.plus(numberPlusNumberDefinition)
 		.plus(numberMinusNumberDefinition)
 		.plus(numberTimesNumberDefinition)
+		.plus(numberDividedByNumberDefinition)
 		.plus(numberIsLessThanNumberDefinition)
 		.plus(numberSinusDefinition)
 		.plus(numberCosinusDefinition)
