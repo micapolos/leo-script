@@ -19,7 +19,7 @@ use test head
 use test help
 use test is
 use test is all
-comment use test java all
+use test java all
 use test let
 use test list
 use test load
