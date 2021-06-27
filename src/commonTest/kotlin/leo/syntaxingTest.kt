@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.assertEqualTo
+import leo.natives.minusName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -506,5 +507,24 @@ class SyntaxCompilationTest {
 				syntax(
 					"foo" lineTo syntax(),
 					line(check(is_(isRhs(syntax("bar")))))))
+	}
+
+	@Test
+	fun numbers() {
+		script(numberName lineTo script(infinityName))
+			.syntax
+			.assertEqualTo(syntax(syntaxLine(literal(Double.POSITIVE_INFINITY))))
+
+		script(numberName lineTo script(minusName lineTo script(infinityName)))
+			.syntax
+			.assertEqualTo(syntax(syntaxLine(literal(Double.NEGATIVE_INFINITY))))
+
+		script(numberName lineTo script(noneName))
+			.syntax
+			.assertEqualTo(syntax(syntaxLine(literal(Double.NaN))))
+
+		script(literal(10))
+			.syntax
+			.assertEqualTo(syntax(syntaxLine(literal(10))))
 	}
 }

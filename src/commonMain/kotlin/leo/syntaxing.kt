@@ -3,6 +3,7 @@ package leo
 import leo.base.notNullIf
 import leo.base.reverse
 import leo.natives.getName
+import leo.natives.minusName
 
 typealias Syntaxing<T> = Stateful<Unit, T>
 val <T> T.syntaxing: Syntaxing<T> get() = stateful()
@@ -12,6 +13,11 @@ val Script.syntaxSyntaxing: Syntaxing<Syntax> get() =
 	syntax().syntaxing.foldStateful(lineSeq.reverse) { plusCompilation(it) }
 
 val ScriptLine.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
+	null
+		?: specialNumberScriptLineOrNull?.syntaxing
+		?: defaultSyntaxLineSyntaxing
+
+val ScriptLine.defaultSyntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 	when (this) {
 		is FieldScriptLine -> field.syntaxLineSyntaxing
 		is LiteralScriptLine -> line(syntaxAtom(literal)).syntaxing
@@ -74,6 +80,14 @@ val ScriptField.syntaxAtomSyntaxing: Syntaxing<SyntaxAtom> get() =
 val ScriptField.syntaxFieldSyntaxing: Syntaxing<SyntaxField> get() =
 	rhs.syntaxSyntaxing.map { rhsSyntax ->
 		name fieldTo rhsSyntax
+	}
+
+val ScriptLine.specialNumberScriptLineOrNull: SyntaxLine? get() =
+	when (this) {
+		infinityMinusNumberScriptLine -> syntaxLine(literal(Double.NEGATIVE_INFINITY))
+		infinityNumberScriptLine -> syntaxLine(literal(Double.POSITIVE_INFINITY))
+		noneNumberScriptLine -> syntaxLine(literal(Double.NaN))
+		else -> null
 	}
 
 val Literal.syntaxLineSyntaxing: Syntaxing<SyntaxAtom> get() =
@@ -231,3 +245,7 @@ val Script.useSyntaxing: Syntaxing<Use> get() =
 
 val Script.withSyntaxing: Syntaxing<With> get() =
 	syntaxSyntaxing.map(::with)
+
+val infinityMinusNumberScriptLine: ScriptLine get() = numberName lineTo script(minusName lineTo script(infinityName))
+val infinityNumberScriptLine: ScriptLine get() = numberName lineTo script(infinityName)
+val noneNumberScriptLine: ScriptLine get() = numberName lineTo script(noneName)
