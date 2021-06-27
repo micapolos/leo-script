@@ -147,7 +147,9 @@ fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(being: Being): Evaluation<Evaluator> =
-	TODO()
+	dictionary.valueEvaluation(being.syntax).bind {
+		plusResolveEvaluation(field(dictionary.function(binder(being(it)))))
+	}
 
 fun Evaluator.plusEvaluation(apply: Apply): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, apply).bind { setEvaluation(it) }
@@ -164,10 +166,10 @@ fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
 	}
 
 fun Evaluator.plusEvaluation(combineWith: CombineWith): Evaluation<Evaluator> =
-	TODO()
+	dictionary.applyEvaluation(value, binder(doing(body(combineWith.block)))).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(combiningWith: CombiningWith): Evaluation<Evaluator> =
-	TODO()
+	plusResolveEvaluation(field(dictionary.function(binder(combiningWith(body(combiningWith.block))))))
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation

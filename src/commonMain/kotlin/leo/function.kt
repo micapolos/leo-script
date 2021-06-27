@@ -18,7 +18,9 @@ fun binder(doing: BodyDoing): Binder = DoingBinder(doing)
 fun binder(applying: BodyApplying): Binder = ApplyingBinder(applying)
 fun binder(combining: BodyCombining): Binder = CombiningBinder(combining)
 
+fun being(value: Value) = ValueBeing(value)
 fun applying(body: Body) = BodyApplying(body)
+fun combiningWith(body: Body) = BodyCombining(body)
 fun doing(body: Body) = BodyDoing(body)
 
 fun Dictionary.function(binder: Binder): Function = Function(this, binder)
