@@ -6,9 +6,9 @@ comment
       locally
     and
       does the given script
-    content
-      is a special binding
-      which gives the entire input value
+    given
+      is a special local binding
+      which contains the input value
 
 test
   x 10
@@ -33,8 +33,8 @@ test
 test
   x 10
   y 20
-  do content
-  is equal to
+  do given
+  is equal to given
     x 10
     y 20
 

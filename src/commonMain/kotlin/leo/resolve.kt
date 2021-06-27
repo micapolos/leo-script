@@ -13,11 +13,11 @@ fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
 
 fun Dictionary.plus(value: Value): Dictionary =
 	this
-		.plusContent(value)
+		.plusGiven(value)
 		.plusFields(value)
 
-fun Dictionary.plusContent(value: Value) =
-	plus(definition(value(contentName), binding(value)))
+fun Dictionary.plusGiven(value: Value) =
+	plus(definition(value(givenName), binding(value(givenName fieldTo value))))
 
 fun Dictionary.plusFields(value: Value) =
 	fold(value.fieldSeq.reverse) { plus(it) }

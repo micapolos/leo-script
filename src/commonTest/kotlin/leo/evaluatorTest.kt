@@ -163,10 +163,10 @@ class EvaluatorTest {
 	fun take() {
 		script(
 			line("foo"),
-			takeName lineTo script(doingName lineTo script(contentName))
+			takeName lineTo script(doingName lineTo script(givenName))
 		)
 			.evaluate
-			.assertEqualTo(script("foo"))
+			.assertEqualTo(script(givenName lineTo script("foo")))
 	}
 
 	@Test
@@ -211,12 +211,12 @@ class EvaluatorTest {
 		script(
 			letName lineTo script(
 				"name" lineTo script(anyName),
-				doName lineTo script(contentName)
+				doName lineTo script(givenName)
 			),
 			"name" lineTo script("foo")
 		)
 			.evaluate
-			.assertEqualTo(script("name" lineTo script("foo")))
+			.assertEqualTo(script(givenName lineTo script("name" lineTo script("foo"))))
 	}
 
 	@Test
@@ -897,17 +897,17 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun doContent() {
+	fun doGiven() {
 		script(
 			"x" lineTo script(line(literal(10))),
 			"y" lineTo script(line(literal(20))),
-			doName lineTo script(contentName)
+			doName lineTo script(givenName)
 		)
 			.evaluate
 			.assertEqualTo(
-				script(
+				script(givenName lineTo script(
 					"x" lineTo script(line(literal(10))),
-					"y" lineTo script(line(literal(20)))
+					"y" lineTo script(line(literal(20))))
 				)
 			)
 	}
