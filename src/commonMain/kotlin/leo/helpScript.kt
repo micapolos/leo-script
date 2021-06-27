@@ -8,9 +8,10 @@ val Evaluator.helpScriptLine: ScriptLine get() =
 		"command" lineTo script(
 			listName lineTo script(
 				"command" lineTo script(anyName),
+				"command" lineTo script(applyName),
+				"command" lineTo script(applyingName),
 				"command" lineTo script(asName),
 				"command" lineTo script(beName),
-				"command" lineTo script(bindName),
 				"command" lineTo script(checkName),
 				"command" lineTo script(commentName),
 				"command" lineTo script(contentName),
@@ -28,8 +29,10 @@ val Evaluator.helpScriptLine: ScriptLine get() =
 				"command" lineTo script(isName lineTo script(notName)),
 				"command" lineTo script(letName lineTo script(beName)),
 				"command" lineTo script(letName lineTo script(doName)),
+				"command" lineTo script(letName lineTo script(applyName)),
 				"command" lineTo script(listName),
 				"command" lineTo script(loadName),
+				"command" lineTo script(orName),
 				"command" lineTo script(printName),
 				"command" lineTo script(privateName),
 				"command" lineTo script(quoteName),
