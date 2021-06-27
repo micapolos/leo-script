@@ -14,6 +14,7 @@ use test example
 use test fail
 use test get
 use test give
+use test given
 use test hash
 use test head
 use test help
