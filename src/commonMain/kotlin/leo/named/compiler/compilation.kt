@@ -295,10 +295,12 @@ fun Compiler.plusPrivateCompilation(script: Script): Compilation<Compiler> =
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
 	set(typedExpression.with(script.reflectTypedExpression)).compilation
 
-fun Compiler.plusRecursiveCompilation(script: Script): Compilation<Compiler> =
+@Suppress("unused")
+fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
 	TODO()
 
-fun Compiler.plusRecursiveCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
+@Suppress("unused")
+fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") scriptLine: ScriptLine): Compilation<Compiler> =
 	TODO()
 
 fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =

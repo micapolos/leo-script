@@ -33,7 +33,7 @@ class ApplicationTest {
 			definition(
 				recursive(
 					dictionary(
-						definition(let(value("ping"), binding(body(block(syntax("ping"))))))))))
+						definition(let(value("ping"), binding(binder(doing(body(block(syntax("ping"))))))))))))
 			.applicationOrNull(value("ping"))
 			.assertEqualTo(
 				application(
@@ -41,8 +41,8 @@ class ApplicationTest {
 						definition(
 							recursive(
 								dictionary(
-									definition(let(value("ping"), binding(body(block(syntax("ping")))))))))),
-					binding(body(block(syntax("ping"))))))
+									definition(let(value("ping"), binding(binder(doing(body(block(syntax("ping")))))))))))),
+					binding(binder(doing(body(block(syntax("ping"))))))))
 	}
 
 	@Test

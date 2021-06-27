@@ -1,5 +1,6 @@
 use test any
 use test apply
+use test applying
 use test as
 use test be
 use test check

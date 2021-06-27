@@ -46,8 +46,8 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 	}
 
 val End.script get() = syntax.script
-val Apply.script get() = syntax.script
-val Applying.script get() = syntax.script
+val Apply.script get() = block.script
+val Applying.script get() = block.script
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
 val Check.script get() = is_.script
@@ -82,6 +82,7 @@ val LetRhs.scriptLine get() =
 	when (this) {
 		is BeLetRhs -> beName lineTo be.script
 		is DoLetRhs -> doName lineTo do_.script
+		is ApplyLetRhs -> applyName lineTo apply.script
 	}
 
 val Block.script get() =

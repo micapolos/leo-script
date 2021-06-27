@@ -100,10 +100,10 @@ val Script.beSyntaxing: Syntaxing<Be> get() =
 	syntaxSyntaxing.map(::be)
 
 val Script.applySyntaxing: Syntaxing<Apply> get() =
-	syntaxSyntaxing.map(::apply)
+	blockSyntaxing.map(::apply)
 
 val Script.applyingSyntaxing: Syntaxing<Applying> get() =
-	syntaxSyntaxing.map(::applying)
+	blockSyntaxing.map(::applying)
 
 val Script.endSyntaxing: Syntaxing<End> get() =
 	syntaxSyntaxing.map(::end)
@@ -156,6 +156,7 @@ val Script.letSyntaxing: Syntaxing<Let> get() =
 			when (name) {
 				beName -> rhs.beSyntaxing.map { let(lhsValue, it) }
 				doName -> rhs.doSyntaxing.map { let(lhsValue, it) }
+				applyName -> rhs.applySyntaxing.map { let(lhsValue, it) }
 				else -> value(syntaxName fieldTo value(letName fieldTo value)).throwError()
 			}
 		}

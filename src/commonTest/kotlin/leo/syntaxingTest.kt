@@ -50,7 +50,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, ")),
-					line(apply(syntax(syntaxLine(literal("world!")))))
+					line(apply(block(syntax(syntaxLine(literal("world!"))))))
 				))
 	}
 

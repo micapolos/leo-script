@@ -11,10 +11,17 @@ class ValueScriptTest {
 	}
 
 	@Test
-	fun natives() {
-		value(field(dictionary().doing(body(script("foo")))))
+	fun doing() {
+		value(field(dictionary().function(binder(doing(body(script("foo")))))))
 			.script
 			.assertEqualTo(script(doingName lineTo script("foo")))
+	}
+
+	@Test
+	fun applying() {
+		value(field(dictionary().function(binder(applying(body(script("foo")))))))
+			.script
+			.assertEqualTo(script(applyingName lineTo script("foo")))
 	}
 
 	@Test

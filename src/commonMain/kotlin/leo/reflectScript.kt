@@ -33,7 +33,7 @@ val DefinitionLet.scriptLine: ScriptLine get() =
 val Binding.scriptLine: ScriptLine get() =
 	"binding" lineTo script(
 		when (this) {
-			is BodyBinding -> body.scriptLine
+			is BinderBinding -> binder.scriptLine
 			is RecurseBinding -> recurse.scriptLine
 			is ValueBinding -> value.scriptLine
 		}

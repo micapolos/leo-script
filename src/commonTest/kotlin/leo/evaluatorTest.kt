@@ -143,6 +143,13 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun applying() {
+		script(applyingName lineTo script("foo"))
+			.evaluate
+			.assertEqualTo(script(applyingName lineTo script("foo")))
+	}
+
+	@Test
 	fun give() {
 		script(
 			doingName lineTo script("bar"),

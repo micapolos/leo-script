@@ -26,8 +26,7 @@ val Field.exactScriptLine: ScriptLine
 val Rhs.script: Script
 	get() =
 		when (this) {
-			is ApplyingRhs -> applying.script
-			is DoingRhs -> doing.script
+			is FunctionRhs -> function.script
 			is NativeRhs -> native.script
 			is ValueRhs -> value.script
 		}
@@ -35,11 +34,24 @@ val Rhs.script: Script
 val Field.scriptField: ScriptField
 	get() = name fieldTo rhs.script
 
-val ValueDoing.script: Script
+val Function.script: Script
+	get() =
+		binder.script
+
+val Binder.script: Script get() =
+	when (this) {
+		is ApplyingBinder -> applying.script
+		is DoingBinder -> doing.script
+	}
+
+val Binder.scriptLine: ScriptLine get() =
+	name lineTo script
+
+val BodyDoing.script: Script
 	get() =
 		body.script
 
-val ValueApplying.script: Script
+val BodyApplying.script: Script
 	get() =
 		body.script
 

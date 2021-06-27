@@ -30,7 +30,7 @@ fun Dictionary.switchEvaluation(field: Field, link: Link): Evaluation<Value> =
 
 fun switchOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
 	ifOrNull(field.name == case.name) {
-		value(case).nativeValue(doingName).valueDoingOrThrow.giveEvaluation(value(field))
+		value(case).nativeValue(doingName).functionOrThrow.giveEvaluation(value(field))
 	} ?: evaluation(null)
 
 fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
@@ -43,23 +43,29 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 		}
 	}
 
-fun Dictionary.applyEvaluation(body: Body, given: Value): Evaluation<Value> =
-	when (body) {
-		is FnBody -> applyEvaluation(body.fn, given)
-		is BlockBody -> applyEvaluation(body.block, given)
+fun Dictionary.applyEvaluation(value: Value, binder: Binder): Evaluation<Value> =
+	when (binder) {
+		is ApplyingBinder -> applyEvaluation(value, binder.applying.body)
+		is DoingBinder -> plus(value).applyEvaluation(value(), binder.doing.body)
 	}
 
-fun applyEvaluation(fn: (Value) -> Value, given: Value): Evaluation<Value> =
+fun Dictionary.applyEvaluation(value: Value, body: Body): Evaluation<Value> =
+	when (body) {
+		is FnBody -> applyEvaluation(value, body.fn)
+		is BlockBody -> giveEvaluation(value, body.block)
+	}
+
+fun applyEvaluation(value: Value, fn: (Value) -> Value): Evaluation<Value> =
 	try {
-		fn(value("the" fieldTo given)).evaluation
+		fn(value("the" fieldTo value)).evaluation
 	} catch (throwable: Throwable) {
 		throwable.value.failEvaluation()
 	}
 
-fun Dictionary.applyEvaluation(block: Block, given: Value): Evaluation<Value> =
+fun Dictionary.giveEvaluation(value: Value, block: Block): Evaluation<Value> =
 	when (block) {
-		is RecursingBlock -> applyEvaluation(block.recursing, given)
-		is SyntaxBlock -> applyEvaluation(block.syntax, given)
+		is RecursingBlock -> applyEvaluation(value, block.recursing)
+		is SyntaxBlock -> applyEvaluation(value, block.syntax)
 	}
 
 fun Dictionary.applyEvaluation(repeat: Repeat, given: Value): Evaluation<Value> =
@@ -71,11 +77,12 @@ fun Dictionary.applyEvaluation(repeat: Repeat, given: Value): Evaluation<Value> 
 		}
 	}
 
-fun Dictionary.applyEvaluation(recursing: Recursing, value: Value): Evaluation<Value> =
-	plusRecurse(recursing.syntax).plus(value).valueEvaluation(recursing.syntax)
+fun Dictionary.applyEvaluation(value: Value, recursing: Recursing): Evaluation<Value> =
+	// TODO: Recursing must go before binder.
+	plusRecurse(recursing.syntax).applyEvaluation(value, binder(doing(body(block(recursing.syntax)))))
 
-fun Dictionary.applyEvaluation(syntax: Syntax, given: Value): Evaluation<Value> =
-	plus(given).valueEvaluation(syntax)
+fun Dictionary.applyEvaluation(given: Value, syntax: Syntax): Evaluation<Value> =
+	context.evaluator(given).plusEvaluation(syntax).map { it.value }
 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
@@ -118,13 +125,17 @@ fun Dictionary.bindingEvaluation(rhs: LetRhs): Evaluation<Binding> =
 	when (rhs) {
 		is BeLetRhs -> bindingEvaluation(rhs.be)
 		is DoLetRhs -> bindingEvaluation(rhs.do_)
+		is ApplyLetRhs -> bindingEvaluation(rhs.apply)
 	}
 
 fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 	valueEvaluation(be.syntax).map(::binding)
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	binding(body(do_.block)).evaluation
+	binding(binder(doing(body(do_.block)))).evaluation
+
+fun Dictionary.bindingEvaluation(apply: Apply): Evaluation<Binding> =
+	binding(binder(applying(body(apply.block)))).evaluation
 
 fun Dictionary.evaluation(value: Value, set: Set): Evaluation<Value> =
 	value().evaluation.foldStateful(set.atomSeq) { atom ->
@@ -186,7 +197,7 @@ fun Dictionary.unitEvaluation(test: Test): Evaluation<Unit> =
 	}
 
 fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
-	value.valueDoingOrThrow.evaluation.bind { doing ->
+	value.functionOrThrow.evaluation.bind { doing ->
 		valueEvaluation(give.syntax).bind { given ->
 			doing.giveEvaluation(given)
 		}
@@ -194,7 +205,7 @@ fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
 
 fun Dictionary.valueEvaluation(value: Value, take: Take): Evaluation<Value> =
 	valueEvaluation(take.syntax).bind { taken ->
-		taken.valueDoingOrThrow.evaluation.bind { doing ->
+		taken.functionOrThrow.evaluation.bind { doing ->
 			doing.giveEvaluation(value)
 		}
 	}
@@ -213,7 +224,7 @@ fun Dictionary.valueEvaluation(value: Value, as_: As): Evaluation<Value> =
 	valueEvaluation(as_.syntax).map { value.as_(it) }
 
 fun Dictionary.valueEvaluation(value: Value, apply: Apply): Evaluation<Value> =
-	context.evaluator(value).plusEvaluation(apply.syntax).map { it.value }
+	giveEvaluation(value, apply.block)
 
 fun Dictionary.valueEvaluation(value: Value, end_: End): Evaluation<Value> =
 	valueEvaluation(value, end_.syntax).map {

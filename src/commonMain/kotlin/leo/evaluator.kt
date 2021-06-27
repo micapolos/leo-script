@@ -147,7 +147,7 @@ fun Evaluator.plusEvaluation(apply: Apply): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, apply).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(applying: Applying): Evaluation<Evaluator> =
-	plusResolveEvaluation(field(dictionary.applying(body(block(applying.syntax)))))
+	plusResolveEvaluation(field(dictionary.function(binder(applying(body(applying.block))))))
 
 fun Evaluator.plusEvaluation(end_: End): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, end_).bind { setEvaluation(it) }
@@ -164,7 +164,7 @@ fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") debug: Debug): Evalua
 	setEvaluation(script(scriptLine).value)
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
-	dictionary.applyEvaluation(do_.block, value).bind { setEvaluation(it) }
+	dictionary.applyEvaluation(value, binder(doing(body(do_.block)))).bind { setEvaluation(it) }
 
 fun Evaluator.plusContentValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 	value.orNullIf { !isEmpty }?.run {
@@ -220,7 +220,7 @@ fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(repeat, value).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
-	plusResolveEvaluation(field(dictionary.doing(body(doing.block))))
+	plusResolveEvaluation(field(dictionary.function(binder(doing(body(doing.block))))))
 
 fun Evaluator.plusHashValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 	value.orNullIf { !isEmpty }?.let {

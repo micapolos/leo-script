@@ -27,6 +27,16 @@ test
 
 test
   let
+    any.number.increment
+    apply
+      number
+      plus 1
+
+  10.increment
+  is equal to 11
+
+test
+  let
     any.number.factorial
     do recursing
       factorial.number

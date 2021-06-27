@@ -1,10 +1,27 @@
 package leo
 
-data class ValueDoing(val dictionary: Dictionary, val body: Body)
-data class ValueApplying(val dictionary: Dictionary, val body: Body)
+data class Function(val dictionary: Dictionary, val binder: Binder)
 
-fun Dictionary.doing(body: Body): ValueDoing = ValueDoing(this, body)
-fun Dictionary.applying(body: Body): ValueApplying = ValueApplying(this, body)
+sealed class Binder
+data class ApplyingBinder(val applying: BodyApplying): Binder()
+data class DoingBinder(val doing: BodyDoing): Binder()
 
-fun ValueDoing.giveEvaluation(value: Value): Evaluation<Value> = dictionary.applyEvaluation(body, value)
-fun ValueDoing.push(definitionLet: DefinitionLet) = copy(dictionary = dictionary.plus(LetDefinition(definitionLet)))
+data class BodyApplying(val body: Body)
+data class BodyDoing(val body: Body)
+
+fun binder(doing: BodyDoing): Binder = DoingBinder(doing)
+fun binder(applying: BodyApplying): Binder = ApplyingBinder(applying)
+
+fun applying(body: Body) = BodyApplying(body)
+fun doing(body: Body) = BodyDoing(body)
+
+fun Dictionary.function(binder: Binder): Function = Function(this, binder)
+
+fun Function.giveEvaluation(value: Value): Evaluation<Value> = dictionary.applyEvaluation(value, binder)
+fun Function.push(definitionLet: DefinitionLet) = copy(dictionary = dictionary.plus(LetDefinition(definitionLet)))
+
+val Binder.name get() =
+	when (this) {
+		is ApplyingBinder -> applyingName
+		is DoingBinder -> doingName
+	}
