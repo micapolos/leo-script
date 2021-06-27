@@ -15,6 +15,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is AsSyntaxLine -> asName lineTo as_.script
 		is AtomSyntaxLine -> atom.scriptLine
 		is BeSyntaxLine -> beName lineTo be.script
+		is BeingSyntaxLine -> beingName lineTo being.script
 		is CheckSyntaxLine -> checkName lineTo check.script
 		is CombineWithSyntaxLine -> combineName lineTo combineWith.script
 		is CommentSyntaxLine -> commentName lineTo comment.script
@@ -51,6 +52,7 @@ val Apply.script get() = block.script
 val Applying.script get() = block.script
 val As.script get() = syntax.script
 val Be.script get() = syntax.script
+val Being.script get() = syntax.script
 val Check.script get() = is_.script
 val CombineWith.script get() = script(withName lineTo block.script)
 val Do.script get() = block.script

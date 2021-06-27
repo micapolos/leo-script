@@ -97,6 +97,18 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun being() {
+		script(
+			"ugly" lineTo script(),
+			beingName lineTo script("pretty"))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					"ugly" lineTo syntax(),
+					line(being(syntax("pretty")))))
+	}
+
+	@Test
 	fun doing() {
 		script(
 			line(literal("Hello, world!")),
