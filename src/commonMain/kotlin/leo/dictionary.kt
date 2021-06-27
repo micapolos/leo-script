@@ -37,7 +37,9 @@ fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
 	value.switchFieldOrThrow.let { field ->
 		nullOf<Value>().evaluation.foldStateful(switch.caseSeq) { case ->
 			if (this != null || field.name != case.name) evaluation
-			else valueEvaluation(value(field), case.syntax)
+			else valueEvaluation(case.syntax).bind { caseValue ->
+				caseValue.functionOrThrow.giveEvaluation(value(field))
+			}
 		}.map { valueOrNull ->
 			valueOrNull.notNullOrThrow { value(switchName) }
 		}

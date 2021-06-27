@@ -261,8 +261,8 @@ class EvaluatorTest {
 		script(
 			"the" lineTo script(literal("Hello, ")),
 			switchName lineTo script(
-				textName lineTo script(appendName lineTo script(line(literal("world!")))),
-				numberName lineTo script(plusName lineTo script(line(literal(2))))
+				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
+				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
 			)
 		)
 			.evaluate
@@ -271,8 +271,8 @@ class EvaluatorTest {
 		script(
 			"the" lineTo script(literal(1)),
 			switchName lineTo script(
-				textName lineTo script(appendName lineTo script(line(literal("world!")))),
-				numberName lineTo script(plusName lineTo script(line(literal(2))))
+				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
+				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
 			)
 		)
 			.evaluate
@@ -287,9 +287,9 @@ class EvaluatorTest {
 				recursingName lineTo script(
 					"number" lineTo script(),
 					switchName lineTo script(
-						"zero" lineTo script(beName lineTo script(line(literal("OK")))),
+						"zero" lineTo script(doingName lineTo script(line(literal("OK")))),
 						"one" lineTo script(
-							beName lineTo script(
+							doingName lineTo script(
 								numberName lineTo script("zero"),
 								recurseName lineTo script()
 							)
@@ -975,11 +975,11 @@ class EvaluatorTest {
 			"the" lineTo script("continue"),
 			repeatName lineTo script(
 				switchName lineTo script(
-					"finish" lineTo script(
+					"finish" lineTo script(applyingName lineTo script(
 						endName lineTo script("done")
-					),
+					)),
 					"continue" lineTo script(
-						beName lineTo script(
+						doingName lineTo script(
 							"the" lineTo script("finish")
 						)
 					)
@@ -1108,13 +1108,14 @@ class EvaluatorTest {
 							)
 						),
 						switchName lineTo script(
-							yesName lineTo script(numberName),
+							yesName lineTo script(applyingName lineTo script(numberName)),
 							noName lineTo script(
+								applyingName lineTo script(
 								numberName lineTo script(),
 								minusName lineTo script(literal(1)),
 								"odd" lineTo script(),
 								"decrement" lineTo script()
-							)
+							))
 						)
 					)
 				),
@@ -1132,13 +1133,14 @@ class EvaluatorTest {
 							)
 						),
 						switchName lineTo script(
-							yesName lineTo script(numberName),
+							yesName lineTo script(applyingName lineTo script(numberName)),
 							noName lineTo script(
+								applyingName lineTo script(
 								numberName lineTo script(),
 								minusName lineTo script(literal(1)),
 								"even" lineTo script(),
 								"decrement" lineTo script()
-							)
+							))
 						)
 					)
 				)

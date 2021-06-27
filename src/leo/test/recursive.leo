@@ -9,8 +9,8 @@ test
       countdown.number
       check equal to 0
       switch
-        yes number
-        no
+        yes applying number
+        no applying
           number
           minus 1
           countdown

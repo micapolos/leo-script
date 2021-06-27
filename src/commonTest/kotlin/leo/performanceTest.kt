@@ -17,11 +17,13 @@ class PerformanceTest {
 							line(literal(0))))),
 				switchName lineTo script(
 					yesName lineTo script(
-						numberName lineTo script(),
-						endName lineTo script()),
+						applyingName lineTo script(
+							numberName lineTo script(),
+							endName lineTo script())),
 					noName lineTo script(
-						numberName lineTo script(),
-						minusName lineTo script(line(literal(1))))
+						applyingName lineTo script(
+							numberName lineTo script(),
+							minusName lineTo script(line(literal(1)))))
 					)
 				)
 			)

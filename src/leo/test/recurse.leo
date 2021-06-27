@@ -9,8 +9,8 @@ test
     number
     check less than 2
     switch
-      yes number
-      no do
+      yes applying number
+      no doing
         no.number
         minus 2
         recurse

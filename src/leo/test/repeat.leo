@@ -9,8 +9,8 @@ test
   repeat
     check equal to 0
     switch
-      yes number.end
-      no
+      yes applying number.end
+      no applying
         number
         minus 1
   is equal to 0

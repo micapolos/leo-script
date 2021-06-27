@@ -42,8 +42,8 @@ test
       factorial.number
       is equal to 1
       switch
-        yes be factorial.number
-        no be
+        yes doing factorial.number
+        no doing
           factorial.number
           times
             factorial.number

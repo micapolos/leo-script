@@ -1,8 +1,8 @@
 test
   list
   switch
-    empty
-    link
+    empty doing empty
+    link doing link
   is equal to empty
 
 test
@@ -11,11 +11,11 @@ test
     y 20
     z 30
   switch
-    empty
-    link
+    empty doing empty
+    link doing link
   is equal to
     link
-      list
+      previous list
         x 10
         y 20
-      item z 30
+      last z 30
