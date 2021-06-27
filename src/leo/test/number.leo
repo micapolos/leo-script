@@ -18,10 +18,28 @@ test
   divided by 5
   is equal to 2
 
-test
-  10
-  divided by 0
-  is equal to foo
+comment
+  implement parser for
+    number inifinity
+    number minus infinity
+    number none
+  and uncomment the tests below
+
+comment
+  test
+    10
+    divided by 0
+    is equal to number infinity
+
+  test
+    -10
+    divided by 0
+    is equal to number minus infinity
+
+  test
+    0
+    divided by 0
+    is equal to number none
 
 test
   4
