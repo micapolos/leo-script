@@ -239,7 +239,7 @@ fun Evaluator.plusTailValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 
 fun Evaluator.plusPrintValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 	value.orNullIf { !isEmpty }?.let {
-		rhs.valueOrNull?.let { it.also { value.script.print }.evaluation }
+		rhs.valueOrNull?.also { it.script.print }?.evaluation
 	}?: evaluation(null)
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
