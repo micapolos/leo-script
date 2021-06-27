@@ -82,6 +82,21 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun combineWith() {
+		script(
+			line(literal(10)),
+			line(literal(20)),
+			combineName lineTo script(withName lineTo script("plus")))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal(10)),
+					syntaxLine(literal(20)),
+					line(combineWith(block(syntax("plus"))))
+				))
+	}
+
+	@Test
 	fun doing() {
 		script(
 			line(literal("Hello, world!")),

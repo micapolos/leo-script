@@ -75,6 +75,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is BeSyntaxLine -> plusEvaluation(line.be)
 		is EndSyntaxLine -> plusEvaluation(line.end)
 		is CheckSyntaxLine -> plusEvaluation(line.check)
+		is CombineWithSyntaxLine -> plusEvaluation(line.combineWith)
 		is CommentSyntaxLine -> plusEvaluation(line.comment)
 		is DebugSyntaxLine -> plusEvaluation(line.debug)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
@@ -156,6 +157,9 @@ fun Evaluator.plusEvaluation(check: Check): Evaluation<Evaluator> =
 	valueEvaluation(check.is_).bind { isRhsValue ->
 		setEvaluation(value.checkValue(isRhsValue.isBoolean))
 	}
+
+fun Evaluator.plusEvaluation(combineWith: CombineWith): Evaluation<Evaluator> =
+	TODO()
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Evaluation<Evaluator> =
 	evaluation

@@ -41,6 +41,7 @@ val Function.script: Script
 val Binder.script: Script get() =
 	when (this) {
 		is ApplyingBinder -> applying.script
+		is CombiningBinder -> combining.script
 		is DoingBinder -> doing.script
 	}
 
@@ -54,6 +55,10 @@ val BodyDoing.script: Script
 val BodyApplying.script: Script
 	get() =
 		body.script
+
+val BodyCombining.script: Script
+	get() =
+		script(withName lineTo body.script)
 
 val Body.script: Script
 	get() =
