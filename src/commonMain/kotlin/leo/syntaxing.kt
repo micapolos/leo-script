@@ -43,7 +43,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		applyingName -> rhs.applyingSyntaxingOrNull?.map(::line)
 		asName -> rhs.asSyntaxing.map(::line)
 		beName -> rhs.beSyntaxing.map(::line)
-		beingName -> rhs.beingSyntaxing.map(::line)
+		beingName -> rhs.beingSyntaxingOrNull?.map(::line)
 		endName -> rhs.endSyntaxing.map(::line)
 		checkName -> rhs.checkSyntaxing.map(::line)
 		combineName -> rhs.combineWithSyntaxingOrNull?.map(::line)
@@ -115,8 +115,10 @@ val Script.asSyntaxing: Syntaxing<As> get() =
 val Script.beSyntaxing: Syntaxing<Be> get() =
 	syntaxSyntaxing.map(::be)
 
-val Script.beingSyntaxing: Syntaxing<Being> get() =
-	syntaxSyntaxing.map(::being)
+val Script.beingSyntaxingOrNull: Syntaxing<Being>? get() =
+	notNullIf(!isEmpty) {
+		syntaxSyntaxing.map(::being)
+	}
 
 val Script.applySyntaxing: Syntaxing<Apply> get() =
 	blockSyntaxing.map(::apply)
