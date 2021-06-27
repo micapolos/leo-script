@@ -228,10 +228,11 @@ class ValueTest {
 			.switchFieldOrNull
 			.assertEqualTo(
 				linkName fieldTo value(
-					listName fieldTo value(
-						"x" fieldTo value("zero"),
-						"y" fieldTo value("one")),
-					itemName fieldTo value(
+					previousName fieldTo value(
+						listName fieldTo value(
+							"x" fieldTo value("zero"),
+							"y" fieldTo value("one"))),
+					lastName fieldTo value(
 						"z" fieldTo value("two"))))
 	}
 }

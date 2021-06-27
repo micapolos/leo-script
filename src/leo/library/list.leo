@@ -7,44 +7,44 @@ test
   is equal to list
 
 let
-  any.list.head
-  do
-    head.list
+  any.list.last
+  apply
+    list
     switch
-      empty fail
-      link item.content
+      empty list.last
+      link last
 
 test
   list
     x 10
     y 20
     z 30
-  head
+  last
   is equal to
-    z 30
+    last z 30
 
 let
-  any.list.tail
+  any.list.previous
   do
     list
     switch
-      empty fail
-      link list.content
+      empty list.previous
+      link previous
 
 test
   list
     x 10
     y 20
     z 30
-  tail
-  is equal to
+  previous
+  is equal to previous list
     x 10
     y 20
 
 let
   list any
   append any
-  do bind list
+  do list
     list.content
     with append.content
 
@@ -60,36 +60,47 @@ test
     z 30
 
 let
-  any
-  fold
-    list any
-    doing any
-  do repeat bind
-    folded content.list.tail
-    bind
-      fold.list
-      switch
-        empty be folded.content.end
-        link bind
-          fold.doing
-          give
-            folded.content
-            with link.item.content.other
-          fold
-            link.list
-            with fold.doing
+  list any
+  fold to any
+  doing any
+  do repeat
+    list
+    switch
+      empty be fold.to.content.end
+      link do
+        link.previous.list
+        fold to
+          fold.to.content
+          other link.last.content
+          take doing
+        with doing
 
 test
-  "Hello, "
-  fold
-    list
-      "world!"
-      "hell, "
-      "heaven, "
-    doing bind
-      text
-      append other.text
-  is equal to "Hello, heaven, hell, world!"
+  list
+  fold to "Hello"
+  doing
+    text
+    append other.text
+  is equal to "Hello"
+
+test
+  list "world!"
+  fold to "Hello, "
+  doing
+    text
+    append other.text
+  is equal to "Hello, world!"
+
+test
+  list
+    "world!"
+    "hell, "
+    "heaven, "
+  fold to "Hello "
+  doing
+    text
+    append other.text
+  is equal to "Hello heaven, hell, world!"
 
 let
   any.list.reverse

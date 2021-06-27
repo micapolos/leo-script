@@ -30,3 +30,29 @@ test
       y 30
   center.point.x.number
   is equal to 20
+
+test
+  this 10
+  number
+  plus 1
+  is equal to 11
+
+test
+  this "Hello, "
+  text
+  append "world!"
+  is equal to "Hello, world!"
+
+test
+  this doing
+    text
+    append "world!"
+  doing
+  give "Hello, "
+  is equal to "Hello, world!"
+
+test
+  this applying append "world!"
+  applying
+  give "Hello, "
+  is equal to "Hello, world!"

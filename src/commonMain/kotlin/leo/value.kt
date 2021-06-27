@@ -417,8 +417,8 @@ val Field.switchFieldOrNull: Field? get() =
 			when (value) {
 				EmptyValue -> emptyName fieldTo value()
 				is LinkValue -> linkName fieldTo value(
-					listName fieldTo value.link.value,
-					itemName fieldTo value(value.link.field))
+					previousName fieldTo value(listName fieldTo value.link.value),
+					lastName fieldTo value(value.link.field))
 			}
 		}
 		else -> valueOrNull?.fieldOrNull
