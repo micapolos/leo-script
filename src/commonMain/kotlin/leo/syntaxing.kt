@@ -47,6 +47,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		endName -> rhs.endSyntaxing.map(::line)
 		checkName -> rhs.checkSyntaxing.map(::line)
 		combineName -> rhs.combineWithSyntaxingOrNull?.map(::line)
+		combiningName -> rhs.combiningWithSyntaxingOrNull?.map(::line)
 		commentName -> rhs.commentSyntaxing.map(::line)
 		debugName -> rhs.debugSyntaxing.map(::line)
 		doName -> rhs.doSyntaxing.map(::line)
@@ -147,6 +148,13 @@ val Script.checkSyntaxing: Syntaxing<Check> get() =
 val Script.combineWithSyntaxingOrNull: Syntaxing<CombineWith>? get() =
 	matchPrefix(withName) { withScript ->
 		withScript.blockSyntaxing.map(::combineWith)
+	}
+
+val Script.combiningWithSyntaxingOrNull: Syntaxing<CombiningWith>? get() =
+	matchPrefix(withName) { withScript ->
+		notNullIf(!withScript.isEmpty && !withScript.equals(script(anyName))) {
+			withScript.blockSyntaxing.map(::combiningWith)
+		}
 	}
 
 val Script.commentSyntaxing: Syntaxing<Comment> get() =

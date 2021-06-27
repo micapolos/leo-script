@@ -97,6 +97,35 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
+	fun combiningWith() {
+		script(
+			line(literal(10)),
+			line(literal(20)),
+			combiningName lineTo script(withName lineTo script("plus")))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal(10)),
+					syntaxLine(literal(20)),
+					line(combiningWith(block(syntax("plus"))))
+				))
+	}
+
+	@Test
+	fun combiningWithEmpty() {
+		script(
+			line(literal(10)),
+			line(literal(20)),
+			combiningName lineTo script(withName lineTo script()))
+			.syntax
+			.assertEqualTo(
+				syntax(
+					syntaxLine(literal(10)),
+					syntaxLine(literal(20)),
+					combiningName lineTo syntax(line(with(syntax())))))
+	}
+
+	@Test
 	fun being() {
 		script(
 			"ugly" lineTo script(),
