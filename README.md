@@ -13,7 +13,6 @@
 * look here: [`/leo-script/src/leo`](https://github.com/micapolos/leo-script/blob/master/src/leo),
 * the `test` folder contains unit tests covering the core functionality,
 * run `leo test all` from `leo` folder to execute all tests.
-* edit `sandbox.leo` and run `leo sandbox` to play around.
 
 ### MacOS
 
