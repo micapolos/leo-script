@@ -7,7 +7,7 @@ import leo.lineTo
 import leo.plus
 import leo.script
 
-fun <R> R.scriptLineProcessor(begin: NameBegin, script: Script, ret: (ScriptLine) -> Processor<R, Token>): Processor<R, Token> =
+fun <S> S.scriptLineProcessor(begin: NameBegin, script: Script, ret: (ScriptLine) -> Processor<S, Token>): Processor<S, Token> =
 	processor { token ->
 		when (token) {
 			is BeginToken -> scriptLineProcessor(token.begin, script()) { scriptLineProcessor(begin, script.plus(it), ret) }
