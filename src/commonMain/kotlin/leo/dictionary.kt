@@ -62,6 +62,8 @@ fun Dictionary.applyEvaluation(value: Value, body: Body): Evaluation<Value> =
 fun applyEvaluation(value: Value, fn: (Value) -> Value): Evaluation<Value> =
 	try {
 		fn(value("the" fieldTo value)).evaluation
+	} catch (e: DebugError) {
+		throw e
 	} catch (throwable: Throwable) {
 		throwable.value.failEvaluation()
 	}

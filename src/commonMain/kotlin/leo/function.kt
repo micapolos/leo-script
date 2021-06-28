@@ -35,3 +35,11 @@ val Binder.name get() =
 		is DoingBinder -> doingName
 		is CombiningBinder -> combiningName
 	}
+
+val Binder.letName get() =
+	when (this) {
+		is ApplyingBinder -> applyName
+		is BeingBinder -> beName
+		is DoingBinder -> doName
+		is CombiningBinder -> combineName
+	}

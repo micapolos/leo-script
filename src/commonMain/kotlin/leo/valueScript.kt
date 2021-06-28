@@ -49,6 +49,9 @@ val Binder.script: Script get() =
 val Binder.scriptLine: ScriptLine get() =
 	name lineTo script
 
+val Binder.letScriptLine: ScriptLine get() =
+	letName lineTo script
+
 val BodyDoing.script: Script
 	get() =
 		body.script

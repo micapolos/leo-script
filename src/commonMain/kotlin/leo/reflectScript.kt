@@ -14,30 +14,23 @@ val Context.scriptLine: ScriptLine get() =
 		"private" lineTo script(privateDictionary.scriptLine))
 
 val Dictionary.scriptLine: ScriptLine get() =
-	"dictionary" lineTo script(
-		listName lineTo script(definitionStack.map { scriptLine }))
+	"scope" lineTo script(definitionStack.map { scriptLine })
 
 val Definition.scriptLine: ScriptLine get() =
-	"definition" lineTo script(
-		when (this) {
-			is LetDefinition -> let.scriptLine
-			is RecursiveDefinition -> recursive.scriptLine
-		}
-	)
+	when (this) {
+		is LetDefinition -> let.scriptLine
+		is RecursiveDefinition -> recursive.scriptLine
+	}
 
 val DefinitionLet.scriptLine: ScriptLine get() =
-	"let" lineTo script(
-		"pattern" lineTo value.script,
-		binding.scriptLine)
+	"let" lineTo value.script.plus(binding.scriptLine)
 
 val Binding.scriptLine: ScriptLine get() =
-	"binding" lineTo script(
-		when (this) {
-			is BinderBinding -> binder.scriptLine
-			is RecurseBinding -> recurse.scriptLine
-			is ValueBinding -> value.scriptLine
-		}
-	)
+	when (this) {
+		is BinderBinding -> binder.letScriptLine
+		is RecurseBinding -> recurse.scriptLine
+		is ValueBinding -> beName lineTo value.script
+	}
 
 val Body.scriptLine: ScriptLine get() =
 	"body" lineTo script(

@@ -47,6 +47,8 @@ fun <S, T> Stateful<S, T>.catch(fn: (Throwable) -> Stateful<S, T>): Stateful<S, 
 	Stateful { state ->
 		try {
 			run(state)
+		} catch (e: DebugError) {
+			throw e
 		} catch (throwable: Throwable) {
 			fn(throwable).run(state)
 		}

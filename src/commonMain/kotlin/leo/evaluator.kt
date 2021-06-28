@@ -175,7 +175,7 @@ fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") comment: Comment): Ev
 	evaluation
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") debug: Debug): Evaluation<Evaluator> =
-	setEvaluation(script(scriptLine).value)
+	throw DebugError(script(debugName lineTo script(scriptLine)))
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(value, binder(doing(body(do_.block)))).bind { setEvaluation(it) }
@@ -211,7 +211,7 @@ fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, give).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") help: Help): Evaluation<Evaluator> =
-	setEvaluation(value.plus(script(helpScriptLine).value))
+	throw DebugError(value.plus(script(helpScriptLine).value).script)
 
 fun Evaluator.plusValueEvaluation(syntaxField: SyntaxField): Evaluation<Value> =
 	if (syntaxField.rhsSyntax.isEmpty)

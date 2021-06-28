@@ -16,6 +16,8 @@ val Script.evaluate: Script
 fun Environment.evaluate(script: Script): Script =
 	try {
 		script.evaluateEvaluation.run(this).value
+	} catch (e: DebugError) {
+		throw e
 	} catch (e: Throwable) {
 		e.value.errorValue.script
 	}

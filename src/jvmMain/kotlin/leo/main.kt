@@ -15,6 +15,8 @@ fun main(args: Array<String>) {
 		readText(args).scriptOrThrow.run {
 			if (typed) preludeEvaluate else evaluate
 		}
+	} catch (e: DebugError) {
+		e.script.string
 	} catch (e: ValueError) {
 		value("parser" fieldTo e.value).errorValue.string
 	} catch (e: CompileError) {
