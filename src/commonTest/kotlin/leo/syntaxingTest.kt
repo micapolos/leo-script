@@ -30,19 +30,6 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun be() {
-		script(
-			line(literal("Hello, ")),
-			beName lineTo script(line(literal("world!"))))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine(literal("Hello, ")),
-					line(be(syntax(syntaxLine(literal("world!")))))
-				))
-	}
-
-	@Test
 	fun apply() {
 		script(
 			line(literal("Hello, ")),
@@ -203,19 +190,6 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun fail() {
-		script(
-			line(literal("Hello, ")),
-			failName lineTo script(line(literal("boom!"))))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine(literal("Hello, ")),
-					line(fail(syntax(syntaxLine(literal("boom!")))))
-				))
-	}
-
-	@Test
 	fun get() {
 		script(
 			line("point"),
@@ -226,18 +200,6 @@ class SyntaxCompilationTest {
 					syntaxLine("point"),
 					line(get("x", "y"))
 				))
-	}
-
-	@Test
-	fun give() {
-		script(
-			line("point"),
-			giveName lineTo script("x"))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine("point"),
-					giveName lineTo syntax("x" lineTo syntax())))
 	}
 
 	@Test
@@ -483,18 +445,6 @@ class SyntaxCompilationTest {
 						syntaxAtom(literal("foo")),
 						syntaxAtom(literal(123))))
 				))
-	}
-
-	@Test
-	fun take() {
-		script(
-			line("point"),
-			takeName lineTo script("x"))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine("point"),
-					takeName lineTo syntax("x" lineTo syntax())))
 	}
 
 	@Test

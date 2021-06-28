@@ -534,11 +534,11 @@ class EvaluatorTest {
 	@Test
 	fun fail() {
 		script(
-			line("frog"),
-			"fail" lineTo script("kiss")
+			"boom" lineTo script(),
+			"fail" lineTo script()
 		)
 			.evaluate
-			.assertEqualTo(script(errorName lineTo script("kiss" lineTo script("frog"))))
+			.assertEqualTo(script(errorName lineTo script("boom")))
 	}
 
 	@Test

@@ -14,7 +14,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is ApplyingSyntaxLine -> applyingName lineTo applying.script
 		is AsSyntaxLine -> asName lineTo as_.script
 		is AtomSyntaxLine -> atom.scriptLine
-		is BeSyntaxLine -> beName lineTo be.script
+//		is BeSyntaxLine -> beName lineTo be.script
 		is BeingSyntaxLine -> beingName lineTo being.script
 		is CheckSyntaxLine -> checkName lineTo check.script
 		is CombineWithSyntaxLine -> combineName lineTo combineWith.script
@@ -25,7 +25,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is DoingSyntaxLine -> doingName lineTo doing.script
 		is EndSyntaxLine -> endName lineTo end.script
 		is ExampleSyntaxLine -> exampleName lineTo example.script
-		is FailSyntaxLine -> failName lineTo fail.script
+//		is FailSyntaxLine -> failName lineTo fail.script
 		is GetSyntaxLine -> getName lineTo get.script
 //		is GiveSyntaxLine -> giveName lineTo give.script
 		is HelpSyntaxLine -> helpName lineTo help.script
