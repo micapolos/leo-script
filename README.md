@@ -1,3 +1,16 @@
 # LeoScript
 
-Scripting programming language.
+### Installation
+* download the latest release from [here](https://github.com/micapolos/leo-script/releases) (look for `leo.zip`),
+* extract to any location,
+* add `leo/bin` to your `$PATH`.
+
+### Example usage
+* create `main.leo` file containing the source code,
+* run `leo main` from the enclosing folder.
+
+### Code samples
+* look here: [`/leo-script/src/leo`](https://github.com/micapolos/leo-script/blob/master/src/leo),
+* the `test` folder contains unit tests covering the core functionality,
+* run `leo test all` from `leo` folder to execute all tests.
+* edit `sandbox.leo` and run `leo sandbox` to play around.
