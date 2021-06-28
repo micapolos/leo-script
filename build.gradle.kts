@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "micapolos"
-version = "0.25.5"
+version = "0.25.6"
 
 repositories {
     mavenCentral()
@@ -33,7 +33,7 @@ kotlin {
                             .getByName("compileClasspath")
                             .map { if (it.isDirectory) it else zipTree(it) },
                         main.output.classesDirs)
-                    archiveBaseName.set("${project.name}-fat")
+                    archiveBaseName.set("leo")
                 }
             }
         }
