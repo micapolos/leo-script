@@ -177,19 +177,6 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun example() {
-		script(
-			line(literal("Hello, world!")),
-			exampleName lineTo script("ok"))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine(literal("Hello, world!")),
-					line(example(syntax("ok" lineTo syntax())))
-				))
-	}
-
-	@Test
 	fun get() {
 		script(
 			line("point"),

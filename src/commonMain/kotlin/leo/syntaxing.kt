@@ -52,7 +52,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		debugName -> rhs.debugSyntaxing.map(::line)
 		doName -> rhs.doSyntaxing.map(::line)
 		doingName -> rhs.doingSyntaxingOrNull?.map(::line)
-		exampleName -> rhs.exampleSyntaxing.map(::line)
+//		exampleName -> rhs.exampleSyntaxing.map(::line)
 //		failName -> rhs.failSyntaxing.map(::line)
 		getName -> rhs.getSyntaxing.map(::line)
 //		giveName -> rhs.giveSyntaxing.map(::line)

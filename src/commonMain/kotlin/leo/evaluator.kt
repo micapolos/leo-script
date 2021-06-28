@@ -82,7 +82,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is DebugSyntaxLine -> plusEvaluation(line.debug)
 		is DoSyntaxLine -> plusEvaluation(line.do_)
 		is DoingSyntaxLine -> plusEvaluation(line.doing)
-		is ExampleSyntaxLine -> plusEvaluation(line.example)
+//		is ExampleSyntaxLine -> plusEvaluation(line.example)
 //		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
 		//is GiveSyntaxLine -> plusEvaluation(line.give)
@@ -121,6 +121,7 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 			beName -> plusBeValueEvaluationOrNull(rhs)
 			contentName -> plusContentValueEvaluationOrNull(rhs)
 			evaluateName -> plusEvaluateValueEvaluationOrNull(rhs)
+			exampleName -> plusExampleValueEvaluationOrNull(rhs)
 			failName -> plusFailValueEvaluationOrNull(rhs)
 			giveName -> plusGiveValueEvaluationOrNull(rhs)
 			hashName -> plusHashValueEvaluationEvaluation(rhs)
@@ -195,8 +196,8 @@ fun Evaluator.plusEvaluateValueEvaluationOrNull(rhs: Value): Evaluation<Value>? 
 		dictionary.valueEvaluation(rhs.script.syntax)
 	}
 
-fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(example.syntax).bind { evaluation }
+fun Evaluator.plusExampleValueEvaluationOrNull(exampleValue: Value): Evaluation<Value> =
+	value.evaluation
 
 fun Evaluator.plusFailValueEvaluationOrNull(failValue: Value): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let { failValue.failEvaluation() }
