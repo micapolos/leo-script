@@ -70,7 +70,7 @@ fun <V> fail(): V =
 fun <V> failIfOr(condition: Boolean, fn: () -> V): V =
 	if (condition) fail() else fn()
 
-// TODO: Escape string and char
+// TODO: Escape string and interactive
 val Any?.string
 	get() =
 		when {
