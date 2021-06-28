@@ -73,7 +73,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		tryName -> rhs.trySyntaxing.map(::line)
 		updateName -> rhs.updateSyntaxing.map(::line)
 		useName -> rhs.useSyntaxing.map(::line)
-		withName -> rhs.withSyntaxing.map(::line)
+//		withName -> rhs.withSyntaxing.map(::line)
 		else -> null
 	} ?: syntaxAtomSyntaxing.map(::line)
 

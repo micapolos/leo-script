@@ -109,7 +109,7 @@ class SyntaxCompilationTest {
 				syntax(
 					syntaxLine(literal(10)),
 					syntaxLine(literal(20)),
-					combiningName lineTo syntax(line(with(syntax())))))
+					combiningName lineTo syntax(withName)))
 	}
 
 	@Test
@@ -502,22 +502,6 @@ class SyntaxCompilationTest {
 					syntaxLine("point"),
 					line(use("lib", "text"))
 				))
-	}
-
-	@Test
-	fun with() {
-		script(
-			line("point"),
-			withName lineTo script(
-				"x" lineTo script("zero"),
-				"y" lineTo script("one")))
-			.syntax
-			.assertEqualTo(
-				syntax(
-					syntaxLine("point"),
-					line(with(syntax(
-						"x" lineTo syntax("zero" lineTo syntax()),
-						"y" lineTo syntax("one" lineTo syntax()))))))
 	}
 
 	@Test

@@ -103,7 +103,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
 		is UseSyntaxLine -> plusEvaluation(line.use)
-		is WithSyntaxLine -> plusEvaluation(line.with)
+		//is WithSyntaxLine -> plusEvaluation(line.with)
 	}
 
 fun Evaluator.plusEvaluation(atom: SyntaxAtom): Evaluation<Evaluator> =
@@ -131,6 +131,7 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 			takeName -> plusTakeValueEvaluationOrNull(rhs)
 			textName -> plusTextValueEvaluationOrNull(rhs)
 			valueName -> plusValueValueEvaluationOrNull(rhs)
+			withName -> plusWithValueEvaluation(rhs)
 			else -> null
 		}
 	}
@@ -342,8 +343,8 @@ fun Evaluator.plusValueValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 		}
 	}?.evaluation
 
-fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, with).bind { setEvaluation(it) }
+fun Evaluator.plusWithValueEvaluation(withValue: Value): Evaluation<Value> =
+	value.plus(withValue).evaluation
 
 val Evaluator.dictionary
 	get() =

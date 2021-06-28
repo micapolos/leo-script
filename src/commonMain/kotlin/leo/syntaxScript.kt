@@ -45,7 +45,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is TrySyntaxLine -> tryName lineTo try_.script
 		is UpdateSyntaxLine -> updateName lineTo update.script
 		is UseSyntaxLine -> useName lineTo use.script
-		is WithSyntaxLine -> withName lineTo with.script
+//		is WithSyntaxLine -> withName lineTo with.script
 	}
 
 val End.script get() = syntax.script

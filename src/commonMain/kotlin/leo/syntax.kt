@@ -40,7 +40,7 @@ data class TestSyntaxLine(val test: Test): SyntaxLine()
 data class TrySyntaxLine(val try_: Try): SyntaxLine()
 data class UpdateSyntaxLine(val update: Update): SyntaxLine()
 data class UseSyntaxLine(val use: Use): SyntaxLine()
-data class WithSyntaxLine(val with: With): SyntaxLine()
+//data class WithSyntaxLine(val with: With): SyntaxLine()
 
 data class SyntaxField(val name: String, val rhsSyntax: Syntax)
 
@@ -155,7 +155,7 @@ fun line(test: Test): SyntaxLine = TestSyntaxLine(test)
 fun line(try_: Try): SyntaxLine = TrySyntaxLine(try_)
 fun line(update: Update): SyntaxLine = UpdateSyntaxLine(update)
 fun line(use: Use): SyntaxLine = UseSyntaxLine(use)
-fun line(with: With): SyntaxLine = WithSyntaxLine(with)
+//fun line(with: With): SyntaxLine = WithSyntaxLine(with)
 
 fun letRhs(be: Be): LetRhs = BeLetRhs(be)
 fun letRhs(do_: Do): LetRhs = DoLetRhs(do_)
