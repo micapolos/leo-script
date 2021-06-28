@@ -115,23 +115,23 @@ fun Evaluator.plusValueEvaluation(atom: SyntaxAtom): Evaluation<Value> =
 		is LiteralSyntaxAtom -> plusValueEvaluation(atom.literal)
 	}
 
-fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value?> =
+fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>? =
 	when (field.name) {
-		contentName -> plusContentValueOrNullEvaluation(field.rhs)
-		evaluateName -> plusEvaluateValueOrNullEvaluation(field.rhs)
-		hashName -> plusHashValueOrNullEvaluation(field.rhs)
-		headName -> plusHeadValueOrNullEvaluation(field.rhs)
-		printName -> plusPrintValueOrNullEvaluation(field.rhs)
-		tailName -> plusTailValueOrNullEvaluation(field.rhs)
-		textName -> plusTextValueOrNullEvaluation(field.rhs)
-		valueName -> plusValueValueOrNullEvaluation(field.rhs)
-		else -> evaluation(null)
+		contentName -> plusContentValueEvaluationOrNull(field.rhs)
+		evaluateName -> plusEvaluateValueEvaluationOrNull(field.rhs)
+		hashName -> plusHashValueEvaluationEvaluation(field.rhs)
+		headName -> plusHeadValueEvaluationOrNull(field.rhs)
+		printName -> plusPrintValueEvaluationOrNull(field.rhs)
+		tailName -> plusTailValueEvaluationOrNull(field.rhs)
+		textName -> plusTextValueEvaluationOrNull(field.rhs)
+		valueName -> plusValueValueEvaluationOrNull(field.rhs)
+		else -> null
 	}
 
 fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, take).bind { setEvaluation(it) }
 
-fun Evaluator.plusTextValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusTextValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }.let {
 		rhs.valueOrNull?.resolvePrefixOrNull { name, content ->
 			when (name) {
@@ -140,8 +140,7 @@ fun Evaluator.plusTextValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
 				else -> null
 			}
 		}
-	}
-		.evaluation
+	}?.evaluation
 
 fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(be.syntax).bind { setEvaluation(it) }
@@ -180,17 +179,17 @@ fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") debug: Debug): Evalua
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
 	dictionary.applyEvaluation(value, binder(doing(body(do_.block)))).bind { setEvaluation(it) }
 
-fun Evaluator.plusContentValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusContentValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.run {
-		rhs.valueOrNull?.structureOrNull?.value.evaluation
-	}	?: evaluation(null)
+		rhs.valueOrNull?.structureOrNull?.value?.evaluation
+	}
 
-fun Evaluator.plusEvaluateValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusEvaluateValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
 		rhs.valueOrNull?.let { value ->
 			dictionary.valueEvaluation(value.script.syntax)
 		}
-	}?:evaluation(null)
+	}
 
 fun Evaluator.plusEvaluation(example: Example): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(example.syntax).bind { evaluation }
@@ -223,9 +222,9 @@ fun Evaluator.plusValueEvaluation(syntaxField: SyntaxField): Evaluation<Value> =
 	}
 
 fun Evaluator.plusValueEvaluation(field: Field): Evaluation<Value> =
-	plusDynamicValueOrNullEvaluation(field).or {
-		plusResolveValueEvaluation(field)
-	}
+	null
+		?: plusDynamicValueOrNullEvaluation(field)
+		?: plusResolveValueEvaluation(field)
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
 	dictionary.definitionEvaluation(let).map { plus(it) }
@@ -236,25 +235,25 @@ fun Evaluator.plusEvaluation(repeat: Repeat): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(doing: Doing): Evaluation<Evaluator> =
 	plusResolveEvaluation(field(dictionary.function(binder(doing(body(doing.block))))))
 
-fun Evaluator.plusHashValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusHashValueEvaluationEvaluation(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
-		rhs.valueOrNull?.hashValue.evaluation
-	}?: evaluation(null)
+		rhs.valueOrNull?.hashValue?.evaluation
+	}
 
-fun Evaluator.plusHeadValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusHeadValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
 		rhs.valueOrNull?.linkOrNull?.field?.let { value(it).evaluation }
-	}?: evaluation(null)
+	}
 
-fun Evaluator.plusTailValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusTailValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
-		rhs.valueOrNull?.linkOrNull?.value.evaluation
-	}?: evaluation(null)
+		rhs.valueOrNull?.linkOrNull?.value?.evaluation
+	}
 
-fun Evaluator.plusPrintValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusPrintValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
 		rhs.valueOrNull?.also { it.script.print }?.evaluation
-	}?: evaluation(null)
+	}
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
 	setEvaluation(value.script.value.plus(quote.script.value))
@@ -331,13 +330,12 @@ fun Evaluator.plusEvaluation(recurse: Recurse): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(recursive: Recursive): Evaluation<Evaluator> =
 	dictionary.recursiveEvaluation(recursive.syntax).map { plus(definition(it)) }
 
-fun Evaluator.plusValueValueOrNullEvaluation(rhs: Rhs): Evaluation<Value?> =
+fun Evaluator.plusValueValueEvaluationOrNull(rhs: Rhs): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
 		rhs.valueOrNull?.textOrNull?.let { text ->
 			value(valueName fieldTo text.scriptOrThrow.value)
 		}
-	}
-		.evaluation
+	}?.evaluation
 
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, with).bind { setEvaluation(it) }
