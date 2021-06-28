@@ -1,7 +1,7 @@
 # LeoScript
 
 ### Installation
-* download the latest release from [here](https://github.com/micapolos/leo-script/releases) (look for `leo.zip`),
+* download the latest release from [here](https://github.com/micapolos/leo-script/releases) (look for `leo.zip` in Assets),
 * extract to any location,
 * add `leo/bin` to your `$PATH`.
 
