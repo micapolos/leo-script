@@ -2,6 +2,7 @@ package leo
 
 import leo.base.assertEqualTo
 import leo.base.assertNotNull
+import leo.base.assertSameAfter
 import leo.base.assertTrue
 import leo.natives.appendName
 import leo.natives.minusName
@@ -196,20 +197,11 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun give_error() {
+	fun give_notFunction() {
 		script(
 			"foo" lineTo script(),
-			giveName lineTo script("bar")
-		)
-			.evaluate
-			.assertEqualTo(
-				script(
-					errorName lineTo script(
-						"foo" lineTo script(),
-						isName lineTo script(notName lineTo script(doingName))
-					)
-				)
-			)
+			giveName lineTo script("bar"))
+			.assertSameAfter { evaluate }
 	}
 
 	@Test

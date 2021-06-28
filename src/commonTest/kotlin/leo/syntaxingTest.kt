@@ -237,7 +237,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(give(syntax("x" lineTo syntax())))))
+					giveName lineTo syntax("x" lineTo syntax())))
 	}
 
 	@Test
@@ -494,7 +494,7 @@ class SyntaxCompilationTest {
 			.assertEqualTo(
 				syntax(
 					syntaxLine("point"),
-					line(take(syntax("x" lineTo syntax())))))
+					takeName lineTo syntax("x" lineTo syntax())))
 	}
 
 	@Test

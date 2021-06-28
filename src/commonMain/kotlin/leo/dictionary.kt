@@ -202,19 +202,11 @@ fun Dictionary.unitEvaluation(test: Test): Evaluation<Unit> =
 		}
 	}
 
-fun Dictionary.valueEvaluation(value: Value, give: Give): Evaluation<Value> =
-	value.functionOrThrow.evaluation.bind { doing ->
-		valueEvaluation(give.syntax).bind { given ->
-			doing.giveEvaluation(given)
-		}
-	}
+fun Dictionary.giveValueEvaluationOrNull(value: Value, giveValue: Value): Evaluation<Value>? =
+	value.functionOrNull?.giveEvaluation(giveValue)
 
-fun Dictionary.valueEvaluation(value: Value, take: Take): Evaluation<Value> =
-	valueEvaluation(take.syntax).bind { taken ->
-		taken.functionOrThrow.evaluation.bind { doing ->
-			doing.giveEvaluation(value)
-		}
-	}
+fun Dictionary.takeValueEvaluationOrNull(value: Value, takeValue: Value): Evaluation<Value>? =
+	takeValue.functionOrNull?.giveEvaluation(value)
 
 fun Dictionary.definitionEvaluation(let: Let): Evaluation<Definition> =
 	valueEvaluation(let.syntax).bind { letValue ->

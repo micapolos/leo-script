@@ -85,7 +85,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is ExampleSyntaxLine -> plusEvaluation(line.example)
 		is FailSyntaxLine -> plusEvaluation(line.fail)
 		is GetSyntaxLine -> plusEvaluation(line.get)
-		is GiveSyntaxLine -> plusEvaluation(line.give)
+		//is GiveSyntaxLine -> plusEvaluation(line.give)
 		is HelpSyntaxLine -> plusEvaluation(line.help)
 		is IsSyntaxLine -> plusEvaluation(line.is_)
 		is LetSyntaxLine -> plusEvaluation(line.let)
@@ -98,7 +98,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> plusEvaluation(line.set)
 		is SwitchSyntaxLine -> plusEvaluation(line.switch)
-		is TakeSyntaxLine -> plusEvaluation(line.take)
+		//is TakeSyntaxLine -> plusEvaluation(line.take)
 		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
@@ -120,18 +120,20 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 		when (field.name) {
 			contentName -> plusContentValueEvaluationOrNull(rhs)
 			evaluateName -> plusEvaluateValueEvaluationOrNull(rhs)
+			giveName -> plusGiveValueEvaluationOrNull(rhs)
 			hashName -> plusHashValueEvaluationEvaluation(rhs)
 			headName -> plusHeadValueEvaluationOrNull(rhs)
 			printName -> plusPrintValueEvaluationOrNull(rhs)
 			tailName -> plusTailValueEvaluationOrNull(rhs)
+			takeName -> plusTakeValueEvaluationOrNull(rhs)
 			textName -> plusTextValueEvaluationOrNull(rhs)
 			valueName -> plusValueValueEvaluationOrNull(rhs)
 			else -> null
 		}
 	}
 
-fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, take).bind { setEvaluation(it) }
+fun Evaluator.plusTakeValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
+	dictionary.takeValueEvaluationOrNull(value, rhs)
 
 fun Evaluator.plusTextValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }.let {
@@ -206,8 +208,8 @@ fun Evaluator.plusEvaluation(test: Test): Evaluation<Evaluator> =
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
 	setEvaluation(value.apply(get))
 
-fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(value, give).bind { setEvaluation(it) }
+fun Evaluator.plusGiveValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
+	dictionary.giveValueEvaluationOrNull(value, rhs)
 
 fun Evaluator.plusEvaluation(@Suppress("UNUSED_PARAMETER") help: Help): Evaluation<Evaluator> =
 	throw DebugError(value.plus(script(helpScriptLine).value).script)

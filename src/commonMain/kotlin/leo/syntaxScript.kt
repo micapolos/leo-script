@@ -27,7 +27,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is ExampleSyntaxLine -> exampleName lineTo example.script
 		is FailSyntaxLine -> failName lineTo fail.script
 		is GetSyntaxLine -> getName lineTo get.script
-		is GiveSyntaxLine -> giveName lineTo give.script
+//		is GiveSyntaxLine -> giveName lineTo give.script
 		is HelpSyntaxLine -> helpName lineTo help.script
 		is IsSyntaxLine -> isName lineTo is_.script
 		is LetSyntaxLine -> letName lineTo let.script
@@ -40,7 +40,7 @@ val SyntaxLine.scriptLine: ScriptLine get() =
 		is RecursiveSyntaxLine -> recursiveName lineTo recursive.script
 		is SetSyntaxLine -> setName lineTo set.script
 		is SwitchSyntaxLine -> switchName lineTo switch.script
-		is TakeSyntaxLine -> takeName lineTo take.script
+//		is TakeSyntaxLine -> takeName lineTo take.script
 		is TestSyntaxLine -> testName lineTo test.script
 		is TrySyntaxLine -> tryName lineTo try_.script
 		is UpdateSyntaxLine -> updateName lineTo update.script
