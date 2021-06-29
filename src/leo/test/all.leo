@@ -17,6 +17,7 @@ use test get
 use test give
 use test given
 use test hash
+use test have
 use test head
 use test help
 use test is
