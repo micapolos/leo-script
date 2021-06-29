@@ -6,15 +6,18 @@ sealed class Binder
 data class ApplyingBinder(val applying: BodyApplying): Binder()
 data class BeingBinder(val being: ValueBeing): Binder()
 data class DoingBinder(val doing: BodyDoing): Binder()
+data class HavingBinder(val having: ValueHaving): Binder()
 data class CombiningBinder(val combining: BodyCombining): Binder()
 
 data class BodyApplying(val body: Body)
 data class ValueBeing(val value: Value)
 data class BodyDoing(val body: Body)
+data class ValueHaving(val value: Value)
 data class BodyCombining(val body: Body)
 
 fun binder(being: ValueBeing): Binder = BeingBinder(being)
 fun binder(doing: BodyDoing): Binder = DoingBinder(doing)
+fun binder(having: ValueHaving): Binder = HavingBinder(having)
 fun binder(applying: BodyApplying): Binder = ApplyingBinder(applying)
 fun binder(combining: BodyCombining): Binder = CombiningBinder(combining)
 
@@ -22,6 +25,7 @@ fun being(value: Value) = ValueBeing(value)
 fun applying(body: Body) = BodyApplying(body)
 fun combiningWith(body: Body) = BodyCombining(body)
 fun doing(body: Body) = BodyDoing(body)
+fun having(value: Value) = ValueHaving(value)
 
 fun Dictionary.function(binder: Binder): Function = Function(this, binder)
 
@@ -33,6 +37,7 @@ val Binder.name get() =
 		is ApplyingBinder -> applyingName
 		is BeingBinder -> beingName
 		is DoingBinder -> doingName
+		is HavingBinder -> havingName
 		is CombiningBinder -> combiningName
 	}
 
@@ -42,4 +47,5 @@ val Binder.letName get() =
 		is BeingBinder -> beName
 		is DoingBinder -> doName
 		is CombiningBinder -> combineName
+		is HavingBinder -> haveName
 	}

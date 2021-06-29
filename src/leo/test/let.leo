@@ -37,6 +37,13 @@ test
 
 test
   let
+    circle
+    have color red
+  circle
+  is equal to circle color red
+
+test
+  let
     any.number.factorial
     do recursing
       factorial.number

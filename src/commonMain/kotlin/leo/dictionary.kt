@@ -51,6 +51,7 @@ fun Dictionary.applyEvaluation(value: Value, binder: Binder): Evaluation<Value> 
 		is BeingBinder -> binder.being.value.evaluation
 		is CombiningBinder -> applyEvaluation(value, binder.combining.body)
 		is DoingBinder -> plus(value).applyEvaluation(value(), binder.doing.body)
+		is HavingBinder -> value.have(binder.having.value).evaluation
 	}
 
 fun Dictionary.applyEvaluation(value: Value, body: Body): Evaluation<Value> =
@@ -131,6 +132,7 @@ fun Dictionary.bindingEvaluation(rhs: LetRhs): Evaluation<Binding> =
 	when (rhs) {
 		is BeLetRhs -> bindingEvaluation(rhs.be)
 		is DoLetRhs -> bindingEvaluation(rhs.do_)
+		is HaveLetRhs -> bindingEvaluation(rhs.have)
 		is ApplyLetRhs -> bindingEvaluation(rhs.apply)
 	}
 
@@ -139,6 +141,9 @@ fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
 	binding(binder(doing(body(do_.block)))).evaluation
+
+fun Dictionary.bindingEvaluation(have: Have): Evaluation<Binding> =
+	valueEvaluation(have.syntax).map { binding(binder(having(it))) }
 
 fun Dictionary.bindingEvaluation(apply: Apply): Evaluation<Binding> =
 	binding(binder(applying(body(apply.block)))).evaluation

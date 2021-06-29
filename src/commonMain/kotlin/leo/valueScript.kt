@@ -44,6 +44,7 @@ val Binder.script: Script get() =
 		is BeingBinder -> being.script
 		is CombiningBinder -> combining.script
 		is DoingBinder -> doing.script
+		is HavingBinder -> having.script
 	}
 
 val Binder.scriptLine: ScriptLine get() =
@@ -57,6 +58,10 @@ val BodyDoing.script: Script
 		body.script
 
 val ValueBeing.script: Script
+	get() =
+		value.script
+
+val ValueHaving.script: Script
 	get() =
 		value.script
 

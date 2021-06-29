@@ -205,7 +205,7 @@ fun Evaluator.plusEvaluateValueEvaluationOrNull(rhs: Value): Evaluation<Value>? 
 		dictionary.valueEvaluation(rhs.script.syntax)
 	}
 
-fun Evaluator.plusExampleValueEvaluationOrNull(exampleValue: Value): Evaluation<Value> =
+fun Evaluator.plusExampleValueEvaluationOrNull(@Suppress("UNUSED_PARAMETER") exampleValue: Value): Evaluation<Value> =
 	value.evaluation
 
 fun Evaluator.plusFailValueEvaluationOrNull(failValue: Value): Evaluation<Value>? =
@@ -266,7 +266,7 @@ fun Evaluator.plusTailValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 
 fun Evaluator.plusPrintValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let {
-		rhs.also { it.script.print }?.evaluation
+		rhs.also { it.script.print }.evaluation
 	}
 
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =

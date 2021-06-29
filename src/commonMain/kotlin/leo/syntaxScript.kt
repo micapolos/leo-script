@@ -64,6 +64,7 @@ val Example.script get() = syntax.script
 val Fail.script get() = syntax.script
 val Get.script get() = script().fold(nameStack) { script(it lineTo this) }
 val Give.script get() = syntax.script
+val Have.script get() = syntax.script
 val Not.script get() = syntax.script
 val Let.script get() = syntax.script.plus(rhs.scriptLine)
 val Load.script get() = script().fold(stack(nameStackLink)) { script(it lineTo this) }
@@ -86,9 +87,10 @@ val SyntaxField.scriptLine get() = name lineTo rhsSyntax.script
 
 val LetRhs.scriptLine get() =
 	when (this) {
+		is ApplyLetRhs -> applyName lineTo apply.script
 		is BeLetRhs -> beName lineTo be.script
 		is DoLetRhs -> doName lineTo do_.script
-		is ApplyLetRhs -> applyName lineTo apply.script
+		is HaveLetRhs -> haveName lineTo have.script
 	}
 
 val Block.script get() =

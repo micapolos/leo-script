@@ -166,6 +166,9 @@ val Script.debugSyntaxing: Syntaxing<Debug> get() =
 val Script.doSyntaxing: Syntaxing<Do> get() =
 	blockSyntaxing.map(::do_)
 
+val Script.haveSyntaxing: Syntaxing<Have> get() =
+	syntaxSyntaxing.map(::have)
+
 val Script.doingSyntaxingOrNull: Syntaxing<Doing>? get() =
 	notNullIf(!isEmpty && !equals(script(anyName))) {
 		blockSyntaxing.map(::doing)
@@ -192,6 +195,7 @@ val Script.letSyntaxing: Syntaxing<Let> get() =
 			when (name) {
 				beName -> rhs.beSyntaxing.map { let(lhsValue, it) }
 				doName -> rhs.doSyntaxing.map { let(lhsValue, it) }
+				haveName -> rhs.haveSyntaxing.map { let(lhsValue, it) }
 				applyName -> rhs.applySyntaxing.map { let(lhsValue, it) }
 				else -> value(syntaxName fieldTo value(letName fieldTo value)).throwError()
 			}
