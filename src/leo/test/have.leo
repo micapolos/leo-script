@@ -8,6 +8,11 @@ test
 
 test
   color
+  have
+  is equal to color
+
+test
+  color
   have red
   is equal to color red
 
