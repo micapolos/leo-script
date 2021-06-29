@@ -3,6 +3,8 @@ comment
     imports definitions
     from the given file
 
+use test used
+
 test
   use test used
   ping
