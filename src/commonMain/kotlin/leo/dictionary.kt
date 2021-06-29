@@ -17,31 +17,32 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
-fun Dictionary.switchEvaluation(field: Field, cases: Value): Evaluation<Value> =
+
+fun Dictionary.selectEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
-		EmptyValue -> value(switchName).throwError()
-		is LinkValue -> switchEvaluation(field, cases.link)
+		EmptyValue -> value(selectName).throwError()
+		is LinkValue -> selectEvaluation(field, cases.link)
 	}
 
-fun Dictionary.switchEvaluation(field: Field, link: Link): Evaluation<Value> =
-	switchOrNullEvaluation(field, link.field).or {
-		switchEvaluation(field, link.value)
+fun Dictionary.selectEvaluation(field: Field, link: Link): Evaluation<Value> =
+	selectOrNullEvaluation(field, link.field).or {
+		selectEvaluation(field, link.value)
 	}
 
-fun switchOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
+fun selectOrNullEvaluation(field: Field, case: Field): Evaluation<Value?> =
 	ifOrNull(field.name == case.name) {
 		value(case).nativeValue(doingName).functionOrThrow.giveEvaluation(value(field))
 	} ?: evaluation(null)
 
-fun Dictionary.evaluation(value: Value, switch: Switch): Evaluation<Value> =
-	value.switchFieldOrThrow.let { field ->
-		nullOf<Value>().evaluation.foldStateful(switch.caseSeq) { case ->
+fun Dictionary.evaluation(value: Value, select: Select): Evaluation<Value> =
+	value.selectFieldOrThrow.let { field ->
+		nullOf<Value>().evaluation.foldStateful(select.caseSeq) { case ->
 			if (this != null || field.name != case.name) evaluation
 			else valueEvaluation(case.syntax).bind { caseValue ->
 				caseValue.functionOrThrow.giveEvaluation(value(field))
 			}
 		}.map { valueOrNull ->
-			valueOrNull.notNullOrThrow { value(switchName) }
+			valueOrNull.notNullOrThrow { value(selectName) }
 		}
 	}
 

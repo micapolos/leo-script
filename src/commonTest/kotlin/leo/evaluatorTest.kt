@@ -296,10 +296,10 @@ class EvaluatorTest {
 	}
 
 	@Test
-	fun switch() {
+	fun select() {
 		script(
 			"the" lineTo script(literal("Hello, ")),
-			switchName lineTo script(
+			selectName lineTo script(
 				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
 				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
 			)
@@ -309,7 +309,7 @@ class EvaluatorTest {
 
 		script(
 			"the" lineTo script(literal(1)),
-			switchName lineTo script(
+			selectName lineTo script(
 				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
 				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
 			)
@@ -325,7 +325,7 @@ class EvaluatorTest {
 			doName lineTo script(
 				recursingName lineTo script(
 					"number" lineTo script(),
-					switchName lineTo script(
+					selectName lineTo script(
 						"zero" lineTo script(doingName lineTo script(line(literal("OK")))),
 						"one" lineTo script(
 							doingName lineTo script(
@@ -1023,7 +1023,7 @@ class EvaluatorTest {
 		script(
 			"the" lineTo script("continue"),
 			repeatName lineTo script(
-				switchName lineTo script(
+				selectName lineTo script(
 					"finish" lineTo script(applyingName lineTo script(
 						endName lineTo script("done")
 					)),
@@ -1156,7 +1156,7 @@ class EvaluatorTest {
 								toName lineTo script(literal(0))
 							)
 						),
-						switchName lineTo script(
+						selectName lineTo script(
 							yesName lineTo script(applyingName lineTo script(numberName)),
 							noName lineTo script(
 								applyingName lineTo script(
@@ -1181,7 +1181,7 @@ class EvaluatorTest {
 								toName lineTo script(literal(0))
 							)
 						),
-						switchName lineTo script(
+						selectName lineTo script(
 							yesName lineTo script(applyingName lineTo script(numberName)),
 							noName lineTo script(
 								applyingName lineTo script(

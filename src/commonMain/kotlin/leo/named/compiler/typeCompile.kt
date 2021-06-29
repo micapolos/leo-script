@@ -27,8 +27,8 @@ import leo.ofName
 import leo.onlyLineOrNull
 import leo.plus
 import leo.script
+import leo.selectName
 import leo.structureOrNull
-import leo.switchName
 import leo.throwScriptIfNull
 import leo.toName
 
@@ -83,6 +83,6 @@ fun checkType(typeStack: Stack<Type>): Type =
 		?.let { it.head.orNullIf(it.tail.any { this != it.head }) }
 		.throwScriptIfNull { script("type stack check") }
 
-val Type.switchChoice: TypeChoice get() =
+val Type.selectChoice: TypeChoice get() =
 	onlyLineOrNull?.atom?.fieldOrNull?.rhsType?.choiceOrNull
-		.throwScriptIfNull { script.plus(switchName lineTo script(choiceName)) }
+		.throwScriptIfNull { script.plus(selectName lineTo script(choiceName)) }

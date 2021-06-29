@@ -100,7 +100,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is RecursiveSyntaxLine -> plusEvaluation(line.recursive)
 		is QuoteSyntaxLine -> plusEvaluation(line.quote)
 		is SetSyntaxLine -> plusEvaluation(line.set)
-		is SwitchSyntaxLine -> plusEvaluation(line.switch)
+		is SelectSyntaxLine -> plusEvaluation(line.select)
 		//is TakeSyntaxLine -> plusEvaluation(line.take)
 		is TestSyntaxLine -> plusEvaluation(line.test)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
@@ -272,8 +272,8 @@ fun Evaluator.plusPrintValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 fun Evaluator.plusEvaluation(quote: Quote): Evaluation<Evaluator> =
 	setEvaluation(value.script.value.plus(quote.script.value))
 
-fun Evaluator.plusEvaluation(switch: Switch): Evaluation<Evaluator> =
-	dictionary.evaluation(value, switch).bind { setEvaluation(it) }
+fun Evaluator.plusEvaluation(select: Select): Evaluation<Evaluator> =
+	dictionary.evaluation(value, select).bind { setEvaluation(it) }
 
 fun Evaluator.plusEvaluation(try_: Try): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, try_).bind { setEvaluation(it) }

@@ -67,7 +67,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		recursiveName -> rhs.recursiveSyntaxing.map(::line)
 		quoteName -> rhs.quoteSyntaxing.map(::line)
 		setName -> rhs.setSyntaxing.map(::line)
-		switchName -> rhs.switchSyntaxing.map(::line)
+		selectName -> rhs.selectSyntaxing.map(::line)
 //		takeName -> rhs.takeSyntaxing.map(::line)
 		testName -> rhs.testSyntaxing.map(::line)
 		tryName -> rhs.trySyntaxing.map(::line)
@@ -96,8 +96,8 @@ val ScriptLine.specialNumberScriptLineOrNull: SyntaxLine? get() =
 val Literal.syntaxLineSyntaxing: Syntaxing<SyntaxAtom> get() =
 	syntaxAtom(this).syntaxing
 
-val Script.switchSyntaxing: Syntaxing<Switch> get() =
-	lineStack.map { caseSyntaxing }.flat.map(::Switch)
+val Script.selectSyntaxing: Syntaxing<Select> get() =
+	lineStack.map { caseSyntaxing }.flat.map(::Select)
 
 val ScriptLine.caseSyntaxing: Syntaxing<Case> get() =
 	when (this) {

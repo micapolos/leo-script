@@ -34,7 +34,7 @@ data class RecursiveSyntaxLine(val recursive: Recursive): SyntaxLine()
 data class RepeatSyntaxLine(val repeat: Repeat): SyntaxLine()
 data class QuoteSyntaxLine(val quote: Quote): SyntaxLine()
 data class SetSyntaxLine(val set: Set): SyntaxLine()
-data class SwitchSyntaxLine(val switch: Switch): SyntaxLine()
+data class SelectSyntaxLine(val select: Select): SyntaxLine()
 //data class TakeSyntaxLine(val take: Take): SyntaxLine()
 data class TestSyntaxLine(val test: Test): SyntaxLine()
 data class TrySyntaxLine(val try_: Try): SyntaxLine()
@@ -48,7 +48,7 @@ sealed class SyntaxAtom
 data class FieldSyntaxAtom(val field: SyntaxField): SyntaxAtom()
 data class LiteralSyntaxAtom(val literal: Literal): SyntaxAtom()
 
-data class Switch(val caseStack: Stack<Case>)
+data class Select(val caseStack: Stack<Case>)
 data class Case(val name: String, val syntax: Syntax)
 
 @kotlin.jvm.JvmInline value class Apply(val block: Block)
@@ -107,13 +107,13 @@ data class MatchingIsRhs(val matching: Matching): IsRhs()
 val Get.nameSeq get() = nameStack.reverse.seq
 val Syntax.lineSeq get() = lineStack.reverse.seq
 val Set.atomSeq get() = atomStack.reverse.seq
-val Switch.caseSeq get() = caseStack.reverse.seq
+val Select.caseSeq get() = caseStack.reverse.seq
 val Update.fieldSeq get() = fieldStack.reverse.seq
 
 fun syntax(name: String) = syntax(name lineTo syntax())
 fun syntax(vararg syntaxLines: SyntaxLine): Syntax = Syntax(stack(*syntaxLines))
 fun Syntax.plus(line: SyntaxLine): Syntax = Syntax(lineStack.push(line))
-fun switch(vararg cases: Case): Switch = Switch(stack(*cases))
+fun select(vararg cases: Case): Select = Select(stack(*cases))
 
 fun syntaxLine(name: String) = name lineTo syntax()
 infix fun String.lineTo(syntax: Syntax) = line(atom(this fieldTo syntax))
@@ -146,7 +146,7 @@ fun line(repeat: Repeat): SyntaxLine = RepeatSyntaxLine(repeat)
 fun syntaxLine(literal: Literal): SyntaxLine = line(syntaxAtom(literal))
 fun line(atom: SyntaxAtom): SyntaxLine = AtomSyntaxLine(atom)
 fun line(matching: Matching): SyntaxLine = MatchingSyntaxLine(matching)
-fun line(switch: Switch): SyntaxLine = SwitchSyntaxLine(switch)
+fun line(select: Select): SyntaxLine = SelectSyntaxLine(select)
 fun line(private: Private): SyntaxLine = PrivateSyntaxLine(private)
 fun line(recurse: Recurse): SyntaxLine = RecurseSyntaxLine(recurse)
 fun line(recursive: Recursive): SyntaxLine = RecursiveSyntaxLine(recursive)

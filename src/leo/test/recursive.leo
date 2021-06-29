@@ -8,7 +8,7 @@ test
     do
       countdown.number
       check equal to 0
-      switch
+      select
         yes applying number
         no applying
           number

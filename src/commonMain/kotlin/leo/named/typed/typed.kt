@@ -20,7 +20,7 @@ import leo.named.compiler.check
 import leo.named.compiler.checkType
 import leo.named.compiler.compileDoing
 import leo.named.compiler.get
-import leo.named.compiler.switchChoice
+import leo.named.compiler.selectChoice
 import leo.named.expression.Case
 import leo.named.expression.Expression
 import leo.named.expression.Field
@@ -37,7 +37,7 @@ import leo.named.expression.give
 import leo.named.expression.line
 import leo.named.expression.lineTo
 import leo.named.expression.plus
-import leo.named.expression.switch
+import leo.named.expression.select
 import leo.named.expression.take
 import leo.named.expression.with
 import leo.plus
@@ -100,8 +100,8 @@ fun TypedExpression.take(typedExpression: TypedExpression): TypedExpression =
 		}
 	}
 
-fun TypedExpression.switch(casesStack: Stack<TypedCase>): TypedExpression =
-	zip(type.switchChoice.lineStack, casesStack)
+fun TypedExpression.select(casesStack: Stack<TypedCase>): TypedExpression =
+	zip(type.selectChoice.lineStack, casesStack)
 		.map {
 			let { (first, second) ->
 				if (first == null) error("exhausted")
@@ -114,7 +114,7 @@ fun TypedExpression.switch(casesStack: Stack<TypedCase>): TypedExpression =
 		.run { if (!this) error("dupa") }
 		.run {
 			checkType(casesStack.map { type }).let { type ->
-				typed(expression.switch(casesStack.map { case }), type)
+				typed(expression.select(casesStack.map { case }), type)
 			}
 		}
 

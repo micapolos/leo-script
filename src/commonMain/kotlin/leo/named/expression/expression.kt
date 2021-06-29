@@ -35,7 +35,7 @@ data class LetLine(val let: Let): Line() { override fun toString() = super.toStr
 data class MakeLine(val make: Make): Line() { override fun toString() = super.toString() }
 data class PrivateLine(val private: Private): Line() { override fun toString() = super.toString() }
 data class RecursiveLine(val recursive: Recursive): Line() { override fun toString() = super.toString() }
-data class SwitchLine(val switch: Switch): Line() { override fun toString() = super.toString() }
+data class SwitchLine(val select: Select): Line() { override fun toString() = super.toString() }
 data class TakeLine(val take: Take): Line() { override fun toString() = super.toString() }
 data class WithLine(val with: With): Line() { override fun toString() = super.toString() }
 
@@ -53,7 +53,7 @@ data class Let(val type: Type, val rhs: LetRhs) { override fun toString() = scri
 data class Make(val name: String) { override fun toString() = scriptLine.toString() }
 data class Private(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class Recursive(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Switch(val cases: Stack<Case>) { override fun toString() = scriptLine.toString() }
+data class Select(val cases: Stack<Case>) { override fun toString() = scriptLine.toString() }
 data class Take(val expression: Expression) { override fun toString() = scriptLine.toString() }
 data class With(val expression: Expression) { override fun toString() = scriptLine.toString() }
 
@@ -80,7 +80,7 @@ fun line(make: Make): Line = MakeLine(make)
 fun line(invoke: Invoke): Line = InvokeLine(invoke)
 fun line(private: Private): Line = PrivateLine(private)
 fun line(recursive: Recursive): Line = RecursiveLine(recursive)
-fun line(switch: Switch): Line = SwitchLine(switch)
+fun line(select: Select): Line = SwitchLine(select)
 fun line(take: Take): Line = TakeLine(take)
 fun line(with: With): Line = WithLine(with)
 
@@ -108,8 +108,8 @@ fun let(type: Type, rhs: LetRhs) = Let(type, rhs)
 fun make(name: String) = Make(name)
 fun private(expression: Expression) = Private(expression)
 fun recursive(expression: Expression) = Recursive(expression)
-fun switch(cases: Stack<Case>) = Switch(cases)
-fun switch(vararg cases: Case) = Switch(stack(*cases))
+fun select(cases: Stack<Case>) = Select(cases)
+fun select(vararg cases: Case) = Select(stack(*cases))
 fun take(expression: Expression) = Take(expression)
 fun with(rhs: Expression) = With(rhs)
 
@@ -119,8 +119,8 @@ fun rhs(do_: Do): LetRhs = DoLetRhs(do_)
 fun function(type: Type, expression: Expression) = function(type, doing(expression))
 fun function(type: Type, fn: Dictionary.() -> Value) = function(type, doing(fn))
 
-fun Switch.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
-fun Switch.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
+fun Select.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
+fun Select.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
 fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == name) { expression }
 
 val Expression.lineSeq get() = lineStack.reverse.seq
@@ -132,13 +132,13 @@ fun Expression.bind(expression: Expression): Expression = plus(line(leo.named.ex
 fun Expression.make(name: String): Expression = plus(line(leo.named.expression.make(name)))
 fun Expression.invoke(type: Type): Expression = plus(line(leo.named.expression.invoke(type)))
 fun Expression.isEqualTo(expression: Expression): Expression = plus(line(equals_(expression)))
-val Expression.negate: Expression get() = plus(line(switch(
+val Expression.negate: Expression get() = plus(line(select(
 	yesName caseTo isNoExpression,
 	noName caseTo isYesExpression)))
 infix fun Type.lineTo(doing: Doing): Line = line(function(this, doing))
 
 fun Expression.get(name: String): Expression = plus(line(leo.named.expression.get(name)))
-fun Expression.switch(caseStack: Stack<Case>) = plus(line(Switch(caseStack)))
+fun Expression.select(caseStack: Stack<Case>) = plus(line(Select(caseStack)))
 
 val Int.numberExpressionLine get() = expressionLine(literal(this))
 val String.textExpressionLine get() = expressionLine(literal(this))

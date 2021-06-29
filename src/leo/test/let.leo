@@ -48,7 +48,7 @@ test
     do recursing
       factorial.number
       is equal to 1
-      switch
+      select
         yes doing factorial.number
         no doing
           factorial.number

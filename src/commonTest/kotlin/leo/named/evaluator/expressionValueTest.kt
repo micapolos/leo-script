@@ -252,11 +252,11 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun switch() {
+	fun select() {
 		expression(
 			"id" lineTo 10.numberExpression,
 			line(
-				leo.named.expression.switch(
+				leo.named.expression.select(
 					numberName caseTo expression(line(invoke(type(numberName)))),
 					textName caseTo expression(line(invoke(type(textName)))))))
 			.value
@@ -265,7 +265,7 @@ class EvaluateTest {
 		expression(
 			"id" lineTo "foo".textExpression,
 			line(
-				leo.named.expression.switch(
+				leo.named.expression.select(
 					numberName caseTo expression(line(invoke(type(numberName)))),
 					textName caseTo expression(line(invoke(type(textName)))))))
 			.value

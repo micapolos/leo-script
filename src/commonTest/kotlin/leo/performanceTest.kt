@@ -15,7 +15,7 @@ class PerformanceTest {
 					equalName lineTo script(
 						toName lineTo script(
 							line(literal(0))))),
-				switchName lineTo script(
+				selectName lineTo script(
 					yesName lineTo script(
 						applyingName lineTo script(
 							numberName lineTo script(),

@@ -55,7 +55,7 @@ import leo.named.typed.name
 import leo.named.typed.plus
 import leo.named.typed.reflectTypedExpression
 import leo.named.typed.rhs
-import leo.named.typed.switch
+import leo.named.typed.select
 import leo.named.typed.typed
 import leo.named.typed.typedExpression
 import leo.named.typed.typedLine
@@ -69,9 +69,9 @@ import leo.quoteName
 import leo.recursiveName
 import leo.reverse
 import leo.script
+import leo.selectName
 import leo.seq
 import leo.stateful
-import leo.switchName
 import leo.takeName
 import leo.takingName
 import leo.theName
@@ -139,7 +139,7 @@ fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<
 		privateName -> plusPrivateCompilation(scriptField.rhs)
 		quoteName -> plusQuoteCompilation(scriptField.rhs)
 		recursiveName -> plusRecursiveCompilation(scriptField.rhs)
-		switchName -> plusSwitchCompilation(scriptField.rhs)
+		selectName -> plusSelectCompilation(scriptField.rhs)
 		takeName -> plusTakeCompilation(scriptField.rhs)
 		theName -> plusTheCompilation(scriptField.rhs)
 		typeName -> plusTypeCompilationOrNull(scriptField.rhs)
@@ -303,16 +303,16 @@ fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") script: Scri
 fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") scriptLine: ScriptLine): Compilation<Compiler> =
 	TODO()
 
-fun Compiler.plusSwitchCompilation(script: Script): Compilation<Compiler> =
-	childContext.switchCompilation(typedExpression, script).map { set(it) }
+fun Compiler.plusSelectCompilation(script: Script): Compilation<Compiler> =
+	childContext.selectCompilation(typedExpression, script).map { set(it) }
 
-fun Context.switchCompilation(typedExpression: TypedExpression, script: Script): Compilation<TypedExpression> =
+fun Context.selectCompilation(typedExpression: TypedExpression, script: Script): Compilation<TypedExpression> =
 	typedExpression.choice.let { typedChoice ->
 		zip(typedChoice.typeChoice.lineStack, script.lineStack)
 			.map { typedCaseCompilation(first!!, second!!.compileField)
 			}
 			.flat
-			.map { typedExpression.switch(it) }
+			.map { typedExpression.select(it) }
 	}
 
 fun Context.typedCaseCompilation(caseLine: TypeLine, scriptField: ScriptField): Compilation<TypedCase> =

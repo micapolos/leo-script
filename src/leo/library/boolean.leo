@@ -2,7 +2,7 @@ define
   any.boolean.negate
   does
     boolean
-    switch
+    select
       false be true.boolean
       true be false.boolean
 
@@ -19,7 +19,7 @@ define
   and any.boolean
   does bind
     boolean
-    switch
+    select
       true be and.boolean
       false be false.boolean
 
@@ -48,7 +48,7 @@ define
   or any.boolean
   does bind
     boolean
-    switch
+    select
       false be or.boolean
       true be true.boolean
 
