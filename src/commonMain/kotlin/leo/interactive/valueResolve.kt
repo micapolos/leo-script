@@ -8,6 +8,7 @@ import leo.contentName
 import leo.contentOrNull
 import leo.field
 import leo.fieldSeq
+import leo.getOrNull
 import leo.isEmpty
 import leo.literal
 import leo.nameOrNull
@@ -30,6 +31,14 @@ val Value.resolveOrNull: Value? get() =
 		?: onlyFieldOrNull?.resolveValueOrNull
 
 val Field.resolveValueOrNull: Value? get() =
+	null
+		?: resolveGetOrNull
+		?: resolveCommandOrNull
+
+val Field.resolveGetOrNull: Value? get() =
+	rhs.valueOrNull?.getOrNull(name)
+
+val Field.resolveCommandOrNull: Value? get() =
 	when (name) {
 		contentName -> rhs.valueOrNull?.contentOrNull
 		else -> null

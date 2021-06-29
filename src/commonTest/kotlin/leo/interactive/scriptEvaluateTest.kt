@@ -102,6 +102,32 @@ class ScriptEvaluateTest {
 	}
 
 	@Test
+	fun get() {
+		script(
+			"x" lineTo script(
+				"point" lineTo script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20)))))
+			.evaluate
+			.assertEqualTo(script("x" lineTo script(literal(10))))
+
+		script(
+			"y" lineTo script(
+				"point" lineTo script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20)))))
+			.evaluate
+			.assertEqualTo(script("y" lineTo script(literal(20))))
+
+		script(
+			"z" lineTo script(
+				"point" lineTo script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20)))))
+			.assertSameAfter { evaluate }
+	}
+
+	@Test
 	fun textAppendText() {
 		script(
 			line(literal("Hello, ")),
