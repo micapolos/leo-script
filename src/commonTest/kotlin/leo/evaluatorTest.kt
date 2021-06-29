@@ -398,6 +398,16 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun have() {
+		script(
+			"color" lineTo script(),
+			haveName lineTo script("red")
+		)
+			.evaluate
+			.assertEqualTo(script("color" lineTo script("red")))
+	}
+
+	@Test
 	fun set() {
 		script(
 			""

@@ -128,6 +128,7 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 			failName -> plusFailValueEvaluationOrNull(rhs)
 			giveName -> plusGiveValueEvaluationOrNull(rhs)
 			hashName -> plusHashValueEvaluationEvaluation(rhs)
+			haveName -> plusHaveValueEvaluation(rhs)
 			headName -> plusHeadValueEvaluationOrNull(rhs)
 			printName -> plusPrintValueEvaluationOrNull(rhs)
 			tailName -> plusTailValueEvaluationOrNull(rhs)
@@ -153,8 +154,12 @@ fun Evaluator.plusTextValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 		}
 	}?.evaluation
 
+@Suppress("unused")
 fun Evaluator.plusBeValueEvaluationOrNull(beValue: Value): Evaluation<Value>? =
 	beValue.evaluation
+
+fun Evaluator.plusHaveValueEvaluation(haveValue: Value): Evaluation<Value> =
+	value.have(haveValue).evaluation
 
 fun Evaluator.plusEvaluation(being: Being): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(being.syntax).bind {

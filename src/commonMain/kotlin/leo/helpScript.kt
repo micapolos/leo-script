@@ -27,6 +27,7 @@ val Evaluator.helpScriptLine: ScriptLine get() =
 				"command" lineTo script(giveName),
 				"command" lineTo script(givenName),
 				"command" lineTo script(hashName),
+				"command" lineTo script(haveName),
 				"command" lineTo script(helpName),
 				"command" lineTo script(isName lineTo script(equalName lineTo script(toName))),
 				"command" lineTo script(isName lineTo script(matchingName)),
