@@ -20,6 +20,9 @@ fun Evaluator.setEvaluation(value: Value): Evaluation<Evaluator> =
 fun Evaluator.set(value: Value): Evaluator =
 	copy(value = value)
 
+fun Evaluator.updateValue(doing: (Value) -> Value): Evaluator =
+	copy(value = doing(value))
+
 fun Evaluator.set(context: Context): Evaluator =
 	copy(context = context)
 
