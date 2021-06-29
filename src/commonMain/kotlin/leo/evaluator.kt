@@ -364,3 +364,5 @@ fun Evaluator.use(dictionary: Dictionary): Evaluator =
 
 fun Evaluator.plus(definition: Definition): Evaluator =
 	set(context.plus(definition))
+
+val Evaluator.begin: Evaluator get() = set(value())

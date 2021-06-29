@@ -7,10 +7,10 @@ import leo.literal
 import leo.script
 import kotlin.test.Test
 
-class ScriptLineTokenizerTest {
+class ScriptTokenizerTest {
 	@Test
 	fun name() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(begin("zero")))
 			.process(token(end))
 			.state
@@ -19,7 +19,7 @@ class ScriptLineTokenizerTest {
 
 	@Test
 	fun number() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(literal(10)))
 			.state
 			.assertEqualTo(script(line(literal(10))))
@@ -27,7 +27,7 @@ class ScriptLineTokenizerTest {
 
 	@Test
 	fun text() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(literal("foo")))
 			.state
 			.assertEqualTo(script(line(literal("foo"))))
@@ -35,7 +35,7 @@ class ScriptLineTokenizerTest {
 
 	@Test
 	fun simpleField() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(begin("color")))
 			.process(token(begin("red")))
 			.process(token(end))
@@ -46,7 +46,7 @@ class ScriptLineTokenizerTest {
 
 	@Test
 	fun complexField() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(begin("point")))
 			.process(token(begin("x")))
 			.process(token(end))
@@ -59,7 +59,7 @@ class ScriptLineTokenizerTest {
 
 	@Test
 	fun structure() {
-		rootScriptProcessor
+		scriptTokenizer
 			.process(token(begin("point")))
 			.process(token(begin("x")))
 			.process(token(literal(10)))
