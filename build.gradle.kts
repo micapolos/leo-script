@@ -33,7 +33,7 @@ kotlin {
                             .getByName("compileClasspath")
                             .map { if (it.isDirectory) it else zipTree(it) },
                         main.output.classesDirs)
-                    archiveBaseName.set("leo")
+                    archiveFileName.set("leo.jar")
                 }
             }
         }
