@@ -15,6 +15,8 @@ import leo.dictionary
 import leo.evaluation
 import leo.field
 import leo.fieldTo
+import leo.have
+import leo.haveName
 import leo.isEmpty
 import leo.plus
 import leo.set
@@ -57,6 +59,7 @@ fun Input.process(@Suppress("UNUSED_PARAMETER") end: End, ret: Ret): Output =
 fun Input.process(nameBegin: NameBegin, ret: Ret): Output =
 	when (nameBegin.name) {
 		beName -> processBe(ret)
+		haveName -> processHave(ret)
 		else -> processField(nameBegin, ret)
 	}
 
@@ -66,6 +69,11 @@ fun Input.process(literal: Literal, ret: Ret): Output =
 fun Input.processBe(ret: Ret): Output =
 	begin.tokenizerEvaluation { rhs ->
 		setValue(rhs.evaluator.value).tokenizerEvaluation(ret)
+	}
+
+fun Input.processHave(ret: Ret): Output =
+	begin.tokenizerEvaluation { rhs ->
+		setValue(evaluator.value.have(rhs.evaluator.value)).tokenizerEvaluation(ret)
 	}
 
 fun Input.processField(nameBegin: NameBegin, ret: Ret): Output =

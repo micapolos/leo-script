@@ -4,6 +4,7 @@ import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
 import leo.contentName
+import leo.haveName
 import leo.isName
 import leo.line
 import leo.lineTo
@@ -125,6 +126,15 @@ class ScriptEvaluateTest {
 					"x" lineTo script(literal(10)),
 					"y" lineTo script(literal(20)))))
 			.assertSameAfter { evaluate }
+	}
+
+	@Test
+	fun have() {
+		script(
+			"color" lineTo script(),
+			haveName lineTo script("red"))
+			.evaluate
+			.assertEqualTo(script("color" lineTo script("red")))
 	}
 
 	@Test
