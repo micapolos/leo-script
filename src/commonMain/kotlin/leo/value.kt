@@ -435,3 +435,9 @@ fun Value.checkValue(boolean: Boolean): Value =
 
 fun Value.invokeEvaluation(value: Value): Evaluation<Value> =
 	functionOrThrow.giveEvaluation(value)
+
+val Value.onlyFieldOrNull: Field? get() =
+	linkOrNull?.onlyFieldOrNull
+
+val Link.onlyFieldOrNull: Field? get() =
+	notNullIf(value.isEmpty) { field }

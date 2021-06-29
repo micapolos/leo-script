@@ -3,6 +3,7 @@ package leo.interactive
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
+import leo.contentName
 import leo.isName
 import leo.line
 import leo.lineTo
@@ -69,6 +70,35 @@ class ScriptEvaluateTest {
 			beName lineTo script("pretty"))
 			.evaluate
 			.assertEqualTo(script("pretty"))
+	}
+
+	@Test
+	fun content() {
+		script(
+			contentName lineTo script(
+				"point" lineTo script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20)))))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20))))
+	}
+
+	@Test
+	fun content_fields() {
+		script(
+			contentName lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))))
+			.assertSameAfter { evaluate }
+	}
+
+	@Test
+	fun content_literal() {
+		script(contentName lineTo script(literal(10)))
+			.assertSameAfter { evaluate }
 	}
 
 	@Test

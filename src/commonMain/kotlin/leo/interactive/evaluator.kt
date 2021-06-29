@@ -5,16 +5,18 @@ import leo.Evaluator
 import leo.Field
 import leo.Literal
 import leo.Value
+import leo.applyEvaluationOrNull
 import leo.base.Effect
+import leo.base.orIfNull
 import leo.base.update
 import leo.beName
 import leo.begin
 import leo.dictionary
+import leo.evaluation
 import leo.field
 import leo.fieldTo
 import leo.isEmpty
 import leo.plus
-import leo.resolveEvaluation
 import leo.set
 import leo.updateValue
 import leo.value
@@ -82,6 +84,7 @@ fun Input.process(field: Field, ret: Ret): Output =
 val Input.resolve: Input get() =
 	evaluator
 		.dictionary
-		.resolveEvaluation(evaluator.value)
+		.applyEvaluationOrNull(evaluator.value)
+		.orIfNull { evaluator.value.resolve.evaluation }
 		.run(environment)
 		.update { value -> evaluator.set(value) }

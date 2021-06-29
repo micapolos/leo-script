@@ -28,3 +28,6 @@ fun <T> Value.failEvaluation(): Evaluation<T> =
 val Value.contentEvaluation: Evaluation<Value> get() =
 	fieldOrNull?.valueOrNull?.evaluation
 		?: plus(contentName).throwError()
+
+val Value.contentOrNull: Value? get() =
+	fieldOrNull?.valueOrNull

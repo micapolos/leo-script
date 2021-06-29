@@ -61,6 +61,9 @@ fun <T> emptySeq(): Seq<T> =
 fun <T> seq(fn: () -> SeqNode<T>?) =
 	Seq(fn)
 
+fun <T> onlySeq(fn: () -> T) =
+	seq { fn().seqNode(emptySeq()) }
+
 val <T> SeqNode<T>.seq: Seq<T>
 	get() =
 		Seq { this }

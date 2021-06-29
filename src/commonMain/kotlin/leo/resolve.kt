@@ -11,6 +11,9 @@ fun Dictionary.resolveEvaluation(value: Value): Evaluation<Value> =
 fun Dictionary.applyOrNullEvaluation(value: Value): Evaluation<Value?> =
 	applicationOrNull(value)?.applyEvaluation(value) ?: evaluation(null)
 
+fun Dictionary.applyEvaluationOrNull(value: Value): Evaluation<Value>? =
+	applicationOrNull(value)?.applyEvaluation(value)
+
 fun Dictionary.plus(value: Value): Dictionary =
 	this
 		.plusGiven(value)

@@ -4,12 +4,15 @@ import leo.Field
 import leo.Value
 import leo.base.fold
 import leo.base.orNull
+import leo.contentName
+import leo.contentOrNull
 import leo.field
 import leo.fieldSeq
 import leo.isEmpty
 import leo.literal
 import leo.nameOrNull
 import leo.numberName
+import leo.onlyFieldOrNull
 import leo.rhsOrNull
 import leo.valueOrNull
 
@@ -17,6 +20,19 @@ val Field.resolveOrNull: Field? get() =
 	when (name) {
 		numberName -> rhs.valueOrNull?.doubleResolveOrNull?.let { field(literal(it)) }
 		else -> this
+	}
+
+val Value.resolve: Value get() =
+	resolveOrNull ?: this
+
+val Value.resolveOrNull: Value? get() =
+	null
+		?: onlyFieldOrNull?.resolveValueOrNull
+
+val Field.resolveValueOrNull: Value? get() =
+	when (name) {
+		contentName -> rhs.valueOrNull?.contentOrNull
+		else -> null
 	}
 
 val Value.doubleResolveOrNull: Double? get() =
