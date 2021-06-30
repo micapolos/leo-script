@@ -266,6 +266,10 @@ val stringParser: Parser<String>
 	get() =
 		charStackParser.map { it.charString }
 
+val stringLineParser: Parser<String>
+	get() =
+		charParser { it != '\n' }.stackParser.map { it.charString }
+
 fun Parser<Unit>.repeat(times: Int): Parser<Unit> =
 	if (times <= 0) Unit.parser()
 	else bind { repeat(times.dec()) }

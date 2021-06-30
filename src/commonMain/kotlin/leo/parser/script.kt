@@ -1,10 +1,16 @@
 package leo.parser
 
-import leo.fold
-import leo.reverse
-import leo.*
 import leo.LiteralAtom
 import leo.NameAtom
+import leo.Script
+import leo.ScriptField
+import leo.fieldTo
+import leo.fold
+import leo.line
+import leo.lineTo
+import leo.plus
+import leo.reverse
+import leo.script
 
 val preprocessingScriptParser: Parser<Script> =
 	scriptParser.preprocessing
