@@ -103,6 +103,7 @@ fun Evaluator.plusEvaluation(line: SyntaxLine): Evaluation<Evaluator> =
 		is SelectSyntaxLine -> plusEvaluation(line.select)
 		//is TakeSyntaxLine -> plusEvaluation(line.take)
 		is TestSyntaxLine -> plusEvaluation(line.test)
+		is TheSyntaxLine -> plusEvaluation(line.the)
 		is TrySyntaxLine -> plusEvaluation(line.try_)
 		is UpdateSyntaxLine -> plusEvaluation(line.update)
 		is UseSyntaxLine -> plusEvaluation(line.use)
@@ -277,6 +278,10 @@ fun Evaluator.plusEvaluation(select: Select): Evaluation<Evaluator> =
 
 fun Evaluator.plusEvaluation(try_: Try): Evaluation<Evaluator> =
 	dictionary.valueEvaluation(value, try_).bind { setEvaluation(it) }
+
+fun Evaluator.plusEvaluation(the: The): Evaluation<Evaluator> =
+	the.atomStack.map { dictionary.fieldEvaluation(this) }.flat
+		.map { set(value.fold(it.reverse) { plus(it) }) }
 
 fun Evaluator.plusEvaluation(update: Update): Evaluation<Evaluator> =
 	dictionary.evaluation(value, update).bind { setEvaluation(it) }

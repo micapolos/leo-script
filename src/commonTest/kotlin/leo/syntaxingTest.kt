@@ -543,4 +543,18 @@ class SyntaxCompilationTest {
 			.syntax
 			.assertEqualTo(syntax(syntaxLine(literal(10))))
 	}
+
+	@Test
+	fun the() {
+		// TODO: Cover all syntax keywords.
+		script(
+			theName lineTo script(
+				doingName lineTo script(doingName lineTo script("foo")),
+				useName lineTo script(useName lineTo script("foo"))))
+			.syntax
+			.assertEqualTo(
+				syntax(line(the(
+					atom(doingName fieldTo syntax(line(doing(block(syntax("foo")))))),
+					atom(useName fieldTo syntax(line(use("foo"))))))))
+	}
 }

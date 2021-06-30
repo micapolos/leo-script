@@ -70,6 +70,7 @@ val ScriptField.syntaxLineSyntaxing: Syntaxing<SyntaxLine> get() =
 		selectName -> rhs.selectSyntaxing.map(::line)
 //		takeName -> rhs.takeSyntaxing.map(::line)
 		testName -> rhs.testSyntaxing.map(::line)
+		theName -> rhs.theSyntaxing.map(::line)
 		tryName -> rhs.trySyntaxing.map(::line)
 		updateName -> rhs.updateSyntaxing.map(::line)
 		useName -> rhs.useSyntaxing.map(::line)
@@ -259,6 +260,9 @@ val Script.testSyntaxing: Syntaxing<Test> get() =
 			}
 		}
 	}.notNullOrThrow { value(testName fieldTo value) }
+
+val Script.theSyntaxing: Syntaxing<The> get() =
+	lineStack.map { syntaxAtomSyntaxing }.flat.map(::the)
 
 val Script.trySyntaxing: Syntaxing<Try> get() =
 	syntaxSyntaxing.map(::try_)

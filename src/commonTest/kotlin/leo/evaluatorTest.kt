@@ -298,7 +298,7 @@ class EvaluatorTest {
 	@Test
 	fun select() {
 		script(
-			"the" lineTo script(literal("Hello, ")),
+			"my" lineTo script(literal("Hello, ")),
 			selectName lineTo script(
 				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
 				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
@@ -308,7 +308,7 @@ class EvaluatorTest {
 			.assertEqualTo(script(literal("Hello, world!")))
 
 		script(
-			"the" lineTo script(literal(1)),
+			"my" lineTo script(literal(1)),
 			selectName lineTo script(
 				textName lineTo script(applyingName lineTo script(appendName lineTo script(line(literal("world!"))))),
 				numberName lineTo script(applyingName lineTo script(plusName lineTo script(line(literal(2)))))
@@ -1021,7 +1021,7 @@ class EvaluatorTest {
 	@Test
 	fun loop() {
 		script(
-			"the" lineTo script("continue"),
+			"my" lineTo script("continue"),
 			repeatName lineTo script(
 				selectName lineTo script(
 					"finish" lineTo script(applyingName lineTo script(
@@ -1029,7 +1029,7 @@ class EvaluatorTest {
 					)),
 					"continue" lineTo script(
 						doingName lineTo script(
-							"the" lineTo script("finish")
+							"my" lineTo script("finish")
 						)
 					)
 				)
@@ -1249,5 +1249,20 @@ class EvaluatorTest {
 			.evaluate
 			.isError
 			.assertTrue
+	}
+
+	@Test
+	fun the() {
+		script(
+			theName lineTo script(
+				doingName lineTo script(
+					doingName lineTo script("pong"),
+					giveName lineTo script("ping"))),
+			giveName lineTo script("pang"))
+			.evaluate
+			.assertEqualTo(
+				script(
+					doingName lineTo script("pong"),
+					giveName lineTo script("pang")))
 	}
 }
