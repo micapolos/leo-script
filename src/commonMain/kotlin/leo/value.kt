@@ -92,9 +92,9 @@ val Value.structureOrThrow: Structure
 	get() =
 		structureOrNull.notNullOrThrow { isNotValue("structure") }
 
-val Value.switchFieldOrThrow: Field
+val Value.selectFieldOrThrow: Field
 	get() =
-		switchFieldOrNull.notNullOrThrow { plus(switchName fieldTo value()) }
+		selectFieldOrNull.notNullOrThrow { plus(selectName fieldTo value()) }
 
 val Value.resolveEvaluation: Evaluation<Value>
 	get() =
@@ -408,10 +408,10 @@ fun Value.apply(get: Get): Value =
 		}
 	}
 
-val Value.switchFieldOrNull: Field? get() =
-	fieldOrNull?.switchFieldOrNull
+val Value.selectFieldOrNull: Field? get() =
+	fieldOrNull?.selectFieldOrNull
 
-val Field.switchFieldOrNull: Field? get() =
+val Field.selectFieldOrNull: Field? get() =
 	when (name) {
 		listName -> valueOrNull?.let { value ->
 			when (value) {

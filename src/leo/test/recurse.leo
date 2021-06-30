@@ -8,7 +8,7 @@ test
   do recursing
     number
     check less than 2
-    switch
+    select
       yes applying number
       no doing
         no.number

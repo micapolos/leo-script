@@ -1,6 +1,6 @@
 test
   list
-  switch
+  select
     empty doing empty
     link doing link
   is equal to empty
@@ -10,7 +10,7 @@ test
     x 10
     y 20
     z 30
-  switch
+  select
     empty doing empty
     link doing link
   is equal to

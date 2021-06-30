@@ -10,7 +10,7 @@ let
   any.list.last
   apply
     list
-    switch
+    select
       empty list.last
       link last
 
@@ -27,7 +27,7 @@ let
   any.list.previous
   do
     list
-    switch
+    select
       empty list.previous
       link previous
 
@@ -65,7 +65,7 @@ let
   doing any
   do repeat
     list
-    switch
+    select
       empty be fold.to.content.end
       link do
         link.previous.list
@@ -156,7 +156,7 @@ let
       list
       doing bind
         list
-        switch
+        select
           empty be list
           link be
             list

@@ -8,7 +8,7 @@ test
   10000
   repeat
     check equal to 0
-    switch
+    select
       yes applying number.end
       no applying
         number

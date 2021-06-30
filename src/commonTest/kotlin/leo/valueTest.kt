@@ -215,9 +215,9 @@ class ValueTest {
 	}
 
 	@Test
-	fun switchFieldOrNull_list() {
+	fun selectFieldOrNull_list() {
 		value(listName fieldTo value())
-			.switchFieldOrNull
+			.selectFieldOrNull
 			.assertEqualTo(emptyName fieldTo value())
 
 		value(
@@ -225,7 +225,7 @@ class ValueTest {
 				"x" fieldTo value("zero"),
 				"y" fieldTo value("one"),
 				"z" fieldTo value("two")))
-			.switchFieldOrNull
+			.selectFieldOrNull
 			.assertEqualTo(
 				linkName fieldTo value(
 					previousName fieldTo value(

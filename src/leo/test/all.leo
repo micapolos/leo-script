@@ -37,8 +37,8 @@ use test private
 use test quote
 use test recurse
 use test repeat
+use test select
 use test set
-use test switch
 use test tail
 use test take
 use test test

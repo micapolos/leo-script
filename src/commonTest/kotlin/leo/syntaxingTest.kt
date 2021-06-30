@@ -349,17 +349,17 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun switch() {
+	fun select() {
 		script(
 			line(literal("Hello, world!")),
-			switchName lineTo script(
+			selectName lineTo script(
 				textName lineTo script("foo"),
 				numberName lineTo script("bar")))
 			.syntax
 			.assertEqualTo(
 				syntax(
 					syntaxLine(literal("Hello, world!")),
-					line(switch(
+					line(select(
 						textName caseTo syntax("foo" lineTo syntax()),
 						numberName caseTo syntax("bar" lineTo syntax())))
 				))
@@ -402,11 +402,11 @@ class SyntaxCompilationTest {
 	}
 
 	@Test
-	fun switchCaseError() {
+	fun selectCaseError() {
 		assertFailsWith<ValueError> {
 			script(
 				line(literal("Hello, world!")),
-				switchName lineTo script(
+				selectName lineTo script(
 					line(literal("foo")),
 					line(literal(20))))
 				.syntax

@@ -18,7 +18,7 @@ import leo.ofName
 import leo.privateName
 import leo.quoteName
 import leo.script
-import leo.switchName
+import leo.selectName
 import leo.takeName
 import leo.takingName
 import leo.textTypeScriptLine
@@ -195,7 +195,7 @@ class ScriptEvaluateTest {
 	}
 
 	@Test
-	fun switch() {
+	fun select() {
 		script(
 			"color" lineTo script(
 				"red" lineTo script(literal(10)),
@@ -203,7 +203,7 @@ class ScriptEvaluateTest {
 					choiceName lineTo script(
 						"red" lineTo script(numberTypeScriptLine),
 						"blue" lineTo script(numberTypeScriptLine)))),
-			switchName lineTo script(
+			selectName lineTo script(
 				"red" lineTo script(
 					"red" lineTo script(),
 					numberName lineTo script()),
@@ -220,7 +220,7 @@ class ScriptEvaluateTest {
 					choiceName lineTo script(
 						"red" lineTo script(numberTypeScriptLine),
 						"blue" lineTo script(numberTypeScriptLine)))),
-			switchName lineTo script(
+			selectName lineTo script(
 				"red" lineTo script(
 					"red" lineTo script(),
 					numberName lineTo script()),

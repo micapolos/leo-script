@@ -61,7 +61,7 @@ fun TypedExpression.of(type: Type): TypedExpression =
 	this.type.checkOf(type).let { expression of it }
 
 val TypedExpression.choice: TypedChoice get() =
-	type.switchChoice.let { typed(expression.choiceLine, it) }
+	type.selectChoice.let { typed(expression.choiceLine, it) }
 
 fun TypedExpression.be(typedExpression: TypedExpression): TypedExpression =
 	expression.plus(line(be(typedExpression.expression))).of(typedExpression.type)

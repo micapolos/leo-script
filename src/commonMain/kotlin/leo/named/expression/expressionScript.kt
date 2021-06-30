@@ -24,7 +24,7 @@ import leo.plus
 import leo.privateName
 import leo.recursiveName
 import leo.script
-import leo.switchName
+import leo.selectName
 import leo.takeName
 import leo.withName
 
@@ -51,7 +51,7 @@ val Line.scriptLine: ScriptLine get() =
 		is MakeLine -> make.scriptLine
 		is PrivateLine -> private.scriptLine
 		is RecursiveLine -> recursive.scriptLine
-		is SwitchLine -> switch.scriptLine
+		is SwitchLine -> select.scriptLine
 		is TakeLine -> take.scriptLine
 		is WithLine -> with.scriptLine
 	}
@@ -69,7 +69,7 @@ val Invoke.scriptLine: ScriptLine get() = invokeName lineTo type.script
 val Let.scriptLine: ScriptLine get() = letName lineTo type.script.plus(rhs.scriptLine)
 val Literal.scriptLine: ScriptLine get() = line(this)
 val Make.scriptLine: ScriptLine get() = makeName lineTo script(name)
-val Switch.scriptLine: ScriptLine get() = switchName lineTo cases.map { scriptLine }.script
+val Select.scriptLine: ScriptLine get() = selectName lineTo cases.map { scriptLine }.script
 val Private.scriptLine: ScriptLine get() = privateName lineTo expression.script
 val Recursive.scriptLine: ScriptLine get() = recursiveName lineTo expression.script
 val Take.scriptLine: ScriptLine get() = takeName lineTo expression.script

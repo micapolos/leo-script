@@ -37,7 +37,7 @@ import leo.named.expression.make
 import leo.named.expression.negate
 import leo.named.expression.numberExpression
 import leo.named.expression.rhs
-import leo.named.expression.switch
+import leo.named.expression.select
 import leo.named.expression.take
 import leo.named.typed.get
 import leo.named.typed.lineTo
@@ -49,7 +49,7 @@ import leo.notName
 import leo.numberTypeLine
 import leo.ofName
 import leo.script
-import leo.switchName
+import leo.selectName
 import leo.takeName
 import leo.takingName
 import leo.textTypeLine
@@ -320,7 +320,7 @@ class CompileTest {
 	}
 
 	@Test
-	fun switch() {
+	fun select() {
 		script(
 			"boolean" lineTo script(
 				"yes" lineTo script(),
@@ -328,7 +328,7 @@ class CompileTest {
 						choiceName lineTo script(
 							withName lineTo script("yes"),
 							withName lineTo script("no")))),
-			switchName lineTo script(
+			selectName lineTo script(
 				"yes" lineTo script(literal(10)),
 				"no" lineTo script(literal(20))))
 			.typedExpression
@@ -337,9 +337,9 @@ class CompileTest {
 					expression(
 						"boolean" lineTo expression(line(make("yes"))),
 						line(
-							switch(
-							"yes" caseTo 10.numberExpression,
-							"no" caseTo 20.numberExpression)
+							select(
+								"yes" caseTo 10.numberExpression,
+								"no" caseTo 20.numberExpression)
 						)),
 					type(numberTypeLine)))
 	}
