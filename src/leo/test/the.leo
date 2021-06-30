@@ -23,5 +23,4 @@ test
   the foo 123.text
   is equal to quote foo "123"
 
-
 comment cover all syntax keywords
