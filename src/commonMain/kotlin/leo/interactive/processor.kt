@@ -1,7 +1,9 @@
 package leo.interactive
 
-data class Processor<S, I>(val state: S, val process: (I) -> Processor<S, I>)
-fun <S, I> S.processor(fn: (I) -> Processor<S, I>) = Processor(this, fn)
+data class Processor<State, Value>(val state: State, val plusFn: (Value) -> Processor<State, Value>)
+fun <State, Input> State.processor(fn: (Input) -> Processor<State, Input>) = Processor(this, fn)
 
-fun <S1, S2, I> Processor<S1, I>.mapState(fn: (S1) -> S2): Processor<S2, I> =
-	fn(state).processor { process(it).mapState(fn) }
+fun <State, Input> Processor<State, Input>.plus(input: Input): Processor<State, Input> = plusFn(input)
+
+fun <FirstState, SecondState, Input> Processor<FirstState, Input>.mapState(fn: (FirstState) -> SecondState): Processor<SecondState, Input> =
+	fn(state).processor { plusFn(it).mapState(fn) }

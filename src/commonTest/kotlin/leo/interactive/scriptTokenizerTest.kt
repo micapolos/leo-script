@@ -11,8 +11,8 @@ class ScriptTokenizerTest {
 	@Test
 	fun name() {
 		scriptTokenizer
-			.process(token(begin("zero")))
-			.process(token(end))
+			.plusFn(token(begin("zero")))
+			.plusFn(token(end))
 			.state
 			.assertEqualTo(script("zero"))
 	}
@@ -20,7 +20,7 @@ class ScriptTokenizerTest {
 	@Test
 	fun number() {
 		scriptTokenizer
-			.process(token(literal(10)))
+			.plusFn(token(literal(10)))
 			.state
 			.assertEqualTo(script(line(literal(10))))
 	}
@@ -28,7 +28,7 @@ class ScriptTokenizerTest {
 	@Test
 	fun text() {
 		scriptTokenizer
-			.process(token(literal("foo")))
+			.plusFn(token(literal("foo")))
 			.state
 			.assertEqualTo(script(line(literal("foo"))))
 	}
@@ -36,10 +36,10 @@ class ScriptTokenizerTest {
 	@Test
 	fun simpleField() {
 		scriptTokenizer
-			.process(token(begin("color")))
-			.process(token(begin("red")))
-			.process(token(end))
-			.process(token(end))
+			.plusFn(token(begin("color")))
+			.plusFn(token(begin("red")))
+			.plusFn(token(end))
+			.plusFn(token(end))
 			.state
 			.assertEqualTo(script("color" lineTo script("red")))
 	}
@@ -47,12 +47,12 @@ class ScriptTokenizerTest {
 	@Test
 	fun complexField() {
 		scriptTokenizer
-			.process(token(begin("point")))
-			.process(token(begin("x")))
-			.process(token(end))
-			.process(token(begin("y")))
-			.process(token(end))
-			.process(token(end))
+			.plusFn(token(begin("point")))
+			.plusFn(token(begin("x")))
+			.plusFn(token(end))
+			.plusFn(token(begin("y")))
+			.plusFn(token(end))
+			.plusFn(token(end))
 			.state
 			.assertEqualTo(script("point" lineTo script("x", "y")))
 	}
@@ -60,14 +60,14 @@ class ScriptTokenizerTest {
 	@Test
 	fun structure() {
 		scriptTokenizer
-			.process(token(begin("point")))
-			.process(token(begin("x")))
-			.process(token(literal(10)))
-			.process(token(end))
-			.process(token(begin("y")))
-			.process(token(literal(20)))
-			.process(token(end))
-			.process(token(end))
+			.plusFn(token(begin("point")))
+			.plusFn(token(begin("x")))
+			.plusFn(token(literal(10)))
+			.plusFn(token(end))
+			.plusFn(token(begin("y")))
+			.plusFn(token(literal(20)))
+			.plusFn(token(end))
+			.plusFn(token(end))
 			.state
 			.assertEqualTo(
 				script(

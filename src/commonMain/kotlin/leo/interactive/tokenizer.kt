@@ -22,7 +22,7 @@ fun <S> Tokenizer<S>.process(scriptLine: ScriptLine): Tokenizer<S> =
 	}
 
 fun <S> Tokenizer<S>.process(field: ScriptField): Tokenizer<S> =
-	process(token(begin(field.name))).process(field.rhs).process(token(end))
+	plusFn(token(begin(field.name))).process(field.rhs).plusFn(token(end))
 
 fun <S> Tokenizer<S>.process(literal: Literal): Tokenizer<S> =
-	process(token(literal))
+	plusFn(token(literal))
