@@ -129,15 +129,21 @@ val Header.scriptLine: ScriptLine get() =
 		prefix.scriptLine,
 		"trailing" lineTo script(suffix.scriptLine))
 
+val Spaceable.scriptLine: ScriptLine get() =
+	"spaceable" lineTo script(
+		when (this) {
+			is AtomPrefixSpaceable -> "prefix" lineTo script("atom" lineTo script(atomPrefixOrNull.optionScriptLine { scriptLine }))
+			is SpacedSpaceable -> spaced.scriptLine
+		}
+	)
+
 val Spaced.scriptLine: ScriptLine get() =
-	"spaced" lineTo script(
-		"tab" lineTo script(tabOrNull.optionScriptLine { scriptLine }),
-		"prefix" lineTo script("atom" lineTo script(atomPrefixOrNull.optionScriptLine { scriptLine })))
+	"spaced" lineTo script(spaceable.scriptLine)
 
 val Body.scriptLine: ScriptLine get() =
 	"body" lineTo script(
 		indent.scriptLine,
-		spaced.scriptLine)
+		spaceable.scriptLine)
 
 val Line.scriptLine: ScriptLine get() =
 	"line" lineTo script(

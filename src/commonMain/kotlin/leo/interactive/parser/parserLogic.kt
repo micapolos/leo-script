@@ -225,32 +225,72 @@ fun Header.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
 		?: char.atomPrefixOrNull?.let {
 			prefix(
 				suffix.tokens,
-				line(body(prefix.indent, spaced(null, it))))
+				line(body(prefix.indent, spaceable(it))))
 		}
 
+fun Spaceable.plusOrNull(char: Char): Spaceable? =
+	when (this) {
+		is AtomPrefixSpaceable ->
+			if (atomPrefixOrNull == null) char.atomPrefixOrNull?.let { spaceable(it) }
+			else atomPrefixOrNull.plusOrNull(char)?.let { spaceable(it) }
+		is SpacedSpaceable -> spaced.plusOrNull(char)?.let { spaceable(it) }
+	}
+
 fun Spaced.plusOrNull(char: Char): Spaced? =
-	if (atomPrefixOrNull == null) char.atomPrefixOrNull?.let { spaced(tabOrNull, it) }
-	else atomPrefixOrNull.plusOrNull(char)?.let { spaced(tabOrNull, it) }
+	spaceable.plusOrNull(char)?.let { spaced(it) }
+
+val Spaceable.atomPrefixOrNull: AtomPrefix? get() =
+	when (this) {
+		is AtomPrefixSpaceable -> atomPrefixOrNull
+		is SpacedSpaceable -> spaced.atomPrefixOrNull
+	}
+
+val Spaced.atomPrefixOrNull: AtomPrefix? get() =
+	spaceable.atomPrefixOrNull
+
+val Spaceable.clearAtomPrefix: Spaceable get() =
+	when (this) {
+		is AtomPrefixSpaceable -> spaceable()
+		is SpacedSpaceable -> spaceable(spaced.clearAtomPrefix)
+	}
+
+val Spaced.clearAtomPrefix: Spaced get() =
+	spaced(spaceable.clearAtomPrefix)
+
+val Spaceable.tabOrNull: Tab? get() =
+	when (this) {
+		is AtomPrefixSpaceable -> null
+		is SpacedSpaceable -> spaced.tabOrNull
+	}
+
+val Spaced.tabOrNull: Tab? get() =
+	spaceable.tabOrNull?.plus(end)?:tab(end)
+
+val Spaceable.beginTab: Tab get() =
+	when (this) {
+		is AtomPrefixSpaceable -> tab(end)
+		is SpacedSpaceable -> spaced.beginTab
+	}
 
 val Spaced.beginTab: Tab get() =
-	tabOrNull?.plus(end)?:tab(end)
+	spaceable.beginTab.plus(end)
 
 fun Body.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
 	when (char) {
 		' ' ->
-			spaced.atomPrefixOrNull?.wordOrNull?.string?.let { name ->
+			spaceable.atomPrefixOrNull?.wordOrNull?.string?.let { name ->
 				prefix(
 					tokens(token(begin(name))),
-					line(body(indent, spaced(spaced.beginTab, null))))
+					line(body(indent, spaceable(spaced(spaceable.clearAtomPrefix)))))
 			}
 		'.' ->
-			spaced.atomPrefixOrNull?.atomOrNull?.let { atom ->
+			spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
 				prefix(
 					atom.tokens,
-					line(body(indent, spaced(spaced.tabOrNull, null))))
+					line(body(indent, spaceable.clearAtomPrefix)))
 			}
 		else ->
-			spaced
+			spaceable
 				.plusOrNull(char)
 				?.let { prefix(tokens(), line(body(indent, it))) }
 	}
@@ -259,16 +299,16 @@ fun Line.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
 	when (char) {
 		'\n' ->
 			when (this) {
-				is BodyLine -> body.spaced.atomPrefixOrNull?.atomOrNull?.let { atom ->
+				is BodyLine -> body.spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
 					when (atom) {
 						is LiteralAtom ->
 							prefix(
 								tokens(token(atom.literal)),
-								line(header(prefix(indent(), null), suffix(body.indent.ifNotNull(body.spaced.tabOrNull) { plus(it) } ))))
+								line(header(prefix(indent(), null), suffix(body.indent.ifNotNull(body.spaceable.tabOrNull) { plus(it) } ))))
 						is NameAtom ->
 							prefix(
 								tokens(token(begin(atom.name))),
-								line(header(prefix(indent(), null), suffix(body.indent.plus(body.spaced.beginTab)))))
+								line(header(prefix(indent(), null), suffix(body.indent.plus(body.spaceable.beginTab)))))
 					}
 				}
 				is HeaderLine -> null

@@ -61,10 +61,12 @@ fun prefix(indent: Indent, tabPrefixOrNull: TabPrefix?) = IndentPrefix(indent, t
 fun header(prefix: IndentPrefix, suffix: IndentSuffix) = Header(prefix, suffix)
 fun header() = header(prefix(indent(), null), suffix(indent()))
 
-fun spaced(tabOrNull: Tab?, atomPrefixOrNull: AtomPrefix?) = Spaced(tabOrNull, atomPrefixOrNull)
-fun spaced() = spaced(null, null)
+fun spaceable(spaced: Spaced): Spaceable = SpacedSpaceable(spaced)
+fun spaceable(atomPrefixOrNull: AtomPrefix? = null): Spaceable = AtomPrefixSpaceable(atomPrefixOrNull)
 
-fun body(indent: Indent, spaced: Spaced) = Body(indent, spaced)
+fun spaced(spaceable: Spaceable) = Spaced(spaceable)
+
+fun body(indent: Indent, spaceable: Spaceable) = Body(indent, spaceable)
 
 fun line(header: Header): Line = HeaderLine(header)
 fun line(body: Body): Line = BodyLine(body)

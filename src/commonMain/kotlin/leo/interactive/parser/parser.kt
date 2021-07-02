@@ -50,8 +50,13 @@ data class IndentPrefix(val indent: Indent, val tabPrefixOrNull: TabPrefix?)
 data class IndentSuffix(val indent: Indent)
 data class Header(val prefix: IndentPrefix, val suffix: IndentSuffix)
 
-data class Spaced(val tabOrNull: Tab?, val atomPrefixOrNull: AtomPrefix?)
-data class Body(val indent: Indent, val spaced: Spaced)
+sealed class Spaceable
+data class AtomPrefixSpaceable(val atomPrefixOrNull: AtomPrefix?): Spaceable()
+data class SpacedSpaceable(val spaced: Spaced): Spaceable()
+
+data class Spaced(val spaceable: Spaceable)
+
+data class Body(val indent: Indent, val spaceable: Spaceable)
 
 sealed class Line
 data class HeaderLine(val header: Header): Line()

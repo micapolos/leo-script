@@ -1,6 +1,7 @@
 package leo.interactive.parser
 
 import leo.base.assertEqualTo
+import leo.base.lines
 import leo.interactive.begin
 import leo.interactive.end
 import leo.interactive.token
@@ -18,10 +19,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(word(letter('f')))))))
-			)
+							spaceable(atomPrefix(word(letter('f'))))))))
 	}
 
 	@Test
@@ -34,10 +32,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(numberPrefix(number(digit(2)))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(numberPrefix(number(digit(2))))))))))
 	}
 
 	@Test
@@ -50,10 +45,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(numberPrefix(number(digit(2), digit(3)))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(numberPrefix(number(digit(2), digit(3))))))))))
 	}
 
 	@Test
@@ -66,10 +58,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(numberPrefix(numberNegative)))))))
-			)
+							spaceable(atomPrefix(literalPrefix(numberPrefix(numberNegative))))))))
 	}
 
 	@Test
@@ -82,10 +71,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(numberPrefix(negative(number(digit(2))))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(numberPrefix(negative(number(digit(2)))))))))))
 	}
 
 	@Test
@@ -98,10 +84,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix(textOpening())))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix(textOpening()))))))))
 	}
 
 	@Test
@@ -114,10 +97,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix(textOpening(textItem('f')))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix(textOpening(textItem('f'))))))))))
 	}
 
 	@Test
@@ -130,10 +110,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix(textOpening().with(textItemPrefix(escape)))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix(textOpening().with(textItemPrefix(escape))))))))))
 	}
 
 	@Test
@@ -146,10 +123,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix(textOpening(textItem(escaped('n'))))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix(textOpening(textItem(escaped('n')))))))))))
 	}
 
 	@Test
@@ -162,10 +136,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix(textOpening(textItem('f'), textItem('o')))))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix(textOpening(textItem('f'), textItem('o'))))))))))
 	}
 
 	@Test
@@ -178,10 +149,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(literalPrefix(textPrefix("foo")))))))
-			)
+							spaceable(atomPrefix(literalPrefix(textPrefix("foo"))))))))
 	}
 
 	@Test
@@ -191,8 +159,7 @@ class ParserTest {
 			.assertEqualTo(
 				prefix(
 					tokens(token(literal(123))),
-					line(body(indent(), spaced())))
-			)
+					line(body(indent(), spaceable()))))
 	}
 
 	@Test
@@ -202,8 +169,7 @@ class ParserTest {
 			.assertEqualTo(
 				prefix(
 					tokens(token(literal("foo"))),
-					line(body(indent(), spaced())))
-			)
+					line(body(indent(), spaceable()))))
 	}
 
 	@Test
@@ -216,10 +182,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								null,
-								atomPrefix(word(letter('f'), letter('o')))))))
-			)
+							spaceable(atomPrefix(word(letter('f'), letter('o'))))))))
 	}
 
 	@Test
@@ -232,8 +195,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(tab(end), null))))
-			)
+							spaceable(spaced(spaceable()))))))
 	}
 
 	@Test
@@ -248,8 +210,7 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(tab(end, end), null))))
-			)
+							spaceable(spaced(spaceable(spaced(spaceable()))))))))
 	}
 
 	@Test
@@ -261,8 +222,7 @@ class ParserTest {
 					tokens(
 						token(begin("foo")),
 						token(end)),
-					line(body(indent(), spaced())))
-			)
+					line(body(indent(), spaceable()))))
 	}
 
 	@Test
@@ -276,8 +236,7 @@ class ParserTest {
 						token(end),
 						token(begin("bar")),
 						token(end)),
-					line(body(indent(), spaced())))
-			)
+					line(body(indent(), spaceable()))))
 	}
 
 	@Test
@@ -332,7 +291,7 @@ class ParserTest {
 					line(
 						body(
 							indent(tab(end)),
-							spaced(null, atomPrefix(word(letter('b'))))))))
+							spaceable(atomPrefix(word(letter('b'))))))))
 	}
 
 	@Test
@@ -362,14 +321,13 @@ class ParserTest {
 					line(
 						body(
 							indent(),
-							spaced(
-								tab(end, end),
+							spaceable(spaced(spaceable(spaced(spaceable(
 								atomPrefix(
 									literalPrefix(
 										numberPrefix(
 											number(
 												digit(1),
-												digit(0))))))))))
+												digit(0))))))))))))))
 	}
 
 	@Test
@@ -391,6 +349,44 @@ class ParserTest {
 		tokensPrefix()
 			.plusOrNull("point\n  x 10\n  y 20\n")
 			?.endTokensOrNull
-			.assertEqualTo(null)
+			.assertEqualTo(
+				tokens(
+					token(begin("point")),
+					token(begin("x")),
+					token(literal(10)),
+					token(end),
+					token(begin("y")),
+					token(literal(20)),
+					token(end),
+					token(end)))
+	}
+
+	@Test
+	fun declaration() {
+		tokensPrefix()
+			.plusOrNull(
+				lines(
+					"let any.number.increment.do increment.number.plus 1",
+					""))
+			?.endTokensOrNull
+			.assertEqualTo(
+				tokens(
+					token(begin("let")),
+					token(begin("any")),
+					token(end),
+					token(begin("number")),
+					token(end),
+					token(begin("increment")),
+					token(end),
+					token(begin("do")),
+					token(begin("increment")),
+					token(end),
+					token(begin("number")),
+					token(end),
+					token(begin("plus")),
+					token(literal(1)),
+					token(end),
+					token(end),
+					token(end)))
 	}
 }
