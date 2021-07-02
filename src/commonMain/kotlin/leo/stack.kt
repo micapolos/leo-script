@@ -38,6 +38,7 @@ data class StackLink<out T>(
 fun <T> stack(empty: Empty): Stack<T> = EmptyStack(empty)
 fun <T> stack(pop: StackLink<T>): Stack<T> = LinkStack(pop)
 fun <T> stack(vararg values: T): Stack<T> = stack<T>(empty).fold(values) { push(it) }
+fun <T> stackOf(vararg values: T): Stack<T> = stack<T>(empty).fold(values) { push(it) }
 fun <T> stackLink(value: T, vararg values: T) = link(stack(), value).fold(values) { push(it) }
 fun <T> nonEmptyStack(value: T, vararg values: T) = stack(stackLink(value, *values))
 fun <T> link(tail: Stack<T>, head: T) = StackLink(tail, head)

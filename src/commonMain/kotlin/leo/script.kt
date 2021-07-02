@@ -449,3 +449,12 @@ fun <R : Any> ScriptField.match(name: String, fn: (Script) -> R?): R? =
 
 val Script.isError: Boolean get() =
 	onlyLineOrNull?.fieldOrNull?.name.equals(errorName)
+
+fun <T: Any> T?.optionScriptLine(scriptLineFn: T.() -> ScriptLine): ScriptLine =
+	"option" lineTo script(
+		if (this == null) "absent" lineTo script()
+		else "present" lineTo script(scriptLineFn(this))
+	)
+
+fun <T> Stack<T>.listScriptLine(scriptLineFn: T.() -> ScriptLine): ScriptLine =
+	"list" lineTo map(scriptLineFn).script
