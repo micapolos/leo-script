@@ -1,5 +1,7 @@
 # LeoScript
 
+LeoScript ia a scripting programming language.
+
 ## Installation
 
 ### MacOS
