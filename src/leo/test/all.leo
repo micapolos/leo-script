@@ -20,9 +20,19 @@ use test hash
 use test have
 use test head
 use test help
-use test is
-use test is all
-use test java all
+use test is equal to
+use test is matching
+use test java array
+use test java boolean
+use test java class
+use test java field
+use test java get
+use test java integer
+use test java invoke
+use test java method
+use test java null
+use test java number
+use test java string
 use test let
 use test list
 use test load
@@ -44,6 +54,7 @@ use test take
 use test test
 use test text
 use test the
+use test thing before
 use test try
 use test update
 use test use
