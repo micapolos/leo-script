@@ -1,73 +1,61 @@
-define
-  any.boolean.negate
-  does
+let
+  any boolean
+  be boolean
+    or true
+    or false
+
+test
+  boolean true
+  is matching any boolean
+
+test
+  boolean false
+  is matching any boolean
+
+let
+  any boolean
+  negate
+  do
     boolean
     select
-      false be true.boolean
-      true be false.boolean
+      true doing boolean false
+      false doing boolean true
 
 test
-  false.boolean.negate
-  is equal to true.boolean
+  boolean false
+  negate
+  is equal to boolean true
 
 test
-  true.boolean.negate
-  is equal to false.boolean
+  boolean true
+  negate
+  is equal to boolean false
 
-define
-  any.boolean
-  and any.boolean
-  does bind
+let
+  any boolean
+  and any boolean
+  do
     boolean
     select
-      true be and.boolean
-      false be false.boolean
+      true doing and.boolean
+      false doing boolean false
 
 test
-  false.boolean
-  and false.boolean
-  is equal to false.boolean
+  boolean false
+  and boolean false
+  is equal to boolean false
 
 test
-  false.boolean
-  and true.boolean
-  is equal to false.boolean
+  boolean false
+  and boolean true
+  is equal to boolean false
 
 test
-  true.boolean
-  and false.boolean
-  is equal to false.boolean
+  boolean true
+  and boolean false
+  is equal to boolean false
 
 test
-  true.boolean
-  and true.boolean
-  is equal to true.boolean
-
-define
-  any.boolean
-  or any.boolean
-  does bind
-    boolean
-    select
-      false be or.boolean
-      true be true.boolean
-
-test
-  false.boolean
-  or false.boolean
-  is equal to false.boolean
-
-test
-  false.boolean
-  or true.boolean
-  is equal to true.boolean
-
-test
-  true.boolean
-  or false.boolean
-  is equal to true.boolean
-
-test
-  true.boolean
-  and true.boolean
-  is equal to true.boolean
+  boolean true
+  and boolean true
+  is equal to boolean true
