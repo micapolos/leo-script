@@ -5,7 +5,7 @@ comment
 
 test
   10.hash
-  is matching quote hash number
+  is matching quote hash any number
 
 test
   10.hash

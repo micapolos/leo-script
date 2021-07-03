@@ -17,7 +17,8 @@ test
 
 test
   let
-    number.increment
+    any number
+    increment
     do
       number
       plus 1
@@ -27,7 +28,8 @@ test
 
 test
   let
-    number.increment
+    any number
+    increment
     apply
       number
       plus 1
@@ -44,7 +46,8 @@ test
 
 test
   let
-    number.factorial
+    any number
+    factorial
     do recursing
       factorial.number
       is equal to 1

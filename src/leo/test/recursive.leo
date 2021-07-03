@@ -4,7 +4,8 @@ comment
 
 test 
   recursive let
-    number.countdown
+    any number
+    countdown
     do
       number
       check equal to 0

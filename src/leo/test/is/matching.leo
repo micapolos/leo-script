@@ -4,7 +4,7 @@ test
 
 test
   "Hello, world!"
-  is matching text
+  is matching any text
 
 test
   "Hello, world!"
@@ -12,11 +12,11 @@ test
 
 test
   "Hello, world!"
-  is not matching number
+  is not matching any number
 
 test
   123
-  is matching number
+  is matching any number
 
 test
   123
@@ -53,8 +53,8 @@ test
     x 10
     y 20
   is matching point
-    x number
-    y number
+    x any number
+    y any number
 
 test
   point
