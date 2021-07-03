@@ -446,3 +446,13 @@ val Value.onlyFieldOrNull: Field? get() =
 
 val Link.onlyFieldOrNull: Field? get() =
 	notNullIf(value.isEmpty) { field }
+
+fun Value.thingBeforeOrNull(name: String): Value? =
+	when (this) {
+		EmptyValue -> null
+		is LinkValue -> link.thingBeforeOrNull(name)
+	}
+
+fun Link.thingBeforeOrNull(name: String): Value? =
+	if (field.name == name) value
+	else value.thingBeforeOrNull(name)

@@ -135,6 +135,7 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 			tailName -> plusTailValueEvaluationOrNull(rhs)
 			takeName -> plusTakeValueEvaluationOrNull(rhs)
 			textName -> plusTextValueEvaluationOrNull(rhs)
+			thingName -> plusThingValueEvaluationOrNull(rhs)
 			valueName -> plusValueValueEvaluationOrNull(rhs)
 			withName -> plusWithValueEvaluation(rhs)
 			else -> null
@@ -154,6 +155,13 @@ fun Evaluator.plusTextValueEvaluationOrNull(rhs: Value): Evaluation<Value>? =
 			}
 		}
 	}?.evaluation
+
+fun Evaluator.plusThingValueEvaluationOrNull(thingValue: Value): Evaluation<Value>? =
+	thingValue.resolvePrefixOrNull(beforeName) { beforeValue ->
+		beforeValue.nameOrNull?.let { name ->
+			value.thingBeforeOrNull(name)?.evaluation
+		}
+	}
 
 @Suppress("unused")
 fun Evaluator.plusBeValueEvaluationOrNull(beValue: Value): Evaluation<Value>? =

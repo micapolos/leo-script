@@ -1278,4 +1278,19 @@ class EvaluatorTest {
 					doingName lineTo script("pong"),
 					giveName lineTo script("pang")))
 	}
+
+	@Test
+	fun thingBefore() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			"z" lineTo script(literal(30)),
+			"w" lineTo script(literal(40)),
+			thingName lineTo script(beforeName lineTo script("z")))
+			.evaluate
+			.assertEqualTo(
+				script(
+					"x" lineTo script(literal(10)),
+					"y" lineTo script(literal(20))))
+	}
 }
