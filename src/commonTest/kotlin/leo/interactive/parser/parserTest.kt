@@ -295,6 +295,41 @@ class ParserTest {
 	}
 
 	@Test
+	fun nameNameComma() {
+		tokensPrefix()
+			.plusOrNull("foo bar,")
+			.assertEqualTo(
+				prefix(
+					tokens(
+						token(begin("foo")),
+						token(begin("bar")),
+						token(end),
+						token(end)),
+					line(
+						body(
+							indent(),
+							commable(comma)))))
+	}
+
+
+	@Test
+	fun nameNameCommaSpace() {
+		tokensPrefix()
+			.plusOrNull("foo bar, ")
+			.assertEqualTo(
+				prefix(
+					tokens(
+						token(begin("foo")),
+						token(begin("bar")),
+						token(end),
+						token(end)),
+					line(
+						body(
+							indent(),
+							spaceable()))))
+	}
+
+	@Test
 	fun spacedNames() {
 		tokensPrefix()
 			.plusOrNull("foo bar zoo\n")
@@ -386,6 +421,27 @@ class ParserTest {
 					token(begin("plus")),
 					token(literal(1)),
 					token(end),
+					token(end),
+					token(end)))
+	}
+
+	@Test
+	fun commas() {
+		tokensPrefix()
+			.plusOrNull(
+				lines(
+					"do",
+					"  plus 1, plus 2",
+					""))
+			?.endTokensOrNull
+			.assertEqualTo(
+				tokens(
+					token(begin("do")),
+					token(begin("plus")),
+					token(literal(1)),
+					token(end),
+					token(begin("plus")),
+					token(literal(2)),
 					token(end),
 					token(end)))
 	}

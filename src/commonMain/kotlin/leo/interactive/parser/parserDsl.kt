@@ -63,10 +63,16 @@ fun header() = header(prefix(indent(), null), suffix(indent()))
 
 fun spaceable(spaced: Spaced): Spaceable = SpacedSpaceable(spaced)
 fun spaceable(atomPrefixOrNull: AtomPrefix? = null): Spaceable = AtomPrefixSpaceable(atomPrefixOrNull)
-
 fun spaced(spaceable: Spaceable) = Spaced(spaceable)
 
-fun body(indent: Indent, spaceable: Spaceable) = Body(indent, spaceable)
+fun commable(spaceable: Spaceable): Commable = SpaceableCommable(spaceable)
+fun commable(comma: Comma): Commable = CommaCommable(comma)
+val comma get() = Comma
+
+fun body(indent: Indent, commable: Commable) = Body(indent, commable)
+fun body(indent: Indent, spaceable: Spaceable) = body(indent, commable(spaceable))
+fun body(indent: Indent, atomPrefixOrNull: AtomPrefix?) = body(indent, spaceable(atomPrefixOrNull))
+fun body(indent: Indent) = body(indent, null)
 
 fun line(header: Header): Line = HeaderLine(header)
 fun line(body: Body): Line = BodyLine(body)
@@ -86,3 +92,5 @@ fun TokensPrefix.plusOrNull(string: String): TokensPrefix? =
 
 val Indent.isEmpty: Boolean get() = tabStack.isEmpty
 val IndentPrefix.isEmpty: Boolean get() = indent.isEmpty && tabPrefixOrNull == null
+
+val Commable.spaceableOrNull: Spaceable? get() = (this as? SpaceableCommable)?.spaceable

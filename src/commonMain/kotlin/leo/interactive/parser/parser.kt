@@ -53,10 +53,15 @@ data class Header(val prefix: IndentPrefix, val suffix: IndentSuffix)
 sealed class Spaceable
 data class AtomPrefixSpaceable(val atomPrefixOrNull: AtomPrefix?): Spaceable()
 data class SpacedSpaceable(val spaced: Spaced): Spaceable()
-
 data class Spaced(val spaceable: Spaceable)
 
-data class Body(val indent: Indent, val spaceable: Spaceable)
+object Comma
+
+sealed class Commable
+data class SpaceableCommable(val spaceable: Spaceable): Commable()
+data class CommaCommable(val comma: Comma): Commable()
+
+data class Body(val indent: Indent, val commable: Commable)
 
 sealed class Line
 data class HeaderLine(val header: Header): Line()

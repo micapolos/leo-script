@@ -275,40 +275,73 @@ val Spaceable.beginTab: Tab get() =
 val Spaced.beginTab: Tab get() =
 	spaceable.beginTab.plus(end)
 
+val Spaceable.tabTokens: Tokens get() =
+	tabOrNull?.tokens?:tokens()
+
+fun Commable.plusOrNull(char: Char): Commable? =
+	when (this) {
+		is CommaCommable -> null
+		is SpaceableCommable -> spaceable.plusOrNull(char)?.let(::commable)
+	}
+
 fun Body.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
-	when (char) {
-		' ' ->
-			spaceable.atomPrefixOrNull?.wordOrNull?.string?.let { name ->
+	when (commable) {
+		is CommaCommable ->
+			notNullIf(char == ' ') {
 				prefix(
-					tokens(token(begin(name))),
-					line(body(indent, spaceable(spaced(spaceable.clearAtomPrefix)))))
+					tokens(),
+					line(body(indent))
+				)
 			}
-		'.' ->
-			spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
-				prefix(
-					atom.tokens,
-					line(body(indent, spaceable.clearAtomPrefix)))
+		is SpaceableCommable ->
+			when (char) {
+				' ' ->
+					commable.spaceable.atomPrefixOrNull?.wordOrNull?.string?.let { name ->
+						prefix(
+							tokens(token(begin(name))),
+							line(body(indent, spaceable(spaced(commable.spaceable.clearAtomPrefix))))
+						)
+					}
+				'.' ->
+					commable.spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
+						prefix(
+							atom.tokens,
+							line(body(indent, commable.spaceable.clearAtomPrefix))
+						)
+					}
+				',' ->
+					commable.spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
+						prefix(
+							atom.tokens.plus(commable.spaceable.tabTokens),
+							line(body(indent, commable(comma)))
+						)
+					}
+				else ->
+					commable
+						.plusOrNull(char)
+						?.let { prefix(tokens(), line(body(indent, it))) }
 			}
-		else ->
-			spaceable
-				.plusOrNull(char)
-				?.let { prefix(tokens(), line(body(indent, it))) }
 	}
 
 fun Line.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
 	when (char) {
 		'\n' ->
 			when (this) {
-				is BodyLine -> body.spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
-					when (atom) {
-						is LiteralAtom ->
-							prefix(
-								tokens(token(atom.literal)),
-								line(header(prefix(indent(), null), suffix(body.indent.ifNotNull(body.spaceable.tabOrNull) { plus(it) } ))))
-						is NameAtom ->
-							prefix(
-								tokens(token(begin(atom.name))),
-								line(header(prefix(indent(), null), suffix(body.indent.plus(body.spaceable.beginTab)))))
+				is BodyLine ->
+					when (body.commable) {
+						is CommaCommable -> null
+						is SpaceableCommable ->
+							body.commable.spaceable.atomPrefixOrNull?.atomOrNull?.let { atom ->
+								when (atom) {
+									is LiteralAtom ->
+										prefix(
+											tokens(token(atom.literal)),
+											line(header(prefix(indent(), null), suffix(body.indent.ifNotNull(body.commable.spaceable.tabOrNull) { plus(it) } ))))
+									is NameAtom ->
+										prefix(
+											tokens(token(begin(atom.name))),
+											line(header(prefix(indent(), null), suffix(body.indent.plus(body.commable.spaceable.beginTab)))))
+								}
 					}
 				}
 				is HeaderLine -> null

@@ -129,6 +129,17 @@ val Header.scriptLine: ScriptLine get() =
 		prefix.scriptLine,
 		"trailing" lineTo script(suffix.scriptLine))
 
+val Comma.scriptLine: ScriptLine get() =
+	"comma" lineTo script()
+
+val Commable.scriptLine: ScriptLine get() =
+	"commable" lineTo script(
+		when (this) {
+			is CommaCommable -> comma.scriptLine
+			is SpaceableCommable -> spaceable.scriptLine
+		}
+	)
+
 val Spaceable.scriptLine: ScriptLine get() =
 	"spaceable" lineTo script(
 		when (this) {
@@ -143,7 +154,7 @@ val Spaced.scriptLine: ScriptLine get() =
 val Body.scriptLine: ScriptLine get() =
 	"body" lineTo script(
 		indent.scriptLine,
-		spaceable.scriptLine)
+		commable.scriptLine)
 
 val Line.scriptLine: ScriptLine get() =
 	"line" lineTo script(
