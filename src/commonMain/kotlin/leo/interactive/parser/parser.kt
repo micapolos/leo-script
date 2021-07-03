@@ -56,10 +56,14 @@ data class SpacedSpaceable(val spaced: Spaced): Spaceable()
 data class Spaced(val spaceable: Spaceable)
 
 object Comma
-
 sealed class Commable
 data class SpaceableCommable(val spaceable: Spaceable): Commable()
 data class CommaCommable(val comma: Comma): Commable()
+
+sealed class Colonable
+data class SpaceableColonable(val spaceable: Spaceable): Colonable()
+data class ColonedColonable(val coloned: Coloned): Colonable()
+data class Coloned(val spaceable: Spaceable)
 
 data class Body(val indent: Indent, val commable: Commable)
 
