@@ -18,6 +18,10 @@ fun Dictionary.plus(value: Value): Dictionary =
 	this
 		.plusGiven(value)
 		.plusFields(value)
+		.plus(given(value))
+
+fun Dictionary.plus(given: ValueGiven) =
+	plus(definition(given))
 
 fun Dictionary.plusGiven(value: Value) =
 	plus(definition(value(givenName), binding(value(givenName fieldTo value))))

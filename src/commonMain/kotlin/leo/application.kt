@@ -18,9 +18,13 @@ fun Dictionary.applicationOrNull(value: Value): Application? =
 
 fun Dictionary.applicationOrNull(definition: Definition, value: Value): Application? =
 	when (definition) {
+		is GivenDefinition -> applicationOrNull(definition.given, value)
 		is LetDefinition -> applicationOrNull(definition.let, value)
 		is RecursiveDefinition -> applicationOrNull(definition.recursive, value)
 	}
+
+fun Dictionary.applicationOrNull(given: ValueGiven, value: Value): Application? =
+	given.getOrNull(value)?.let { Application(this, binding(it)) }
 
 fun Dictionary.applicationOrNull(let: DefinitionLet, value: Value): Application? =
 	notNullIf(value.matches(let.value)) {

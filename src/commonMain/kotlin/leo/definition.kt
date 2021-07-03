@@ -2,9 +2,11 @@ package leo
 
 sealed class Definition
 data class LetDefinition(val let: DefinitionLet): Definition()
+data class GivenDefinition(val given: ValueGiven): Definition()
 data class RecursiveDefinition(val recursive: DictionaryRecursive): Definition()
 
 fun definition(let: DefinitionLet): Definition = LetDefinition(let)
+fun definition(given: ValueGiven): Definition = GivenDefinition(given)
 fun definition(recursive: DictionaryRecursive): Definition = RecursiveDefinition(recursive)
 
 fun definition(value: Value, binding: Binding): Definition =

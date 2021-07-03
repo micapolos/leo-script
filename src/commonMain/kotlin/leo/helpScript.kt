@@ -63,6 +63,7 @@ val Dictionary.functionListScript: Script get() =
 
 val Definition.bindingListScript: Script get() =
 	when (this) {
+		is GivenDefinition -> script("given" lineTo given.value.script)
 		is LetDefinition -> script("function" lineTo let.value.script)
 		is RecursiveDefinition -> recursive.dictionary.functionListScript
 	}

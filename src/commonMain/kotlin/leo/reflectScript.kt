@@ -18,9 +18,13 @@ val Dictionary.scriptLine: ScriptLine get() =
 
 val Definition.scriptLine: ScriptLine get() =
 	when (this) {
+		is GivenDefinition -> given.scriptLine
 		is LetDefinition -> let.scriptLine
 		is RecursiveDefinition -> recursive.scriptLine
 	}
+
+val ValueGiven.scriptLine: ScriptLine get() =
+	"given" lineTo value.script
 
 val DefinitionLet.scriptLine: ScriptLine get() =
 	"let" lineTo value.script.plus(binding.scriptLine)
