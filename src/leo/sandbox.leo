@@ -1,6 +1,8 @@
-point
-  x 10
-  y 20
-do
-  x.number
-  plus y.number
+let
+  number
+  add number
+  do
+    number
+    plus add.number
+10
+add 20

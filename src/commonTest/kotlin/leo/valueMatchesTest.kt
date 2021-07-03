@@ -115,4 +115,10 @@ class ValueMatchesTest {
 					orName fieldTo value(textName fieldTo anyValue)))
 			.assertTrue
 	}
+
+	@Test
+	fun special() {
+		value(field(literal(10))).matches(value(numberName)).assertTrue
+		value(field(literal("foo"))).matches(value(textName)).assertTrue
+	}
 }

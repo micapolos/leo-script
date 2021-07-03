@@ -19,7 +19,19 @@ fun Link.matches(link: Link): Boolean =
 	field.matches(link.field) && value.matches(link.value)
 
 fun Field.matches(field: Field) =
+	null
+			?: matchesSpecial(field)
+			?: matchesNamed(field)
+
+fun Field.matchesNamed(field: Field) =
 	name == field.name && rhs.matches(field.rhs)
+
+fun Field.matchesSpecial(field: Field): Boolean? =
+	when (field) {
+		numberName fieldTo value() -> numberOrNull != null
+		textName fieldTo value() -> textOrNull != null
+		else -> null
+	}
 
 fun Rhs.matches(rhs: Rhs) =
 	rhs.isAny || when (rhs) {

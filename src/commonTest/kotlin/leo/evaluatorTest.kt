@@ -692,6 +692,33 @@ class EvaluatorTest {
 	}
 
 	@Test
+	fun isMatching_special() {
+		script(
+			line(literal("foo")),
+			isName lineTo script(matchingName lineTo script(textName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(yesName)))
+
+		script(
+			line(literal("doo")),
+			isName lineTo script(matchingName lineTo script(numberName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(noName)))
+
+		script(
+			line(literal(10)),
+			isName lineTo script(matchingName lineTo script(numberName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(yesName)))
+
+		script(
+			line(literal(10)),
+			isName lineTo script(matchingName lineTo script(textName lineTo script())))
+			.evaluate
+			.assertEqualTo(script(isName lineTo script(noName)))
+	}
+
+	@Test
 	fun isNotMatching() {
 		script(
 			line(literal("foo")),
@@ -1068,20 +1095,6 @@ class EvaluatorTest {
 		)
 			.evaluate
 			.assertEqualTo(script(checkName lineTo script(yesName lineTo script(line(literal(123))))))
-	}
-
-	@Test
-	fun contextSet() {
-		script(
-			setName lineTo script(
-				line(literal(10)),
-				plusName lineTo script(literal(20))
-			),
-			numberName lineTo script(),
-			plusName lineTo script(line(plusName), line(numberName))
-		)
-			.evaluate
-			.assertEqualTo(script(literal(30)))
 	}
 
 	@Test
