@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.5.10"
     java
+    `maven-publish`
 }
 
 group = "micapolos"
@@ -48,5 +49,19 @@ kotlin {
         }
         val jvmMain by getting
         val jvmTest by getting
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            //...
+        }
     }
 }
