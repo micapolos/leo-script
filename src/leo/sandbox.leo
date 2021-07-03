@@ -1,6 +1,6 @@
-very interesting problem
-  "dupa"
-  point
-    10
-    20
-do text
+point
+  x 10
+  y 20
+do
+  x.number
+  plus y.number
