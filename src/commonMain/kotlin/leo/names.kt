@@ -1,6 +1,7 @@
 package leo
 
 val absentName = "absent"
+val anyName = "any"
 val anythingName = "anything"
 val applyName = "apply"
 val applyingName = "applying"

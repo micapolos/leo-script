@@ -118,7 +118,7 @@ class ValueMatchesTest {
 
 	@Test
 	fun special() {
-		value(field(literal(10))).matches(value(numberName)).assertTrue
-		value(field(literal("foo"))).matches(value(textName)).assertTrue
+		value(field(literal(10))).matches(value(anyName fieldTo value(numberName))).assertTrue
+		value(field(literal("foo"))).matches(value(anyName fieldTo value(textName))).assertTrue
 	}
 }

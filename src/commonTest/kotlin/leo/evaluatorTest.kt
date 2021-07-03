@@ -695,25 +695,25 @@ class EvaluatorTest {
 	fun isMatching_special() {
 		script(
 			line(literal("foo")),
-			isName lineTo script(matchingName lineTo script(textName lineTo script())))
+			isName lineTo script(matchingName lineTo script(anyName lineTo script(textName))))
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 
 		script(
 			line(literal("doo")),
-			isName lineTo script(matchingName lineTo script(numberName lineTo script())))
+			isName lineTo script(matchingName lineTo script(anyName lineTo script(numberName))))
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 
 		script(
 			line(literal(10)),
-			isName lineTo script(matchingName lineTo script(numberName lineTo script())))
+			isName lineTo script(matchingName lineTo script(anyName lineTo script(numberName))))
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
 
 		script(
 			line(literal(10)),
-			isName lineTo script(matchingName lineTo script(textName lineTo script())))
+			isName lineTo script(matchingName lineTo script(anyName lineTo script(textName))))
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 	}

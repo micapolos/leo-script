@@ -28,8 +28,8 @@ fun Field.matchesNamed(field: Field) =
 
 fun Field.matchesSpecial(field: Field): Boolean? =
 	when (field) {
-		numberName fieldTo value() -> numberOrNull != null
-		textName fieldTo value() -> textOrNull != null
+		anyName fieldTo value(numberName) -> numberOrNull != null
+		anyName fieldTo value(textName) -> textOrNull != null
 		else -> null
 	}
 
