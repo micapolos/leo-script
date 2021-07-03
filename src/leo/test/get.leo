@@ -31,6 +31,14 @@ test
   center.point.x.number
   is equal to 20
 
+comment deeper fields
+test
+  my favourite point
+    x 10
+    y 20
+  x
+  is equal to x 10
+
 test
   this 10
   number
