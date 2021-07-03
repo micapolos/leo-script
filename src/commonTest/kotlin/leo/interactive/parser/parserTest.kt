@@ -213,6 +213,22 @@ class ParserTest {
 							spaceable(spaced(spaceable(spaced(spaceable()))))))))
 	}
 
+	// TODO: fixit
+//	@Test
+//	fun nameSpaceNameNewlineTabName() {
+//		tokensPrefix()
+//			.plusOrNull("foo bar\n  ")
+//			.assertEqualTo(
+//				prefix(
+//					tokens(
+//						token(begin("foo")),
+//						token(begin("bar"))),
+//					line(
+//						body(
+//							indent(),
+//							spaceable(spaced(spaceable(spaced(spaceable()))))))))
+//	}
+
 	@Test
 	fun wordDot() {
 		tokensPrefix()

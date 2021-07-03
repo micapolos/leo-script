@@ -83,7 +83,7 @@ fun TextOpening.plus(char: Char) =
 fun TextOpening.plusLiteralOrNull(char: Char): Literal? =
 	plusPrefixOrNull(char)?.literalOrNull
 
-val CharEscaped.char: Char get() =
+val CharEscaped.unescapedChar: Char get() =
 	when (char) {
 		'n' -> '\n'
 		'\\' -> '\\'
@@ -210,6 +210,8 @@ val Tab.tokens: Tokens get() =
 val IndentSuffix.tokens: Tokens get() =
 	tokens().fold(indent.tabStack) { plus(it.tokens) }
 
+val Tokens.reverse: Tokens get() = tokenStack.reverse.let(::Tokens)
+
 fun Header.plusOrNull(char: Char): Header? =
 	null
 		?: prefix.plusOrNull(char)?.let { header(it, suffix) }
@@ -222,10 +224,13 @@ fun Header.plusOrNull(char: Char): Header? =
 fun Header.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
 	null
 		?: plusOrNull(char)?.let { prefix(tokens(), line(it)) }
-		?: char.atomPrefixOrNull?.let {
-			prefix(
-				suffix.tokens,
-				line(body(prefix.indent, spaceable(it))))
+		?: char.atomPrefixOrNull?.let { atomPrefix ->
+			suffix.tokens.reverse.tokenStack.linkOrNull.let { tokenStackLinkOrNull ->
+				prefix(
+					suffix.tokens,
+					line(body(prefix.indent, spaceable(atomPrefix)))
+				)
+			}
 		}
 
 fun Spaceable.plusOrNull(char: Char): Spaceable? =

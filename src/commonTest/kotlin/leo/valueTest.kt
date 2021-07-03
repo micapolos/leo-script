@@ -55,6 +55,20 @@ class ValueTest {
 	}
 
 	@Test
+	fun getDeeper() {
+		value(
+			"center" fieldTo value(
+				"point" fieldTo value(
+					"x" fieldTo value("10"),
+					"y" fieldTo value("20"))))
+			.run {
+				getOrNull("x").assertEqualTo(value("x" fieldTo value("10")))
+				getOrNull("y").assertEqualTo(value("y" fieldTo value("20")))
+				getOrNull("z").assertEqualTo(null)
+			}
+	}
+
+	@Test
 	fun resolveFunction() {
 		value(field(dictionary().function(binder(doing(body(script("foo")))))))
 			.functionOrNull

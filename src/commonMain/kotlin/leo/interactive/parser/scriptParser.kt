@@ -26,9 +26,9 @@ val TokensPrefix.parser: Parser<TokensPrefix> get() =
 	}
 
 val scriptParser: Parser<Script> get() =
-	tokensPrefix().parser.map { it.endTokensOrNull?.script }
+	tokensPrefix().parser.map { it.endTokensOrNull?.scriptOrNull }
 
-fun Script.plusTokenProcessor(ret: (Script) -> Processor<Script, Token>): Processor<Script, Token> =
+fun Script.plusTokenProcessor(ret: (Script) -> Processor<Script?, Token>): Processor<Script?, Token> =
 	processor { token ->
 		when (token) {
 			is BeginToken ->
@@ -42,7 +42,7 @@ fun Script.plusTokenProcessor(ret: (Script) -> Processor<Script, Token>): Proces
 		}
 	}
 
-val Tokens.script: Script get() =
+val Tokens.scriptOrNull: Script? get() =
 	script()
 		.plusTokenProcessor { error("unexpected end") }
 		.fold(tokenStack.reverse) { this.plus(it) }

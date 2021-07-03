@@ -122,6 +122,11 @@ val Link.fieldSeqNode: SeqNode<Field>
 fun Value.selectOrNull(name: String): Value? =
 	fieldSeq.mapFirstOrNull { selectOrNull(name) }
 
+fun Value.selectDeeplyOrNull(name: String): Value? =
+	null
+		?: fieldSeq.mapFirstOrNull { selectOrNull(name) }
+		?: onlyFieldOrNull?.valueOrNull?.selectDeeplyOrNull(name)
+
 fun Value.selectFieldOrNull(name: String): Field? =
 	fieldSeq.mapFirstOrNull { orNull(name) }
 
@@ -162,7 +167,7 @@ fun Value.make(name: String, value: Value): Value =
 	value(name fieldTo plus(value))
 
 fun Value.getOrNull(name: String): Value? =
-	bodyOrNull?.selectOrNull(name)
+	bodyOrNull?.selectDeeplyOrNull(name)
 
 fun Value.resolveOrNull(name: String): Value? =
 	getOrNull(name) ?: makeOrNull(name)
@@ -399,7 +404,7 @@ fun Link.replaceOrThrow(field: Field): Link =
 	else value.replaceOrThrow(field).linkTo(this.field)
 
 fun Value.get(name: String): Value =
-	bodyOrNull?.selectOrNull(name).notNullOrThrow { plus(getName fieldTo value(name)) }
+	getOrNull(name).notNullOrThrow { plus(getName fieldTo value(name)) }
 
 fun Value.apply(get: Get): Value =
 	let { target ->
