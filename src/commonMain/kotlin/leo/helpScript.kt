@@ -7,7 +7,7 @@ val Evaluator.helpScriptLine: ScriptLine get() =
 			"author" lineTo script(literal("Michał Pociecha-Łoś"))),
 		"command" lineTo script(
 			listName lineTo script(
-				"command" lineTo script(anyName),
+				"command" lineTo script(anythingName),
 				"command" lineTo script(applyName),
 				"command" lineTo script(applyingName),
 				"command" lineTo script(asName),

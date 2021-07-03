@@ -23,7 +23,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					value("name" fieldTo anyValue),
+					value("name" fieldTo anythingValue),
 					binding(value("ok"))
 				)
 			)
@@ -39,7 +39,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					anyValue,
+					anythingValue,
 					binding(value("pong"))
 				)
 			)
@@ -54,7 +54,7 @@ class DictionaryTest {
 		dictionary()
 			.plus(
 				definition(
-					anyValue.plus("plus" fieldTo anyValue),
+					anythingValue.plus("plus" fieldTo anythingValue),
 					binding(value("ok"))
 				)
 			)

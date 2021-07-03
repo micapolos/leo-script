@@ -95,7 +95,7 @@ fun Dictionary.applyEvaluation(given: Value, syntax: Syntax): Evaluation<Value> 
 fun Dictionary.plusRecurse(syntax: Syntax): Dictionary =
 	plus(
 		definition(
-			value(recurseName fieldTo anyValue),
+			value(recurseName fieldTo anythingValue),
 			binding(recurse(body(block(recursing(syntax)))))
 		)
 	)

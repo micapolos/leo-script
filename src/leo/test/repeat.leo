@@ -9,8 +9,8 @@ test
   repeat
     check equal to 0
     select
-      yes applying number.end
-      no applying
+      yes doing number.end
+      no doing
         number
         minus 1
   is equal to 0

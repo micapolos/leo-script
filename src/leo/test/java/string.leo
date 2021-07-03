@@ -1,6 +1,6 @@
 test
   "Hello, world!".java
-  as java any
+  as java anything
   quote
   is equal to java native "Hello, world!"
 

@@ -1,6 +1,6 @@
 test
   123.java
-  as java any
+  as java anything
   quote
   is equal to java native "123"
 

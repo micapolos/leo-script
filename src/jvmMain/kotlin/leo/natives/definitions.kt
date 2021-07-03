@@ -1,7 +1,7 @@
 package leo.natives
 
 import leo.Number
-import leo.anyValue
+import leo.anythingValue
 import leo.field
 import leo.fieldTo
 import leo.literal
@@ -46,7 +46,7 @@ val falseJavaDefinition
 val javaObjectClassDefinition
 	get() =
 		nativeDefinition(
-			value(className fieldTo value(objectName fieldTo value(javaName fieldTo anyValue)))) {
+			value(className fieldTo value(objectName fieldTo value(javaName fieldTo anythingValue)))) {
 			value(
 				className fieldTo
 					it
@@ -74,7 +74,7 @@ val textJavaDefinition
 val javaTextDefinition
 	get() =
 		nativeDefinition(
-			value(textName fieldTo value(javaName fieldTo anyValue))
+			value(textName fieldTo value(javaName fieldTo anythingValue))
 		) {
 			value(field(literal(it.nativeValue(textName).nativeValue(javaName).javaObject as String)))
 		}
@@ -93,7 +93,7 @@ val javaNumberDefinition
 	get() =
 		nativeDefinition(
 			value(
-				numberName fieldTo value(javaName fieldTo anyValue)
+				numberName fieldTo value(javaName fieldTo anythingValue)
 			)
 		) {
 			value(field(literal(it.nativeValue(numberName).nativeValue(javaName).javaObject as Number)))
@@ -120,7 +120,7 @@ val javaObjectIntegerNumberDefinition
 	get() =
 		nativeDefinition(
 			value(
-				numberName fieldTo value(integerName fieldTo value(javaName fieldTo anyValue)),
+				numberName fieldTo value(integerName fieldTo value(javaName fieldTo anythingValue)),
 			)
 		) {
 			value(field(literal(it.nativeValue(numberName).nativeValue(integerName).nativeValue(javaName).javaObject as Int)))
@@ -130,7 +130,7 @@ val arrayJavaDefinition
 	get() =
 		nativeDefinition(
 			value(
-				javaName fieldTo value(arrayName fieldTo anyValue),
+				javaName fieldTo value(arrayName fieldTo anythingValue),
 			)
 		) {
 			it.nativeValue(javaName).nativeValue(arrayName).nativeArray.javaValue
@@ -157,7 +157,7 @@ val javaClassFieldDefinition
 		nativeDefinition(
 			value(
 				className fieldTo value(
-					javaName fieldTo anyValue
+					javaName fieldTo anythingValue
 				),
 				fieldName fieldTo textAnyValue
 			)
@@ -181,8 +181,8 @@ val javaFieldObjectDefinition
 	get() =
 		nativeDefinition(
 			value(
-				fieldName fieldTo value(javaName fieldTo anyValue),
-				objectName fieldTo value(javaName fieldTo anyValue)
+				fieldName fieldTo value(javaName fieldTo anythingValue),
+				objectName fieldTo value(javaName fieldTo anythingValue)
 			)
 		) {
 			it
@@ -205,12 +205,12 @@ val javaClassMethodNameTextDefinition
 		nativeDefinition(
 			value(
 				className fieldTo value(
-					javaName fieldTo anyValue
+					javaName fieldTo anythingValue
 				),
 				methodName fieldTo value(
 					textAnyField,
 					argsName fieldTo value(
-						javaName fieldTo anyValue
+						javaName fieldTo anythingValue
 					)
 				)
 			)
@@ -242,10 +242,10 @@ val javaMethodInvokeDefinition
 	get() =
 		nativeDefinition(
 			value(
-				methodName fieldTo value(javaName fieldTo anyValue),
+				methodName fieldTo value(javaName fieldTo anythingValue),
 				invokeName fieldTo value(
-					javaName fieldTo anyValue,
-					argsName fieldTo value(javaName fieldTo anyValue)
+					javaName fieldTo anythingValue,
+					argsName fieldTo value(javaName fieldTo anythingValue)
 				)
 			)
 		) {

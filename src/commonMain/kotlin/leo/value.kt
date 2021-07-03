@@ -71,8 +71,8 @@ val Native.numberOrNull: Number? get() = any as? Number
 operator fun Value.plus(field: Field): Value = value(this linkTo field)
 operator fun Value.plus(value: Value): Value = fold(value.fieldSeq.reverse) { plus(it) }
 val emptyValue: Value get() = EmptyValue
-val anyValue: Value get() = value(anyField)
-val anyField: Field get() = anyName fieldTo value()
+val anythingValue: Value get() = value(anythingField)
+val anythingField: Field get() = anythingName fieldTo value()
 fun value(vararg fields: Field) = emptyValue.fold(fields) { plus(it) }
 fun value(name: String) = value(name fieldTo value())
 fun value(link: Link): Value = LinkValue(link)
@@ -429,8 +429,8 @@ val Field.selectFieldOrNull: Field? get() =
 		else -> valueOrNull?.fieldOrNull
 	}
 
-val textAnyField = textName fieldTo anyValue
-val numberAnyField = numberName fieldTo anyValue
+val textAnyField = textName fieldTo anythingValue
+val numberAnyField = numberName fieldTo anythingValue
 
 val textAnyValue = value(textAnyField)
 val numberAnyValue = value(numberAnyField)

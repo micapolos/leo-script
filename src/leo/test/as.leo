@@ -8,30 +8,22 @@ comment
 
 test
   "Hello, world!"
-  as any.text
+  as text
   is equal to "Hello, world!"
 
 test
   try 
     "Hello, world!"
-    as any.number
+    as number
   is equal to quote try error
     "Hello, world!"
-    as number any
-
-test
-  try
-    "Hello, world!"
-    as text
-  is equal to quote try error
-    "Hello, world!"
-    as text
+    as number
 
 test
   point
     x 10
     y 20
-  as any.point
+  as point anything
   is equal to point
     x 10
     y 20

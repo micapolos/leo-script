@@ -2,7 +2,7 @@ package leo
 
 fun Value.matches(value: Value): Boolean =
 	when (value) {
-		anyValue -> true
+		anythingValue -> true
 		EmptyValue -> isEmpty
 		is LinkValue -> matches(value.link)
 	}
@@ -40,6 +40,6 @@ fun Rhs.matches(rhs: Rhs) =
 		is ValueRhs -> (this is ValueRhs) && value.matches(rhs.value)
 	}
 
-val Value.isAny get() = this == anyValue
+val Value.isAny get() = this == anythingValue
 val Rhs.isAny get() = (this is ValueRhs) && value.isAny
 

@@ -15,8 +15,8 @@ test
 
 test
   let
-    any.number
-    and any.number
+    number
+    and number
     do
       given.number
       plus given.and.number

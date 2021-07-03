@@ -4,13 +4,13 @@ comment
 
 test 
   recursive let
-    any.number.countdown
+    number.countdown
     do
-      countdown.number
+      number
       check equal to 0
       select
-        yes applying number
-        no applying
+        yes doing number
+        no doing
           number
           minus 1
           countdown

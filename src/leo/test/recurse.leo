@@ -9,13 +9,13 @@ test
     number
     check less than 2
     select
-      yes applying number
+      yes doing number
       no doing
-        no.number
+        number
         minus 2
         recurse
         plus
-          no.number
+          number
           minus 1
           recurse
   is equal to 987

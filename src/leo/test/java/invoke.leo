@@ -10,6 +10,6 @@ test
     args
       element "world!".java
       array.java
-  as java any
+  as java anything
   quote
   is equal to java native "Hello, world!"

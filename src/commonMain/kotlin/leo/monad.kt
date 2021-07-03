@@ -34,7 +34,7 @@ val optionMonad get() =
 val optionMonadDefinition =
 	definition(
 		value(optionName fieldTo value(
-			presentName fieldTo anyValue,
+			presentName fieldTo anythingValue,
 			orName fieldTo value(absentName))),
 		optionMonad)
 

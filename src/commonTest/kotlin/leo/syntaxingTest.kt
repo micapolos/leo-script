@@ -21,12 +21,12 @@ class SyntaxCompilationTest {
 	fun as_() {
 	 	script(
 		  line(literal("Hello, world!")),
-	    asName lineTo script(textName lineTo script(anyName)))
+	    asName lineTo script(textName lineTo script(anythingName)))
 		  .syntax
 		  .assertEqualTo(
 			  syntax(
 				  syntaxLine(literal("Hello, world!")),
-				  line(as_(syntax(textName lineTo syntax(anyName))))))
+				  line(as_(syntax(textName lineTo syntax(anythingName))))))
 	}
 
 	@Test

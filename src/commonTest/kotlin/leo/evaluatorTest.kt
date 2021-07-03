@@ -238,7 +238,7 @@ class EvaluatorTest {
 	fun letDo() {
 		script(
 			letName lineTo script(
-				"name" lineTo script(anyName),
+				"name" lineTo script(anythingName),
 				doName lineTo script(givenName)
 			),
 			"name" lineTo script("foo")
@@ -275,7 +275,7 @@ class EvaluatorTest {
 	fun letName() {
 		script(
 			letName lineTo script(
-				numberName lineTo script(anyName),
+				numberName lineTo script(anythingName),
 				"increment" lineTo script(),
 				doName lineTo script(
 					"increment" lineTo script(),
@@ -608,7 +608,7 @@ class EvaluatorTest {
 			testName lineTo script(
 				"foo" lineTo script("bar"),
 				isName lineTo script(
-					matchingName lineTo script("foo" lineTo script(anyName))
+					matchingName lineTo script("foo" lineTo script(anythingName))
 				)
 			)
 		)
@@ -670,7 +670,7 @@ class EvaluatorTest {
 		script(
 			line(literal("foo")),
 			isName lineTo script(
-				matchingName lineTo script(textName lineTo script(anyName))
+				matchingName lineTo script(textName lineTo script(anythingName))
 			)
 		)
 			.evaluate
@@ -678,14 +678,14 @@ class EvaluatorTest {
 
 		script(
 			line(literal("doo")),
-			isName lineTo script(matchingName lineTo script(numberName lineTo script(anyName)))
+			isName lineTo script(matchingName lineTo script(numberName lineTo script(anythingName)))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(noName)))
 
 		script(
 			doingName lineTo script("foo"),
-			isName lineTo script(matchingName lineTo script(doingName lineTo script(anyName)))
+			isName lineTo script(matchingName lineTo script(doingName lineTo script(anythingName)))
 		)
 			.evaluate
 			.assertEqualTo(script(isName lineTo script(yesName)))
@@ -724,7 +724,7 @@ class EvaluatorTest {
 			line(literal("foo")),
 			isName lineTo script(
 				notName lineTo script(
-					matchingName lineTo script(textName lineTo script(anyName))
+					matchingName lineTo script(textName lineTo script(anythingName))
 				)
 			)
 		)
@@ -735,7 +735,7 @@ class EvaluatorTest {
 			line(literal("doo")),
 			isName lineTo script(
 				notName lineTo script(
-					matchingName lineTo script(numberName lineTo script(anyName))
+					matchingName lineTo script(numberName lineTo script(anythingName))
 				)
 			)
 		)
@@ -1157,7 +1157,7 @@ class EvaluatorTest {
 		val script = script(
 			recursiveName lineTo script(
 				letName lineTo script(
-					numberName lineTo script(anyName),
+					numberName lineTo script(anythingName),
 					"even" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(
@@ -1182,7 +1182,7 @@ class EvaluatorTest {
 					)
 				),
 				letName lineTo script(
-					numberName lineTo script(anyName),
+					numberName lineTo script(anythingName),
 					"odd" lineTo script(),
 					"decrement" lineTo script(),
 					doName lineTo script(

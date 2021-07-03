@@ -126,7 +126,7 @@ val Script.applySyntaxing: Syntaxing<Apply> get() =
 	blockSyntaxing.map(::apply)
 
 val Script.applyingSyntaxingOrNull: Syntaxing<Applying>? get() =
-	notNullIf(!isEmpty && !equals(script(anyName))) {
+	notNullIf(!isEmpty && !equals(script(anythingName))) {
 		blockSyntaxing.map(::applying)
 	}
 
@@ -153,7 +153,7 @@ val Script.combineWithSyntaxingOrNull: Syntaxing<CombineWith>? get() =
 
 val Script.combiningWithSyntaxingOrNull: Syntaxing<CombiningWith>? get() =
 	matchPrefix(withName) { withScript ->
-		notNullIf(!withScript.isEmpty && !withScript.equals(script(anyName))) {
+		notNullIf(!withScript.isEmpty && !withScript.equals(script(anythingName))) {
 			withScript.blockSyntaxing.map(::combiningWith)
 		}
 	}
@@ -171,7 +171,7 @@ val Script.haveSyntaxing: Syntaxing<Have> get() =
 	syntaxSyntaxing.map(::have)
 
 val Script.doingSyntaxingOrNull: Syntaxing<Doing>? get() =
-	notNullIf(!isEmpty && !equals(script(anyName))) {
+	notNullIf(!isEmpty && !equals(script(anythingName))) {
 		blockSyntaxing.map(::doing)
 	}
 

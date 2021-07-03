@@ -25,7 +25,7 @@ test
     is not bar
 
 let
-  text any
+  text
   is greeting
   do
     text

@@ -1,43 +1,65 @@
 test
   "Hello, world!"
-  is matching text any
+  is matching anything
 
 test
   "Hello, world!"
-  is not matching text
+  is matching text
 
 test
-  123
-  is matching number any
+  "Hello, world!"
+  is matching text anything
 
 test
-  123
+  "Hello, world!"
   is not matching number
 
 test
-  point
-    x 10
-    y 20
-  is matching point any
+  123
+  is matching number
+
+test
+  123
+  is matching number anything
 
 test
   point
     x 10
     y 20
-  is not matching circle any
+  is matching anything
+
+test
+  point
+    x 10
+    y 20
+  is matching point anything
+
+test
+  point
+    x 10
+    y 20
+  is not matching circle anything
 
 test
   point
     x 10
     y 20
   is matching point
-    x number any
-    y number any
+    x number anything
+    y number anything
+
+test
+  point
+    x 10
+    y 20
+  is matching point
+    x number
+    y number
 
 test
   point
     x 10
     y 20
   is not matching point
-    x text any
-    y text any
+    x text anything
+    y text anything

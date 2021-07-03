@@ -1,4 +1,4 @@
-use test any
+use test anything
 use test apply
 use test applying
 use test as

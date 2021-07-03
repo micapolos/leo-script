@@ -1,6 +1,6 @@
 test
   123.integer.java
-  as java any
+  as java anything
   quote
   is equal to java native "123"
 

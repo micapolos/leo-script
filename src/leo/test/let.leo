@@ -17,9 +17,9 @@ test
 
 test
   let
-    any.number.increment
+    number.increment
     do
-      increment.number
+      number
       plus 1
 
   10.increment
@@ -27,7 +27,7 @@ test
 
 test
   let
-    any.number.increment
+    number.increment
     apply
       number
       plus 1
@@ -44,7 +44,7 @@ test
 
 test
   let
-    any.number.factorial
+    number.factorial
     do recursing
       factorial.number
       is equal to 1
@@ -60,4 +60,3 @@ test
 
   5.factorial
   is equal to 120
-
