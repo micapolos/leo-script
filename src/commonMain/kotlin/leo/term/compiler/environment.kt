@@ -1,6 +1,7 @@
 package leo.term.compiler
 
 import leo.Literal
+import leo.Script
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.anyDouble
@@ -23,6 +24,9 @@ import leo.type
 data class Environment<V>(
 	val literalFn: (Literal) -> TypedLine<V>,
 	val resolveOrNullFn: (TypedTerm<V>) -> TypedTerm<V>?)
+
+fun <V> Environment<V>.typedTerm(script: Script): TypedTerm<V> =
+	Context(this, scope()).compileTypedTerm(script)
 
 val runtimeEnvironment: Environment<Any?> get() =
 	Environment(
