@@ -481,14 +481,17 @@ fun Link.onlyFieldOrNull(name: String): Field? =
 fun Value.nthLastOrNull(int: Int, name: String): Value? =
 	fieldOrNull(int - 1, name)?.let { value(it) }
 
-fun Value.nthOrNull(int: Int, name: String): Value? =
-	fieldOrNull(fieldCount(name) - int, name)?.let { value(it) }
+fun Value.nthOrNull(n: Int, name: String): Value? =
+	fieldOrNull(fieldCount(name) - n, name)?.let { value(it) }
 
 fun Value.fieldCount(name: String): Int =
-	fieldSeq.filterMap { getOrNull(name)?.the }.size
+	fieldSeq(name).size
 
 fun Value.fieldOrNull(int: Int, name: String): Field? =
-	fieldSeq.filterMap { getOrNull(name)?.the }.get(int)
+	fieldSeq(name).get(int)
+
+fun Value.fieldSeq(name: String): Seq<Field> =
+	fieldSeq.filterMap { getOrNull(name)?.the }
 
 fun Field.getOrNull(name: String): Field? =
 	if (this.name == name) this

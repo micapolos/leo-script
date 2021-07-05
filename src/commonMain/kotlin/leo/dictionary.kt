@@ -18,6 +18,9 @@ fun Dictionary.plus(definition: Definition): Dictionary =
 operator fun Dictionary.plus(dictionary: Dictionary): Dictionary =
 	Dictionary(definitionStack.pushAll(dictionary.definitionStack))
 
+val Dictionary.givenOrNull: ValueGiven? get() =
+	definitionStack.mapFirst { (this as? GivenDefinition)?.given }
+
 fun Dictionary.selectEvaluation(field: Field, cases: Value): Evaluation<Value> =
 	when (cases) {
 		EmptyValue -> value(selectName).throwError()

@@ -1,3 +1,4 @@
-robiąc
-  z igły
-  widły
+10
+and 20
+do
+  first number

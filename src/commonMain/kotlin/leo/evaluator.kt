@@ -127,11 +127,13 @@ fun Evaluator.plusDynamicValueOrNullEvaluation(field: Field): Evaluation<Value>?
 			evaluateName -> plusEvaluateValueEvaluationOrNull(rhs)
 			exampleName -> plusExampleValueEvaluationOrNull(rhs)
 			failName -> plusFailValueEvaluationOrNull(rhs)
+			//firstName -> plusNthValueEvaluationOrNull(1, rhs)
 			giveName -> plusGiveValueEvaluationOrNull(rhs)
 			hashName -> plusHashValueEvaluationEvaluation(rhs)
 			haveName -> plusHaveValueEvaluation(rhs)
 			headName -> plusHeadValueEvaluationOrNull(rhs)
 			printName -> plusPrintValueEvaluationOrNull(rhs)
+			//secondName -> plusNthValueEvaluationOrNull(2, rhs)
 			tailName -> plusTailValueEvaluationOrNull(rhs)
 			takeName -> plusTakeValueEvaluationOrNull(rhs)
 			textName -> plusTextValueEvaluationOrNull(rhs)
@@ -219,6 +221,15 @@ fun Evaluator.plusExampleValueEvaluationOrNull(@Suppress("UNUSED_PARAMETER") exa
 
 fun Evaluator.plusFailValueEvaluationOrNull(failValue: Value): Evaluation<Value>? =
 	value.orNullIf { !isEmpty }?.let { failValue.failEvaluation() }
+
+fun Evaluator.plusNthValueEvaluationOrNull(n: Int, nameValue: Value): Evaluation<Value>? =
+	nameValue.nameOrNull?.let { name ->
+		currentOrGivenValueOrNull?.nthOrNull(n, name)?.evaluation
+	}
+
+val Evaluator.currentOrGivenValueOrNull: Value? get() =
+	if (value.isEmpty) dictionary.givenOrNull?.value
+	else value
 
 fun Evaluator.plusEvaluation(matching: Matching): Evaluation<Evaluator> =
 	dictionary.fieldEvaluation(matching).bind { plusResolveEvaluation(it) }
