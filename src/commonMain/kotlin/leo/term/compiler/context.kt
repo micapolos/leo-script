@@ -8,14 +8,14 @@ data class Context<V>(
 	val environment: Environment<V>,
 	val scope: Scope)
 
-fun <V> Context<V>.compileTypedTerm(script: Script): TypedTerm<V> =
+val <V> Environment<V>.context get() =
+	Context(this, scope())
+
+fun <V> Context<V>.typedTerm(script: Script): TypedTerm<V> =
 	Compiled(this, typedTerm()).plus(script).typedTerm
 
 fun <V> Context<V>.plus(binding: Binding): Context<V> =
 	copy(scope = scope.plus(binding))
-
-fun context(): Context<Any?> =
-	Context(runtimeEnvironment, scope())
 
 fun <V> Context<V>.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
 	null

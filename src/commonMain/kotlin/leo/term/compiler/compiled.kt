@@ -48,7 +48,7 @@ fun <V> Compiled<V>.plus(field: ScriptField): Compiled<V> =
 		?: plusNamed(field)
 
 fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
-	plus(field.name lineTo context.compileTypedTerm(field.rhs))
+	plus(field.name lineTo context.typedTerm(field.rhs))
 
 fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	when (field.name) {
@@ -59,7 +59,7 @@ fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	}
 
 fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
-	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).compileTypedTerm(script)))
+	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiled<V>.plusGet(script: Script): Compiled<V> =
 	script.onlyNameOrNull.notNullOrError("syntax get").let { name ->
