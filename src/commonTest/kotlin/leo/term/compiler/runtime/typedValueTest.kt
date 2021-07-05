@@ -11,11 +11,30 @@ import leo.numberName
 import leo.numberTypeLine
 import leo.script
 import leo.term.anyValue
+import leo.term.function
+import leo.term.get
+import leo.term.invoke
+import leo.term.scope
 import leo.term.typed.typed
+import leo.term.value
 import leo.type
 import kotlin.test.Test
 
 class TypedValueTest {
+	@Test
+	fun lines() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					value(function(scope(value(10.0), value(20.0)), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
+					type(
+						"x" lineTo type(numberTypeLine),
+						"y" lineTo type(numberTypeLine))))
+	}
+
 	@Test
 	fun do_() {
 		script(

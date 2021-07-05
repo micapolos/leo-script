@@ -17,11 +17,18 @@ class EvaluateTest {
 	fun lines() {
 		script(
 			"x" lineTo script(literal(10)),
-			"y" lineTo script(literal(20))
-		)
+			"y" lineTo script(literal(20)))
 			.assertSameAfter { evaluate }
 	}
 
+	@Test
+	fun moreLines() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			"z" lineTo script(literal(30)))
+			.assertSameAfter { evaluate }
+	}
 
 	@Test
 	fun do_() {
