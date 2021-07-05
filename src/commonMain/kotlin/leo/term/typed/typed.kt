@@ -5,10 +5,12 @@ import leo.Type
 import leo.TypeLine
 import leo.atomOrNull
 import leo.base.fold
+import leo.base.notNullIf
 import leo.fieldOrNull
 import leo.isStatic
 import leo.lineTo
 import leo.linkOrNull
+import leo.name
 import leo.named.evaluator.any
 import leo.onlyLineOrNull
 import leo.plus
@@ -62,7 +64,7 @@ val <V> TypedTerm<V>.pairOrNull: Pair<TypedTerm<V>, TypedLine<V>>? get() =
 					if (line.isStatic) typed(id<V>(), type) to typed(id(), line)
 					else typed(id<V>(), type) to typed(v, line)
 				else
-					if (line.isStatic) typed(v, type) to typed(id<V>(), line)
+					if (line.isStatic) typed(v, type) to typed(id(), line)
 					else typed(v.tail, type) to typed(v.head, line)
 			}
 		}
@@ -79,20 +81,18 @@ val <V> TypedTerm<V>.contentOrNull: TypedTerm<V>? get() =
 		typed(v, type)
 	}
 
-@JvmName("termGetOrNull")
 fun <V> TypedTerm<V>.getOrNull(name: String): TypedTerm<V>? =
+	contentOrNull?.lineOrNull(name)?.let { typedTerm(it) }
+
+fun <V> TypedTerm<V>.lineOrNull(name: String): TypedLine<V>? =
 	pairOrNull?.let { (typedTerm, typedLine) ->
 		null
-			?: typedLine.getOrNull(name)
-			?: typedTerm.getOrNull(name)
+			?: typedLine.orNull(name)
+			?: typedTerm.lineOrNull(name)
 	}
 
-@JvmName("lineGetOrNull")
-fun <V> TypedLine<V>.getOrNull(name: String): TypedTerm<V>? =
-	t.atomOrNull?.fieldOrNull?.let { field ->
-		if (field.name == name) typed(v, type(field.name lineTo field.rhsType))
-		else typed(v, field.rhsType).getOrNull(name)
-	}
+fun <V> TypedLine<V>.orNull(name: String): TypedLine<V>? =
+	notNullIf(t.name == name) { this }
 
 fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 	typedTerm(name lineTo this)

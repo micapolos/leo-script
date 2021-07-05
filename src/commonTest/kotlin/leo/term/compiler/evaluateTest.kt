@@ -7,6 +7,7 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.makeName
+import leo.numberName
 import leo.numberTypeLine
 import leo.script
 import leo.term.anyValue
@@ -45,6 +46,18 @@ class EvaluateTest {
 	}
 
 	@Test
+	fun getNumber() {
+		script(
+			"id" lineTo script(line(literal(10))),
+			getName lineTo script(numberName))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					10.0.anyValue,
+					type(numberTypeLine)))
+	}
+
+	@Test
 	fun make() {
 		script(
 			line(literal(10)),
@@ -56,4 +69,17 @@ class EvaluateTest {
 					type("id" lineTo type(numberTypeLine))))
 
 	}
+
+	@Test
+	fun numberAddNumber() {
+		script(
+			line(literal(10)),
+			"add" lineTo script(literal(20)))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					30.0.anyValue,
+					type(numberTypeLine)))
+	}
+
 }

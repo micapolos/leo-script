@@ -23,7 +23,7 @@ import leo.term.typed.lineTo
 import leo.term.typed.make
 import leo.term.typed.plus
 
-data class Compiled<out V>(
+data class Compiled<V>(
 	val context: Context<V>,
 	val typedTerm: TypedTerm<V>)
 
@@ -40,7 +40,7 @@ fun <V> Compiled<V>.plus(scriptLine: ScriptLine): Compiled<V> =
 	}
 
 fun <V> Compiled<V>.plus(literal: Literal): Compiled<V> =
-	plus(context.literalFn(literal))
+	plus(context.environment.literalFn(literal))
 
 fun <V> Compiled<V>.plus(field: ScriptField): Compiled<V> =
 	null
@@ -74,4 +74,4 @@ fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =
 	}
 
 fun <V> Compiled<V>.plus(typedLine: TypedLine<V>): Compiled<V> =
-	Compiled(context, context.scope.resolve(typedTerm.plus(typedLine)))
+	Compiled(context, context.resolve(typedTerm.plus(typedLine)))
