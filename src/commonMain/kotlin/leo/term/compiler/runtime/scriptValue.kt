@@ -1,9 +1,9 @@
-package leo.term.compiler
+package leo.term.compiler.runtime
 
 import leo.Script
 import leo.term.Value
 import leo.term.anyEvaluator
-import leo.term.compiler.runtime.runtimeEnvironment
+import leo.term.compiler.typedTerm
 import leo.term.typed.TypedValue
 import leo.term.typed.typed
 import leo.term.value

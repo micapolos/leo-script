@@ -11,6 +11,7 @@ import leo.numberName
 import leo.numberTypeLine
 import leo.script
 import leo.term.anyValue
+import leo.term.compiler.runtime.typedValue
 import leo.term.typed.typed
 import leo.type
 import kotlin.test.Test
