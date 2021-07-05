@@ -2,7 +2,9 @@ package leo
 
 import leo.base.Seq
 import leo.base.SeqNode
+import leo.base.filterMap
 import leo.base.fold
+import leo.base.get
 import leo.base.ifOrNull
 import leo.base.mapFirstOrNull
 import leo.base.negate
@@ -13,6 +15,8 @@ import leo.base.runIf
 import leo.base.runIfNotNull
 import leo.base.seq
 import leo.base.seqNode
+import leo.base.size
+import leo.base.the
 
 sealed class Value {
 	override fun toString() = string
@@ -456,3 +460,36 @@ fun Value.thingBeforeOrNull(name: String): Value? =
 fun Link.thingBeforeOrNull(name: String): Value? =
 	if (field.name == name) value
 	else value.thingBeforeOrNull(name)
+
+fun Value.onlyOrNull(name: String): Value? =
+	null
+		?: onlyFieldOrNull(name)?.let { value(it) }
+		?: onlyFieldOrNull?.valueOrNull?.onlyOrNull(name)
+
+fun Value.onlyFieldOrNull(name: String): Field? =
+	when (this) {
+		EmptyValue -> null
+		is LinkValue -> link.onlyFieldOrNull(name)
+	}
+
+fun Link.onlyFieldOrNull(name: String): Field? =
+	if (field.name == name)
+		if (value.selectFieldOrNull(name) == null) field
+		else null
+	else value.onlyFieldOrNull(name)
+
+fun Value.nthLastOrNull(int: Int, name: String): Value? =
+	fieldOrNull(int - 1, name)?.let { value(it) }
+
+fun Value.nthOrNull(int: Int, name: String): Value? =
+	fieldOrNull(fieldCount(name) - int, name)?.let { value(it) }
+
+fun Value.fieldCount(name: String): Int =
+	fieldSeq.filterMap { getOrNull(name)?.the }.size
+
+fun Value.fieldOrNull(int: Int, name: String): Field? =
+	fieldSeq.filterMap { getOrNull(name)?.the }.get(int)
+
+fun Field.getOrNull(name: String): Field? =
+	if (this.name == name) this
+	else rhs.valueOrNull?.onlyFieldOrNull?.getOrNull(name)

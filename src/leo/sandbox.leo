@@ -1,0 +1,3 @@
+robiąc
+  z igły
+  widły

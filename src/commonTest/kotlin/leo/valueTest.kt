@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.assertEqualTo
+import leo.base.assertNull
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
@@ -248,5 +249,40 @@ class ValueTest {
 							"y" fieldTo value("one"))),
 					lastName fieldTo value(
 						"z" fieldTo value("two"))))
+	}
+
+	@Test
+	fun nthOrNull() {
+		val value = value(
+			"vector" fieldTo value(
+				"x" fieldTo value(field(literal(10))),
+				"y" fieldTo value(field(literal(20)))),
+			"add" fieldTo value(
+				"vector" fieldTo value(
+					"x" fieldTo value(field(literal(30))),
+					"y" fieldTo value(field(literal(40))))))
+
+		value
+			.nthOrNull(1, "vector")
+			.assertEqualTo(
+				value(
+					"vector" fieldTo value(
+						"x" fieldTo value(field(literal(10))),
+						"y" fieldTo value(field(literal(20))))))
+
+		value
+			.nthOrNull(2, "vector")
+			.assertEqualTo(
+				value(
+					"vector" fieldTo value(
+						"x" fieldTo value(field(literal(30))),
+						"y" fieldTo value(field(literal(40))))))
+
+		value
+			.nthOrNull(3, "vector")
+			.assertNull
+
+		value.nthOrNull(1, "x").assertNull
+		value.nthOrNull(1, "y").assertNull
 	}
 }
