@@ -1,4 +1,4 @@
-package leo.term.compiler.js
+package leo.term.compiler.python
 
 import leo.base.assertEqualTo
 import leo.line
@@ -6,11 +6,11 @@ import leo.lineTo
 import leo.script
 import org.junit.Test
 
-class JsTest {
+class PythonTest {
 	@Test
 	fun literal() {
 		script(line(leo.literal("Hello, world!")))
-			.js
+			.python
 			.string
 			.assertEqualTo("\"Hello, world!\"")
 	}
@@ -21,9 +21,9 @@ class JsTest {
 			"x" lineTo script(leo.literal(10)),
 			"y" lineTo script(leo.literal(20))
 		)
-			.js
+			.python
 			.string
-			.assertEqualTo("(v0=>(v1=>(v2=>v2(v0)(v1))))(10)(20)")
+			.assertEqualTo("(lambda v0: (lambda v1: (lambda v2: v2(v0)(v1))))(10)(20)")
 	}
 
 	@Test
@@ -32,8 +32,8 @@ class JsTest {
 			line(leo.literal(10)),
 			"add" lineTo script(leo.literal(20))
 		)
-			.js
+			.python
 			.string
-			.assertEqualTo("(v0=>(x=>y=>x+y)(v0((v1=>(v2=>v1))))(v0((v1=>(v2=>v2)))))((v0=>(v1=>(v2=>v2(v0)(v1))))(10)(20))")
+			.assertEqualTo("(lambda v0: (lambda x: lambda y: x + y)(v0((lambda v1: (lambda v2: v1))))(v0((lambda v1: (lambda v2: v2)))))((lambda v0: (lambda v1: (lambda v2: v2(v0)(v1))))(10)(20))")
 	}
 }

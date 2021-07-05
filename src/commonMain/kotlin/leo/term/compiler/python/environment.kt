@@ -1,4 +1,4 @@
-package leo.term.compiler.js
+package leo.term.compiler.python
 
 import leo.Literal
 import leo.lineTo
@@ -14,15 +14,16 @@ import leo.term.typed.typed
 import leo.type
 import leo.typeLine
 
-val jsEnvironment: Environment<Js>
+
+val pythonEnvironment: Environment<Python>
 	get() =
 		Environment(
-			{ literal -> typed(literal.js.term, literal.typeLine) },
+			{ literal -> typed(literal.python.term, literal.typeLine) },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 						typed(
-							fn("(x=>y=>x+y)".js.term.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+							fn("(lambda x: lambda y: x + y)".python.term.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)).invoke(typedTerm.v),
 							type(numberTypeLine)
 						)
 					else -> null
@@ -30,4 +31,4 @@ val jsEnvironment: Environment<Js>
 			}
 		)
 
-val Literal.js: Js get() = toString().js
+val Literal.python: Python get() = toString().python

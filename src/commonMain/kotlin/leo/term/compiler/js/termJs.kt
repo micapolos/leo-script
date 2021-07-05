@@ -27,10 +27,10 @@ fun Scope.js(term: Term<Js>): Js =
 	}
 
 fun Scope.js(abstraction: TermAbstraction<Js>): Js =
-	("v" + depth + "->" + push.js(abstraction.term).string).js
+	("(v" + depth + "=>" + push.js(abstraction.term).string + ")").js
 
 fun Scope.js(application: TermApplication<Js>): Js =
-	("(" + js(application.lhs).string + ")(" + js(application.rhs).string + ")").js
+	(js(application.lhs).string + "(" + js(application.rhs).string + ")").js
 
 fun Scope.js(variable: TermVariable): Js =
 	"v${depth - variable.index - 1}".js
