@@ -21,6 +21,11 @@ fun <V> Scope.resolveOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>? =
 		value.resolveOrNull(variable(index), typedTerm)
 	}
 
+fun <V> Scope.getOrNull(name: String): TypedTerm<V>? =
+	bindingStack.seq.mapIndexed.mapFirstOrNull {
+		value.getOrNull(variable(index), name)
+	}
+
 fun <V> Scope.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
 	resolveOrNull(typedTerm) ?: typedTerm
 

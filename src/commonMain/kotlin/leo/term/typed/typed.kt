@@ -17,8 +17,10 @@ import leo.structureOrNull
 import leo.term.Term
 import leo.term.Value
 import leo.term.anyTerm
+import leo.term.fn
 import leo.term.head
 import leo.term.id
+import leo.term.invoke
 import leo.term.plus
 import leo.term.tail
 import leo.type
@@ -94,3 +96,6 @@ fun <V> TypedLine<V>.getOrNull(name: String): TypedTerm<V>? =
 
 fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 	typedTerm(name lineTo this)
+
+fun <V> TypedTerm<V>.do_(typedTerm: TypedTerm<V>): TypedTerm<V> =
+	typed(fn(typedTerm.v).invoke(v), typedTerm.t)

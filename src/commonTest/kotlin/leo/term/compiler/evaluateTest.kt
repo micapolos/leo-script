@@ -1,6 +1,7 @@
 package leo.term.compiler
 
 import leo.base.assertEqualTo
+import leo.doName
 import leo.getName
 import leo.line
 import leo.lineTo
@@ -14,6 +15,20 @@ import leo.type
 import kotlin.test.Test
 
 class EvaluateTest {
+	@Test
+	fun do_() {
+		script(
+			"x" lineTo script(literal(10)),
+			"y" lineTo script(literal(20)),
+			doName lineTo script(
+				getName lineTo script("x")))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					10.0.anyValue,
+					type("x" lineTo type(numberTypeLine))))
+	}
+
 	@Test
 	fun get() {
 		script(

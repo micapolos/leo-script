@@ -9,7 +9,7 @@ import leo.ScriptLine
 import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
-import leo.doesName
+import leo.doName
 import leo.getName
 import leo.isEmpty
 import leo.lineSeq
@@ -17,6 +17,7 @@ import leo.makeName
 import leo.onlyNameOrNull
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
+import leo.term.typed.do_
 import leo.term.typed.getOrNull
 import leo.term.typed.lineTo
 import leo.term.typed.make
@@ -51,19 +52,20 @@ fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
 
 fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	when (field.name) {
-		doesName -> plusDoes(field.rhs)
+		doName -> plusDo(field.rhs)
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
 		else -> null
 	}
 
-fun <V> Compiled<V>.plusDoes(script: Script): Compiled<V> =
-	set(context.plus(binding(given(typedTerm.t))).compileTypedTerm(script))
+fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
+	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).compileTypedTerm(script)))
 
 fun <V> Compiled<V>.plusGet(script: Script): Compiled<V> =
 	script.onlyNameOrNull.notNullOrError("syntax get").let { name ->
-		if (typedTerm.t.isEmpty) TODO()
-		else set(typedTerm.getOrNull(name).notNullOrError("term get"))
+		set(
+			if (typedTerm.t.isEmpty) context.scope.getOrNull<V>(name).notNullOrError("term get")
+			else typedTerm.getOrNull(name).notNullOrError("term get"))
 	}
 
 fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =
