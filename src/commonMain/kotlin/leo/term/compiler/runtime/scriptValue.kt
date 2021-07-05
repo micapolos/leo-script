@@ -15,3 +15,6 @@ val Script.typedValue: TypedValue<Any?> get() =
 
 val Script.value: Value<Any?> get() =
 	typedValue.value
+
+val Script.evaluate: Script get() =
+	typedValue.script
