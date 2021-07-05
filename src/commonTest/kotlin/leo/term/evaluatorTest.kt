@@ -26,4 +26,21 @@ class EvaluatorTest {
 				.invoke("world!".anyTerm))
 			.assertEqualTo("Hello, world!".anyValue)
 	}
+
+	@Test
+	fun plus() {
+		val term = "foo".anyTerm.plus("bar".anyTerm).plus("zoo".anyTerm)
+
+		anyEvaluator
+			.value(term.head)
+			.assertEqualTo("zoo".anyValue)
+
+		anyEvaluator
+			.value(term.tail.head)
+			.assertEqualTo("bar".anyValue)
+
+		anyEvaluator
+			.value(term.tail.tail)
+			.assertEqualTo("foo".anyValue)
+	}
 }

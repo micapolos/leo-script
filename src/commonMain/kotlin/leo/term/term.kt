@@ -23,5 +23,15 @@ val <T> T.term: Term<T> get() = NativeTerm(this)
 fun <T> get(index: Int): Term<T> = term(variable(index))
 fun <T> fn(term: Term<T>): Term<T> = term(TermAbstraction(term))
 fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
+fun <T> id(): Term<T> = fn(get(0))
 
 val Any?.anyTerm: Term<Any?> get() = term
+
+fun <T> Term<T>.plus(term: Term<T>): Term<T> =
+	fn(fn(fn(get<T>(0).invoke(get(2)).invoke(get(1))))).invoke(this).invoke(term)
+
+val <T> Term<T>.tail: Term<T> get() =
+	invoke(fn(fn(get(1))))
+
+val <T> Term<T>.head: Term<T> get() =
+	invoke(fn(fn(get(0))))
