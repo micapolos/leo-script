@@ -180,7 +180,7 @@ val Script.exampleSyntaxing: Syntaxing<Example> get() =
 
 val Script.getSyntaxing: Syntaxing<Get> get() =
 	lineStack
-		.map { fieldOrNull?.onlyStringOrNull.notNullOrThrow { value(getName fieldTo value(field)) } }
+		.map { fieldOrNull?.onlyNameOrNull.notNullOrThrow { value(getName fieldTo value(field)) } }
 		.let(::Get)
 		.syntaxing
 

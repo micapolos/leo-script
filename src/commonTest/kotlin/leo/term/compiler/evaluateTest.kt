@@ -1,0 +1,44 @@
+package leo.term.compiler
+
+import leo.base.assertEqualTo
+import leo.getName
+import leo.line
+import leo.lineTo
+import leo.literal
+import leo.makeName
+import leo.numberTypeLine
+import leo.script
+import leo.term.anyValue
+import leo.term.typed.typed
+import leo.type
+import kotlin.test.Test
+
+class EvaluateTest {
+	@Test
+	fun get() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))
+			),
+			getName lineTo script("x"))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					10.0.anyValue,
+					type("x" lineTo type(numberTypeLine))))
+	}
+
+	@Test
+	fun make() {
+		script(
+			line(literal(10)),
+			makeName lineTo script("id"))
+			.typedValue
+			.assertEqualTo(
+				typed(
+					10.0.anyValue,
+					type("id" lineTo type(numberTypeLine))))
+
+	}
+}

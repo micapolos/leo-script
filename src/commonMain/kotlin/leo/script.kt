@@ -369,13 +369,13 @@ val ScriptLink.onlyLineOrNull: ScriptLine?
 	get() =
 		notNullIf(lhs.isEmpty) { line }
 
-val ScriptField.onlyStringOrNull: String?
+val ScriptField.onlyNameOrNull: String?
 	get() =
 		notNullIf(rhs.isEmpty) { name }
 
 val Script.onlyStringOrNull: String?
 	get() =
-		linkOrNull?.onlyLineOrNull?.fieldOrNull?.onlyStringOrNull
+		linkOrNull?.onlyLineOrNull?.fieldOrNull?.onlyNameOrNull
 
 tailrec fun Stack<String>.plusNamesOrNull(script: Script): Stack<String>? =
 	when (script) {
@@ -458,3 +458,6 @@ fun <T: Any> T?.optionScriptLine(scriptLineFn: T.() -> ScriptLine): ScriptLine =
 
 fun <T> Stack<T>.listScriptLine(scriptLineFn: T.() -> ScriptLine): ScriptLine =
 	"list" lineTo map(scriptLineFn).script
+
+val Script.onlyNameOrNull: String? get() =
+	onlyLineOrNull?.fieldOrNull?.onlyNameOrNull
