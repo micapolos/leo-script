@@ -14,7 +14,6 @@ import leo.term.typed.typed
 import leo.type
 import leo.typeLine
 
-
 val pythonEnvironment: Environment<Python>
 	get() =
 		Environment(

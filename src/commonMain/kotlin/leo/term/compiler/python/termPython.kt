@@ -9,7 +9,6 @@ import leo.term.TermApplication
 import leo.term.TermVariable
 import leo.term.VariableTerm
 
-
 data class Python(val string: String)
 val String.python: Python get() = Python(this)
 
