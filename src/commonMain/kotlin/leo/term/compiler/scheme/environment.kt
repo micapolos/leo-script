@@ -4,6 +4,8 @@ import leo.Literal
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
+import leo.term.fn
+import leo.term.get
 import leo.term.head
 import leo.term.invoke
 import leo.term.tail
@@ -22,7 +24,7 @@ val schemeEnvironment: Environment<Scheme>
 			when (typedTerm.t) {
 				type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 					typed(
-						"(lambda (x) (lambda (y) (+ x y)))".scheme.term.invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
+						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.term.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(numberTypeLine)
 					)
 				else -> null

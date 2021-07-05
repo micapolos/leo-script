@@ -33,6 +33,6 @@ class SchemeTest {
 			"add" lineTo script(literal(20)))
 			.scheme
 			.string
-			.assertEqualTo("(((lambda (x) (lambda (y) (+ x y))) ((((lambda (v0) (lambda (v1) (lambda (v2) ((v2 v0) v1)))) 10) 20) (lambda (v0) (lambda (v1) v0)))) ((((lambda (v0) (lambda (v1) (lambda (v2) ((v2 v0) v1)))) 10) 20) (lambda (v0) (lambda (v1) v1))))")
+			.assertEqualTo("((lambda (v0) (((lambda (x) (lambda (y) (+ x y))) (v0 (lambda (v1) (lambda (v2) v1)))) (v0 (lambda (v1) (lambda (v2) v2))))) (((lambda (v0) (lambda (v1) (lambda (v2) ((v2 v0) v1)))) 10) 20))")
 	}
 }
