@@ -85,10 +85,10 @@ fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
 	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiled<V>.plusGet(script: Script): Compiled<V> =
-	script.onlyNameOrNull.notNullOrError("syntax get").let { name ->
+	script.onlyNameOrNull.notNullOrError("get $script").let { name ->
 		set(
-			if (typedTerm.t.isEmpty) context.scope.getOrNull<V>(name).notNullOrError("term get")
-			else typedTerm.getOrNull(name).notNullOrError("term get"))
+			if (typedTerm.t.isEmpty) context.scope.getOrNull<V>(name).notNullOrError("$context get $name")
+			else typedTerm.getOrNull(name).notNullOrError("$typedTerm get $name"))
 	}
 
 fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =

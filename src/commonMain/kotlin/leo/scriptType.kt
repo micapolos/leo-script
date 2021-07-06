@@ -1,7 +1,7 @@
 package leo
 
-val textTypeScriptLine get() = textName lineTo script()
-val numberTypeScriptLine get() = numberName lineTo script()
+val textTypeScriptLine get() = anyName lineTo script(textName)
+val numberTypeScriptLine get() = anyName lineTo script(numberName)
 
 val Script.type: Type get() =
 	null
