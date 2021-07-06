@@ -45,21 +45,13 @@ fun <V> Compiled<V>.plus(script: Script): Compiled<V> =
 	fold(script.lineSeq.reverse) { plus(it) }
 
 fun <V> Compiled<V>.plus(scriptLine: ScriptLine): Compiled<V> =
-	null
-		?: plusMacroOrNull(scriptLine)
-		?: plusDynamic(scriptLine)
-
-fun <V> Compiled<V>.plusDynamic(scriptLine: ScriptLine): Compiled<V> =
 	when (scriptLine) {
 		is FieldScriptLine -> plus(scriptLine.field)
 		is LiteralScriptLine -> plus(scriptLine.literal)
 	}
 
-fun <V> Compiled<V>.plusMacroOrNull(scriptLine: ScriptLine): Compiled<V>? =
-	context.environment.resolveMacroOrNullFn(scriptLine)?.let { plus(it) }
-
 fun <V> Compiled<V>.plus(literal: Literal): Compiled<V> =
-	error("compile literal")
+	plus(context.environment.literalFn(literal))
 
 fun <V> Compiled<V>.plus(field: ScriptField): Compiled<V> =
 	null

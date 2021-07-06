@@ -1,8 +1,6 @@
 package leo.term.compiler.python
 
-import leo.FieldScriptLine
 import leo.Literal
-import leo.LiteralScriptLine
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
@@ -19,12 +17,7 @@ import leo.typeLine
 val pythonEnvironment: Environment<Python>
 	get() =
 		Environment(
-			{ scriptLine ->
-				when (scriptLine) {
-					is FieldScriptLine -> null
-					is LiteralScriptLine -> typed(scriptLine.literal.python.nativeTerm, scriptLine.literal.typeLine)
-				}
-			},
+			{ literal -> typed(literal.python.nativeTerm, literal.typeLine) },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->

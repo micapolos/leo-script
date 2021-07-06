@@ -1,8 +1,6 @@
 package leo.term.compiler.js
 
-import leo.FieldScriptLine
 import leo.Literal
-import leo.LiteralScriptLine
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
@@ -19,12 +17,7 @@ import leo.typeLine
 val jsEnvironment: Environment<Js>
 	get() =
 		Environment(
-			{ scriptLine ->
-				when (scriptLine) {
-					is FieldScriptLine -> null
-					is LiteralScriptLine -> typed(scriptLine.literal.js.nativeTerm, scriptLine.literal.typeLine)
-				}
-			},
+			{ literal -> typed(literal.js.nativeTerm, literal.typeLine) },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
