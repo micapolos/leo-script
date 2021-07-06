@@ -1,4 +1,8 @@
-10
-and 20
+x 10
+y 20
 do
-  first number
+  get x
+  get number
+  add
+    get y
+    get number

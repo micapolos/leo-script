@@ -1,19 +1,19 @@
 package leo
 
+import leo.term.evaluator.evaluate as typedEvaluate
 import leo.base.print
 import leo.java.io.inString
 import leo.named.compiler.CompileError
-import leo.named.evaluator.preludeEvaluate
 import leo.natives.fileText
 import leo.parser.scriptOrThrow
 import java.io.File
 
-val typed = false
+val typed = true
 
 fun main(args: Array<String>) {
 	try {
 		readText(args).scriptOrThrow.run {
-			if (typed) preludeEvaluate else evaluate
+			if (typed) typedEvaluate else evaluate
 		}
 	} catch (e: DebugError) {
 		e.script.string
