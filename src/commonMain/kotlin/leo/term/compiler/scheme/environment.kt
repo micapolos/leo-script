@@ -8,8 +8,8 @@ import leo.term.fn
 import leo.term.get
 import leo.term.head
 import leo.term.invoke
+import leo.term.nativeTerm
 import leo.term.tail
-import leo.term.term
 import leo.term.typed.typed
 import leo.type
 import leo.typeLine
@@ -19,12 +19,12 @@ import scheme.scheme
 val schemeEnvironment: Environment<Scheme>
 	get() =
 	Environment(
-		{ literal -> typed(literal.scheme.term, literal.typeLine) },
+		{ literal -> typed(literal.scheme.nativeTerm, literal.typeLine) },
 		{ typedTerm ->
 			when (typedTerm.t) {
 				type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 					typed(
-						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.term.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
+						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(numberTypeLine)
 					)
 				else -> null

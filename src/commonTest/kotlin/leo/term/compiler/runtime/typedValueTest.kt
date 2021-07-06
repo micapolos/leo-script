@@ -14,6 +14,7 @@ import leo.term.anyValue
 import leo.term.function
 import leo.term.get
 import leo.term.invoke
+import leo.term.nativeValue
 import leo.term.scope
 import leo.term.typed.typed
 import leo.term.value
@@ -29,7 +30,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					value(function(scope(value(10.0), value(20.0)), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
+					value(function(scope(nativeValue(10.0), nativeValue(20.0)), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
 					type(
 						"x" lineTo type(numberTypeLine),
 						"y" lineTo type(numberTypeLine))))

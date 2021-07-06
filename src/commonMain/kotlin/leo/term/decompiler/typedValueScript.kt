@@ -34,6 +34,7 @@ import leo.term.Value
 import leo.term.anyDouble
 import leo.term.anyString
 import leo.term.native
+import leo.term.nativeValue
 import leo.term.typed.Typed
 import leo.term.typed.TypedValue
 import leo.term.typed.typed
@@ -56,15 +57,15 @@ val Typed<Value<Any?>, TypeStructure>.structureScript: Script get() =
 		else
 			if (linkOrNull.tail.structure.isStatic)
 				if (linkOrNull.head.isStatic)
-					typed(value(null), linkOrNull.tail.structure.type).script
-						.plus(typed(value(null), linkOrNull.head).scriptLine)
+					typed(nativeValue(null), linkOrNull.tail.structure.type).script
+						.plus(typed(nativeValue(null), linkOrNull.head).scriptLine)
 				else
-					typed(value(null), linkOrNull.tail.structure.type).script
+					typed(nativeValue(null), linkOrNull.tail.structure.type).script
 						.plus(typed(v, linkOrNull.head).scriptLine)
 			else
 				if (linkOrNull.head.isStatic)
 					typed(v, linkOrNull.tail.structure.type).script
-						.plus(typed(value(null), linkOrNull.head).scriptLine)
+						.plus(typed(nativeValue(null), linkOrNull.head).scriptLine)
 				else
 					v.pair.let { (lhs, rhs) ->
 						typed(lhs, linkOrNull.tail.structure.type).script

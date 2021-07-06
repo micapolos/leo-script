@@ -13,14 +13,14 @@ fun <T> Value<T>.invokeEvaluation(value: Value<T>): Evaluation<T, Value<T>> =
 		is NativeValue -> null!!
 	}
 
-fun <T> value(native: T): Value<T> = NativeValue(native)
+fun <T> nativeValue(native: T): Value<T> = NativeValue(native)
 fun <T> value(function: Function<T>): Value<T> = FunctionValue(function)
 fun <T> function(scope: Scope<T>, term: Term<T>) = Function(scope, term)
 
 val <T> Value<T>.native: T get() = (this as NativeValue).native
 
-val <T> T.value: Value<T> get() = NativeValue(this)
+val <T> T.nativeValue: Value<T> get() = NativeValue(this)
 
-val Any?.anyValue: Value<Any?> get() = value
+val Any?.anyValue: Value<Any?> get() = nativeValue
 val Any?.anyString: String get() = (this as String)
 val Any?.anyDouble: Double get() = (this as Double)

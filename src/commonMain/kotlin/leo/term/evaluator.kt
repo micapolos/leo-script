@@ -14,3 +14,4 @@ val anyEvaluator: Evaluator<Any?> get() = Evaluator {
 }
 
 fun anyFn(fn: Scope<Any?>.() -> Value<Any?>) = fn
+

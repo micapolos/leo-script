@@ -3,7 +3,7 @@ package leo.term.typed
 import leo.base.assertEqualTo
 import leo.literal
 import leo.term.anyEvaluator
-import leo.term.value
+import leo.term.nativeValue
 import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
@@ -16,7 +16,7 @@ class TypedTest {
 			typedLine(literal("bar")))
 			.headOrNull!!
 			.typedValue(anyEvaluator)
-			.assertEqualTo(typed("bar".value, type(textTypeLine)))
+			.assertEqualTo(typed("bar".nativeValue, type(textTypeLine)))
 	}
 
 	@Test
