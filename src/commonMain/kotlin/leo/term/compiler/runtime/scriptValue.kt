@@ -7,9 +7,9 @@ import leo.term.typed.TypedValue
 import leo.term.typed.typed
 import leo.term.value
 
-val Script.typedValue: TypedValue<Thing> get() =
-	thingEnvironment.typedTerm(this).let { typedTerm ->
-		typed(thingEvaluator.value(typedTerm.v), typedTerm.t)
+val Script.typedValue: TypedValue<Native> get() =
+	nativeEnvironment.typedTerm(this).let { typedTerm ->
+		typed(nativeEvaluator.value(typedTerm.v), typedTerm.t)
 	}
 
-val Script.value: Value<Thing> get() = typedValue.v
+val Script.value: Value<Native> get() = typedValue.v

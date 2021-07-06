@@ -7,8 +7,8 @@ import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
 import leo.script
-import leo.term.compiler.runtime.thing
-import leo.term.compiler.runtime.thingEnvironment
+import leo.term.compiler.runtime.native
+import leo.term.compiler.runtime.nativeEnvironment
 import leo.term.nativeTerm
 import leo.term.typed.lineTo
 import leo.term.typed.typed
@@ -21,42 +21,42 @@ import kotlin.test.Test
 class CompileTest {
 	@Test
 	fun empty() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script())
 			.assertEqualTo(typedTerm())
 	}
 
 	@Test
 	fun name() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script("foo"))
 			.assertEqualTo(typedTerm("foo" lineTo typedTerm()))
 	}
 
 	@Test
 	fun field() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script("foo" lineTo script("bar")))
 			.assertEqualTo(typedTerm("foo" lineTo typedTerm("bar" lineTo typedTerm())))
 	}
 
 	@Test
 	fun number() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script(literal(10)))
-			.assertEqualTo(typedTerm(typed(10.0.thing.nativeTerm, numberTypeLine)))
+			.assertEqualTo(typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)))
 	}
 
 	@Test
 	fun text() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script(literal("foo")))
-			.assertEqualTo(typedTerm(typed("foo".thing.nativeTerm, textTypeLine)))
+			.assertEqualTo(typedTerm(typed("foo".native.nativeTerm, textTypeLine)))
 	}
 
 	@Test
 	fun names() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script("foo", "bar"))
 			.assertEqualTo(
 				typedTerm(
@@ -66,7 +66,7 @@ class CompileTest {
 
 	@Test
 	fun fields() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(script(
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")))
@@ -78,7 +78,7 @@ class CompileTest {
 
 	@Test
 	fun action() {
-		thingEnvironment
+		nativeEnvironment
 			.typedTerm(
 				script(
 					actionName lineTo script(

@@ -10,51 +10,51 @@ import kotlin.test.Test
 class EvaluatorTest {
 	@Test
 	fun double() {
-		10.0.thing.nativeTerm
+		10.0.native.nativeTerm
 			.value
-			.assertEqualTo(10.0.thing.nativeValue)
+			.assertEqualTo(10.0.native.nativeValue)
 	}
 
 	@Test
 	fun string() {
-		"Hello, world!".thing.nativeTerm
+		"Hello, world!".native.nativeTerm
 			.value
-			.assertEqualTo("Hello, world!".thing.nativeValue)
+			.assertEqualTo("Hello, world!".native.nativeValue)
 	}
 
 	@Test
 	fun doubleAddDouble() {
-		fn(fn(DoubleAddDoubleThing.nativeTerm))
-			.invoke(10.0.thing.nativeTerm)
-			.invoke(20.0.thing.nativeTerm)
+		fn(fn(DoubleAddDoubleNative.nativeTerm))
+			.invoke(10.0.native.nativeTerm)
+			.invoke(20.0.native.nativeTerm)
 			.value
-			.assertEqualTo(30.0.thing.nativeValue)
+			.assertEqualTo(30.0.native.nativeValue)
 	}
 
 	@Test
 	fun doubleSubtractDouble() {
-		fn(fn(DoubleSubtractDoubleThing.nativeTerm))
-			.invoke(30.0.thing.nativeTerm)
-			.invoke(20.0.thing.nativeTerm)
+		fn(fn(DoubleSubtractDoubleNative.nativeTerm))
+			.invoke(30.0.native.nativeTerm)
+			.invoke(20.0.native.nativeTerm)
 			.value
-			.assertEqualTo(10.0.thing.nativeValue)
+			.assertEqualTo(10.0.native.nativeValue)
 	}
 
 	@Test
 	fun doubleMultiplyByDouble() {
-		fn(fn(DoubleMultiplyByDoubleThing.nativeTerm))
-			.invoke(10.0.thing.nativeTerm)
-			.invoke(20.0.thing.nativeTerm)
+		fn(fn(DoubleMultiplyByDoubleNative.nativeTerm))
+			.invoke(10.0.native.nativeTerm)
+			.invoke(20.0.native.nativeTerm)
 			.value
-			.assertEqualTo(200.0.thing.nativeValue)
+			.assertEqualTo(200.0.native.nativeValue)
 	}
 
 	@Test
 	fun stringAppendString() {
-		fn(fn(StringAppendStringThing.nativeTerm))
-			.invoke("Hello, ".thing.nativeTerm)
-			.invoke("world!".thing.nativeTerm)
+		fn(fn(StringAppendStringNative.nativeTerm))
+			.invoke("Hello, ".native.nativeTerm)
+			.invoke("world!".native.nativeTerm)
 			.value
-			.assertEqualTo("Hello, world!".thing.nativeValue)
+			.assertEqualTo("Hello, world!".native.nativeValue)
 	}
 }

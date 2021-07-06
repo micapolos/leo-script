@@ -31,7 +31,7 @@ import leo.script
 import leo.structure
 import leo.term.FunctionValue
 import leo.term.Value
-import leo.term.compiler.runtime.Thing
+import leo.term.compiler.runtime.Native
 import leo.term.compiler.runtime.double
 import leo.term.compiler.runtime.string
 import leo.term.idValue
@@ -43,30 +43,30 @@ import leo.term.value
 import leo.term.variable
 import leo.type
 
-val TypedValue<Thing>.script: Script get() =
+val TypedValue<Native>.script: Script get() =
 	when (t) {
 		is ChoiceType -> typed(v, t.choice).choiceScript
 		is StructureType -> typed(v, t.structure).structureScript
 	}
 
-val Typed<Value<Thing>, TypeChoice>.choiceScript: Script get() =
+val Typed<Value<Native>, TypeChoice>.choiceScript: Script get() =
 	TODO()
 
-val Typed<Value<Thing>, TypeStructure>.structureScript: Script get() =
+val Typed<Value<Native>, TypeStructure>.structureScript: Script get() =
 	t.lineStack.linkOrNull.let { linkOrNull ->
 		if (linkOrNull == null) script()
 		else
 			if (linkOrNull.tail.structure.isStatic)
 				if (linkOrNull.head.isStatic)
-					typed(idValue<Thing>(), linkOrNull.tail.structure.type).script
-						.plus(typed(idValue<Thing>(), linkOrNull.head).scriptLine)
+					typed(idValue<Native>(), linkOrNull.tail.structure.type).script
+						.plus(typed(idValue<Native>(), linkOrNull.head).scriptLine)
 				else
-					typed(idValue<Thing>(), linkOrNull.tail.structure.type).script
+					typed(idValue<Native>(), linkOrNull.tail.structure.type).script
 						.plus(typed(v, linkOrNull.head).scriptLine)
 			else
 				if (linkOrNull.head.isStatic)
 					typed(v, linkOrNull.tail.structure.type).script
-						.plus(typed(idValue<Thing>(), linkOrNull.head).scriptLine)
+						.plus(typed(idValue<Native>(), linkOrNull.head).scriptLine)
 				else
 					v.pair.let { (lhs, rhs) ->
 						typed(lhs, linkOrNull.tail.structure.type).script
@@ -74,31 +74,31 @@ val Typed<Value<Thing>, TypeStructure>.structureScript: Script get() =
 					}
 	}
 
-val Typed<Value<Thing>, TypeLine>.scriptLine: ScriptLine get() =
+val Typed<Value<Native>, TypeLine>.scriptLine: ScriptLine get() =
 	typed(v, t.atom).atomScriptLine
 
-val Typed<Value<Thing>, TypeAtom>.atomScriptLine: ScriptLine get() =
+val Typed<Value<Native>, TypeAtom>.atomScriptLine: ScriptLine get() =
 	when (t) {
 		is FunctionTypeAtom -> typed(v, t.function).functionScriptLine
 		is PrimitiveTypeAtom -> typed(v, t.primitive).primitiveScriptLine
 	}
 
-val Typed<Value<Thing>, TypeFunction>.functionScriptLine: ScriptLine get() =
+val Typed<Value<Native>, TypeFunction>.functionScriptLine: ScriptLine get() =
 	"doing" lineTo script("from" lineTo t.lhsType.script).plus(t.rhsType.script)
 
-val Typed<Value<Thing>, TypePrimitive>.primitiveScriptLine: ScriptLine get() =
+val Typed<Value<Native>, TypePrimitive>.primitiveScriptLine: ScriptLine get() =
 	when (t) {
 		is FieldTypePrimitive -> line(typed(v, t.field).scriptField)
 		is LiteralTypePrimitive -> typed(v, t.literal).literalScriptLine
 	}
 
-val Typed<Value<Thing>, TypeLiteral>.literalScriptLine: ScriptLine get() =
+val Typed<Value<Native>, TypeLiteral>.literalScriptLine: ScriptLine get() =
 	when (t) {
 		is NumberTypeLiteral -> line(literal(v.native.double))
 		is TextTypeLiteral -> line(literal(v.native.string))
 	}
 
-val Typed<Value<Thing>, TypeField>.scriptField: ScriptField get() =
+val Typed<Value<Native>, TypeField>.scriptField: ScriptField get() =
 	t.name fieldTo typed(v, t.rhsType).script
 
 val <T> Value<T>.pair: Pair<Value<T>, Value<T>> get() =

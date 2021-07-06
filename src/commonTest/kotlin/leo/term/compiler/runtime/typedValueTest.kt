@@ -29,7 +29,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					value(function(scope(10.0.thing.nativeValue, 20.0.thing.nativeValue), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
+					value(function(scope(10.0.native.nativeValue, 20.0.native.nativeValue), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
 					type(
 						"x" lineTo type(numberTypeLine),
 						"y" lineTo type(numberTypeLine))))
@@ -45,7 +45,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.thing.nativeValue,
+					10.0.native.nativeValue,
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -60,7 +60,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.thing.nativeValue,
+					10.0.native.nativeValue,
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -72,7 +72,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.thing.nativeValue,
+					10.0.native.nativeValue,
 					type(numberTypeLine)))
 	}
 
@@ -84,7 +84,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.thing.nativeValue,
+					10.0.native.nativeValue,
 					type("id" lineTo type(numberTypeLine))))
 
 	}
@@ -97,7 +97,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					30.0.thing.nativeValue,
+					30.0.native.nativeValue,
 					type(numberTypeLine)))
 	}
 }

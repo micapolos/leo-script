@@ -4,22 +4,22 @@ import leo.Literal
 import leo.NumberLiteral
 import leo.StringLiteral
 
-sealed class Thing
-data class DoubleThing(val double: Double): Thing()
-data class StringThing(val string: String): Thing()
-object DoubleAddDoubleThing: Thing()
-object DoubleSubtractDoubleThing: Thing()
-object DoubleMultiplyByDoubleThing: Thing()
-object StringAppendStringThing: Thing()
+sealed class Native
+data class DoubleNative(val double: Double): Native()
+data class StringNative(val string: String): Native()
+object DoubleAddDoubleNative: Native()
+object DoubleSubtractDoubleNative: Native()
+object DoubleMultiplyByDoubleNative: Native()
+object StringAppendStringNative: Native()
 
-val Double.thing: Thing get() = DoubleThing(this)
-val String.thing: Thing get() = StringThing(this)
+val Double.native: Native get() = DoubleNative(this)
+val String.native: Native get() = StringNative(this)
 
-val Thing.double: Double get() = (this as DoubleThing).double
-val Thing.string: String get() = (this as StringThing).string
+val Native.double: Double get() = (this as DoubleNative).double
+val Native.string: String get() = (this as StringNative).string
 
-val Literal.thing: Thing get() =
+val Literal.native: Native get() =
 	when (this) {
-		is NumberLiteral -> number.double.thing
-		is StringLiteral -> string.thing
+		is NumberLiteral -> number.double.native
+		is StringLiteral -> string.native
 	}

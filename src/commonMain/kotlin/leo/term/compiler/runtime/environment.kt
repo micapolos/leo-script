@@ -12,15 +12,15 @@ import leo.term.typed.typed
 import leo.type
 import leo.typeLine
 
-val thingEnvironment: Environment<Thing>
+val nativeEnvironment: Environment<Native>
 	get() =
 		Environment(
-			{ literal -> typed(literal.thing.nativeTerm, literal.typeLine) },
+			{ literal -> typed(literal.native.nativeTerm, literal.typeLine) },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 						typed(
-							fn(fn(DoubleAddDoubleThing.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
+							fn(fn(DoubleAddDoubleNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
 							type(numberTypeLine))
 					else -> null
 				}
