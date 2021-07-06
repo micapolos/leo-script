@@ -10,18 +10,23 @@ import leo.actionName
 import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
+import leo.compiledName
 import leo.doName
 import leo.doingName
 import leo.functionLineTo
 import leo.getName
 import leo.isEmpty
 import leo.lineSeq
+import leo.lineTo
 import leo.makeName
 import leo.matchInfix
 import leo.onlyNameOrNull
 import leo.performName
 import leo.quoteName
+import leo.script
+import leo.scriptLine
 import leo.term.fn
+import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.do_
@@ -63,7 +68,7 @@ fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
 fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	when (field.name) {
 		actionName -> plusAction(field.rhs)
-		//compileName -> plusCompile(field.rhs)
+		compiledName -> plusCompiled(field.rhs)
 		doName -> plusDo(field.rhs)
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
@@ -83,6 +88,16 @@ fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
 			else -> null
 		}
 	}.notNullOrError("parse error action")
+
+fun <V> Compiled<V>.plusCompiled(script: Script): Compiled<V> =
+	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
+	else context.environment.typedTerm(script).let {
+		set(context.environment.staticTypedTerm(
+			script(
+				"compiled" lineTo script(
+					"term" lineTo it.v.script,
+					it.t.scriptLine))))
+	}
 
 fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
 	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
