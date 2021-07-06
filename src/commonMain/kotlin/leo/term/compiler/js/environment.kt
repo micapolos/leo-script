@@ -12,12 +12,11 @@ import leo.term.nativeTerm
 import leo.term.tail
 import leo.term.typed.typed
 import leo.type
-import leo.typeLine
 
 val jsEnvironment: Environment<Js>
 	get() =
 		Environment(
-			{ literal -> typed(literal.js.nativeTerm, literal.typeLine) },
+			{ literal -> literal.js.nativeTerm },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->

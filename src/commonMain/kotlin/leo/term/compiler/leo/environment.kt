@@ -14,12 +14,11 @@ import leo.term.nativeTerm
 import leo.term.tail
 import leo.term.typed.typed
 import leo.type
-import leo.typeLine
 
 val scriptEnvironment: Environment<Script>
 	get() =
 		Environment(
-			{ literal -> typed(script(literal).nativeTerm, literal.typeLine) },
+			{ literal -> script(literal).nativeTerm },
 			{ typedTerm ->
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->

@@ -33,6 +33,7 @@ import leo.term.typed.plus
 import leo.term.typed.typed
 import leo.term.typed.typedValue
 import leo.type
+import leo.typeLine
 
 data class Compiled<V>(
 	val context: Context<V>,
@@ -51,7 +52,7 @@ fun <V> Compiled<V>.plus(scriptLine: ScriptLine): Compiled<V> =
 	}
 
 fun <V> Compiled<V>.plus(literal: Literal): Compiled<V> =
-	plus(context.environment.literalFn(literal))
+	plus(typed(context.environment.literalFn(literal), literal.typeLine))
 
 fun <V> Compiled<V>.plus(field: ScriptField): Compiled<V> =
 	null
