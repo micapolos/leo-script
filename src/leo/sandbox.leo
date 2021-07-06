@@ -1,8 +1,6 @@
-x 10
-y 20
+point
+  x 10
+  y 20
 do
-  get x
-  get number
-  add
-    get y
-    get number
+  get point x number
+  add get point y number

@@ -24,7 +24,6 @@ import leo.term.fn
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.do_
-import leo.term.typed.getOrNull
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.make
@@ -85,10 +84,10 @@ fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
 	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiled<V>.plusGet(script: Script): Compiled<V> =
-	script.onlyNameOrNull.notNullOrError("get $script").let { name ->
+	script.get.let { get ->
 		set(
-			if (typedTerm.t.isEmpty) context.scope.getOrNull<V>(name).notNullOrError("$context get $name")
-			else typedTerm.getOrNull(name).notNullOrError("$typedTerm get $name"))
+			if (typedTerm.t.isEmpty) context.scope.invoke(get)
+			else typedTerm.invoke(get))
 	}
 
 fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =

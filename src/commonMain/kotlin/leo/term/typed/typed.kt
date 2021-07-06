@@ -8,6 +8,7 @@ import leo.base.fold
 import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.fieldOrNull
+import leo.fold
 import leo.functionLineTo
 import leo.functionOrNull
 import leo.isStatic
@@ -17,11 +18,13 @@ import leo.name
 import leo.named.evaluator.any
 import leo.onlyLineOrNull
 import leo.plus
+import leo.stack
 import leo.structure
 import leo.structureOrNull
 import leo.term.Term
 import leo.term.Value
 import leo.term.anyTerm
+import leo.term.compiler.Get
 import leo.term.fn
 import leo.term.head
 import leo.term.id
@@ -89,6 +92,12 @@ fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =
 		if (typedTerm.t != typeFunction.lhsType) error("$typedTerm not ${typeFunction.lhsType}")
 		else typed(v.invoke(typedTerm.v), typeFunction.rhsType)
 	}
+
+fun <V> TypedTerm<V>.get(name: String): TypedTerm<V> =
+	getOrNull(name).notNullOrError("$this get $name")
+
+fun <V> TypedTerm<V>.invoke(get: Get): TypedTerm<V> =
+	fold(stack(get.nameStackLink)) { get(it) }
 
 fun <V> TypedTerm<V>.getOrNull(name: String): TypedTerm<V>? =
 	contentOrNull?.lineOrNull(name)?.let { typedTerm(it) }

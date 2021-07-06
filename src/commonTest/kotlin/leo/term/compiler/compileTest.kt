@@ -3,6 +3,7 @@ package leo.term.compiler
 import leo.actionName
 import leo.base.assertEqualTo
 import leo.doingName
+import leo.getName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
@@ -77,6 +78,20 @@ class CompileTest {
 				typedTerm(
 					"x" lineTo typedTerm("zero" lineTo typedTerm()),
 					"y" lineTo typedTerm("one" lineTo typedTerm())))
+	}
+
+	@Test
+	fun get() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					"point" lineTo script(
+						"x" lineTo script("zero"),
+						"y" lineTo script("one")),
+					getName lineTo script("x")))
+			.assertEqualTo(
+				typedTerm(
+					"x" lineTo typedTerm("zero" lineTo typedTerm())))
 	}
 
 	@Test
