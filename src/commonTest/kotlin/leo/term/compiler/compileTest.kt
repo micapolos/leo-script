@@ -2,6 +2,8 @@ package leo.term.compiler
 
 import leo.actionName
 import leo.base.assertEqualTo
+import leo.base.assertNotNull
+import leo.doesName
 import leo.doingName
 import leo.getName
 import leo.lineTo
@@ -9,6 +11,7 @@ import leo.literal
 import leo.numberTypeLine
 import leo.performName
 import leo.quoteName
+import leo.rememberName
 import leo.script
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
@@ -130,5 +133,17 @@ class CompileTest {
 			.typedTerm(
 				script(quoteName lineTo script(getName lineTo script("foo"))))
 			.assertEqualTo(nativeEnvironment.staticTypedTerm(script(getName lineTo script("foo"))))
+	}
+
+	@Test
+	fun remember() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					rememberName lineTo script(
+						"ping" lineTo script(),
+						doesName lineTo script("pong")),
+					"ping" lineTo script()))
+			.assertNotNull
 	}
 }

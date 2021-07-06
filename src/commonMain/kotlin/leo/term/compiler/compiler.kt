@@ -23,6 +23,7 @@ import leo.matchInfix
 import leo.onlyNameOrNull
 import leo.performName
 import leo.quoteName
+import leo.rememberName
 import leo.script
 import leo.scriptLine
 import leo.term.fn
@@ -37,36 +38,44 @@ import leo.term.typed.plus
 import leo.term.typed.staticTypedLine
 import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
-import leo.typeLine
+import leo.term.typed.typedTerm
 
-data class Compiled<V>(
-	val context: Context<V>,
+data class Compiler<V>(
+	val module: Module<V>,
 	val typedTerm: TypedTerm<V>)
 
-fun <V> Compiled<V>.set(typedTerm: TypedTerm<V>): Compiled<V> =
+val <V> Module<V>.compiler: Compiler<V> get() = Compiler(this, typedTerm())
+
+fun <V> Compiler<V>.set(typedTerm: TypedTerm<V>): Compiler<V> =
 	copy(typedTerm = typedTerm)
 
-fun <V> Compiled<V>.plus(script: Script): Compiled<V> =
+fun <V> Compiler<V>.set(module: Module<V>): Compiler<V> =
+	copy(module = module)
+
+val <V> Compiler<V>.context get() = module.context
+val <V> Compiler<V>.environment get() = context.environment
+
+fun <V> Compiler<V>.plus(script: Script): Compiler<V> =
 	fold(script.lineSeq.reverse) { plus(it) }
 
-fun <V> Compiled<V>.plus(scriptLine: ScriptLine): Compiled<V> =
+fun <V> Compiler<V>.plus(scriptLine: ScriptLine): Compiler<V> =
 	when (scriptLine) {
 		is FieldScriptLine -> plus(scriptLine.field)
 		is LiteralScriptLine -> plus(scriptLine.literal)
 	}
 
-fun <V> Compiled<V>.plus(literal: Literal): Compiled<V> =
-	plus(typed(context.environment.literalFn(literal), literal.typeLine))
+fun <V> Compiler<V>.plus(literal: Literal): Compiler<V> =
+	plus(environment.typedLine(literal))
 
-fun <V> Compiled<V>.plus(field: ScriptField): Compiled<V> =
+fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
 	null
 		?: plusSpecialOrNull(field)
 		?: plusNamed(field)
 
-fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
+fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 	plus(field.name lineTo context.typedTerm(field.rhs))
 
-fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
+fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 	when (field.name) {
 		actionName -> plusAction(field.rhs)
 		compiledName -> plusCompiled(field.rhs)
@@ -74,11 +83,12 @@ fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
 		performName -> plusPerform(field.rhs)
+		rememberName -> plusRemember(field.rhs)
 		quoteName -> plusQuote(field.rhs)
 		else -> null
 	}
 
-fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
+fun <V> Compiler<V>.plusAction(script: Script): Compiler<V> =
 	script.matchInfix { lhs, name, rhs ->
 		when (name) {
 			doingName -> context.type(lhs).let { type ->
@@ -90,36 +100,43 @@ fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
 		}
 	}.notNullOrError("parse error action")
 
-fun <V> Compiled<V>.plusCompiled(script: Script): Compiled<V> =
-	context.environment.typedTerm(script).let {
+fun <V> Compiler<V>.plusCompiled(script: Script): Compiler<V> =
+	environment.typedTerm(script).let {
 		plus(
-			context.environment.staticTypedLine(
+			environment.staticTypedLine(
 				"compiled" lineTo script(
 					"term" lineTo it.v.script,
 					it.t.scriptLine)))
 	}
 
-fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
+fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
 	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
-fun <V> Compiled<V>.plusGet(script: Script): Compiled<V> =
+fun <V> Compiler<V>.plusGet(script: Script): Compiler<V> =
 	script.get.let { get ->
 		set(
 			if (typedTerm.t.isEmpty) context.scope.invoke(get)
 			else typedTerm.invoke(get))
 	}
 
-fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =
+fun <V> Compiler<V>.plusMake(script: Script): Compiler<V> =
 	script.onlyNameOrNull.notNullOrError("syntax make").let { name ->
 		set(typedTerm.make(name))
 	}
 
-fun <V> Compiled<V>.plusPerform(script: Script): Compiled<V> =
+fun <V> Compiler<V>.plusPerform(script: Script): Compiler<V> =
 	set(context.typedTerm(script).invoke(typedTerm))
 
-fun <V> Compiled<V>.plusQuote(script: Script): Compiled<V> =
-	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
-	else set(context.environment.staticTypedTerm(script))
+fun <V> Compiler<V>.plusRemember(script: Script): Compiler<V> =
+	if (typedTerm != typedTerm<V>()) error("remember after term")
+	else set(module.plusRemember(script))
 
-fun <V> Compiled<V>.plus(typedLine: TypedLine<V>): Compiled<V> =
-	Compiled(context, context.resolve(typedTerm.plus(typedLine)))
+fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =
+	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
+	else set(environment.staticTypedTerm(script))
+
+fun <V> Compiler<V>.plus(typedLine: TypedLine<V>): Compiler<V> =
+	set(context.resolve(typedTerm.plus(typedLine)))
+
+val <V> Compiler<V>.compiledTypedTerm: TypedTerm<V> get() =
+	typed(module.seal(typedTerm.v), typedTerm.t)
