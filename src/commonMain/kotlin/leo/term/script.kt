@@ -30,7 +30,7 @@ val <T> TermApplication<T>.script: Script get() =
 	lhs.script.plus("apply" lineTo rhs.script)
 
 val <T> TermAbstraction<T>.script: Script get() =
-	script("fn" lineTo term.script)
+	script("lambda" lineTo term.script)
 
 val <T> Value<T>.scriptLine: ScriptLine get() =
 	"value" lineTo script
