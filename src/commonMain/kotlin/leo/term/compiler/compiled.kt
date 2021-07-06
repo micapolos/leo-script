@@ -19,11 +19,13 @@ import leo.lineSeq
 import leo.makeName
 import leo.matchInfix
 import leo.onlyNameOrNull
+import leo.performName
 import leo.term.fn
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.do_
 import leo.term.typed.getOrNull
+import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.make
 import leo.term.typed.plus
@@ -63,6 +65,7 @@ fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 		doName -> plusDo(field.rhs)
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
+		performName -> plusPerform(field.rhs)
 		else -> null
 	}
 
@@ -92,6 +95,9 @@ fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =
 	script.onlyNameOrNull.notNullOrError("syntax make").let { name ->
 		set(typedTerm.make(name))
 	}
+
+fun <V> Compiled<V>.plusPerform(script: Script): Compiled<V> =
+	set(context.typedTerm(script).invoke(typedTerm))
 
 fun <V> Compiled<V>.plus(typedLine: TypedLine<V>): Compiled<V> =
 	Compiled(context, context.resolve(typedTerm.plus(typedLine)))

@@ -6,8 +6,10 @@ import leo.TypeLine
 import leo.atomOrNull
 import leo.base.fold
 import leo.base.notNullIf
+import leo.base.notNullOrError
 import leo.fieldOrNull
 import leo.functionLineTo
+import leo.functionOrNull
 import leo.isStatic
 import leo.lineTo
 import leo.linkOrNull
@@ -80,6 +82,12 @@ val <V> TypedTerm<V>.tailOrNull: TypedTerm<V>? get() =
 val <V> TypedTerm<V>.contentOrNull: TypedTerm<V>? get() =
 	t.onlyLineOrNull?.atomOrNull?.fieldOrNull?.rhsType?.let { type ->
 		typed(v, type)
+	}
+
+fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =
+	t.functionOrNull.notNullOrError("$this not function").let { typeFunction ->
+		if (typedTerm.t != typeFunction.lhsType) error("$typedTerm not ${typeFunction.lhsType}")
+		else typed(v.invoke(typedTerm.v), typeFunction.rhsType)
 	}
 
 fun <V> TypedTerm<V>.getOrNull(name: String): TypedTerm<V>? =
