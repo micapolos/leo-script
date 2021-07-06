@@ -7,8 +7,8 @@ import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
 import leo.script
-import leo.term.compiler.runtime.native
-import leo.term.compiler.runtime.nativeEnvironment
+import leo.term.compiler.native.native
+import leo.term.compiler.native.nativeEnvironment
 import leo.term.nativeTerm
 import leo.term.typed.lineTo
 import leo.term.typed.typed

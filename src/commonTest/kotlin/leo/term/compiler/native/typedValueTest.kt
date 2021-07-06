@@ -1,4 +1,4 @@
-package leo.term.compiler.runtime
+package leo.term.compiler.native
 
 import leo.base.assertEqualTo
 import leo.doName

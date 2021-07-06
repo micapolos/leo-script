@@ -31,9 +31,9 @@ import leo.script
 import leo.structure
 import leo.term.FunctionValue
 import leo.term.Value
-import leo.term.compiler.runtime.Native
-import leo.term.compiler.runtime.double
-import leo.term.compiler.runtime.string
+import leo.term.compiler.native.Native
+import leo.term.compiler.native.double
+import leo.term.compiler.native.string
 import leo.term.idValue
 import leo.term.native
 import leo.term.typed.Typed

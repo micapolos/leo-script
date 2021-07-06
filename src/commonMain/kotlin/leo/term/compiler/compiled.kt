@@ -19,8 +19,8 @@ import leo.lineSeq
 import leo.makeName
 import leo.matchInfix
 import leo.onlyNameOrNull
-import leo.term.compiler.runtime.nativeEnvironment
-import leo.term.compiler.runtime.nativeEvaluator
+import leo.term.compiler.native.nativeEnvironment
+import leo.term.compiler.native.nativeEvaluator
 import leo.term.decompiler.script
 import leo.term.fn
 import leo.term.typed.TypedLine
