@@ -34,6 +34,7 @@ import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.make
 import leo.term.typed.plus
+import leo.term.typed.staticTypedLine
 import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.typeLine
@@ -90,13 +91,12 @@ fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
 	}.notNullOrError("parse error action")
 
 fun <V> Compiled<V>.plusCompiled(script: Script): Compiled<V> =
-	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
-	else context.environment.typedTerm(script).let {
-		set(context.environment.staticTypedTerm(
-			script(
+	context.environment.typedTerm(script).let {
+		plus(
+			context.environment.staticTypedLine(
 				"compiled" lineTo script(
 					"term" lineTo it.v.script,
-					it.t.scriptLine))))
+					it.t.scriptLine)))
 	}
 
 fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
