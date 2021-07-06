@@ -4,6 +4,7 @@ import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
 import leo.term.fn
+import leo.term.get
 import leo.term.head
 import leo.term.invoke
 import leo.term.nativeTerm
@@ -20,7 +21,10 @@ val nativeEnvironment: Environment<Native>
 				when (typedTerm.t) {
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 						typed(
-							fn(fn(DoubleAddDoubleNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
+							fn(fn(fn(DoubleAddDoubleNative.nativeTerm))
+								.invoke(get<Native>(0).tail)
+								.invoke(get<Native>(0).head))
+								.invoke(typedTerm.v),
 							type(numberTypeLine))
 					else -> null
 				}
