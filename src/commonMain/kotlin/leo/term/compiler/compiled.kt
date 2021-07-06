@@ -20,6 +20,7 @@ import leo.makeName
 import leo.matchInfix
 import leo.onlyNameOrNull
 import leo.performName
+import leo.quoteName
 import leo.term.fn
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
@@ -28,6 +29,7 @@ import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.make
 import leo.term.typed.plus
+import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.typeLine
 
@@ -61,10 +63,12 @@ fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
 fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	when (field.name) {
 		actionName -> plusAction(field.rhs)
+		//compileName -> plusCompile(field.rhs)
 		doName -> plusDo(field.rhs)
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
 		performName -> plusPerform(field.rhs)
+		quoteName -> plusQuote(field.rhs)
 		else -> null
 	}
 
@@ -97,6 +101,10 @@ fun <V> Compiled<V>.plusMake(script: Script): Compiled<V> =
 
 fun <V> Compiled<V>.plusPerform(script: Script): Compiled<V> =
 	set(context.typedTerm(script).invoke(typedTerm))
+
+fun <V> Compiled<V>.plusQuote(script: Script): Compiled<V> =
+	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
+	else set(context.environment.staticTypedTerm(script))
 
 fun <V> Compiled<V>.plus(typedLine: TypedLine<V>): Compiled<V> =
 	Compiled(context, context.resolve(typedTerm.plus(typedLine)))

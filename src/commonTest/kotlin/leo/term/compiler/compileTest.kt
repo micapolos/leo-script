@@ -8,6 +8,7 @@ import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
 import leo.performName
+import leo.quoteName
 import leo.script
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
@@ -15,6 +16,7 @@ import leo.term.compiler.native.nativeEnvironment
 import leo.term.nativeTerm
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
+import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.term.typed.typedFunctionLine
 import leo.term.typed.typedTerm
@@ -120,5 +122,13 @@ class CompileTest {
 			.assertEqualTo(
 				typedTerm<Native>(typedFunctionLine(type("ping"), typedTerm("pong" lineTo typedTerm())))
 					.invoke(typedTerm("ping" lineTo typedTerm())))
+	}
+
+	@Test
+	fun quote() {
+		nativeEnvironment
+			.typedTerm(
+				script(quoteName lineTo script(getName lineTo script("foo"))))
+			.assertEqualTo(nativeEnvironment.staticTypedTerm(script(getName lineTo script("foo"))))
 	}
 }
