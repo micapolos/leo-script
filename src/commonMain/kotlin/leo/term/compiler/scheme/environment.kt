@@ -1,6 +1,8 @@
 package leo.term.compiler.scheme
 
+import leo.FieldScriptLine
 import leo.Literal
+import leo.LiteralScriptLine
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
@@ -18,18 +20,23 @@ import scheme.scheme
 
 val schemeEnvironment: Environment<Scheme>
 	get() =
-	Environment(
-		{ literal -> typed(literal.scheme.nativeTerm, literal.typeLine) },
-		{ typedTerm ->
-			when (typedTerm.t) {
-				type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
-					typed(
-						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
-						type(numberTypeLine)
-					)
-				else -> null
+		Environment(
+			{ scriptLine ->
+				when (scriptLine) {
+					is FieldScriptLine -> null
+					is LiteralScriptLine -> typed(scriptLine.literal.scheme.nativeTerm, scriptLine.literal.typeLine)
+				}
+			},
+			{ typedTerm ->
+				when (typedTerm.t) {
+					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
+						typed(
+							fn("(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
+							type(numberTypeLine)
+						)
+					else -> null
+				}
 			}
-		}
-	)
+		)
 
 val Literal.scheme: Scheme get() = toString().scheme
