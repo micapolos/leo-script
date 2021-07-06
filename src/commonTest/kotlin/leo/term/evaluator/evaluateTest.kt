@@ -5,6 +5,7 @@ import leo.anyName
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.doName
+import leo.doesName
 import leo.doingName
 import leo.getName
 import leo.line
@@ -13,6 +14,7 @@ import leo.literal
 import leo.makeName
 import leo.numberName
 import leo.performName
+import leo.rememberName
 import leo.script
 import kotlin.test.Test
 
@@ -88,7 +90,6 @@ class EvaluateTest {
 			.assertEqualTo(script(literal(30)))
 	}
 
-
 	@Test
 	fun performAction() {
 		script(
@@ -101,5 +102,16 @@ class EvaluateTest {
 						"add" lineTo script(literal(1))))))
 			.evaluate
 			.assertEqualTo(script(literal(11)))
+	}
+
+	@Test
+	fun remember() {
+		script(
+			rememberName lineTo script(
+				"ping" lineTo script(),
+				doesName lineTo script("pong")),
+			"ping" lineTo script())
+			.evaluate
+			.assertEqualTo(script("pong"))
 	}
 }
