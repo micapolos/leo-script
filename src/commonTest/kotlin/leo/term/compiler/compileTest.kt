@@ -5,54 +5,58 @@ import leo.base.assertEqualTo
 import leo.doingName
 import leo.lineTo
 import leo.literal
+import leo.numberTypeLine
 import leo.script
-import leo.term.compiler.runtime.runtimeEnvironment
+import leo.term.compiler.runtime.thing
+import leo.term.compiler.runtime.thingEnvironment
+import leo.term.nativeTerm
 import leo.term.typed.lineTo
+import leo.term.typed.typed
 import leo.term.typed.typedFunctionLine
-import leo.term.typed.typedLine
 import leo.term.typed.typedTerm
+import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
 
 class CompileTest {
 	@Test
 	fun empty() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script())
 			.assertEqualTo(typedTerm())
 	}
 
 	@Test
 	fun name() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script("foo"))
 			.assertEqualTo(typedTerm("foo" lineTo typedTerm()))
 	}
 
 	@Test
 	fun field() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script("foo" lineTo script("bar")))
 			.assertEqualTo(typedTerm("foo" lineTo typedTerm("bar" lineTo typedTerm())))
 	}
 
 	@Test
 	fun number() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script(literal(10)))
-			.assertEqualTo(typedTerm(typedLine(literal(10))))
+			.assertEqualTo(typedTerm(typed(10.0.thing.nativeTerm, numberTypeLine)))
 	}
 
 	@Test
 	fun text() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script(literal("foo")))
-			.assertEqualTo(typedTerm(typedLine(literal("foo"))))
+			.assertEqualTo(typedTerm(typed("foo".thing.nativeTerm, textTypeLine)))
 	}
 
 	@Test
 	fun names() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script("foo", "bar"))
 			.assertEqualTo(
 				typedTerm(
@@ -62,7 +66,7 @@ class CompileTest {
 
 	@Test
 	fun fields() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(script(
 				"x" lineTo script("zero"),
 				"y" lineTo script("one")))
@@ -74,7 +78,7 @@ class CompileTest {
 
 	@Test
 	fun action() {
-		runtimeEnvironment
+		thingEnvironment
 			.typedTerm(
 				script(
 					actionName lineTo script(

@@ -24,3 +24,5 @@ val <T> T.nativeValue: Value<T> get() = NativeValue(this)
 val Any?.anyValue: Value<Any?> get() = nativeValue
 val Any?.anyString: String get() = (this as String)
 val Any?.anyDouble: Double get() = (this as Double)
+
+fun <T> idValue(): Value<T> = value(function(scope(), term(variable(0))))

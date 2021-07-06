@@ -19,8 +19,9 @@ import leo.lineSeq
 import leo.makeName
 import leo.matchInfix
 import leo.onlyNameOrNull
-import leo.term.anyEvaluator
-import leo.term.compiler.runtime.script
+import leo.term.compiler.runtime.thingEnvironment
+import leo.term.compiler.runtime.thingEvaluator
+import leo.term.decompiler.script
 import leo.term.fn
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
@@ -72,7 +73,8 @@ fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
 	script.matchInfix { lhs, name, rhs ->
 		when (name) {
-			doingName -> context.typedTerm(lhs).typedValue(anyEvaluator).script.type.let { type ->
+			// Use thingEnvironment and thingEvaluator for types.
+			doingName -> thingEnvironment.context.typedTerm(lhs).typedValue(thingEvaluator).script.type.let { type ->
 				context.plus(binding(given(type))).typedTerm(rhs).let { typedTerm ->
 					plus(typed(fn(typedTerm.v), type functionLineTo typedTerm.t))
 				}

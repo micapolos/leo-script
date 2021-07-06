@@ -10,7 +10,6 @@ import leo.makeName
 import leo.numberName
 import leo.numberTypeLine
 import leo.script
-import leo.term.anyValue
 import leo.term.function
 import leo.term.get
 import leo.term.invoke
@@ -30,7 +29,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					value(function(scope(nativeValue(10.0), nativeValue(20.0)), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
+					value(function(scope(10.0.thing.nativeValue, 20.0.thing.nativeValue), get<Any?>(0).invoke(get(2)).invoke(get(1)))),
 					type(
 						"x" lineTo type(numberTypeLine),
 						"y" lineTo type(numberTypeLine))))
@@ -46,7 +45,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.anyValue,
+					10.0.thing.nativeValue,
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -61,7 +60,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.anyValue,
+					10.0.thing.nativeValue,
 					type("x" lineTo type(numberTypeLine))))
 	}
 
@@ -73,7 +72,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.anyValue,
+					10.0.thing.nativeValue,
 					type(numberTypeLine)))
 	}
 
@@ -85,7 +84,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					10.0.anyValue,
+					10.0.thing.nativeValue,
 					type("id" lineTo type(numberTypeLine))))
 
 	}
@@ -98,7 +97,7 @@ class TypedValueTest {
 			.typedValue
 			.assertEqualTo(
 				typed(
-					30.0.anyValue,
+					30.0.thing.nativeValue,
 					type(numberTypeLine)))
 	}
 }
