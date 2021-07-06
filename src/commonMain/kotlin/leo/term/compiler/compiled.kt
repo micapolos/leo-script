@@ -6,15 +6,22 @@ import leo.LiteralScriptLine
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
+import leo.actionName
 import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
 import leo.doName
+import leo.doingName
+import leo.functionLineTo
 import leo.getName
 import leo.isEmpty
 import leo.lineSeq
 import leo.makeName
+import leo.matchInfix
 import leo.onlyNameOrNull
+import leo.term.anyEvaluator
+import leo.term.compiler.runtime.script
+import leo.term.fn
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.do_
@@ -22,6 +29,9 @@ import leo.term.typed.getOrNull
 import leo.term.typed.lineTo
 import leo.term.typed.make
 import leo.term.typed.plus
+import leo.term.typed.typed
+import leo.term.typed.typedValue
+import leo.type
 
 data class Compiled<V>(
 	val context: Context<V>,
@@ -52,11 +62,24 @@ fun <V> Compiled<V>.plusNamed(field: ScriptField): Compiled<V> =
 
 fun <V> Compiled<V>.plusSpecialOrNull(field: ScriptField): Compiled<V>? =
 	when (field.name) {
+		actionName -> plusAction(field.rhs)
 		doName -> plusDo(field.rhs)
 		getName -> plusGet(field.rhs)
 		makeName -> plusMake(field.rhs)
 		else -> null
 	}
+
+fun <V> Compiled<V>.plusAction(script: Script): Compiled<V> =
+	script.matchInfix { lhs, name, rhs ->
+		when (name) {
+			doingName -> context.typedTerm(lhs).typedValue(anyEvaluator).script.type.let { type ->
+				context.plus(binding(given(type))).typedTerm(rhs).let { typedTerm ->
+					plus(typed(fn(typedTerm.v), type functionLineTo typedTerm.t))
+				}
+			}
+			else -> null
+		}
+	}.notNullOrError("parse error action")
 
 fun <V> Compiled<V>.plusDo(script: Script): Compiled<V> =
 	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))

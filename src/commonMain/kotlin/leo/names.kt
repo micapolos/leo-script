@@ -1,6 +1,7 @@
 package leo
 
 val absentName = "absent"
+val actionName = "action"
 val anyName = "any"
 val anythingName = "anything"
 val applyName = "apply"
@@ -75,6 +76,7 @@ val quoteName = "quote"
 val recurseName = "recurse"
 val recursingName = "recursing"
 val recursiveName = "recursive"
+val rememberName = "remember"
 val repeatName = "repeat"
 val secondName = "second"
 val selectName = "select"
