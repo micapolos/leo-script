@@ -1,6 +1,7 @@
 package leo.term.compiler
 
 import leo.Script
+import leo.Type
 import leo.term.typed.TypedTerm
 import leo.term.typed.typedTerm
 
@@ -22,3 +23,6 @@ fun <V> Context<V>.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
 		?: scope.resolveOrNull(typedTerm)
 		?: environment.resolveOrNullFn(typedTerm)
 		?: typedTerm
+
+fun <V> Context<V>.type(script: Script): Type =
+	typedTerm(script).type
