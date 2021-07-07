@@ -1,5 +1,6 @@
 package leo.term.compiler
 
+import leo.applyingName
 import leo.base.assertEqualTo
 import leo.functionName
 import leo.getName
@@ -7,7 +8,6 @@ import leo.givingName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
-import leo.performName
 import leo.quoteName
 import leo.script
 import leo.term.compiler.native.Native
@@ -112,7 +112,7 @@ class CompileTest {
 			.typedTerm(
 				script(
 					"ping" lineTo script(),
-					performName lineTo script(
+					applyingName lineTo script(
 						functionName lineTo script(
 							"ping" lineTo script(),
 							givingName lineTo script("pong")))))

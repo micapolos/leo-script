@@ -1,6 +1,7 @@
 package leo.term.evaluator
 
 import leo.anyName
+import leo.applyingName
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.functionName
@@ -11,7 +12,6 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.numberName
-import leo.performName
 import leo.plusName
 import leo.script
 import kotlin.test.Test
@@ -85,10 +85,10 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun performFunction() {
+	fun applyingFunction() {
 		script(
 			line(literal(10)),
-			performName lineTo script(
+			applyingName lineTo script(
 				functionName lineTo script(
 					anyName lineTo script(numberName),
 					givingName lineTo script(
