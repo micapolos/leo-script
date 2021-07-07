@@ -1,5 +1,6 @@
-x 10
-y 20
-give
-  x.number
-  plus y.number
+10
+applying function
+  number.any
+  giving
+    number
+    plus 1

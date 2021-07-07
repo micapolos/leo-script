@@ -35,3 +35,7 @@ val <T> Term<T>.tail: Term<T> get() =
 
 val <T> Term<T>.head: Term<T> get() =
 	invoke(fn(fn(get(0))))
+
+fun <T> fix(): Term<T> =
+	fn(fn(get<T>(1).invoke(fn(get<T>(1).invoke(get(1)).invoke(get(0)))))
+		.invoke(fn(get<T>(1).invoke(fn(get<T>(1).invoke(get(1)).invoke(get(0)))))))

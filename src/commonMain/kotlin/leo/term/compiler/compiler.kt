@@ -72,12 +72,21 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 	when (field.name) {
-		functionName -> plusFunction(field.rhs)
 		compiledName -> plusCompiled(field.rhs)
+		functionName -> plusFunction(field.rhs)
 		giveName -> plusGive(field.rhs)
 		letName -> plusLet(field.rhs)
 		quoteName -> plusQuote(field.rhs)
 		else -> null
+	}
+
+fun <V> Compiler<V>.plusCompiled(script: Script): Compiler<V> =
+	environment.typedTerm(script).let {
+		plus(
+			environment.staticTypedLine(
+				"compiled" lineTo script(
+					"term" lineTo it.v.script,
+					it.t.scriptLine)))
 	}
 
 fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
@@ -91,15 +100,6 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
 			else -> null
 		}
 	}.notNullOrError("parse error action")
-
-fun <V> Compiler<V>.plusCompiled(script: Script): Compiler<V> =
-	environment.typedTerm(script).let {
-		plus(
-			environment.staticTypedLine(
-				"compiled" lineTo script(
-					"term" lineTo it.v.script,
-					it.t.scriptLine)))
-	}
 
 fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
 	set(typedTerm.give(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
