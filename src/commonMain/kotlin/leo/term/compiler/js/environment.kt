@@ -11,6 +11,7 @@ import leo.term.invoke
 import leo.term.nativeTerm
 import leo.term.tail
 import leo.term.typed.typed
+import leo.textTypeLine
 import leo.type
 
 val jsEnvironment: Environment<Js>
@@ -22,8 +23,19 @@ val jsEnvironment: Environment<Js>
 					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
 						typed(
 							fn("(x=>y=>x+y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
-							type(numberTypeLine)
-						)
+							type(numberTypeLine))
+					type(numberTypeLine, "subtract" lineTo type(numberTypeLine)) ->
+						typed(
+							fn("(x=>y=>x-y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+							type(numberTypeLine))
+					type(numberTypeLine, "multiply" lineTo type("by" lineTo type(numberTypeLine))) ->
+						typed(
+							fn("(x=>y=>x*y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+							type(numberTypeLine))
+					type(textTypeLine, "append" lineTo type(textTypeLine)) ->
+						typed(
+							fn("(x=>y=>x+y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+							type(textTypeLine))
 					else -> null
 				}
 			}

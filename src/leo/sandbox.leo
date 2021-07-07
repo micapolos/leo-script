@@ -1,4 +1,2 @@
-remember
-  any number
-  does "Hello"
-123
+"Hello, "
+append "world!"
