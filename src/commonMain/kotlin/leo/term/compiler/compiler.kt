@@ -6,20 +6,19 @@ import leo.LiteralScriptLine
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
-import leo.actionName
 import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compiledName
-import leo.doingName
 import leo.functionLineTo
+import leo.functionName
 import leo.giveName
+import leo.givingName
 import leo.isEmpty
 import leo.letName
 import leo.lineSeq
 import leo.lineTo
 import leo.matchInfix
-import leo.performName
 import leo.quoteName
 import leo.script
 import leo.scriptLine
@@ -28,7 +27,6 @@ import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.give
-import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.plus
 import leo.term.typed.staticTypedLine
@@ -74,19 +72,18 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 	when (field.name) {
-		actionName -> plusAction(field.rhs)
+		functionName -> plusFunction(field.rhs)
 		compiledName -> plusCompiled(field.rhs)
 		giveName -> plusGive(field.rhs)
-		performName -> plusPerform(field.rhs)
 		letName -> plusLet(field.rhs)
 		quoteName -> plusQuote(field.rhs)
 		else -> null
 	}
 
-fun <V> Compiler<V>.plusAction(script: Script): Compiler<V> =
+fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
 	script.matchInfix { lhs, name, rhs ->
 		when (name) {
-			doingName -> context.type(lhs).let { type ->
+			givingName -> context.type(lhs).let { type ->
 				context.plus(binding(given(type))).typedTerm(rhs).let { typedTerm ->
 					plus(typed(fn(typedTerm.v), type functionLineTo typedTerm.t))
 				}
@@ -106,9 +103,6 @@ fun <V> Compiler<V>.plusCompiled(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
 	set(typedTerm.give(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
-
-fun <V> Compiler<V>.plusPerform(script: Script): Compiler<V> =
-	set(context.typedTerm(script).invoke(typedTerm))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
 	if (typedTerm != typedTerm<V>()) error("let after term")

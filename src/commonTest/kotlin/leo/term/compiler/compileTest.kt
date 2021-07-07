@@ -1,9 +1,9 @@
 package leo.term.compiler
 
-import leo.actionName
 import leo.base.assertEqualTo
-import leo.doingName
+import leo.functionName
 import leo.getName
+import leo.givingName
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
@@ -94,13 +94,13 @@ class CompileTest {
 	}
 
 	@Test
-	fun action() {
+	fun function() {
 		nativeEnvironment
 			.typedTerm(
 				script(
-					actionName lineTo script(
+					functionName lineTo script(
 						"zero" lineTo script(),
-						doingName lineTo script("one"))))
+						givingName lineTo script("one"))))
 			.assertEqualTo(
 				typedTerm(
 					typedFunctionLine(type("zero"), typedTerm("one" lineTo typedTerm()))))
@@ -113,9 +113,9 @@ class CompileTest {
 				script(
 					"ping" lineTo script(),
 					performName lineTo script(
-						actionName lineTo script(
+						functionName lineTo script(
 							"ping" lineTo script(),
-							doingName lineTo script("pong")))))
+							givingName lineTo script("pong")))))
 			.assertEqualTo(
 				typedTerm<Native>(typedFunctionLine(type("ping"), typedTerm("pong" lineTo typedTerm())))
 					.invoke(typedTerm("ping" lineTo typedTerm())))

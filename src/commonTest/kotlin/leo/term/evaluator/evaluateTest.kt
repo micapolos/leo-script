@@ -1,11 +1,11 @@
 package leo.term.evaluator
 
-import leo.actionName
 import leo.anyName
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
-import leo.doingName
+import leo.functionName
 import leo.giveName
+import leo.givingName
 import leo.letName
 import leo.line
 import leo.lineTo
@@ -85,13 +85,13 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun performAction() {
+	fun performFunction() {
 		script(
 			line(literal(10)),
 			performName lineTo script(
-				actionName lineTo script(
+				functionName lineTo script(
 					anyName lineTo script(numberName),
-					doingName lineTo script(
+					givingName lineTo script(
 						numberName lineTo script(),
 						plusName lineTo script(literal(1))))))
 			.evaluate

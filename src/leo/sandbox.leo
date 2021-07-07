@@ -1,6 +1,5 @@
-let
-  number.any.increment
-  give
-    number
-    plus 1
-123.increment
+x 10
+y 20
+give
+  x.number
+  plus y.number
