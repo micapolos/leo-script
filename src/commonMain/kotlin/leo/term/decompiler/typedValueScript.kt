@@ -20,6 +20,8 @@ import leo.TypeLiteral
 import leo.TypePrimitive
 import leo.TypeStructure
 import leo.atom
+import leo.base.Conditional
+import leo.base.stak.top
 import leo.fieldTo
 import leo.isStatic
 import leo.line
@@ -29,8 +31,11 @@ import leo.literal
 import leo.plus
 import leo.script
 import leo.structure
+import leo.term.AbstractionTerm
+import leo.term.ApplicationTerm
 import leo.term.FunctionValue
 import leo.term.Value
+import leo.term.VariableTerm
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.double
 import leo.term.compiler.native.string
@@ -50,7 +55,13 @@ val TypedValue<Native>.script: Script get() =
 	}
 
 val Typed<Value<Native>, TypeChoice>.choiceScript: Script get() =
-	TODO()
+	t.lineStack.linkOrNull.let { linkOrNull ->
+		if (linkOrNull == null) error("impossible")
+		else v.eitherConditional.let { conditional ->
+			if (conditional.boolean) script(Typed(conditional.v, linkOrNull.head).scriptLine)
+			else Typed(conditional.v, TypeChoice(linkOrNull.tail)).choiceScript
+		}
+	}
 
 val Typed<Value<Native>, TypeStructure>.structureScript: Script get() =
 	t.lineStack.linkOrNull.let { linkOrNull ->
@@ -104,4 +115,11 @@ val Typed<Value<Native>, TypeField>.scriptField: ScriptField get() =
 val <T> Value<T>.pair: Pair<Value<T>, Value<T>> get() =
 	(this as FunctionValue).function.scope.let { scope ->
 		scope.value(variable(1)) to scope.value(variable(0))
+	}
+
+val <T> Value<T>.eitherConditional: Conditional<Value<T>> get() =
+	(this as FunctionValue).function.let { function ->
+		(((function.term as AbstractionTerm<T>).abstraction.term as ApplicationTerm<T>).application.lhs as VariableTerm).variable.index.let { index ->
+			Conditional(index == 0, function.scope.valueStak.top!!)
+		}
 	}

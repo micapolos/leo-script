@@ -22,16 +22,19 @@ import leo.matchInfix
 import leo.quoteName
 import leo.script
 import leo.scriptLine
+import leo.selectName
 import leo.term.fn
 import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
+import leo.term.typed.choicePlus
 import leo.term.typed.give
 import leo.term.typed.lineTo
 import leo.term.typed.plus
 import leo.term.typed.staticTypedLine
 import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
+import leo.term.typed.typedChoice
 import leo.term.typed.typedTerm
 
 data class Compiler<V>(
@@ -76,6 +79,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 		functionName -> plusFunction(field.rhs)
 		giveName -> plusGive(field.rhs)
 		letName -> plusLet(field.rhs)
+		selectName -> plusSelect(field.rhs)
 		quoteName -> plusQuote(field.rhs)
 		else -> null
 	}
@@ -107,6 +111,13 @@ fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
 	if (typedTerm != typedTerm<V>()) error("let after term")
 	else set(module.plusLet(script))
+
+fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
+	if (typedTerm != typedTerm<V>()) error("select")
+	else set(
+		typedChoice<V>()
+			.fold(script.lineSeq.reverse) { choicePlus(context.typedSelection(it)) }
+			.typedTerm)
 
 fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =
 	if (!typedTerm.t.isEmpty) error("$typedTerm not empty")

@@ -7,21 +7,29 @@ import leo.getName
 import leo.givingName
 import leo.lineTo
 import leo.literal
+import leo.noName
 import leo.numberTypeLine
 import leo.quoteName
 import leo.script
+import leo.selectName
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
 import leo.term.nativeTerm
+import leo.term.typed.choicePlus
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
+import leo.term.typed.noSelection
 import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
+import leo.term.typed.typedChoice
 import leo.term.typed.typedFunctionLine
 import leo.term.typed.typedTerm
+import leo.term.typed.yesSelection
 import leo.textTypeLine
+import leo.textTypeScriptLine
 import leo.type
+import leo.yesName
 import kotlin.test.Test
 
 class CompileTest {
@@ -127,5 +135,20 @@ class CompileTest {
 			.typedTerm(
 				script(quoteName lineTo script(getName lineTo script("foo"))))
 			.assertEqualTo(nativeEnvironment.staticTypedTerm(script(getName lineTo script("foo"))))
+	}
+
+	@Test
+	fun select() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					selectName lineTo script(
+						yesName lineTo script(literal(10)),
+						noName lineTo script(textTypeScriptLine))))
+			.assertEqualTo(
+				typedChoice<Native>()
+					.choicePlus(yesSelection(typed(10.0.native.nativeTerm, numberTypeLine)))
+					.choicePlus(noSelection(textTypeLine))
+					.typedTerm)
 	}
 }

@@ -1,6 +1,3 @@
-10
-applying function
-  number.any
-  giving
-    number
-    plus 1
+boolean select
+  no any number
+  yes "dfg"

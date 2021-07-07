@@ -2,6 +2,7 @@ package leo.term.typed
 
 import leo.Literal
 import leo.Type
+import leo.TypeChoice
 import leo.TypeLine
 import leo.atomOrNull
 import leo.base.Seq
@@ -13,6 +14,7 @@ import leo.base.onlyOrNull
 import leo.base.seq
 import leo.base.the
 import leo.base.then
+import leo.choice
 import leo.fieldOrNull
 import leo.fold
 import leo.functionLineTo
@@ -31,6 +33,8 @@ import leo.term.Term
 import leo.term.Value
 import leo.term.anyTerm
 import leo.term.compiler.Get
+import leo.term.eitherFirst
+import leo.term.eitherSecond
 import leo.term.fn
 import leo.term.head
 import leo.term.id
@@ -46,8 +50,18 @@ fun <V, T> typed(v: V, t: T) = Typed(v, t)
 typealias TypedValue<V> = Typed<Value<V>, Type>
 typealias TypedTerm<V> = Typed<Term<V>, Type>
 typealias TypedLine<V> = Typed<Term<V>, TypeLine>
+typealias TypedChoice<V> = Typed<Term<V>?, TypeChoice>
+
+sealed class TypedSelection<out V>
+data class YesTypedSelection<V>(val typedLine: TypedLine<V>): TypedSelection<V>()
+data class NoTypedSelection<V>(val typeLine: TypeLine): TypedSelection<V>()
+
+fun <V> noSelection(typeLine: TypeLine): TypedSelection<V> = NoTypedSelection(typeLine)
+fun <V> yesSelection(typedLine: TypedLine<V>): TypedSelection<V> = YesTypedSelection(typedLine)
 
 fun <V> typedTerm(): TypedTerm<V> = Typed(id(), type())
+
+fun <V> typedChoice(): TypedChoice<V> = Typed(null, choice())
 
 fun <V> TypedTerm<V>.plus(line: TypedLine<V>): TypedTerm<V> =
 	typed(
@@ -164,3 +178,22 @@ fun <V> TypedTerm<V>.give(typedTerm: TypedTerm<V>): TypedTerm<V> =
 
 fun <V> typedFunctionLine(type: Type, typedTerm: TypedTerm<V>): TypedLine<V> =
 	typed(fn(typedTerm.v), type functionLineTo typedTerm.t)
+
+val <V> TypedSelection<V>.typeLine: TypeLine get() =
+	when (this) {
+		is NoTypedSelection -> typeLine
+		is YesTypedSelection -> typedLine.t
+	}
+
+fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> =
+	Typed(
+		when (selection) {
+			is YesTypedSelection ->
+				if (v != null) error("already chosen")
+				else selection.typedLine.v.eitherSecond
+			is NoTypedSelection -> v?.eitherFirst
+		},
+		t.plus(selection.typeLine))
+
+val <V> TypedChoice<V>.typedTerm: TypedTerm<V> get() =
+	Typed(v.notNullOrError("no choice"), type(t))
