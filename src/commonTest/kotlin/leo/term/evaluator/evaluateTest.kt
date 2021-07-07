@@ -1,7 +1,7 @@
 package leo.term.evaluator
 
 import leo.anyName
-import leo.applyingName
+import leo.applyName
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.functionName
@@ -85,10 +85,10 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun applyingFunction() {
+	fun applyFunction() {
 		script(
 			line(literal(10)),
-			applyingName lineTo script(
+			applyName lineTo script(
 				functionName lineTo script(
 					anyName lineTo script(numberName),
 					givingName lineTo script(

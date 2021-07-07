@@ -30,11 +30,11 @@ val Any?.anyTerm: Term<Any?> get() = nativeTerm
 fun <T> Term<T>.plus(term: Term<T>): Term<T> =
 	fn(fn(fn(get<T>(0).invoke(get(2)).invoke(get(1))))).invoke(this).invoke(term)
 
-val <T> Term<T>.tail: Term<T> get() =
-	invoke(fn(fn(get(1))))
+val <T> Term<T>.tail: Term<T> get() = invoke(fn(fn(get(1))))
+val <T> Term<T>.head: Term<T> get() = invoke(fn(fn(get(0))))
 
-val <T> Term<T>.head: Term<T> get() =
-	invoke(fn(fn(get(0))))
+val <T> Term<T>.eitherFirst: Term<T> get() = fn(fn(fn(get<T>(1).invoke(get(2))))).invoke(this)
+val <T> Term<T>.eitherSecond: Term<T> get() = fn(fn(fn(get<T>(0).invoke(get(2))))).invoke(this)
 
 fun <T> fix(): Term<T> =
 	fn(fn(get<T>(1).invoke(fn(get<T>(1).invoke(get(1)).invoke(get(0)))))

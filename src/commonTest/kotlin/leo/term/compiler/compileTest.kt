@@ -1,6 +1,6 @@
 package leo.term.compiler
 
-import leo.applyingName
+import leo.applyName
 import leo.base.assertEqualTo
 import leo.functionName
 import leo.getName
@@ -107,12 +107,12 @@ class CompileTest {
 	}
 
 	@Test
-	fun perform() {
+	fun apply() {
 		nativeEnvironment
 			.typedTerm(
 				script(
 					"ping" lineTo script(),
-					applyingName lineTo script(
+					applyName lineTo script(
 						functionName lineTo script(
 							"ping" lineTo script(),
 							givingName lineTo script("pong")))))
