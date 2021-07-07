@@ -4,19 +4,25 @@ import leo.Literal
 import leo.Type
 import leo.TypeLine
 import leo.atomOrNull
+import leo.base.Seq
+import leo.base.filterMap
 import leo.base.fold
 import leo.base.notNullIf
 import leo.base.notNullOrError
+import leo.base.onlyOrNull
+import leo.base.seq
+import leo.base.the
+import leo.base.then
 import leo.fieldOrNull
 import leo.fold
 import leo.functionLineTo
 import leo.functionOrNull
+import leo.isEmpty
 import leo.isStatic
 import leo.lineTo
 import leo.linkOrNull
 import leo.name
 import leo.named.evaluator.any
-import leo.onlyLineOrNull
 import leo.plus
 import leo.stack
 import leo.structure
@@ -82,8 +88,16 @@ val <V> TypedTerm<V>.headOrNull: TypedTerm<V>? get() =
 val <V> TypedTerm<V>.tailOrNull: TypedTerm<V>? get() =
 	pairOrNull?.first
 
+val <V> TypedTerm<V>.onlyLineOrNull: TypedLine<V>? get() =
+	pairOrNull?.let { (lhs, rhs) ->
+		notNullIf(lhs.t.isEmpty) { rhs }
+	}
+
 val <V> TypedTerm<V>.contentOrNull: TypedTerm<V>? get() =
-	t.onlyLineOrNull?.atomOrNull?.fieldOrNull?.rhsType?.let { type ->
+	onlyLineOrNull?.lineContentOrNull
+
+val <V> TypedLine<V>.lineContentOrNull: TypedTerm<V>? get() =
+	t.atomOrNull?.fieldOrNull?.rhsType?.let { type ->
 		typed(v, type)
 	}
 
@@ -100,7 +114,15 @@ fun <V> TypedTerm<V>.invoke(get: Get): TypedTerm<V> =
 	fold(stack(get.nameStackLink)) { get(it) }
 
 fun <V> TypedTerm<V>.getOrNull(name: String): TypedTerm<V>? =
-	contentOrNull?.lineOrNull(name)?.let { typedTerm(it) }
+	null
+		?: getDirectNull(name)
+		?: getIndirectNull(name)
+
+fun <V> TypedTerm<V>.getDirectNull(name: String): TypedTerm<V>? =
+	contentOrNull?.lineSeq(name)?.onlyOrNull?.let { typedTerm(it) }
+
+fun <V> TypedTerm<V>.getIndirectNull(name: String): TypedTerm<V>? =
+	contentOrNull?.indirectLineSeq(name)?.onlyOrNull?.let { typedTerm(it) }
 
 fun <V> TypedTerm<V>.lineOrNull(name: String): TypedLine<V>? =
 	pairOrNull?.let { (typedTerm, typedLine) ->
@@ -109,8 +131,27 @@ fun <V> TypedTerm<V>.lineOrNull(name: String): TypedLine<V>? =
 			?: typedTerm.lineOrNull(name)
 	}
 
+val <V> TypedTerm<V>.lineSeq: Seq<TypedLine<V>> get() =
+	seq {
+		pairOrNull?.let { (lhs, line) ->
+			line.then(lhs.lineSeq)
+		}
+	}
+
+fun <V> TypedTerm<V>.lineSeq(name: String): Seq<TypedLine<V>> =
+	lineSeq.filterMap { orNull(name)?.the }
+
+fun <V> TypedTerm<V>.indirectLineSeq(name: String): Seq<TypedLine<V>> =
+	lineSeq.filterMap { indirectOrNull(name)?.the }
+
 fun <V> TypedLine<V>.orNull(name: String): TypedLine<V>? =
 	notNullIf(t.name == name) { this }
+
+fun <V> TypedTerm<V>.indirectLineOrNull(name: String): TypedLine<V>? =
+	indirectLineSeq(name).onlyOrNull
+
+fun <V> TypedLine<V>.indirectOrNull(name: String): TypedLine<V>? =
+	orNull(name) ?: lineContentOrNull?.indirectLineOrNull(name)
 
 fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 	typedTerm(name lineTo this)

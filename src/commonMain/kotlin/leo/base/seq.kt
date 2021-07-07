@@ -88,6 +88,16 @@ val <T> T.onlySeq: Seq<T>
 	get() =
 		Seq { onlySeqNode }
 
+val Seq<*>.isEmpty: Boolean get() =
+	nodeOrNull == null
+
+val <T: Any> Seq<T>.onlyOrNull: T? get() =
+	nodeOrNull?.run {
+		notNullIf(remaining.isEmpty) {
+			first
+		}
+	}
+
 fun <T : Any, R> T?.orEmptyIfNullSeq(fn: T.() -> Seq<R>): Seq<R> =
 	if (this == null) seq() else fn()
 
