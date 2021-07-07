@@ -64,10 +64,7 @@ class CompileTest {
 	fun names() {
 		nativeEnvironment
 			.typedTerm(script("foo", "bar"))
-			.assertEqualTo(
-				typedTerm(
-					"foo" lineTo typedTerm(),
-					"bar" lineTo typedTerm()))
+			.assertEqualTo(typedTerm("bar" lineTo typedTerm("foo")))
 	}
 
 	@Test

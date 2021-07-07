@@ -1,8 +1,7 @@
-my favourite point
+vector
   x 10
   y 20
-plus my other favourite point
+add vector
   x 30
   y 40
-make given
-get plus point
+do add.vector

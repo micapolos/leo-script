@@ -13,7 +13,7 @@ fun binding(definition: Definition): Binding = DefinitionBinding(definition)
 fun <V> Binding.resolveOrNull(variable: TermVariable, typedTerm: TypedTerm<V>): TypedTerm<V>? =
 	when (this) {
 		is DefinitionBinding -> definition.resolveOrNull(variable, typedTerm)
-		is GivenBinding -> null
+		is GivenBinding -> given.resolveOrNull(variable, typedTerm)
 	}
 
 fun <V> Binding.getOrNull(variable: TermVariable, name: String): TypedTerm<V>? =

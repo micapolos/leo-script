@@ -65,6 +65,9 @@ infix fun <V> String.lineTo(typed: TypedTerm<V>): TypedLine<V> =
 fun <V> typedTerm(vararg lines: TypedLine<V>): TypedTerm<V> =
 	typedTerm<V>().fold(lines) { plus(it) }
 
+fun <V> typedTerm(name: String): TypedTerm<V> =
+	typedTerm(name lineTo typedTerm())
+
 fun typedLine(literal: Literal): TypedLine<Any?> =
 	typed(literal.any.anyTerm, literal.typeLine)
 

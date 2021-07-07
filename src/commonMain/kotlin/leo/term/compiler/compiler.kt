@@ -73,7 +73,8 @@ fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
 		?: plusNamed(field)
 
 fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
-	plus(field.name lineTo context.typedTerm(field.rhs))
+	if (field.rhs.isEmpty) set(typedTerm()).plus(field.name lineTo typedTerm)
+	else plus(field.name lineTo context.typedTerm(field.rhs))
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 	when (field.name) {

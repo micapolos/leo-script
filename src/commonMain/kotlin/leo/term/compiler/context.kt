@@ -21,6 +21,7 @@ fun <V> Context<V>.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
 	null
 		?: scope.resolveOrNull(typedTerm)
 		?: environment.resolveOrNullFn(typedTerm)
+		?: typedTerm.resolvedOrNull
 		?: typedTerm
 
 fun <V> Context<V>.type(script: Script): Type =
