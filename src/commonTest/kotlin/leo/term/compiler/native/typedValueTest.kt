@@ -1,12 +1,10 @@
 package leo.term.compiler.native
 
 import leo.base.assertEqualTo
-import leo.doName
-import leo.getName
+import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.makeName
 import leo.numberName
 import leo.numberTypeLine
 import leo.script
@@ -40,8 +38,7 @@ class TypedValueTest {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
-			doName lineTo script(
-				getName lineTo script("x")))
+			giveName lineTo script("x"))
 			.typedValue
 			.assertEqualTo(
 				typed(
@@ -56,7 +53,7 @@ class TypedValueTest {
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))
 			),
-			getName lineTo script("x"))
+			"x" lineTo script())
 			.typedValue
 			.assertEqualTo(
 				typed(
@@ -68,7 +65,7 @@ class TypedValueTest {
 	fun getNumber() {
 		script(
 			"id" lineTo script(line(literal(10))),
-			getName lineTo script(numberName))
+			numberName lineTo script())
 			.typedValue
 			.assertEqualTo(
 				typed(
@@ -80,7 +77,7 @@ class TypedValueTest {
 	fun make() {
 		script(
 			line(literal(10)),
-			makeName lineTo script("id"))
+			"id" lineTo script())
 			.typedValue
 			.assertEqualTo(
 				typed(

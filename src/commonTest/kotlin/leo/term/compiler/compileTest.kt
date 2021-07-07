@@ -87,7 +87,7 @@ class CompileTest {
 					"point" lineTo script(
 						"x" lineTo script("zero"),
 						"y" lineTo script("one")),
-					getName lineTo script("x")))
+					"x" lineTo script()))
 			.assertEqualTo(
 				typedTerm(
 					"x" lineTo typedTerm("zero" lineTo typedTerm())))

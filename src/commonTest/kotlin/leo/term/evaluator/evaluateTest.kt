@@ -4,17 +4,14 @@ import leo.actionName
 import leo.anyName
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
-import leo.doName
-import leo.doesName
 import leo.doingName
-import leo.getName
+import leo.giveName
+import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.makeName
 import leo.numberName
 import leo.performName
-import leo.rememberName
 import leo.script
 import kotlin.test.Test
 
@@ -37,12 +34,11 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun do_() {
+	fun give() {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
-			doName lineTo script(getName lineTo script("x"))
-		)
+			giveName lineTo script("x"))
 			.evaluate
 			.assertEqualTo(script("x" lineTo script(literal(10))))
 	}
@@ -54,8 +50,7 @@ class EvaluateTest {
 				"x" lineTo script(literal(10)),
 				"y" lineTo script(literal(20))
 			),
-			getName lineTo script("x")
-		)
+			"x" lineTo script())
 			.evaluate
 			.assertEqualTo(script("x" lineTo script(literal(10))))
 	}
@@ -64,8 +59,7 @@ class EvaluateTest {
 	fun getNumber() {
 		script(
 			"id" lineTo script(line(literal(10))),
-			getName lineTo script(numberName)
-		)
+			numberName lineTo script())
 			.evaluate
 			.assertEqualTo(script(literal(10)))
 	}
@@ -74,8 +68,7 @@ class EvaluateTest {
 	fun make() {
 		script(
 			line(literal(10)),
-			makeName lineTo script("id")
-		)
+			"id" lineTo script())
 			.evaluate
 			.assertEqualTo(script("id" lineTo script(literal(10))))
 	}
@@ -98,7 +91,7 @@ class EvaluateTest {
 				actionName lineTo script(
 					anyName lineTo script(numberName),
 					doingName lineTo script(
-						getName lineTo script(numberName),
+						numberName lineTo script(),
 						"add" lineTo script(literal(1))))))
 			.evaluate
 			.assertEqualTo(script(literal(11)))
@@ -107,9 +100,9 @@ class EvaluateTest {
 	@Test
 	fun remember() {
 		script(
-			rememberName lineTo script(
+			letName lineTo script(
 				"ping" lineTo script(),
-				doesName lineTo script("pong")),
+				giveName lineTo script("pong")),
 			"ping" lineTo script())
 			.evaluate
 			.assertEqualTo(script("pong"))
