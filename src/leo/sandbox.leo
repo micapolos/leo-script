@@ -1,4 +1,4 @@
 boolean select
-  no any number
-  yes "dfg"
+  no dupa
+  yes pupa
 type

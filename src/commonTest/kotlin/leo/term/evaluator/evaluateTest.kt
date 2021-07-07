@@ -5,13 +5,13 @@ import leo.choiceName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.noName
+import leo.notName
 import leo.numberTypeScriptLine
 import leo.script
 import leo.selectName
 import leo.textTypeScriptLine
+import leo.theName
 import leo.typeName
-import leo.yesName
 import kotlin.test.Test
 
 class EvaluateTest {
@@ -38,8 +38,8 @@ class EvaluateTest {
 	fun selectType() {
 		script(
 			selectName lineTo script(
-				yesName lineTo script(literal(10)),
-				noName lineTo script(textTypeScriptLine)),
+				theName lineTo script(literal(10)),
+				notName lineTo script(textTypeScriptLine)),
 			typeName lineTo script())
 			.evaluate
 			.assertEqualTo(

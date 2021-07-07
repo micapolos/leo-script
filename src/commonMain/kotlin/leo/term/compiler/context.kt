@@ -38,7 +38,7 @@ fun <V> Context<V>.type(script: Script): Type =
 
 fun <V> Context<V>.typedSelection(scriptLine: ScriptLine): TypedSelection<V> =
 	scriptLine.fieldOrNull.notNullOrError("$scriptLine.conditional").let { field ->
-		field.name.yesNoBoolean.let { boolean ->
+		field.name.selectBoolean.let { boolean ->
 			if (boolean) yesSelection(typedTerm(field.rhs).onlyLineOrNull.notNullOrError("dupa i już"))
 			else noSelection(type(field.rhs).onlyLineOrNull.notNullOrError("dupa kabana"))
 		}

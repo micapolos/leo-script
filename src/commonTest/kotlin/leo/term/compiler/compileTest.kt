@@ -7,7 +7,7 @@ import leo.getName
 import leo.givingName
 import leo.lineTo
 import leo.literal
-import leo.noName
+import leo.notName
 import leo.numberTypeLine
 import leo.quoteName
 import leo.script
@@ -28,8 +28,8 @@ import leo.term.typed.typedTerm
 import leo.term.typed.yesSelection
 import leo.textTypeLine
 import leo.textTypeScriptLine
+import leo.theName
 import leo.type
-import leo.yesName
 import kotlin.test.Test
 
 class CompileTest {
@@ -143,8 +143,8 @@ class CompileTest {
 			.typedTerm(
 				script(
 					selectName lineTo script(
-						yesName lineTo script(literal(10)),
-						noName lineTo script(textTypeScriptLine))))
+						theName lineTo script(literal(10)),
+						notName lineTo script(textTypeScriptLine))))
 			.assertEqualTo(
 				typedChoice<Native>()
 					.choicePlus(yesSelection(typed(10.0.native.nativeTerm, numberTypeLine)))

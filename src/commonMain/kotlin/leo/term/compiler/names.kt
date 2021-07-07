@@ -1,11 +1,11 @@
 package leo.term.compiler
 
-import leo.noName
-import leo.yesName
+import leo.notName
+import leo.theName
 
-val String.yesNoBoolean: Boolean get() =
+val String.selectBoolean: Boolean get() =
 	when (this) {
-		yesName -> true
-		noName -> false
+		theName -> true
+		notName -> false
 		else -> error("$this.yesNoBoolean")
 	}
