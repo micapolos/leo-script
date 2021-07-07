@@ -5,6 +5,7 @@ import leo.base.lines
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.plusName
 import leo.script
 import leo.string
 import org.junit.Test
@@ -38,10 +39,10 @@ class LeoTest {
 	}
 
 	@Test
-	fun numberAddNumber() {
+	fun numberPlusNumber() {
 		script(
 			line(literal(10)),
-			"add" lineTo script(literal(20))
+			plusName lineTo script(literal(20))
 		)
 			.termScript
 			.string
@@ -50,7 +51,7 @@ class LeoTest {
 					"lambda",
 					"  lambda lambda",
 					"    variable 1",
-					"    add variable 0",
+					"    plus variable 0",
 					"  apply",
 					"    variable 0",
 					"    apply lambda lambda variable 1",

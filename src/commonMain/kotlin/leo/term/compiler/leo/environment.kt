@@ -22,40 +22,40 @@ val scriptEnvironment: Environment<Script>
 			{ literal -> script(literal).nativeTerm },
 			{ typedTerm ->
 				when (typedTerm.t) {
-					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
+					type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(script(
 								"lambda" lineTo script(
 									"lambda" lineTo script(
 										"variable" lineTo script(literal(1)),
-										"add" lineTo script("variable" lineTo script(literal(0))))))
+										"plus" lineTo script("variable" lineTo script(literal(0))))))
 								.nativeTerm.invoke(get<Script>(0).tail).invoke(get<Script>(0).head)).invoke(typedTerm.v),
 							type(numberTypeLine))
-					type(numberTypeLine, "subtract" lineTo type(numberTypeLine)) ->
+					type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(script(
 								"lambda" lineTo script(
 									"lambda" lineTo script(
 										"variable" lineTo script(literal(1)),
-										"subtract" lineTo script("variable" lineTo script(literal(0))))))
+										"minus" lineTo script("variable" lineTo script(literal(0))))))
 								.nativeTerm.invoke(get<Script>(0).tail).invoke(get<Script>(0).head)).invoke(typedTerm.v),
 							type(numberTypeLine))
-					type(numberTypeLine, "multiply" lineTo type("by" lineTo type(numberTypeLine))) ->
+					type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(script(
 								"lambda" lineTo script(
 									"lambda" lineTo script(
 										"variable" lineTo script(literal(1)),
-										"multiply" lineTo script("by" lineTo script("variable" lineTo script(literal(0)))))))
+										"times" lineTo script("variable" lineTo script(literal(0))))))
 								.nativeTerm.invoke(get<Script>(0).tail).invoke(get<Script>(0).head)).invoke(typedTerm.v),
 							type(numberTypeLine))
-					type(textTypeLine, "append" lineTo type(textTypeLine)) ->
+					type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
 						typed(
 							fn(script(
 								"lambda" lineTo script(
 									"lambda" lineTo script(
 										"variable" lineTo script(literal(1)),
-										"append" lineTo script("variable" lineTo script(literal(0))))))
+										"plus" lineTo script("variable" lineTo script(literal(0))))))
 								.nativeTerm.invoke(get<Script>(0).tail).invoke(get<Script>(0).head)).invoke(typedTerm.v),
 							type(textTypeLine))
 					else -> null

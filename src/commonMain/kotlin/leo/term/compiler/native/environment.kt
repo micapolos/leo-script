@@ -18,19 +18,19 @@ val nativeEnvironment: Environment<Native>
 			{ literal -> literal.native.nativeTerm },
 			{ typedTerm ->
 				when (typedTerm.t) {
-					type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
+					type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(fn(DoubleAddDoubleNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
 							type(numberTypeLine))
-					type(numberTypeLine, "subtract" lineTo type(numberTypeLine)) ->
+					type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(fn(DoubleSubtractDoubleNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
 							type(numberTypeLine))
-					type(numberTypeLine, "multiply" lineTo type("by" lineTo type(numberTypeLine))) ->
+					type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(fn(DoubleMultiplyByDoubleNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
 							type(numberTypeLine))
-					type(textTypeLine, "append" lineTo type(textTypeLine)) ->
+					type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
 						typed(
 							fn(fn(StringAppendStringNative.nativeTerm)).invoke(typedTerm.v.tail).invoke(typedTerm.v.head),
 							type(textTypeLine))

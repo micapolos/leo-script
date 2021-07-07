@@ -3,6 +3,7 @@ package leo.term.compiler.python
 import leo.base.assertEqualTo
 import leo.line
 import leo.lineTo
+import leo.plusName
 import leo.script
 import org.junit.Test
 
@@ -27,10 +28,10 @@ class PythonTest {
 	}
 
 	@Test
-	fun numberAddNumber() {
+	fun numberPlusNumber() {
 		script(
 			line(leo.literal(10)),
-			"add" lineTo script(leo.literal(20))
+			plusName lineTo script(leo.literal(20))
 		)
 			.python
 			.string

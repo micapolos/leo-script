@@ -7,6 +7,7 @@ import leo.lineTo
 import leo.literal
 import leo.numberName
 import leo.numberTypeLine
+import leo.plusName
 import leo.script
 import leo.term.function
 import leo.term.get
@@ -87,10 +88,10 @@ class TypedValueTest {
 	}
 
 	@Test
-	fun numberAddNumber() {
+	fun numberPlusNumber() {
 		script(
 			line(literal(10)),
-			"add" lineTo script(literal(20)))
+			plusName lineTo script(literal(20)))
 			.typedValue
 			.assertEqualTo(
 				typed(

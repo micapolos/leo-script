@@ -1,7 +1,6 @@
-vector
-  x 10
-  y 20
-add vector
-  x 30
-  y 40
-do add.vector
+let
+  number.any.increment
+  give
+    number
+    plus 1
+123.increment

@@ -5,7 +5,8 @@ import leo.nameOrNull
 import leo.term.TermVariable
 import leo.term.term
 import leo.term.typed.TypedTerm
-import leo.term.typed.lineOrNull
+import leo.term.typed.getOrNull
+import leo.term.typed.lineTo
 import leo.term.typed.typed
 import leo.term.typed.typedTerm
 
@@ -17,4 +18,4 @@ fun <V> Given.resolveOrNull(variable: TermVariable, typedTerm: TypedTerm<V>): Ty
 	typedTerm.t.nameOrNull?.let { getOrNull(variable, it) }
 
 fun <V> Given.getOrNull(variable: TermVariable, name: String): TypedTerm<V>? =
-	typed(term<V>(variable), type).lineOrNull(name)?.let { typedTerm(it) }
+	typedTerm("given" lineTo typed(term<V>(variable), type)).getOrNull(name)

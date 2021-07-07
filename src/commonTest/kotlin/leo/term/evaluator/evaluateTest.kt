@@ -12,6 +12,7 @@ import leo.lineTo
 import leo.literal
 import leo.numberName
 import leo.performName
+import leo.plusName
 import leo.script
 import kotlin.test.Test
 
@@ -74,10 +75,10 @@ class EvaluateTest {
 	}
 
 	@Test
-	fun numberAddNumber() {
+	fun numberPlusNumber() {
 		script(
 			line(literal(10)),
-			"add" lineTo script(literal(20))
+			plusName lineTo script(literal(20))
 		)
 			.evaluate
 			.assertEqualTo(script(literal(30)))
@@ -92,7 +93,7 @@ class EvaluateTest {
 					anyName lineTo script(numberName),
 					doingName lineTo script(
 						numberName lineTo script(),
-						"add" lineTo script(literal(1))))))
+						plusName lineTo script(literal(1))))))
 			.evaluate
 			.assertEqualTo(script(literal(11)))
 	}

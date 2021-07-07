@@ -22,19 +22,19 @@ val schemeEnvironment: Environment<Scheme>
 		{ literal -> literal.scheme.nativeTerm },
 		{ typedTerm ->
 			when (typedTerm.t) {
-				type(numberTypeLine, "add" lineTo type(numberTypeLine)) ->
+				type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
 					typed(
 						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(numberTypeLine))
-				type(numberTypeLine, "subtract" lineTo type(numberTypeLine)) ->
+				type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
 					typed(
 						fn("(lambda (x) (lambda (y) (- x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(numberTypeLine))
-				type(numberTypeLine, "multiply" lineTo type("by" lineTo type(numberTypeLine))) ->
+				type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
 					typed(
 						fn("(lambda (x) (lambda (y) (* x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(numberTypeLine))
-				type(textTypeLine, "append" lineTo type(textTypeLine)) ->
+				type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
 					typed(
 						fn("(lambda (x) (lambda (y) (string-append x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
 						type(textTypeLine))
