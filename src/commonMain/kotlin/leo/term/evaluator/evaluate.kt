@@ -6,4 +6,4 @@ import leo.term.decompiler.script
 
 val Script.evaluate: Script
 	get() =
-	typedValue.script
+	  typedValue.script

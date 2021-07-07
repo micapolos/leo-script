@@ -28,6 +28,7 @@ fun <V> Context<V>.plus(binding: Binding): Context<V> =
 fun <V> Context<V>.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
 	null
 		?: scope.resolveOrNull(typedTerm)
+		?: environment.resolveTypeOrNull(typedTerm)
 		?: environment.resolveOrNullFn(typedTerm)
 		?: typedTerm.resolvedOrNull
 		?: typedTerm
