@@ -17,53 +17,177 @@ import leo.seq
 import leo.stack
 import leo.yesName
 
-data class Expression(val lineStack: Stack<Line>) { override fun toString() = scriptLine.toString() }
+data class Expression(val lineStack: Stack<Line>) {
+  override fun toString() = scriptLine.toString()
+}
 
-sealed class Line { override fun toString() = scriptLine.toString() }
-data class AnyLine(val any: Any?): Line() { override fun toString() = super.toString() }
-data class BeLine(val be: Be): Line() { override fun toString() = super.toString() }
-data class BindLine(val bind: Bind): Line() { override fun toString() = super.toString() }
-data class DoLine(val do_: Do): Line() { override fun toString() = super.toString() }
-data class FunctionLine(val function: Function): Line() { override fun toString() = super.toString() }
-data class FieldLine(val field: Field): Line() { override fun toString() = super.toString() }
-data class GetLine(val get: Get): Line() { override fun toString() = super.toString() }
-data class GiveLine(val give: Give): Line() { override fun toString() = super.toString() }
-data class InvokeLine(val invoke: Invoke): Line() { override fun toString() = super.toString() }
-data class EqualsLine(val equals: Equals): Line() { override fun toString() = super.toString() }
-data class LiteralLine(val literal: Literal): Line() { override fun toString() = super.toString() }
-data class LetLine(val let: Let): Line() { override fun toString() = super.toString() }
-data class MakeLine(val make: Make): Line() { override fun toString() = super.toString() }
-data class PrivateLine(val private: Private): Line() { override fun toString() = super.toString() }
-data class RecursiveLine(val recursive: Recursive): Line() { override fun toString() = super.toString() }
-data class SwitchLine(val select: Select): Line() { override fun toString() = super.toString() }
-data class TakeLine(val take: Take): Line() { override fun toString() = super.toString() }
-data class WithLine(val with: With): Line() { override fun toString() = super.toString() }
+sealed class Line {
+  override fun toString() = scriptLine.toString()
+}
 
-data class Be(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Bind(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Case(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Do(val doing: Doing) { override fun toString() = scriptLine.toString() }
-data class Field(val name: String, val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Function(val type: Type, val doing: Doing) { override fun toString() = scriptLine.toString() }
-data class Get(val name: String) { override fun toString() = scriptLine.toString() }
-data class Give(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Invoke(val type: Type) { override fun toString() = scriptLine.toString() }
-data class Equals(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Let(val type: Type, val rhs: LetRhs) { override fun toString() = scriptLine.toString() }
-data class Make(val name: String) { override fun toString() = scriptLine.toString() }
-data class Private(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Recursive(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class Select(val cases: Stack<Case>) { override fun toString() = scriptLine.toString() }
-data class Take(val expression: Expression) { override fun toString() = scriptLine.toString() }
-data class With(val expression: Expression) { override fun toString() = scriptLine.toString() }
+data class AnyLine(val any: Any?) : Line() {
+  override fun toString() = super.toString()
+}
 
-sealed class LetRhs { override fun toString() = scriptLine.toString() }
-data class BeLetRhs(val be: Be): LetRhs() { override fun toString() = super.toString() }
-data class DoLetRhs(val do_: Do): LetRhs() { override fun toString() = super.toString() }
+data class BeLine(val be: Be) : Line() {
+  override fun toString() = super.toString()
+}
 
-sealed class Doing { override fun toString() = script.toString() }
-data class ExpressionDoing(val expression: Expression): Doing() { override fun toString() = super.toString() }
-data class FnDoing(val valueFn: (Dictionary) -> Value): Doing() { override fun toString() = super.toString() }
+data class BindLine(val bind: Bind) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class DoLine(val do_: Do) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class FunctionLine(val function: Function) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class FieldLine(val field: Field) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class GetLine(val get: Get) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class GiveLine(val give: Give) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class InvokeLine(val invoke: Invoke) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class EqualsLine(val equals: Equals) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class LiteralLine(val literal: Literal) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class LetLine(val let: Let) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class MakeLine(val make: Make) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class PrivateLine(val private: Private) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class RecursiveLine(val recursive: Recursive) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class SwitchLine(val select: Select) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class TakeLine(val take: Take) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class WithLine(val with: With) : Line() {
+  override fun toString() = super.toString()
+}
+
+data class Be(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Bind(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Case(val name: String, val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Do(val doing: Doing) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Field(val name: String, val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Function(val type: Type, val doing: Doing) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Get(val name: String) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Give(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Invoke(val type: Type) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Equals(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Let(val type: Type, val rhs: LetRhs) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Make(val name: String) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Private(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Recursive(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Select(val cases: Stack<Case>) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class Take(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class With(val expression: Expression) {
+  override fun toString() = scriptLine.toString()
+}
+
+sealed class LetRhs {
+  override fun toString() = scriptLine.toString()
+}
+
+data class BeLetRhs(val be: Be) : LetRhs() {
+  override fun toString() = super.toString()
+}
+
+data class DoLetRhs(val do_: Do) : LetRhs() {
+  override fun toString() = super.toString()
+}
+
+sealed class Doing {
+  override fun toString() = script.toString()
+}
+
+data class ExpressionDoing(val expression: Expression) : Doing() {
+  override fun toString() = super.toString()
+}
+
+data class FnDoing(val valueFn: (Dictionary) -> Value) : Doing() {
+  override fun toString() = super.toString()
+}
 
 fun expressionLine(literal: Literal): Line = LiteralLine(literal)
 fun anyExpressionLine(any: Any?): Line = AnyLine(any)
@@ -132,9 +256,16 @@ fun Expression.bind(expression: Expression): Expression = plus(line(leo.named.ex
 fun Expression.make(name: String): Expression = plus(line(leo.named.expression.make(name)))
 fun Expression.invoke(type: Type): Expression = plus(line(leo.named.expression.invoke(type)))
 fun Expression.isEqualTo(expression: Expression): Expression = plus(line(equals_(expression)))
-val Expression.negate: Expression get() = plus(line(select(
-	yesName caseTo isNoExpression,
-	noName caseTo isYesExpression)))
+val Expression.negate: Expression
+  get() = plus(
+    line(
+      select(
+        yesName caseTo isNoExpression,
+        noName caseTo isYesExpression
+      )
+    )
+  )
+
 infix fun Type.lineTo(doing: Doing): Line = line(function(this, doing))
 
 fun Expression.get(name: String): Expression = plus(line(leo.named.expression.get(name)))

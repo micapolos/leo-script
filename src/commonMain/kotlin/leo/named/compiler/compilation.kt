@@ -82,305 +82,314 @@ import leo.withName
 import leo.zip
 
 typealias Compilation<V> = Stateful<Environment, V>
+
 val <V> V.compilation: Compilation<V> get() = stateful()
 
 fun Context.typedExpressionCompilation(script: Script): Compilation<TypedExpression> =
-	module.compiler.compilation
-		.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
-		.map { it.typedExpression }
+  module.compiler.compilation
+    .foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
+    .map { it.typedExpression }
 
 fun Context.typedLineCompilation(scriptLine: ScriptLine): Compilation<TypedLine> =
-	when (scriptLine) {
-		is FieldScriptLine -> typedLineCompilation(scriptLine.field)
-		is LiteralScriptLine -> typedLineCompilation(scriptLine.literal)
-	}
+  when (scriptLine) {
+    is FieldScriptLine -> typedLineCompilation(scriptLine.field)
+    is LiteralScriptLine -> typedLineCompilation(scriptLine.literal)
+  }
 
 fun Context.typedLineCompilation(scriptField: ScriptField): Compilation<TypedLine> =
-	typedExpressionCompilation(scriptField.rhs).map { scriptField.name lineTo it }
+  typedExpressionCompilation(scriptField.rhs).map { scriptField.name lineTo it }
 
 fun typedLineCompilation(literal: Literal): Compilation<TypedLine> =
-	typedLine(literal).compilation
+  typedLine(literal).compilation
 
 fun typeCompilation(script: Script): Compilation<Type> =
-	script.value.script.type.normalizeRecursion.compilation
+  script.value.script.type.normalizeRecursion.compilation
 
 fun Context.typedLineStackCompilation(script: Script): Compilation<Stack<TypedLine>> =
-	script.lineStack.map { typedLineCompilation(this) }.flat
+  script.lineStack.map { typedLineCompilation(this) }.flat
 
 fun Compiler.plusCompilation(script: Script): Compilation<Compiler> =
-	compilation.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
+  compilation.foldStateful(script.lineStack.reverse.seq) { plusCompilation(it) }
 
 fun Compiler.plusCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
-	when (scriptLine) {
-		is FieldScriptLine -> plusCompilation(scriptLine.field)
-		is LiteralScriptLine -> plusCompilation(scriptLine.literal)
-	}
+  when (scriptLine) {
+    is FieldScriptLine -> plusCompilation(scriptLine.field)
+    is LiteralScriptLine -> plusCompilation(scriptLine.literal)
+  }
 
 fun Compiler.plusCompilation(literal: Literal): Compilation<Compiler> =
-	plusResolveCompilation(typedLine(literal))
+  plusResolveCompilation(typedLine(literal))
 
 fun Compiler.plusCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	null
-		?: plusStaticCompilationOrNull(scriptField)
-		?: plusDynamicCompilation(scriptField)
+  null
+    ?: plusStaticCompilationOrNull(scriptField)
+    ?: plusDynamicCompilation(scriptField)
 
 fun Compiler.plusStaticCompilationOrNull(scriptField: ScriptField): Compilation<Compiler>? =
-	when (scriptField.name) {
-		beName -> plusBeCompilation(scriptField.rhs)
-		bindName -> plusBindCompilation(scriptField.rhs)
-		debugName -> plusDebugCompilation(scriptField.rhs)
-		defineName -> plusDefineCompilation(scriptField.rhs)
-		doName -> plusDoCompilation(scriptField.rhs)
-		functionName -> plusFunctionOrNullCompilation(scriptField.rhs)
-		giveName -> plusGiveCompilation(scriptField.rhs)
-		isName -> plusIsCompilationOrNull(scriptField.rhs)
-		letName -> plusLetCompilation(scriptField.rhs)
-		ofName -> plusOfCompilation(scriptField.rhs)
-		privateName -> plusPrivateCompilation(scriptField.rhs)
-		quoteName -> plusQuoteCompilation(scriptField.rhs)
-		recursiveName -> plusRecursiveCompilation(scriptField.rhs)
-		selectName -> plusSelectCompilation(scriptField.rhs)
-		takeName -> plusTakeCompilation(scriptField.rhs)
-		theName -> plusTheCompilation(scriptField.rhs)
-		typeName -> plusTypeCompilationOrNull(scriptField.rhs)
-		withName -> plusWithCompilation(scriptField.rhs)
-		else -> null
-	}
+  when (scriptField.name) {
+    beName -> plusBeCompilation(scriptField.rhs)
+    bindName -> plusBindCompilation(scriptField.rhs)
+    debugName -> plusDebugCompilation(scriptField.rhs)
+    defineName -> plusDefineCompilation(scriptField.rhs)
+    doName -> plusDoCompilation(scriptField.rhs)
+    functionName -> plusFunctionOrNullCompilation(scriptField.rhs)
+    giveName -> plusGiveCompilation(scriptField.rhs)
+    isName -> plusIsCompilationOrNull(scriptField.rhs)
+    letName -> plusLetCompilation(scriptField.rhs)
+    ofName -> plusOfCompilation(scriptField.rhs)
+    privateName -> plusPrivateCompilation(scriptField.rhs)
+    quoteName -> plusQuoteCompilation(scriptField.rhs)
+    recursiveName -> plusRecursiveCompilation(scriptField.rhs)
+    selectName -> plusSelectCompilation(scriptField.rhs)
+    takeName -> plusTakeCompilation(scriptField.rhs)
+    theName -> plusTheCompilation(scriptField.rhs)
+    typeName -> plusTypeCompilationOrNull(scriptField.rhs)
+    withName -> plusWithCompilation(scriptField.rhs)
+    else -> null
+  }
 
 fun Compiler.plusGetCompilationOrNull(name: String): Compilation<Compiler>? =
-	typedExpression.getOrNull(name)?.let { set(it).compilation }
+  typedExpression.getOrNull(name)?.let { set(it).compilation }
 
 fun Compiler.plusGetCompilationOrNull(typedField: TypedField): Compilation<Compiler>? =
-	ifOrNull(typedExpression.type.isEmpty) {
-		typedField.rhs.getOrNull(typedField.name)?.let {
-			set(it).compilation
-		}
-	}
+  ifOrNull(typedExpression.type.isEmpty) {
+    typedField.rhs.getOrNull(typedField.name)?.let {
+      set(it).compilation
+    }
+  }
 
 fun Compiler.plusBeCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(script).map { be(it) }
+  childContext.typedExpressionCompilation(script).map { be(it) }
 
 fun Compiler.plusBindCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(script).map { bind(it) }
+  childContext.typedExpressionCompilation(script).map { bind(it) }
 
 fun Compiler.plusOfCompilation(script: Script): Compilation<Compiler> =
-	typeCompilation(script).map { of(it) }
+  typeCompilation(script).map { of(it) }
 
 fun Compiler.plusDebugCompilation(script: Script): Compilation<Compiler> =
-	if (!script.isEmpty) error("debug")
-	else plusDebugCompilation
+  if (!script.isEmpty) error("debug")
+  else plusDebugCompilation
 
 fun Compiler.plusDefineCompilation(script: Script): Compilation<Compiler> =
-	compilation.foldStateful(script.lineStack.reverse.seq) { plusDefineCompilation(it) }
+  compilation.foldStateful(script.lineStack.reverse.seq) { plusDefineCompilation(it) }
 
 fun Compiler.plusDefineCompilation(scriptLine: ScriptLine): Compilation<Compiler> =
-	when (scriptLine) {
-		is FieldScriptLine -> plusDefineCompilation(scriptLine.field)
-		is LiteralScriptLine -> plusDefineCompilation(scriptLine.literal)
-	}
+  when (scriptLine) {
+    is FieldScriptLine -> plusDefineCompilation(scriptLine.field)
+    is LiteralScriptLine -> plusDefineCompilation(scriptLine.literal)
+  }
 
 fun Compiler.plusDefineCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	when (scriptField.name) {
-		typeName -> plusDefineTypeCompilation(scriptField.rhs)
-		functionName -> plusDefineFunctionCompilationOrNull(scriptField.rhs)
-		else -> null
-	} ?: compileError { script(defineName lineTo script(line(scriptField))) }
+  when (scriptField.name) {
+    typeName -> plusDefineTypeCompilation(scriptField.rhs)
+    functionName -> plusDefineFunctionCompilationOrNull(scriptField.rhs)
+    else -> null
+  } ?: compileError { script(defineName lineTo script(line(scriptField))) }
 
 fun Compiler.plusDefineCompilation(literal: Literal): Compilation<Compiler> =
-	typedLineCompilation(literal).map { bind(it) }
+  typedLineCompilation(literal).map { bind(it) }
 
 fun Compiler.plusDefineTypeCompilation(script: Script): Compilation<Compiler> =
-	typeCompilation(script).map { define(it) }
+  typeCompilation(script).map { define(it) }
 
 fun Compiler.plusDefineFunctionCompilationOrNull(script: Script): Compilation<Compiler>? =
-	childContext.typedFunctionCompilationOrNull(script)?.map { define(it) }
+  childContext.typedFunctionCompilationOrNull(script)?.map { define(it) }
 
 fun Context.typedFunctionCompilationOrNull(script: Script): Compilation<TypedFunction>? =
-	script.matchInfix(doingName) { lhs, doingScript ->
-		typedFunctionDoingCompilationOrNull(lhs, doingScript)
-	}
+  script.matchInfix(doingName) { lhs, doingScript ->
+    typedFunctionDoingCompilationOrNull(lhs, doingScript)
+  }
 
 fun Context.typedFunctionDoingCompilationOrNull(script: Script, doingScript: Script): Compilation<TypedFunction>? =
-	script.matchInfix { lhs, name, rhs ->
-		when (name) {
-			givingName -> typedFunctionGivingDoingCompilationOrNull(lhs, rhs, doingScript)
-			takingName -> typedFunctionTakingDoingCompilationOrNull(lhs, rhs, doingScript)
-			else -> null
-		}
-	}
+  script.matchInfix { lhs, name, rhs ->
+    when (name) {
+      givingName -> typedFunctionGivingDoingCompilationOrNull(lhs, rhs, doingScript)
+      takingName -> typedFunctionTakingDoingCompilationOrNull(lhs, rhs, doingScript)
+      else -> null
+    }
+  }
 
 fun Context.typedFunctionGivingDoingCompilationOrNull(
-	script: Script,
-	givingScript: Script,
-	doingScript: Script): Compilation<TypedFunction>? =
-	script.matchPrefix(takingName) { takingScript ->
-		typedFunctionTakingGivingDoingCompilationOrNull(takingScript, givingScript, doingScript)
-	}
+  script: Script,
+  givingScript: Script,
+  doingScript: Script
+): Compilation<TypedFunction>? =
+  script.matchPrefix(takingName) { takingScript ->
+    typedFunctionTakingGivingDoingCompilationOrNull(takingScript, givingScript, doingScript)
+  }
 
 fun Context.typedFunctionTakingDoingCompilationOrNull(
-	script: Script,
-	takingScript: Script,
-	doingScript: Script): Compilation<TypedFunction>? =
-	script.matchEmpty {
-		typeCompilation(takingScript).bind { takingType ->
-			plus(takingType.doDictionary)
-				.typedExpressionCompilation(doingScript)
-				.map { body ->
-					typed(
-						function(takingType, doing(body.expression)),
-						takingType functionTo body.type)
-				}
-		}
-	}
+  script: Script,
+  takingScript: Script,
+  doingScript: Script
+): Compilation<TypedFunction>? =
+  script.matchEmpty {
+    typeCompilation(takingScript).bind { takingType ->
+      plus(takingType.doDictionary)
+        .typedExpressionCompilation(doingScript)
+        .map { body ->
+          typed(
+            function(takingType, doing(body.expression)),
+            takingType functionTo body.type
+          )
+        }
+    }
+  }
 
 fun Context.typedFunctionTakingGivingDoingCompilationOrNull(
-	takingScript: Script, givingScript: Script, doingScript: Script): Compilation<TypedFunction> =
-	typeCompilation(takingScript).bind { takingType ->
-		typeCompilation(givingScript).bind { givingType ->
-			plus(takingType.doDictionary)
-				.typedExpressionCompilation(doingScript)
-				.map { body ->
-					body.type.check(givingType) {
-						typed(
-							function(takingType, doing(body.expression)),
-							takingType functionTo givingType)
-					}
-				}
-		}
-	}
+  takingScript: Script, givingScript: Script, doingScript: Script
+): Compilation<TypedFunction> =
+  typeCompilation(takingScript).bind { takingType ->
+    typeCompilation(givingScript).bind { givingType ->
+      plus(takingType.doDictionary)
+        .typedExpressionCompilation(doingScript)
+        .map { body ->
+          body.type.check(givingType) {
+            typed(
+              function(takingType, doing(body.expression)),
+              takingType functionTo givingType
+            )
+          }
+        }
+    }
+  }
 
-val Compiler.plusDebugCompilation: Compilation<Compiler> get() =
-	set(script("debug" lineTo script(scriptLine)).reflectTypedExpression).compilation
+val Compiler.plusDebugCompilation: Compilation<Compiler>
+  get() =
+    set(script("debug" lineTo script(scriptLine)).reflectTypedExpression).compilation
 
 fun Compiler.plusDoCompilation(script: Script): Compilation<Compiler> =
-	childContext
-		.plus(typedExpression.type.doDictionary)
-		.typedExpressionCompilation(script)
-		.map { set(typedExpression.do_(it)) }
+  childContext
+    .plus(typedExpression.type.doDictionary)
+    .typedExpressionCompilation(script)
+    .map { set(typedExpression.do_(it)) }
 
 fun Compiler.plusFunctionOrNullCompilation(script: Script): Compilation<Compiler>? =
-	childContext.typedFunctionCompilationOrNull(script)?.map { plus(it) }
+  childContext.typedFunctionCompilationOrNull(script)?.map { plus(it) }
 
 fun Compiler.plusGiveCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(script).map { give(it) }
+  childContext.typedExpressionCompilation(script).map { give(it) }
 
 fun Compiler.plusIsCompilationOrNull(script: Script): Compilation<Compiler>? =
-	script
-		.matchPrefix(notName) { notScript -> plusNegableIsCompilationOrNull(notScript)?.map { it.plusNegate } }
-		?: plusNegableIsCompilationOrNull(script)
+  script
+    .matchPrefix(notName) { notScript -> plusNegableIsCompilationOrNull(notScript)?.map { it.plusNegate } }
+    ?: plusNegableIsCompilationOrNull(script)
 
 fun Compiler.plusNegableIsCompilationOrNull(script: Script): Compilation<Compiler>? =
-	plusIsEqualToCompilationOrNull(script)
+  plusIsEqualToCompilationOrNull(script)
 
 fun Compiler.plusIsEqualToCompilationOrNull(script: Script): Compilation<Compiler>? =
-	script.matchPrefix(equalName) { equalScript ->
-		equalScript.matchPrefix(toName) { toScript ->
-			childContext.typedExpressionCompilation(toScript).map { plusIsEqualTo(it) }
-		}
-	}
+  script.matchPrefix(equalName) { equalScript ->
+    equalScript.matchPrefix(toName) { toScript ->
+      childContext.typedExpressionCompilation(toScript).map { plusIsEqualTo(it) }
+    }
+  }
 
 fun Compiler.plusLetCompilation(script: Script): Compilation<Compiler> =
-	script
-		.matchInfix { lhs, name, rhs ->
-			when (name) {
-				beName -> plusLetBeCompilation(lhs, rhs)
-				doName -> plusLetDoCompilation(lhs, rhs)
-				else -> null
-			}
-		}.notNullOrError("$script let error")
+  script
+    .matchInfix { lhs, name, rhs ->
+      when (name) {
+        beName -> plusLetBeCompilation(lhs, rhs)
+        doName -> plusLetDoCompilation(lhs, rhs)
+        else -> null
+      }
+    }.notNullOrError("$script let error")
 
 fun Compiler.plusPrivateCompilation(script: Script): Compilation<Compiler> =
-	childContext.module.compiler.plusCompilation(script).map { plusPrivate(it) }
+  childContext.module.compiler.plusCompilation(script).map { plusPrivate(it) }
 
 fun Compiler.plusQuoteCompilation(script: Script): Compilation<Compiler> =
-	set(typedExpression.with(script.reflectTypedExpression)).compilation
+  set(typedExpression.with(script.reflectTypedExpression)).compilation
 
 @Suppress("unused")
 fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") script: Script): Compilation<Compiler> =
-	TODO()
+  TODO()
 
 @Suppress("unused")
 fun Compiler.plusRecursiveCompilation(@Suppress("UNUSED_PARAMETER") scriptLine: ScriptLine): Compilation<Compiler> =
-	TODO()
+  TODO()
 
 fun Compiler.plusSelectCompilation(script: Script): Compilation<Compiler> =
-	childContext.selectCompilation(typedExpression, script).map { set(it) }
+  childContext.selectCompilation(typedExpression, script).map { set(it) }
 
 fun Context.selectCompilation(typedExpression: TypedExpression, script: Script): Compilation<TypedExpression> =
-	typedExpression.choice.let { typedChoice ->
-		zip(typedChoice.typeChoice.lineStack, script.lineStack)
-			.map { typedCaseCompilation(first!!, second!!.compileField)
-			}
-			.flat
-			.map { typedExpression.select(it) }
-	}
+  typedExpression.choice.let { typedChoice ->
+    zip(typedChoice.typeChoice.lineStack, script.lineStack)
+      .map {
+        typedCaseCompilation(first!!, second!!.compileField)
+      }
+      .flat
+      .map { typedExpression.select(it) }
+  }
 
 fun Context.typedCaseCompilation(caseLine: TypeLine, scriptField: ScriptField): Compilation<TypedCase> =
-	plus(caseLine.bindDefinition).typedExpressionCompilation(scriptField.rhs).map { typedExpression ->
-		typed(scriptField.name caseTo typedExpression.expression, typedExpression.type)
-	}
+  plus(caseLine.bindDefinition).typedExpressionCompilation(scriptField.rhs).map { typedExpression ->
+    typed(scriptField.name caseTo typedExpression.expression, typedExpression.type)
+  }
 
 fun Compiler.plusTakeCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(script).map { take(it) }
+  childContext.typedExpressionCompilation(script).map { take(it) }
 
 fun Compiler.plusTheCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedLineStackCompilation(script).map { typedLineStack ->
-		fold(typedLineStack.reverse) { plus(it) }
-	}
+  childContext.typedLineStackCompilation(script).map { typedLineStack ->
+    fold(typedLineStack.reverse) { plus(it) }
+  }
 
 fun Compiler.plusTypeCompilationOrNull(script: Script): Compilation<Compiler>? =
-	notNullIf(script.isEmpty) {
-		set(typedExpression.type.typedExpression).compilation
-	}
+  notNullIf(script.isEmpty) {
+    set(typedExpression.type.typedExpression).compilation
+  }
 
 fun Compiler.plusWithCompilation(script: Script): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(script).map { with(it) }
+  childContext.typedExpressionCompilation(script).map { with(it) }
 
 fun Compiler.plusLetBeCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
-	typeCompilation(lhs).bind { type ->
-		childContext.typedExpressionCompilation(rhs).map { typedExpression ->
-			letBe(type, typedExpression)
-		}
-	}
+  typeCompilation(lhs).bind { type ->
+    childContext.typedExpressionCompilation(rhs).map { typedExpression ->
+      letBe(type, typedExpression)
+    }
+  }
 
 fun Compiler.plusLetDoCompilation(lhs: Script, rhs: Script): Compilation<Compiler> =
-	typeCompilation(lhs).bind { type ->
-		childContext.plus(type.doDictionary).typedExpressionCompilation(rhs).map { typedExpression ->
-			letDo(type, typedExpression)
-		}
-	}
+  typeCompilation(lhs).bind { type ->
+    childContext.plus(type.doDictionary).typedExpressionCompilation(rhs).map { typedExpression ->
+      letDo(type, typedExpression)
+    }
+  }
 
 fun Compiler.plusDynamicCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	if (scriptField.rhs.isEmpty) plusCompilation(scriptField.name)
-	else plusFieldCompilation(scriptField)
+  if (scriptField.rhs.isEmpty) plusCompilation(scriptField.name)
+  else plusFieldCompilation(scriptField)
 
 fun Compiler.plusCompilation(name: String): Compilation<Compiler> =
-	null
-		?:plusGetCompilationOrNull(name)
-		?:plusMakeCompilation(name)
+  null
+    ?: plusGetCompilationOrNull(name)
+    ?: plusMakeCompilation(name)
 
 fun Compiler.plusMakeCompilation(name: String): Compilation<Compiler> =
-	typedExpression.make(name).let {
-		set(it).resolveCompilation
-	}
+  typedExpression.make(name).let {
+    set(it).resolveCompilation
+  }
 
 fun Compiler.plusFieldCompilation(scriptField: ScriptField): Compilation<Compiler> =
-	childContext.typedExpressionCompilation(scriptField.rhs).bind { typedExpression ->
-		plusResolveCompilation(scriptField.name fieldTo typedExpression)
-	}
+  childContext.typedExpressionCompilation(scriptField.rhs).bind { typedExpression ->
+    plusResolveCompilation(scriptField.name fieldTo typedExpression)
+  }
 
 fun Compiler.plusResolveCompilation(typed: TypedField): Compilation<Compiler> =
-	null
-		?: plusGetCompilationOrNull(typed)
-		?: childContext.resolveCompilation(typedExpression.plus(typed.line)).map { set(it) }
+  null
+    ?: plusGetCompilationOrNull(typed)
+    ?: childContext.resolveCompilation(typedExpression.plus(typed.line)).map { set(it) }
 
 fun Compiler.plusResolveCompilation(typed: TypedLine): Compilation<Compiler> =
-	set(childContext.resolve(typedExpression.plus(typed))).compilation
+  set(childContext.resolve(typedExpression.plus(typed))).compilation
 
-val Compiler.resolveCompilation: Compilation<Compiler> get() =
-	set(childContext.resolve(typedExpression)).compilation
+val Compiler.resolveCompilation: Compilation<Compiler>
+  get() =
+    set(childContext.resolve(typedExpression)).compilation
 
 fun Context.resolveCompilation(typedExpression: TypedExpression): Compilation<TypedExpression> =
-	resolve(typedExpression).compilation
+  resolve(typedExpression).compilation
 
 val Compiler.childContext: Context get() = module.privateContext

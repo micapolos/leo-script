@@ -15,27 +15,28 @@ import leo.term.fn
 import leo.term.invoke
 
 data class Module<V>(
-	val context: Context<V>,
-	val termStack: Stack<Term<V>>)
+  val context: Context<V>,
+  val termStack: Stack<Term<V>>
+)
 
 val <V> Context<V>.module get() = Module(this, stack())
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
-	copy(context = context.plus(binding))
+  copy(context = context.plus(binding))
 
 fun <V> Module<V>.plus(term: Term<V>): Module<V> =
-	copy(termStack = termStack.push(term))
+  copy(termStack = termStack.push(term))
 
 fun <V> Module<V>.seal(term: Term<V>): Term<V> =
-	term.fold(termStack) { fn(this) }.fold(termStack.reverse) { invoke(it) }
+  term.fold(termStack) { fn(this) }.fold(termStack.reverse) { invoke(it) }
 
 fun <V> Module<V>.plusLet(script: Script): Module<V> =
-	script.matchInfix(doName) { lhs, rhs ->
-		context.type(lhs).let { type ->
-			context.plus(binding(given(type))).typedTerm(rhs).let { bodyTypedTerm ->
-				this
-					.plus(binding(definition(type functionTo bodyTypedTerm.t)))
-					.plus(fn(bodyTypedTerm.v))
-			}
-		}
-	}.notNullOrError("let $script")
+  script.matchInfix(doName) { lhs, rhs ->
+    context.type(lhs).let { type ->
+      context.plus(binding(given(type))).typedTerm(rhs).let { bodyTypedTerm ->
+        this
+          .plus(binding(definition(type functionTo bodyTypedTerm.t)))
+          .plus(fn(bodyTypedTerm.v))
+      }
+    }
+  }.notNullOrError("let $script")

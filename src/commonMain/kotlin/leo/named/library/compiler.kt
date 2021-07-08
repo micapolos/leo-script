@@ -25,28 +25,35 @@ import leo.textTypeLine
 import leo.type
 
 fun Compiler.plus(lhsType: Type, rhsType: Type, doing: Doing): Compiler =
-	Compiler(
-		module.plusPrivate(definition(lhsType, functionBinding(rhsType))),
-		typed(
-			typedExpression.expression.plus(line(let(lhsType, rhs(do_(doing))))),
-			typedExpression.type))
+  Compiler(
+    module.plusPrivate(definition(lhsType, functionBinding(rhsType))),
+    typed(
+      typedExpression.expression.plus(line(let(lhsType, rhs(do_(doing))))),
+      typedExpression.type
+    )
+  )
 
-val preludeCompiler: Compiler get() =
-	compiler()
-		.define(isType)
-		.plus(
-			type(textName lineTo type(numberTypeLine)),
-			type(textTypeLine),
-			numberTextBody)
-		.plus(
-			type(numberTypeLine, plusName lineTo type(numberTypeLine)),
-			type(numberTypeLine),
-			numberPlusNumberBody)
-		.plus(
-			type(numberTypeLine, minusName lineTo type(numberTypeLine)),
-			type(numberTypeLine),
-			numberMinusNumberBody)
-		.plus(
-			type(numberTypeLine, timesName lineTo type(numberTypeLine)),
-			type(numberTypeLine),
-			numberTimesNumberBody)
+val preludeCompiler: Compiler
+  get() =
+    compiler()
+      .define(isType)
+      .plus(
+        type(textName lineTo type(numberTypeLine)),
+        type(textTypeLine),
+        numberTextBody
+      )
+      .plus(
+        type(numberTypeLine, plusName lineTo type(numberTypeLine)),
+        type(numberTypeLine),
+        numberPlusNumberBody
+      )
+      .plus(
+        type(numberTypeLine, minusName lineTo type(numberTypeLine)),
+        type(numberTypeLine),
+        numberMinusNumberBody
+      )
+      .plus(
+        type(numberTypeLine, timesName lineTo type(numberTypeLine)),
+        type(numberTypeLine),
+        numberTimesNumberBody
+      )

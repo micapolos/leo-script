@@ -9,8 +9,10 @@ import leo.plus
 import leo.script
 import leo.scriptLine
 
-val TypedExpression.script: Script get() =
-	expression.script.plus("of" lineTo type.script)
+val TypedExpression.script: Script
+  get() =
+    expression.script.plus("of" lineTo type.script)
 
-val TypedExpression.scriptLine: ScriptLine get() =
-	"compiled" lineTo script(expression.scriptLine, type.scriptLine)
+val TypedExpression.scriptLine: ScriptLine
+  get() =
+    "compiled" lineTo script(expression.scriptLine, type.scriptLine)

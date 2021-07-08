@@ -6,4 +6,4 @@ import leo25.notName
 import leo25.value
 
 actual val Throwable.stackTraceValue: Value
-	get() = value(notName fieldTo value("available"))
+  get() = value(notName fieldTo value("available"))

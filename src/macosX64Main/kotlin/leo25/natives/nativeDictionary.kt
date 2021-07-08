@@ -4,4 +4,4 @@ import leo25.Dictionary
 import leo25.dictionary
 
 actual val nativeDictionary: Dictionary
-	get() = dictionary()
+  get() = dictionary()

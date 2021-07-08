@@ -6,4 +6,4 @@ import leo.term.invoke
 import leo.term.nativeTerm
 
 fun Term<Native>.objectEqualsObject(term: Term<Native>): Term<Native> =
-	fn(fn(ObjectEqualsObjectNative.nativeTerm)).invoke(this).invoke(term)
+  fn(fn(ObjectEqualsObjectNative.nativeTerm)).invoke(this).invoke(term)

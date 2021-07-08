@@ -18,32 +18,35 @@ import leo.plus
 import leo.reverse
 import leo.script
 
-val TokensPrefix.parser: Parser<TokensPrefix> get() =
-	parser { char ->
-		line.plusTokensPrefixOrNull(char)?.let { tokensPrefix ->
-			prefix(tokens.plus(tokensPrefix.tokens), tokensPrefix.line).parser
-		}
-	}
+val TokensPrefix.parser: Parser<TokensPrefix>
+  get() =
+    parser { char ->
+      line.plusTokensPrefixOrNull(char)?.let { tokensPrefix ->
+        prefix(tokens.plus(tokensPrefix.tokens), tokensPrefix.line).parser
+      }
+    }
 
-val scriptParser: Parser<Script> get() =
-	tokensPrefix().parser.map { it.endTokensOrNull?.scriptOrNull }
+val scriptParser: Parser<Script>
+  get() =
+    tokensPrefix().parser.map { it.endTokensOrNull?.scriptOrNull }
 
 fun Script.plusTokenProcessor(ret: (Script) -> Processor<Script?, Token>): Processor<Script?, Token> =
-	processor { token ->
-		when (token) {
-			is BeginToken ->
-				script().plusTokenProcessor {
-					plus(token.begin.name lineTo it).plusTokenProcessor(ret)
-				}
-			is LiteralToken ->
-				plus(token.literal.line).plusTokenProcessor(ret)
-			is EndToken ->
-				ret(this)
-		}
-	}
+  processor { token ->
+    when (token) {
+      is BeginToken ->
+        script().plusTokenProcessor {
+          plus(token.begin.name lineTo it).plusTokenProcessor(ret)
+        }
+      is LiteralToken ->
+        plus(token.literal.line).plusTokenProcessor(ret)
+      is EndToken ->
+        ret(this)
+    }
+  }
 
-val Tokens.scriptOrNull: Script? get() =
-	script()
-		.plusTokenProcessor { error("unexpected end") }
-		.fold(tokenStack.reverse) { this.plus(it) }
-		.state
+val Tokens.scriptOrNull: Script?
+  get() =
+    script()
+      .plusTokenProcessor { error("unexpected end") }
+      .fold(tokenStack.reverse) { this.plus(it) }
+      .state

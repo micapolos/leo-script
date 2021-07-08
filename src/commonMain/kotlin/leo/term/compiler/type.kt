@@ -15,12 +15,16 @@ import leo.term.typed.typed
 import leo.type
 import leo.yesName
 
-val <V> TypedTerm<V>.type: Type get() =
-	if (!t.isStatic) error("type not static")
-	else typed(idValue<Native>(), t).script.type
+val <V> TypedTerm<V>.type: Type
+  get() =
+    if (!t.isStatic) error("type not static")
+    else typed(idValue<Native>(), t).script.type
 
-val equalsTypeLine: TypeLine get() =
-	equalsName lineTo type(
-		choice(
-			yesName lineTo type(),
-			noName lineTo type()))
+val equalsTypeLine: TypeLine
+  get() =
+    equalsName lineTo type(
+      choice(
+        yesName lineTo type(),
+        noName lineTo type()
+      )
+    )

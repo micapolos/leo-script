@@ -17,21 +17,21 @@ data class Scope(val bindingStack: Stack<Binding>)
 fun scope() = Scope(stack())
 
 fun Scope.plus(binding: Binding): Scope =
-	bindingStack.push(binding).let(::Scope)
+  bindingStack.push(binding).let(::Scope)
 
 fun <V> Scope.resolveOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>? =
-	bindingStack.seq.mapIndexed.mapFirstOrNull {
-		value.resolveOrNull(variable(index), typedTerm)
-	}
+  bindingStack.seq.mapIndexed.mapFirstOrNull {
+    value.resolveOrNull(variable(index), typedTerm)
+  }
 
 fun <V> Scope.get(name: String): TypedTerm<V> =
-	bindingStack.seq.mapIndexed.mapFirstOrNull<IndexedValue<Binding>, TypedTerm<V>> {
-		value.getOrNull(variable(index), name)
-	}.notNullOrError("$this get $name")
+  bindingStack.seq.mapIndexed.mapFirstOrNull<IndexedValue<Binding>, TypedTerm<V>> {
+    value.getOrNull(variable(index), name)
+  }.notNullOrError("$this get $name")
 
 fun <V> Scope.invoke(get: Get): TypedTerm<V> =
-	get<V>(get.nameStackLink.head).fold(get.nameStackLink.tail) { get(it) }
+  get<V>(get.nameStackLink.head).fold(get.nameStackLink.tail) { get(it) }
 
 fun <V> Scope.resolve(typedTerm: TypedTerm<V>): TypedTerm<V> =
-	resolveOrNull(typedTerm) ?: typedTerm
+  resolveOrNull(typedTerm) ?: typedTerm
 

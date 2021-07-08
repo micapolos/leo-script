@@ -11,60 +11,64 @@ import leo.string
 import org.junit.Test
 
 class LeoTest {
-	@Test
-	fun literal() {
-		script(literal("Hello, world!"))
-			.termScript
-			.string
-			.assertEqualTo("\"Hello, world!\"\n")
-	}
+  @Test
+  fun literal() {
+    script(literal("Hello, world!"))
+      .termScript
+      .string
+      .assertEqualTo("\"Hello, world!\"\n")
+  }
 
-	@Test
-	fun lines() {
-		script(
-			"x" lineTo script(literal(10)),
-			"y" lineTo script(literal(20))
-		)
-			.termScript
-			.string
-			.assertEqualTo(
-				lines(
-					"lambda lambda lambda",
-					"  variable 2",
-					"  apply variable 0",
-					"  apply variable 1",
-					"apply 10",
-					"apply 20",
-					""))
-	}
+  @Test
+  fun lines() {
+    script(
+      "x" lineTo script(literal(10)),
+      "y" lineTo script(literal(20))
+    )
+      .termScript
+      .string
+      .assertEqualTo(
+        lines(
+          "lambda lambda lambda",
+          "  variable 2",
+          "  apply variable 0",
+          "  apply variable 1",
+          "apply 10",
+          "apply 20",
+          ""
+        )
+      )
+  }
 
-	@Test
-	fun numberPlusNumber() {
-		script(
-			line(literal(10)),
-			plusName lineTo script(literal(20))
-		)
-			.termScript
-			.string
-			.assertEqualTo(
-				lines(
-					"lambda",
-					"  lambda lambda",
-					"    variable 1",
-					"    plus variable 0",
-					"  apply",
-					"    variable 0",
-					"    apply lambda lambda variable 1",
-					"  apply",
-					"    variable 0",
-					"    apply lambda lambda variable 2",
-					"apply",
-					"  lambda lambda lambda",
-					"    variable 2",
-					"    apply variable 0",
-					"    apply variable 1",
-					"  apply 10",
-					"  apply 20",
-					""))
-	}
+  @Test
+  fun numberPlusNumber() {
+    script(
+      line(literal(10)),
+      plusName lineTo script(literal(20))
+    )
+      .termScript
+      .string
+      .assertEqualTo(
+        lines(
+          "lambda",
+          "  lambda lambda",
+          "    variable 1",
+          "    plus variable 0",
+          "  apply",
+          "    variable 0",
+          "    apply lambda lambda variable 1",
+          "  apply",
+          "    variable 0",
+          "    apply lambda lambda variable 2",
+          "apply",
+          "  lambda lambda lambda",
+          "    variable 2",
+          "    apply variable 0",
+          "    apply variable 1",
+          "  apply 10",
+          "  apply 20",
+          ""
+        )
+      )
+  }
 }

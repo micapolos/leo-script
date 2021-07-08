@@ -10,12 +10,13 @@ import leo.script
 import kotlin.test.Test
 
 class PreludeCompileTest {
-	@Test
-	fun numberPlusNumber() {
-		script(
-			line(literal(10)),
-			plusName lineTo script(literal(20)))
-			.typedExpression(preludeCompiler)
-			.assertNotNull
-	}
+  @Test
+  fun numberPlusNumber() {
+    script(
+      line(literal(10)),
+      plusName lineTo script(literal(20))
+    )
+      .typedExpression(preludeCompiler)
+      .assertNotNull
+  }
 }

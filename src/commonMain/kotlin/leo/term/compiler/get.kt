@@ -11,8 +11,10 @@ data class Get(val nameStackLink: StackLink<String>)
 
 fun get(name: String, vararg names: String) = Get(stackLink(name, *names))
 
-val Script.getOrNull: Get? get() =
-	nameStackOrNull?.linkOrNull?.let(::Get)
+val Script.getOrNull: Get?
+  get() =
+    nameStackOrNull?.linkOrNull?.let(::Get)
 
-val Script.get: Get get() =
-	getOrNull.notNullOrError("$this.get")
+val Script.get: Get
+  get() =
+    getOrNull.notNullOrError("$this.get")

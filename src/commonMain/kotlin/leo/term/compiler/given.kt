@@ -13,7 +13,7 @@ data class Given(val type: Type)
 fun given(type: Type) = Given(type)
 
 fun <V> Given.resolveOrNull(variable: TermVariable, typedTerm: TypedTerm<V>): TypedTerm<V>? =
-	typedTerm.t.nameOrNull?.let { getOrNull(variable, it) }
+  typedTerm.t.nameOrNull?.let { getOrNull(variable, it) }
 
 fun <V> Given.getOrNull(variable: TermVariable, name: String): TypedTerm<V>? =
-	typed(term<V>(variable), type).getOrNull(name)
+  typed(term<V>(variable), type).getOrNull(name)

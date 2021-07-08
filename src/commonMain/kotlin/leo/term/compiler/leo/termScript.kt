@@ -15,25 +15,26 @@ import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
+
 val Scope.push: Scope get() = Scope(depth.inc())
 
 val Term<Script>.script: Script
-	get() =
-		Scope(0).script(this)
+  get() =
+    Scope(0).script(this)
 
 fun Scope.script(term: Term<Script>): Script =
-	when (term) {
-		is AbstractionTerm -> script(term.abstraction)
-		is ApplicationTerm -> script(term.application)
-		is NativeTerm -> term.native
-		is VariableTerm -> script(term.variable)
-	}
+  when (term) {
+    is AbstractionTerm -> script(term.abstraction)
+    is ApplicationTerm -> script(term.application)
+    is NativeTerm -> term.native
+    is VariableTerm -> script(term.variable)
+  }
 
 fun Scope.script(abstraction: TermAbstraction<Script>): Script =
-	script("lambda" lineTo push.script(abstraction.term))
+  script("lambda" lineTo push.script(abstraction.term))
 
 fun Scope.script(application: TermApplication<Script>): Script =
-	script(application.lhs).plus("apply" lineTo script(application.rhs))
+  script(application.lhs).plus("apply" lineTo script(application.rhs))
 
 fun Scope.script(variable: TermVariable): Script =
-	script("variable" lineTo script(literal(depth - variable.index - 1)))
+  script("variable" lineTo script(literal(depth - variable.index - 1)))

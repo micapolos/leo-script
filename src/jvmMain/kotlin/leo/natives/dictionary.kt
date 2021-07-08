@@ -5,29 +5,29 @@ import leo.dictionary
 import leo.plus
 
 actual val nativeDictionary: Dictionary
-	get() =
-		dictionary()
-			.plus(nullJavaDefinition)
-			.plus(trueJavaDefinition)
-			.plus(falseJavaDefinition)
+  get() =
+    dictionary()
+      .plus(nullJavaDefinition)
+      .plus(trueJavaDefinition)
+      .plus(falseJavaDefinition)
 
-			.plus(javaObjectClassDefinition)
-			.plus(arrayJavaDefinition)
+      .plus(javaObjectClassDefinition)
+      .plus(arrayJavaDefinition)
 
-			.plus(textJavaDefinition)
-			.plus(javaTextDefinition)
+      .plus(textJavaDefinition)
+      .plus(javaTextDefinition)
 
-			.plus(numberJavaDefinition)
-			.plus(javaNumberDefinition)
+      .plus(numberJavaDefinition)
+      .plus(javaNumberDefinition)
 
-			.plus(numberIntegerObjectJavaDefinition)
-			.plus(javaObjectIntegerNumberDefinition)
+      .plus(numberIntegerObjectJavaDefinition)
+      .plus(javaObjectIntegerNumberDefinition)
 
-			.plus(textClassJavaDefinition)
+      .plus(textClassJavaDefinition)
 
-			.plus(javaClassFieldDefinition)
-			.plus(javaFieldObjectDefinition)
+      .plus(javaClassFieldDefinition)
+      .plus(javaFieldObjectDefinition)
 
-			.plus(javaClassMethodNameTextDefinition)
-			.plus(javaMethodInvokeDefinition)
+      .plus(javaClassMethodNameTextDefinition)
+      .plus(javaMethodInvokeDefinition)
 

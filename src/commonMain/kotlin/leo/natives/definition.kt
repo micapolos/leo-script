@@ -8,4 +8,4 @@ import leo.body
 import leo.definition
 
 fun nativeDefinition(value: Value, fn: (Value) -> Value) =
-	definition(value, binding(binder(applying(body(fn)))))
+  definition(value, binding(binder(applying(body(fn)))))

@@ -1,4 +1,5 @@
 package leo
 
-val Type.normalizeRecursion: Type get() =
-	updateLine { it.unshiftRecursion }
+val Type.normalizeRecursion: Type
+  get() =
+    updateLine { it.unshiftRecursion }

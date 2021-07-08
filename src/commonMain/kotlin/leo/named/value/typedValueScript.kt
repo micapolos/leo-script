@@ -29,53 +29,57 @@ import leo.takingName
 import leo.theName
 
 val Typed<Value, Type>.scriptLine: ScriptLine
-	get() =
-		"value" lineTo script
+  get() =
+    "value" lineTo script
 
 val Typed<Value, Type>.script: Script
-	get() =
-		lineStack.map { lineScriptLine }.script
+  get() =
+    lineStack.map { lineScriptLine }.script
 
 val Typed<ValueLine, TypeLine>.lineScriptLine: ScriptLine
-	get() =
-		Typed(v, t.atom).atomScriptLine
+  get() =
+    Typed(v, t.atom).atomScriptLine
 
 val Typed<ValueLine, TypeAtom>.atomScriptLine: ScriptLine
-	get() =
-		when (t) {
-			is FunctionTypeAtom -> Typed(v.functionOrNull!!, t.function).functionScriptLine
-			is PrimitiveTypeAtom -> Typed(v, t.primitive).primitiveScriptLine
-		}
+  get() =
+    when (t) {
+      is FunctionTypeAtom -> Typed(v.functionOrNull!!, t.function).functionScriptLine
+      is PrimitiveTypeAtom -> Typed(v, t.primitive).primitiveScriptLine
+    }
 
 val Typed<ValueLine, TypePrimitive>.primitiveScriptLine: ScriptLine
-	get() =
-		when (t) {
-			is FieldTypePrimitive -> Typed(v.fieldOrNull!!, t.field).fieldScriptLine
-			is LiteralTypePrimitive -> Typed(v.anyOrNull, t.literal).literalScriptLine
-		}
+  get() =
+    when (t) {
+      is FieldTypePrimitive -> Typed(v.fieldOrNull!!, t.field).fieldScriptLine
+      is LiteralTypePrimitive -> Typed(v.anyOrNull, t.literal).literalScriptLine
+    }
 
-val Typed<Any?, TypeLiteral>.literalScriptLine: ScriptLine get() =
-	when (t) {
-		is NumberTypeLiteral -> line(literal((v as Double)))
-		is TextTypeLiteral -> line(literal((v as String)))
-	}
+val Typed<Any?, TypeLiteral>.literalScriptLine: ScriptLine
+  get() =
+    when (t) {
+      is NumberTypeLiteral -> line(literal((v as Double)))
+      is TextTypeLiteral -> line(literal((v as String)))
+    }
 
 val Typed<ValueField, TypeField>.fieldScriptLine: ScriptLine
-	get() =
-	  unescapedFieldScriptLine.runIf(t.name.isValueKeyword) { theName lineTo script(this) }
+  get() =
+    unescapedFieldScriptLine.runIf(t.name.isValueKeyword) { theName lineTo script(this) }
 
 val Typed<ValueField, TypeField>.unescapedFieldScriptLine: ScriptLine
-	get() =
-		t.name lineTo rhs.script
+  get() =
+    t.name lineTo rhs.script
 
-val Typed<ValueFunction, TypeFunction>.functionScriptLine: ScriptLine get() =
-	functionName lineTo script(
-		takingName lineTo t.lhsType.script,
-		givingName lineTo t.rhsType.script)
+val Typed<ValueFunction, TypeFunction>.functionScriptLine: ScriptLine
+  get() =
+    functionName lineTo script(
+      takingName lineTo t.lhsType.script,
+      givingName lineTo t.rhsType.script
+    )
 
-val String.isValueKeyword: Boolean get() =
-	when (this) {
-		functionName -> true
-		theName -> true
-		else -> false
-	}
+val String.isValueKeyword: Boolean
+  get() =
+    when (this) {
+      functionName -> true
+      theName -> true
+      else -> false
+    }

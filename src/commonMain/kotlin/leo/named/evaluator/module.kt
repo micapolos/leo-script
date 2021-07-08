@@ -4,14 +4,22 @@ import leo.base.fold
 import leo.named.value.Value
 
 data class Module(
-	val private: DictionaryPrivate,
-	val public: DictionaryPublic) { override fun toString() = scriptLine.toString() }
+  val private: DictionaryPrivate,
+  val public: DictionaryPublic
+) {
+  override fun toString() = scriptLine.toString()
+}
 
-data class DictionaryPrivate(val dictionary: Dictionary) { override fun toString() = scriptLine.toString() }
-data class DictionaryPublic(val dictionary: Dictionary) { override fun toString() = scriptLine.toString() }
+data class DictionaryPrivate(val dictionary: Dictionary) {
+  override fun toString() = scriptLine.toString()
+}
+
+data class DictionaryPublic(val dictionary: Dictionary) {
+  override fun toString() = scriptLine.toString()
+}
 
 fun module(private: DictionaryPrivate, public: DictionaryPublic) =
-	Module(private, public)
+  Module(private, public)
 
 val Dictionary.private get() = DictionaryPrivate(this)
 val Dictionary.public get() = DictionaryPublic(this)
@@ -25,18 +33,19 @@ fun DictionaryPrivate.plus(definition: Definition) = dictionary.plus(definition)
 fun DictionaryPublic.plus(definition: Definition) = dictionary.plus(definition).public
 
 fun Module.plusPrivate(dictionary: Dictionary): Module =
-	copy(private = private.fold(dictionary.definitionSeq) { plus(it) })
+  copy(private = private.fold(dictionary.definitionSeq) { plus(it) })
 
 fun Module.plus(definition: Definition): Module =
-	module(private.plus(definition), public.plus(definition))
+  module(private.plus(definition), public.plus(definition))
 
 fun Module.plus(dictionary: Dictionary): Module =
-	fold(dictionary.definitionSeq) { plus(it) }
+  fold(dictionary.definitionSeq) { plus(it) }
 
 fun Module.bind(value: Value): Module =
-	plus(value.linesDictionary)
+  plus(value.linesDictionary)
 
 fun Module.plusRecursive(dictionary: Dictionary): Module =
-	module(
-		private.dictionary.plusRecursive(dictionary).private,
-		public.dictionary.plusRecursive(dictionary).public)
+  module(
+    private.dictionary.plusRecursive(dictionary).private,
+    public.dictionary.plusRecursive(dictionary).public
+  )

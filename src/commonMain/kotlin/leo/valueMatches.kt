@@ -1,44 +1,44 @@
 package leo
 
 fun Value.matches(value: Value): Boolean =
-	when (value) {
-		anythingValue -> true
-		EmptyValue -> isEmpty
-		is LinkValue -> matches(value.link)
-	}
+  when (value) {
+    anythingValue -> true
+    EmptyValue -> isEmpty
+    is LinkValue -> matches(value.link)
+  }
 
 fun Value.matches(link: Link): Boolean =
-	if (link.field.name == orName) link.field.rhs.valueOrNull?.let { matchesOr(link.value, it) } ?: false
-	else linkOrNull?.matches(link)?:false
+  if (link.field.name == orName) link.field.rhs.valueOrNull?.let { matchesOr(link.value, it) } ?: false
+  else linkOrNull?.matches(link) ?: false
 
 fun Value.matchesOr(lhs: Value, rhs: Value): Boolean =
-	if (lhs.isEmpty) matches(rhs)
-	else matches(lhs) || matches(rhs)
+  if (lhs.isEmpty) matches(rhs)
+  else matches(lhs) || matches(rhs)
 
 fun Link.matches(link: Link): Boolean =
-	field.matches(link.field) && value.matches(link.value)
+  field.matches(link.field) && value.matches(link.value)
 
 fun Field.matches(field: Field) =
-	null
-			?: matchesSpecial(field)
-			?: matchesNamed(field)
+  null
+    ?: matchesSpecial(field)
+    ?: matchesNamed(field)
 
 fun Field.matchesNamed(field: Field) =
-	name == field.name && rhs.matches(field.rhs)
+  name == field.name && rhs.matches(field.rhs)
 
 fun Field.matchesSpecial(field: Field): Boolean? =
-	when (field) {
-		anyName fieldTo value(numberName) -> numberOrNull != null
-		anyName fieldTo value(textName) -> textOrNull != null
-		else -> null
-	}
+  when (field) {
+    anyName fieldTo value(numberName) -> numberOrNull != null
+    anyName fieldTo value(textName) -> textOrNull != null
+    else -> null
+  }
 
 fun Rhs.matches(rhs: Rhs) =
-	rhs.isAny || when (rhs) {
-		is FunctionRhs -> (this is FunctionRhs) && this == rhs
-		is NativeRhs -> (this is NativeRhs) && this == rhs
-		is ValueRhs -> (this is ValueRhs) && value.matches(rhs.value)
-	}
+  rhs.isAny || when (rhs) {
+    is FunctionRhs -> (this is FunctionRhs) && this == rhs
+    is NativeRhs -> (this is NativeRhs) && this == rhs
+    is ValueRhs -> (this is ValueRhs) && value.matches(rhs.value)
+  }
 
 val Value.isAny get() = this == anythingValue
 val Rhs.isAny get() = (this is ValueRhs) && value.isAny

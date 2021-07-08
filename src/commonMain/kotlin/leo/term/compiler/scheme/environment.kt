@@ -17,30 +17,46 @@ import scheme.Scheme
 import scheme.scheme
 
 val schemeEnvironment: Environment<Scheme>
-	get() =
-	Environment(
-		{ literal -> literal.scheme.nativeTerm },
-		{ typedTerm ->
-			when (typedTerm.t) {
-				type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
-					typed(
-						fn("(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
-						type(numberTypeLine))
-				type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
-					typed(
-						fn("(lambda (x) (lambda (y) (- x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
-						type(numberTypeLine))
-				type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
-					typed(
-						fn("(lambda (x) (lambda (y) (* x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
-						type(numberTypeLine))
-				type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
-					typed(
-						fn("(lambda (x) (lambda (y) (string-append x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail).invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
-						type(textTypeLine))
-				else -> null
-			}
-		}
-	)
+  get() =
+    Environment(
+      { literal -> literal.scheme.nativeTerm },
+      { typedTerm ->
+        when (typedTerm.t) {
+          type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
+            typed(
+              fn(
+                "(lambda (x) (lambda (y) (+ x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)
+              ).invoke(typedTerm.v),
+              type(numberTypeLine)
+            )
+          type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
+            typed(
+              fn(
+                "(lambda (x) (lambda (y) (- x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)
+              ).invoke(typedTerm.v),
+              type(numberTypeLine)
+            )
+          type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
+            typed(
+              fn(
+                "(lambda (x) (lambda (y) (* x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)
+              ).invoke(typedTerm.v),
+              type(numberTypeLine)
+            )
+          type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
+            typed(
+              fn(
+                "(lambda (x) (lambda (y) (string-append x y)))".scheme.nativeTerm.invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)
+              ).invoke(typedTerm.v),
+              type(textTypeLine)
+            )
+          else -> null
+        }
+      }
+    )
 
 val Literal.scheme: Scheme get() = toString().scheme

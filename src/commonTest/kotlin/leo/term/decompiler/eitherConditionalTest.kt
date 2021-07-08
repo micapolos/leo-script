@@ -8,19 +8,19 @@ import leo.term.nativeValue
 import kotlin.test.Test
 
 class EitherConditionalTest {
-	@Test
-	fun eitherFirst() {
-		"one".nativeValue
-			.eitherFirst
-			.eitherConditional
-			.assertEqualTo(false.conditional("one".nativeValue))
-	}
+  @Test
+  fun eitherFirst() {
+    "one".nativeValue
+      .eitherFirst
+      .eitherConditional
+      .assertEqualTo(false.conditional("one".nativeValue))
+  }
 
-	@Test
-	fun eitherSecond() {
-		"one".nativeValue
-			.eitherSecond
-			.eitherConditional
-			.assertEqualTo(true.conditional("one".nativeValue))
-	}
+  @Test
+  fun eitherSecond() {
+    "one".nativeValue
+      .eitherSecond
+      .eitherConditional
+      .assertEqualTo(true.conditional("one".nativeValue))
+  }
 }

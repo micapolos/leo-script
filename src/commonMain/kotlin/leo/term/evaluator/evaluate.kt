@@ -10,11 +10,13 @@ import leo.term.compiler.native.typedValue
 import leo.term.decompiler.script
 
 val Script.evaluate: Script
-	get() =
-		try {
-			typedValue.script
-		} catch (compileError: CompileError) {
-			script(
-				errorName lineTo script(
-					compileName lineTo compileError.scriptFn()))
-		}
+  get() =
+    try {
+      typedValue.script
+    } catch (compileError: CompileError) {
+      script(
+        errorName lineTo script(
+          compileName lineTo compileError.scriptFn()
+        )
+      )
+    }

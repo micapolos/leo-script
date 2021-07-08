@@ -1,10 +1,11 @@
 package leo
 
-@kotlin.jvm.JvmInline value class Trace(val valueStack: Stack<Value>)
+@kotlin.jvm.JvmInline
+value class Trace(val valueStack: Stack<Value>)
 
 val emptyTrace get() = Trace(stack())
 fun Trace.push(value: Value) = Trace(valueStack.push(value))
 
 val Trace.value
-	get() =
-		value(*valueStack.reverse.map { causeName fieldTo this }.array)
+  get() =
+    value(*valueStack.reverse.map { causeName fieldTo this }.array)

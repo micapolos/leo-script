@@ -8,19 +8,21 @@ import leo.script
 import kotlin.test.Test
 
 class ScriptParserTest {
-	@Test
-	fun structure() {
-		scriptParser
-			.parsed("point\n  x 10\n  y 20\n")
-			.assertEqualTo(
-				script(
-					"point" lineTo script(
-						"x" lineTo script(literal(10)),
-						"y" lineTo script(literal(20))))
-			)
-	}
+  @Test
+  fun structure() {
+    scriptParser
+      .parsed("point\n  x 10\n  y 20\n")
+      .assertEqualTo(
+        script(
+          "point" lineTo script(
+            "x" lineTo script(literal(10)),
+            "y" lineTo script(literal(20))
+          )
+        )
+      )
+  }
 
-	// TODO: fixit
+  // TODO: fixit
 //	@Test
 //	fun deeperStructure() {
 //		scriptParser

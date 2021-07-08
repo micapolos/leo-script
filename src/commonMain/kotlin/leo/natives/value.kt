@@ -22,31 +22,31 @@ import leo.value
 import leo.valueOrNull
 
 fun Value.nativeValue(name: String): Value =
-	getOrNull(name)!!
+  getOrNull(name)!!
 
 val Value.nativeText: String get() = textOrThrow
 val Value.nativeNumber: Number get() = numberOrThrow
 val Value.nativeObject: Any?
-	get() = fieldOrNull?.rhs?.nativeOrNull.notNullOrThrow {
-		plus(
-			notName fieldTo value(
-				nativeName
-			)
-		)
-	}.any
+  get() = fieldOrNull?.rhs?.nativeOrNull.notNullOrThrow {
+    plus(
+      notName fieldTo value(
+        nativeName
+      )
+    )
+  }.any
 
 val Value.nativeArray: Array<Any?>
-	get() =
-		fieldOrNull!!.rhs.valueOrNull!!.fieldSeq.map { value(this).nativeArrayElement }.stack.array
+  get() =
+    fieldOrNull!!.rhs.valueOrNull!!.fieldSeq.map { value(this).nativeArrayElement }.stack.array
 
 val Value.nativeArrayElement: Any?
-	get() =
-		nativeValue(javaName).nativeObject
+  get() =
+    nativeValue(javaName).nativeObject
 
 val Any?.javaValue: Value
-	get() =
-		value(javaName fieldTo rhs(native(this)))
+  get() =
+    value(javaName fieldTo rhs(native(this)))
 
 val Value.javaObject: Any?
-	get() =
-		nativeObject
+  get() =
+    nativeObject

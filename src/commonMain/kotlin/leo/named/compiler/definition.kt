@@ -12,22 +12,28 @@ import leo.lineTo
 import leo.name
 import leo.type
 
-data class Definition(val type: Type, val binding: Binding) { override fun toString() = scriptLine.toString() }
+data class Definition(val type: Type, val binding: Binding) {
+  override fun toString() = scriptLine.toString()
+}
 
 fun definition(type: Type, binding: Binding) =
-	Definition(type, binding)
+  Definition(type, binding)
 
-val TypeLine.bindDefinition: Definition get() =
-	definition(type(name), constantBinding(type(this)))
+val TypeLine.bindDefinition: Definition
+  get() =
+    definition(type(name), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =
-	binding.orNullIf(this.type != type)
+  binding.orNullIf(this.type != type)
 
-val TypeFunction.definition: Definition get() =
-	definition(lhsType, functionBinding(rhsType))
+val TypeFunction.definition: Definition
+  get() =
+    definition(lhsType, functionBinding(rhsType))
 
-val TypeField.definition: Definition get() =
-	atom.line.bindDefinition
+val TypeField.definition: Definition
+  get() =
+    atom.line.bindDefinition
 
-val Type.givenDefinition: Definition get() =
-	(givenName lineTo this).bindDefinition
+val Type.givenDefinition: Definition
+  get() =
+    (givenName lineTo this).bindDefinition

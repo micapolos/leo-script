@@ -12,12 +12,15 @@ import leo.named.library.preludeCompiler
 import leo.named.typed.Typed
 import leo.named.value.Value
 
-val Script.value: Value get() =
-	typedExpression(context()).expression.value
+val Script.value: Value
+  get() =
+    typedExpression(context()).expression.value
 
-val Script.typedValue: Typed<Value, Type> get() =
-	typedExpression(context()).typedValue
+val Script.typedValue: Typed<Value, Type>
+  get() =
+    typedExpression(context()).typedValue
 
-val Script.preludeTypedValue: Typed<Value, Type> get() =
-	preludeCompiler.plusCompilation(this).get(unitEnvironment).typedExpression.typedValue
+val Script.preludeTypedValue: Typed<Value, Type>
+  get() =
+    preludeCompiler.plusCompilation(this).get(unitEnvironment).typedExpression.typedValue
 

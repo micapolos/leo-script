@@ -5,8 +5,11 @@ import leo.named.value.value
 import leo.named.value.with
 
 data class Evaluator(
-	val module: Module,
-	val value: Value) { override fun toString() = scriptLine.toString() }
+  val module: Module,
+  val value: Value
+) {
+  override fun toString() = scriptLine.toString()
+}
 
 fun Module.evaluator(value: Value) = Evaluator(this, value)
 val Module.evaluator get() = evaluator(value())

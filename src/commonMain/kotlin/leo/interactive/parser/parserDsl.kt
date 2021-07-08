@@ -14,16 +14,16 @@ import leo.stack
 import leo.stackLink
 
 fun letter(char: Char): Letter =
-	char.letterOrNull.notNullOrError("letter($char)")
+  char.letterOrNull.notNullOrError("letter($char)")
 
 fun digit(int: Int): Digit =
-	int.digitOrNull.notNullOrError("digit($int)")
+  int.digitOrNull.notNullOrError("digit($int)")
 
 fun word(letter: Letter, vararg letters: Letter): Word =
-	Word(stackLink(letter, *letters))
+  Word(stackLink(letter, *letters))
 
 fun number(digit: Digit, vararg digits: Digit): Number =
-	Number(stackLink(digit, *digits))
+  Number(stackLink(digit, *digits))
 
 val numberNegative get() = NumberNegative(null)
 fun negative(number: Number): NumberNegative = NumberNegative(number)
@@ -88,7 +88,7 @@ fun Tokens.plus(token: Token): Tokens = tokenStack.push(token).let(::Tokens)
 fun Tokens.plus(tokens: Tokens): Tokens = tokenStack.pushAll(tokens.tokenStack).let(::Tokens)
 
 fun TokensPrefix.plusOrNull(string: String): TokensPrefix? =
-	orNull.fold(string.charSeq) { this?.plusOrNull(it) }
+  orNull.fold(string.charSeq) { this?.plusOrNull(it) }
 
 val Indent.isEmpty: Boolean get() = tabStack.isEmpty
 val IndentPrefix.isEmpty: Boolean get() = indent.isEmpty && tabPrefixOrNull == null

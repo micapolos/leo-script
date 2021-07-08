@@ -13,16 +13,16 @@ import leo.lineSeq
 typealias Tokenizer<S> = Processor<S, Token>
 
 fun <S> Tokenizer<S>.process(script: Script): Tokenizer<S> =
-	fold(script.lineSeq.reverse) { process(it) }
+  fold(script.lineSeq.reverse) { process(it) }
 
 fun <S> Tokenizer<S>.process(scriptLine: ScriptLine): Tokenizer<S> =
-	when (scriptLine) {
-		is FieldScriptLine -> process(scriptLine.field)
-		is LiteralScriptLine -> process(scriptLine.literal)
-	}
+  when (scriptLine) {
+    is FieldScriptLine -> process(scriptLine.field)
+    is LiteralScriptLine -> process(scriptLine.literal)
+  }
 
 fun <S> Tokenizer<S>.process(field: ScriptField): Tokenizer<S> =
-	plusFn(token(begin(field.name))).process(field.rhs).plusFn(token(end))
+  plusFn(token(begin(field.name))).process(field.rhs).plusFn(token(end))
 
 fun <S> Tokenizer<S>.process(literal: Literal): Tokenizer<S> =
-	plusFn(token(literal))
+  plusFn(token(literal))

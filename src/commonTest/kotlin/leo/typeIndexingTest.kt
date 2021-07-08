@@ -6,19 +6,19 @@ import leo.base.indexed
 import kotlin.test.Test
 
 class TypeIndexingTest {
-	@Test
-	fun indexedLineOrNull() {
-		typeStructure(
-			"x" lineTo type(),
-			textTypeLine,
-			numberTypeLine,
-			type(textTypeLine) functionLineTo type(numberTypeLine)
-		).run {
-			indexedLineOrNull("x").assertEqualTo(0 indexed ("x" lineTo type()))
-			indexedLineOrNull(textName).assertEqualTo(1 indexed textTypeLine)
-			indexedLineOrNull(numberName).assertEqualTo(2 indexed numberTypeLine)
-			indexedLineOrNull(functionName).assertEqualTo(3 indexed (type(textTypeLine) functionLineTo type(numberTypeLine)))
-			indexedLineOrNull("foo").assertNull
-		}
-	}
+  @Test
+  fun indexedLineOrNull() {
+    typeStructure(
+      "x" lineTo type(),
+      textTypeLine,
+      numberTypeLine,
+      type(textTypeLine) functionLineTo type(numberTypeLine)
+    ).run {
+      indexedLineOrNull("x").assertEqualTo(0 indexed ("x" lineTo type()))
+      indexedLineOrNull(textName).assertEqualTo(1 indexed textTypeLine)
+      indexedLineOrNull(numberName).assertEqualTo(2 indexed numberTypeLine)
+      indexedLineOrNull(functionName).assertEqualTo(3 indexed (type(textTypeLine) functionLineTo type(numberTypeLine)))
+      indexedLineOrNull("foo").assertNull
+    }
+  }
 }

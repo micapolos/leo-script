@@ -66,146 +66,147 @@ import leo.named.value.unsafeSwitchLine
 import leo.stateful
 
 typealias Evaluation<V> = Stateful<Unit, V>
+
 fun <V> V.evaluation(): Evaluation<V> = stateful()
 
 fun Dictionary.valueEvaluation(doing: Doing): Evaluation<Value> =
-	when (doing) {
-		is ExpressionDoing -> valueEvaluation(doing.expression)
-		is FnDoing -> doing.valueFn(this).evaluation()
-	}
+  when (doing) {
+    is ExpressionDoing -> valueEvaluation(doing.expression)
+    is FnDoing -> doing.valueFn(this).evaluation()
+  }
 
 fun Dictionary.dictionaryEvaluation(expression: Expression): Evaluation<Dictionary> =
-	private.module.evaluator.plusEvaluation(expression).map { it.module.public.dictionary }
+  private.module.evaluator.plusEvaluation(expression).map { it.module.public.dictionary }
 
 fun Dictionary.moduleEvaluation(expression: Expression): Evaluation<Module> =
-	private.module.evaluator.plusEvaluation(expression).map { it.module }
+  private.module.evaluator.plusEvaluation(expression).map { it.module }
 
 fun Dictionary.valueEvaluation(expression: Expression): Evaluation<Value> =
-	private.module.evaluator.plusEvaluation(expression).map { it.value }
+  private.module.evaluator.plusEvaluation(expression).map { it.value }
 
 fun Evaluator.plusEvaluation(expression: Expression): Evaluation<Evaluator> =
-	evaluation().foldStateful(expression.lineSeq) { plusEvaluation(it) }
+  evaluation().foldStateful(expression.lineSeq) { plusEvaluation(it) }
 
 fun Evaluator.plusEvaluation(line: Line): Evaluation<Evaluator> =
-	when (line) {
-		is AnyLine -> plusAnyEvaluation(line.any)
-		is BeLine -> plusEvaluation(line.be)
-		is BindLine -> plusEvaluation(line.bind)
-		is DoLine -> plusEvaluation(line.do_)
-		is EqualsLine -> plusEvaluation(line.equals)
-		is FunctionLine -> plusEvaluation(line.function)
-		is FieldLine -> plusEvaluation(line.field)
-		is GetLine -> plusEvaluation(line.get)
-		is GiveLine -> plusEvaluation(line.give)
-		is InvokeLine -> plusEvaluation(line.invoke)
-		is LetLine -> plusEvaluation(line.let)
-		is LiteralLine -> plusEvaluation(line.literal)
-		is MakeLine -> plusEvaluation(line.make)
-		is SwitchLine -> plusEvaluation(line.select)
-		is WithLine -> plusEvaluation(line.with)
-		is RecursiveLine -> plusEvaluation(line.recursive)
-		is TakeLine -> plusEvaluation(line.take)
-		is PrivateLine -> plusEvaluation(line.private)
-	}
+  when (line) {
+    is AnyLine -> plusAnyEvaluation(line.any)
+    is BeLine -> plusEvaluation(line.be)
+    is BindLine -> plusEvaluation(line.bind)
+    is DoLine -> plusEvaluation(line.do_)
+    is EqualsLine -> plusEvaluation(line.equals)
+    is FunctionLine -> plusEvaluation(line.function)
+    is FieldLine -> plusEvaluation(line.field)
+    is GetLine -> plusEvaluation(line.get)
+    is GiveLine -> plusEvaluation(line.give)
+    is InvokeLine -> plusEvaluation(line.invoke)
+    is LetLine -> plusEvaluation(line.let)
+    is LiteralLine -> plusEvaluation(line.literal)
+    is MakeLine -> plusEvaluation(line.make)
+    is SwitchLine -> plusEvaluation(line.select)
+    is WithLine -> plusEvaluation(line.with)
+    is RecursiveLine -> plusEvaluation(line.recursive)
+    is TakeLine -> plusEvaluation(line.take)
+    is PrivateLine -> plusEvaluation(line.private)
+  }
 
 fun Evaluator.plusAnyEvaluation(any: Any?): Evaluation<Evaluator> =
-	set(value.plus(any.anyValueLine)).evaluation()
+  set(value.plus(any.anyValueLine)).evaluation()
 
 fun Evaluator.plusEvaluation(be: Be): Evaluation<Evaluator> =
-	module.private.dictionary.valueEvaluation(be.expression).map { set(it) }
+  module.private.dictionary.valueEvaluation(be.expression).map { set(it) }
 
 fun Evaluator.plusEvaluation(bind: Bind): Evaluation<Evaluator> =
-	module.private.dictionary.valueEvaluation(bind.expression).map { value ->
-		set(module.bind(value))
-	}
+  module.private.dictionary.valueEvaluation(bind.expression).map { value ->
+    set(module.bind(value))
+  }
 
 fun Evaluator.plusEvaluation(do_: Do): Evaluation<Evaluator> =
-	module.private.dictionary.plus(value.givenDictionary).valueEvaluation(do_.doing).map { set(it) }
+  module.private.dictionary.plus(value.givenDictionary).valueEvaluation(do_.doing).map { set(it) }
 
 fun Evaluator.plusEvaluation(equals: Equals): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(equals.expression).map { isEqualTo(it) }
+  dictionary.valueEvaluation(equals.expression).map { isEqualTo(it) }
 
 fun Evaluator.plusEvaluation(with: With): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(with.expression).map { with(it) }
+  dictionary.valueEvaluation(with.expression).map { with(it) }
 
 fun Evaluator.plusEvaluation(recursive: Recursive): Evaluation<Evaluator> =
-	dictionary.dictionaryEvaluation(recursive.expression).map {
-		set(module.plusRecursive(it))
-	}
+  dictionary.dictionaryEvaluation(recursive.expression).map {
+    set(module.plusRecursive(it))
+  }
 
 fun Evaluator.plusEvaluation(private: Private): Evaluation<Evaluator> =
-	dictionary.dictionaryEvaluation(private.expression).map {
-		set(module.plusPrivate(it))
-	}
+  dictionary.dictionaryEvaluation(private.expression).map {
+    set(module.plusPrivate(it))
+  }
 
 fun Evaluator.plusEvaluation(field: Field): Evaluation<Evaluator> =
-	module.private.dictionary.valueEvaluation(field.expression).map {
-		set(value.plus(field.name lineTo it))
-	}
+  module.private.dictionary.valueEvaluation(field.expression).map {
+    set(value.plus(field.name lineTo it))
+  }
 
 fun Evaluator.plusEvaluation(literal: Literal): Evaluation<Evaluator> =
-	set(value.plus(literal.any.anyValueLine)).evaluation()
+  set(value.plus(literal.any.anyValueLine)).evaluation()
 
 fun Evaluator.plusEvaluation(make: Make): Evaluation<Evaluator> =
-	set(value.make(make.name)).evaluation()
+  set(value.make(make.name)).evaluation()
 
 fun Evaluator.plusEvaluation(function: Function): Evaluation<Evaluator> =
-	set(value.plus(line(function(dictionary, function.doing)))).evaluation()
+  set(value.plus(line(function(dictionary, function.doing)))).evaluation()
 
 fun Evaluator.plusEvaluation(get: Get): Evaluation<Evaluator> =
-	set(value.get(get.name)).evaluation()
+  set(value.get(get.name)).evaluation()
 
 fun Evaluator.plusEvaluation(give: Give): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(give.expression).bind { given ->
-		value.giveEvaluation(given).map { set(it) }
-	}
+  dictionary.valueEvaluation(give.expression).bind { given ->
+    value.giveEvaluation(given).map { set(it) }
+  }
 
 fun Evaluator.plusEvaluation(let: Let): Evaluation<Evaluator> =
-	dictionary.bindingEvaluation(let.rhs).map {
-		set(module.plus(definition(let.type, it)))
-	}
+  dictionary.bindingEvaluation(let.rhs).map {
+    set(module.plus(definition(let.type, it)))
+  }
 
 fun Dictionary.bindingEvaluation(letRhs: LetRhs): Evaluation<Binding> =
-	when(letRhs) {
-		is BeLetRhs -> bindingEvaluation(letRhs.be)
-		is DoLetRhs -> bindingEvaluation(letRhs.do_)
-	}
+  when (letRhs) {
+    is BeLetRhs -> bindingEvaluation(letRhs.be)
+    is DoLetRhs -> bindingEvaluation(letRhs.do_)
+  }
 
 fun Dictionary.bindingEvaluation(be: Be): Evaluation<Binding> =
-	valueEvaluation(be.expression).map { binding(it) }
+  valueEvaluation(be.expression).map { binding(it) }
 
 fun Dictionary.bindingEvaluation(do_: Do): Evaluation<Binding> =
-	functionEvaluation(do_).map { binding(it) }
+  functionEvaluation(do_).map { binding(it) }
 
 fun Dictionary.functionEvaluation(do_: Do): Evaluation<ValueFunction> =
-	function(this, do_.doing).evaluation()
+  function(this, do_.doing).evaluation()
 
 fun Evaluator.plusEvaluation(invoke: Invoke): Evaluation<Evaluator> =
-	dictionary.giveEvaluation(invoke.type, value).map { set(it) }
+  dictionary.giveEvaluation(invoke.type, value).map { set(it) }
 
 fun Evaluator.plusEvaluation(select: Select): Evaluation<Evaluator> =
-	value.unsafeSwitchLine.let { valueLine ->
-		module.private.dictionary
-			.plus(valueLine.definition)
-			.valueEvaluation(select.expression(valueLine.name))
-			.map { set(it) }
-	}
+  value.unsafeSwitchLine.let { valueLine ->
+    module.private.dictionary
+      .plus(valueLine.definition)
+      .valueEvaluation(select.expression(valueLine.name))
+      .map { set(it) }
+  }
 
 fun Evaluator.plusEvaluation(take: Take): Evaluation<Evaluator> =
-	dictionary.valueEvaluation(take.expression).bind { doingValue ->
-		value.takeEvaluation(doingValue).map { set(it) }
-	}
+  dictionary.valueEvaluation(take.expression).bind { doingValue ->
+    value.takeEvaluation(doingValue).map { set(it) }
+  }
 
 
 fun Dictionary.giveEvaluation(type: Type, value: Value): Evaluation<Value> =
-	binding(type).giveEvaluation(value)
+  binding(type).giveEvaluation(value)
 
 fun Binding.giveEvaluation(given: Value): Evaluation<Value> =
-	when (this) {
-		is FunctionBinding -> function.invokeEvaluation(given)
-		is RecursiveBinding -> error("$this.apply($given)")
-		is ValueBinding -> value.evaluation()
-	}
+  when (this) {
+    is FunctionBinding -> function.invokeEvaluation(given)
+    is RecursiveBinding -> error("$this.apply($given)")
+    is ValueBinding -> value.evaluation()
+  }
 
 fun ValueFunction.invokeEvaluation(value: Value): Evaluation<Value> =
-	dictionary.plus(value.givenDictionary).valueEvaluation(doing)
+  dictionary.plus(value.givenDictionary).valueEvaluation(doing)

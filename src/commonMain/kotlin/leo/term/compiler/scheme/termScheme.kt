@@ -12,24 +12,26 @@ import scheme.Scheme
 import scheme.scheme
 
 data class Scope(val depth: Int)
+
 val Scope.push: Scope get() = Scope(depth.inc())
 
-val Term<Scheme>.scheme: Scheme get() =
-	Scope(0).scheme(this)
+val Term<Scheme>.scheme: Scheme
+  get() =
+    Scope(0).scheme(this)
 
 fun Scope.scheme(term: Term<Scheme>): Scheme =
-	when (term) {
-		is AbstractionTerm -> scheme(term.abstraction)
-		is ApplicationTerm -> scheme(term.application)
-		is NativeTerm -> term.native
-		is VariableTerm -> scheme(term.variable)
-	}
+  when (term) {
+    is AbstractionTerm -> scheme(term.abstraction)
+    is ApplicationTerm -> scheme(term.application)
+    is NativeTerm -> term.native
+    is VariableTerm -> scheme(term.variable)
+  }
 
 fun Scope.scheme(abstraction: TermAbstraction<Scheme>): Scheme =
-	("(lambda (v" + depth + ") " + push.scheme(abstraction.term).string + ")").scheme
+  ("(lambda (v" + depth + ") " + push.scheme(abstraction.term).string + ")").scheme
 
 fun Scope.scheme(application: TermApplication<Scheme>): Scheme =
-	("(" + scheme(application.lhs).string + " " + scheme(application.rhs).string + ")").scheme
+  ("(" + scheme(application.lhs).string + " " + scheme(application.rhs).string + ")").scheme
 
 fun Scope.scheme(variable: TermVariable): Scheme =
-	"v${depth - variable.index - 1}".scheme
+  "v${depth - variable.index - 1}".scheme

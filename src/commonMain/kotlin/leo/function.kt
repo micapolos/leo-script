@@ -3,11 +3,11 @@ package leo
 data class Function(val dictionary: Dictionary, val binder: Binder)
 
 sealed class Binder
-data class ApplyingBinder(val applying: BodyApplying): Binder()
-data class BeingBinder(val being: ValueBeing): Binder()
-data class DoingBinder(val doing: BodyDoing): Binder()
-data class HavingBinder(val having: ValueHaving): Binder()
-data class CombiningBinder(val combining: BodyCombining): Binder()
+data class ApplyingBinder(val applying: BodyApplying) : Binder()
+data class BeingBinder(val being: ValueBeing) : Binder()
+data class DoingBinder(val doing: BodyDoing) : Binder()
+data class HavingBinder(val having: ValueHaving) : Binder()
+data class CombiningBinder(val combining: BodyCombining) : Binder()
 
 data class BodyApplying(val body: Body)
 data class ValueBeing(val value: Value)
@@ -32,20 +32,22 @@ fun Dictionary.function(binder: Binder): Function = Function(this, binder)
 fun Function.giveEvaluation(value: Value): Evaluation<Value> = dictionary.applyEvaluation(value, binder)
 fun Function.push(definitionLet: DefinitionLet) = copy(dictionary = dictionary.plus(LetDefinition(definitionLet)))
 
-val Binder.name get() =
-	when (this) {
-		is ApplyingBinder -> applyingName
-		is BeingBinder -> beingName
-		is DoingBinder -> doingName
-		is HavingBinder -> havingName
-		is CombiningBinder -> combiningName
-	}
+val Binder.name
+  get() =
+    when (this) {
+      is ApplyingBinder -> applyingName
+      is BeingBinder -> beingName
+      is DoingBinder -> doingName
+      is HavingBinder -> havingName
+      is CombiningBinder -> combiningName
+    }
 
-val Binder.letName get() =
-	when (this) {
-		is ApplyingBinder -> applyName
-		is BeingBinder -> beName
-		is DoingBinder -> doName
-		is CombiningBinder -> combineName
-		is HavingBinder -> haveName
-	}
+val Binder.letName
+  get() =
+    when (this) {
+      is ApplyingBinder -> applyName
+      is BeingBinder -> beName
+      is DoingBinder -> doName
+      is CombiningBinder -> combineName
+      is HavingBinder -> haveName
+    }

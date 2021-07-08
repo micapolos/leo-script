@@ -49,7 +49,10 @@ import leo.zip
 data class Typed<out V, out T>(val v: V, val t: T)
 
 data class TypedLine(val line: Line, val typeLine: TypeLine)
-data class TypedExpression(val expression: Expression, val type: Type) { override fun toString() = script.toString() }
+data class TypedExpression(val expression: Expression, val type: Type) {
+  override fun toString() = script.toString()
+}
+
 data class TypedField(val field: Field, val typeField: TypeField)
 data class TypedFunction(val function: Function, val typeFunction: TypeFunction)
 data class TypedChoice(val line: Line, val typeChoice: TypeChoice)
@@ -65,72 +68,75 @@ fun typed(case: Case, type: Type) = TypedCase(case, type)
 infix fun Expression.of(type: Type) = typed(this, type)
 
 fun TypedExpression.plus(typedLine: TypedLine): TypedExpression =
-	type.plus(typedLine.typeLine).let { expression.plus(typedLine.line).of(it) }
+  type.plus(typedLine.typeLine).let { expression.plus(typedLine.line).of(it) }
 
 fun typedExpression(vararg typedLine: TypedLine) =
-	typed(expression(), type()).fold(typedLine) { plus(it) }
+  typed(expression(), type()).fold(typedLine) { plus(it) }
 
 infix fun String.lineTo(typedExpression: TypedExpression): TypedLine =
-	typed(
-		this lineTo typedExpression.expression,
-		this lineTo typedExpression.type)
+  typed(
+    this lineTo typedExpression.expression,
+    this lineTo typedExpression.type
+  )
 
 infix fun String.fieldTo(typedExpression: TypedExpression): TypedField =
-	typed(
-		this fieldTo typedExpression.expression,
-		this fieldTo typedExpression.type)
+  typed(
+    this fieldTo typedExpression.expression,
+    this fieldTo typedExpression.type
+  )
 
 fun typedLine(literal: Literal): TypedLine =
-	typed(expressionLine(literal), literal.typeLine)
+  typed(expressionLine(literal), literal.typeLine)
 
 fun TypedExpression.do_(typedExpression: TypedExpression): TypedExpression =
-	expression.plus(line(do_(doing(typedExpression.expression)))).of(typedExpression.type)
+  expression.plus(line(do_(doing(typedExpression.expression)))).of(typedExpression.type)
 
 fun TypedExpression.give(typedExpression: TypedExpression): TypedExpression =
-	type.compileDoing.let { doing ->
-		doing.lhsType.check(typedExpression.type) {
-			expression.give(typedExpression.expression).of(doing.rhsType)
-		}
-	}
+  type.compileDoing.let { doing ->
+    doing.lhsType.check(typedExpression.type) {
+      expression.give(typedExpression.expression).of(doing.rhsType)
+    }
+  }
 
 fun TypedExpression.take(typedExpression: TypedExpression): TypedExpression =
-	typedExpression.type.compileDoing.let { doing ->
-		doing.lhsType.check(type) {
-			expression.take(typedExpression.expression).of(doing.rhsType)
-		}
-	}
+  typedExpression.type.compileDoing.let { doing ->
+    doing.lhsType.check(type) {
+      expression.take(typedExpression.expression).of(doing.rhsType)
+    }
+  }
 
 fun TypedExpression.select(casesStack: Stack<TypedCase>): TypedExpression =
-	zip(type.selectChoice.lineStack, casesStack)
-		.map {
-			let { (first, second) ->
-				if (first == null) error("exhausted")
-				else if (second == null) error("not exhaustive")
-				else if (first.name != second.case.name) error("case mismatch")
-				else true
-			}
-		}
-		.all { this }
-		.run { if (!this) error("dupa") }
-		.run {
-			checkType(casesStack.map { type }).let { type ->
-				typed(expression.select(casesStack.map { case }), type)
-			}
-		}
+  zip(type.selectChoice.lineStack, casesStack)
+    .map {
+      let { (first, second) ->
+        if (first == null) error("exhausted")
+        else if (second == null) error("not exhaustive")
+        else if (first.name != second.case.name) error("case mismatch")
+        else true
+      }
+    }
+    .all { this }
+    .run { if (!this) error("dupa") }
+    .run {
+      checkType(casesStack.map { type }).let { type ->
+        typed(expression.select(casesStack.map { case }), type)
+      }
+    }
 
 @Suppress("ComplexRedundantLet") // Type.get(name) must be evaluated first.
 fun TypedExpression.get(name: String): TypedExpression =
-	type.get(name).let {
-		expression.get(name).of(it)
-	}
+  type.get(name).let {
+    expression.get(name).of(it)
+  }
 
 infix fun Type.functionTypedLine(doingTypedExpression: TypedExpression): TypedLine =
-	typed(
-		line(function(this, doing(doingTypedExpression.expression))),
-		this.functionLineTo(doingTypedExpression.type))
+  typed(
+    line(function(this, doing(doingTypedExpression.expression))),
+    this.functionLineTo(doingTypedExpression.type)
+  )
 
 fun TypedExpression.with(typedExpression: TypedExpression): TypedExpression =
-	typed(expression.plus(line(with(typedExpression.expression))), type.plus(typedExpression.type))
+  typed(expression.plus(line(with(typedExpression.expression))), type.plus(typedExpression.type))
 
 val TypedField.name: String get() = typeField.name
 val TypedField.line: TypedLine get() = typed(line(field), line(atom(typeField)))

@@ -10,13 +10,14 @@ import leo.prelude.preludeDictionary
 import leo.script
 import leo.value
 
-val Script.evaluate: Script get() =
-	environment()
-		.effect(preludeDictionary.context.evaluator(value()))
-		.tokenizerEvaluation
-		.process(this)
-		.state
-		.notNullOrError("begin/end error")
-		.evaluator
-		.value
-		.script
+val Script.evaluate: Script
+  get() =
+    environment()
+      .effect(preludeDictionary.context.evaluator(value()))
+      .tokenizerEvaluation
+      .process(this)
+      .state
+      .notNullOrError("begin/end error")
+      .evaluator
+      .value
+      .script

@@ -11,14 +11,16 @@ import leo.term.typed.typedTerm
 import org.junit.Test
 
 class ResolveTypeTest {
-	@Test
-	fun type() {
-		nativeEnvironment.
-			resolveType(
-				typedTerm(
-					"point" lineTo typedTerm(
-						"x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
-						"y" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)))))
-			.assertNotNull // TODO()
-	}
+  @Test
+  fun type() {
+    nativeEnvironment.resolveType(
+      typedTerm(
+        "point" lineTo typedTerm(
+          "x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
+          "y" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine))
+        )
+      )
+    )
+      .assertNotNull // TODO()
+  }
 }

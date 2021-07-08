@@ -13,14 +13,17 @@ import leo.base.reverse
 import leo.base.then
 import leo.lineSeq
 
-val Script.tokenSeq: Seq<Token> get() =
-	lineSeq.reverse.map { tokenSeq }.flat
+val Script.tokenSeq: Seq<Token>
+  get() =
+    lineSeq.reverse.map { tokenSeq }.flat
 
-val ScriptLine.tokenSeq: Seq<Token> get() =
-	when (this) {
-		is FieldScriptLine -> field.tokenSeq
-		is LiteralScriptLine -> onlySeq { token(literal) }
-	}
+val ScriptLine.tokenSeq: Seq<Token>
+  get() =
+    when (this) {
+      is FieldScriptLine -> field.tokenSeq
+      is LiteralScriptLine -> onlySeq { token(literal) }
+    }
 
-val ScriptField.tokenSeq: Seq<Token> get() =
-	onlySeq { token(begin(name)) }.then(rhs.tokenSeq)
+val ScriptField.tokenSeq: Seq<Token>
+  get() =
+    onlySeq { token(begin(name)) }.then(rhs.tokenSeq)

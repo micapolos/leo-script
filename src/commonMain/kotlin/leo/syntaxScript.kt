@@ -2,52 +2,55 @@ package leo
 
 import leo.base.runIf
 
-val Syntax.scriptLine: ScriptLine get() =
-	"syntax" lineTo script
+val Syntax.scriptLine: ScriptLine
+  get() =
+    "syntax" lineTo script
 
-val Syntax.script: Script get() =
-	script(lineStack.map { scriptLine })
+val Syntax.script: Script
+  get() =
+    script(lineStack.map { scriptLine })
 
-val SyntaxLine.scriptLine: ScriptLine get() =
-	when (this) {
-		is ApplySyntaxLine -> applyName lineTo apply.script
-		is ApplyingSyntaxLine -> applyingName lineTo applying.script
-		is AsSyntaxLine -> asName lineTo as_.script
-		is AtomSyntaxLine -> atom.scriptLine
+val SyntaxLine.scriptLine: ScriptLine
+  get() =
+    when (this) {
+      is ApplySyntaxLine -> applyName lineTo apply.script
+      is ApplyingSyntaxLine -> applyingName lineTo applying.script
+      is AsSyntaxLine -> asName lineTo as_.script
+      is AtomSyntaxLine -> atom.scriptLine
 //		is BeSyntaxLine -> beName lineTo be.script
-		is BeingSyntaxLine -> beingName lineTo being.script
-		is CheckSyntaxLine -> checkName lineTo check.script
-		is CombineWithSyntaxLine -> combineName lineTo combineWith.script
-		is CombiningWithSyntaxLine -> combiningName lineTo combiningWith.script
-		is CommentSyntaxLine -> commentName lineTo comment.script
-		is DebugSyntaxLine -> debugName lineTo debug.script
-		is DoSyntaxLine -> doName lineTo do_.script
-		is DoingSyntaxLine -> doingName lineTo doing.script
-		is EndSyntaxLine -> endName lineTo end.script
+      is BeingSyntaxLine -> beingName lineTo being.script
+      is CheckSyntaxLine -> checkName lineTo check.script
+      is CombineWithSyntaxLine -> combineName lineTo combineWith.script
+      is CombiningWithSyntaxLine -> combiningName lineTo combiningWith.script
+      is CommentSyntaxLine -> commentName lineTo comment.script
+      is DebugSyntaxLine -> debugName lineTo debug.script
+      is DoSyntaxLine -> doName lineTo do_.script
+      is DoingSyntaxLine -> doingName lineTo doing.script
+      is EndSyntaxLine -> endName lineTo end.script
 //		is ExampleSyntaxLine -> exampleName lineTo example.script
 //		is FailSyntaxLine -> failName lineTo fail.script
-		is GetSyntaxLine -> getName lineTo get.script
+      is GetSyntaxLine -> getName lineTo get.script
 //		is GiveSyntaxLine -> giveName lineTo give.script
-		is HelpSyntaxLine -> helpName lineTo help.script
-		is IsSyntaxLine -> isName lineTo is_.script
-		is LetSyntaxLine -> letName lineTo let.script
-		is LoadSyntaxLine -> loadName lineTo load.script
-		is RepeatSyntaxLine -> repeatName lineTo repeat.script
-		is MatchingSyntaxLine -> matchingName lineTo matching.script
-		is PrivateSyntaxLine -> privateName lineTo private.script
-		is QuoteSyntaxLine -> quoteName lineTo quote.script
-		is RecurseSyntaxLine -> recurseName lineTo recurse.script
-		is RecursiveSyntaxLine -> recursiveName lineTo recursive.script
-		is SetSyntaxLine -> setName lineTo set.script
-		is SelectSyntaxLine -> selectName lineTo select.script
+      is HelpSyntaxLine -> helpName lineTo help.script
+      is IsSyntaxLine -> isName lineTo is_.script
+      is LetSyntaxLine -> letName lineTo let.script
+      is LoadSyntaxLine -> loadName lineTo load.script
+      is RepeatSyntaxLine -> repeatName lineTo repeat.script
+      is MatchingSyntaxLine -> matchingName lineTo matching.script
+      is PrivateSyntaxLine -> privateName lineTo private.script
+      is QuoteSyntaxLine -> quoteName lineTo quote.script
+      is RecurseSyntaxLine -> recurseName lineTo recurse.script
+      is RecursiveSyntaxLine -> recursiveName lineTo recursive.script
+      is SetSyntaxLine -> setName lineTo set.script
+      is SelectSyntaxLine -> selectName lineTo select.script
 //		is TakeSyntaxLine -> takeName lineTo take.script
-		is TestSyntaxLine -> testName lineTo test.script
-		is TheSyntaxLine -> theName lineTo the.script
-		is TrySyntaxLine -> tryName lineTo try_.script
-		is UpdateSyntaxLine -> updateName lineTo update.script
-		is UseSyntaxLine -> useName lineTo use.script
+      is TestSyntaxLine -> testName lineTo test.script
+      is TheSyntaxLine -> theName lineTo the.script
+      is TrySyntaxLine -> tryName lineTo try_.script
+      is UpdateSyntaxLine -> updateName lineTo update.script
+      is UseSyntaxLine -> useName lineTo use.script
 //		is WithSyntaxLine -> withName lineTo with.script
-	}
+    }
 
 val End.script get() = syntax.script
 val Apply.script get() = block.script
@@ -87,34 +90,39 @@ val With.script get() = syntax.script
 
 val SyntaxField.scriptLine get() = name lineTo rhsSyntax.script
 
-val LetRhs.scriptLine get() =
-	when (this) {
-		is ApplyLetRhs -> applyName lineTo apply.script
-		is BeLetRhs -> beName lineTo be.script
-		is DoLetRhs -> doName lineTo do_.script
-		is HaveLetRhs -> haveName lineTo have.script
-	}
+val LetRhs.scriptLine
+  get() =
+    when (this) {
+      is ApplyLetRhs -> applyName lineTo apply.script
+      is BeLetRhs -> beName lineTo be.script
+      is DoLetRhs -> doName lineTo do_.script
+      is HaveLetRhs -> haveName lineTo have.script
+    }
 
-val Block.script get() =
-	when (this) {
-		is RecursingBlock -> script(recursingName lineTo recursing.script)
-		is SyntaxBlock -> syntax.script
-	}
+val Block.script
+  get() =
+    when (this) {
+      is RecursingBlock -> script(recursingName lineTo recursing.script)
+      is SyntaxBlock -> syntax.script
+    }
 
 val Recursing.script get() = syntax.script
 
-val Is.script get() =
-	rhs.script.runIf(negated) { script(notName lineTo this) }
+val Is.script
+  get() =
+    rhs.script.runIf(negated) { script(notName lineTo this) }
 
-val IsRhs.script get() =
-	when (this) {
-		is EqualIsRhs -> script(equalName lineTo script(toName lineTo equal.script))
-		is MatchingIsRhs -> script(matchingName lineTo matching.script)
-		is SyntaxIsRhs -> syntax.script
-	}
+val IsRhs.script
+  get() =
+    when (this) {
+      is EqualIsRhs -> script(equalName lineTo script(toName lineTo equal.script))
+      is MatchingIsRhs -> script(matchingName lineTo matching.script)
+      is SyntaxIsRhs -> syntax.script
+    }
 
-val SyntaxAtom.scriptLine get() =
-	when (this) {
-		is FieldSyntaxAtom -> field.scriptLine
-		is LiteralSyntaxAtom -> literal.line
-	}
+val SyntaxAtom.scriptLine
+  get() =
+    when (this) {
+      is FieldSyntaxAtom -> field.scriptLine
+      is LiteralSyntaxAtom -> literal.line
+    }

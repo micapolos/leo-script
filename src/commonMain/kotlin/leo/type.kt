@@ -6,107 +6,107 @@ import leo.base.orNullIf
 import leo.named.compiler.compileStructure
 
 sealed class Type {
-	override fun toString() = script.toString()
+  override fun toString() = script.toString()
 }
 
-data class StructureType(val structure: TypeStructure): Type() {
-	override fun toString() = super.toString()
+data class StructureType(val structure: TypeStructure) : Type() {
+  override fun toString() = super.toString()
 }
 
-data class ChoiceType(val choice: TypeChoice): Type() {
-	override fun toString() = super.toString()
+data class ChoiceType(val choice: TypeChoice) : Type() {
+  override fun toString() = super.toString()
 }
 
 data class TypeChoice(val lineStack: Stack<TypeLine>) {
-	override fun toString() = script.toString()
+  override fun toString() = script.toString()
 }
 
 data class TypeStructure(val lineStack: Stack<TypeLine>) {
-	override fun toString() = script.toString()
+  override fun toString() = script.toString()
 }
 
 sealed class TypeLine {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
-data class RecursiveTypeLine(val recursive: TypeRecursive): TypeLine() {
-	override fun toString() = super.toString()
+data class RecursiveTypeLine(val recursive: TypeRecursive) : TypeLine() {
+  override fun toString() = super.toString()
 }
 
-data class RecursibleTypeLine(val recursible: TypeRecursible): TypeLine()  {
-	override fun toString() = super.toString()
+data class RecursibleTypeLine(val recursible: TypeRecursible) : TypeLine() {
+  override fun toString() = super.toString()
 }
 
 sealed class TypeRecursible {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
-data class AtomTypeRecursible(val atom: TypeAtom): TypeRecursible() {
-	override fun toString() = super.toString()
+data class AtomTypeRecursible(val atom: TypeAtom) : TypeRecursible() {
+  override fun toString() = super.toString()
 }
 
-data class RecurseTypeRecursible(val recurse: TypeRecurse): TypeRecursible() {
-	override fun toString() = super.toString()
+data class RecurseTypeRecursible(val recurse: TypeRecurse) : TypeRecursible() {
+  override fun toString() = super.toString()
 }
 
 sealed class TypeAtom {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
-data class PrimitiveTypeAtom(val primitive: TypePrimitive): TypeAtom() {
-	override fun toString() = super.toString()
+data class PrimitiveTypeAtom(val primitive: TypePrimitive) : TypeAtom() {
+  override fun toString() = super.toString()
 }
 
-data class FunctionTypeAtom(val function: TypeFunction): TypeAtom() {
-	override fun toString() = super.toString()
+data class FunctionTypeAtom(val function: TypeFunction) : TypeAtom() {
+  override fun toString() = super.toString()
 }
 
 data class TypeField(val name: String, val rhsType: Type) {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
 sealed class TypePrimitive {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
-data class LiteralTypePrimitive(val literal: TypeLiteral): TypePrimitive() {
-	override fun toString() = super.toString()
+data class LiteralTypePrimitive(val literal: TypeLiteral) : TypePrimitive() {
+  override fun toString() = super.toString()
 }
 
-data class FieldTypePrimitive(val field: TypeField): TypePrimitive() {
-	override fun toString() = super.toString()
+data class FieldTypePrimitive(val field: TypeField) : TypePrimitive() {
+  override fun toString() = super.toString()
 }
 
 sealed class TypeLiteral {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
-data class TextTypeLiteral(val text: TypeText): TypeLiteral() {
-	override fun toString() = super.toString()
+data class TextTypeLiteral(val text: TypeText) : TypeLiteral() {
+  override fun toString() = super.toString()
 }
 
-data class NumberTypeLiteral(val number: TypeNumber): TypeLiteral() {
-	override fun toString() = super.toString()
+data class NumberTypeLiteral(val number: TypeNumber) : TypeLiteral() {
+  override fun toString() = super.toString()
 }
 
 data class TypeFunction(val lhsType: Type, val rhsType: Type) {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
 data class TypeRecursive(val line: TypeLine) {
-	override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine.toString()
 }
 
 object TypeText {
-	override fun toString() = textName
+  override fun toString() = textName
 }
 
 object TypeNumber {
-	override fun toString() = numberName
+  override fun toString() = numberName
 }
 
 object TypeRecurse {
-	override fun toString() = recurseName
+  override fun toString() = recurseName
 }
 
 val Stack<TypeLine>.structure get() = TypeStructure(this)
@@ -185,11 +185,12 @@ fun TypeChoice.plus(line: TypeLine): TypeChoice = TypeChoice(lineStack.push(line
 
 val Literal.typeLine: TypeLine get() = line(typeAtom)
 
-val Literal.typeAtom: TypeAtom get() =
-	when (this) {
-		is NumberLiteral -> atom(literal(typeNumber))
-		is StringLiteral -> atom(literal(typeText))
-	}
+val Literal.typeAtom: TypeAtom
+  get() =
+    when (this) {
+      is NumberLiteral -> atom(literal(typeNumber))
+      is StringLiteral -> atom(literal(typeText))
+    }
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure
 val Type.choiceOrNull: TypeChoice? get() = (this as? ChoiceType)?.choice
@@ -206,49 +207,61 @@ val TypeLine.choiceOrNull: TypeChoice? get() = atomOrNull?.fieldOrNull?.rhsType?
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.name == name }
 val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom
 
-val String.typeStructure: TypeStructure get() =
-	typeStructure(this lineTo type())
+val String.typeStructure: TypeStructure
+  get() =
+    typeStructure(this lineTo type())
 
-val String.type: Type get() =
-	typeStructure.type
+val String.type: Type
+  get() =
+    typeStructure.type
 
-val isType: Type get() =
-	type(isTypeLine)
+val isType: Type
+  get() =
+    type(isTypeLine)
 
-val isTypeLine: TypeLine get() =
-	line(atom(isTypeField))
+val isTypeLine: TypeLine
+  get() =
+    line(atom(isTypeField))
 
-val isTypeField: TypeField get() =
-	isName fieldTo type(
-		choice(
-			yesName lineTo type(),
-			noName lineTo type()))
+val isTypeField: TypeField
+  get() =
+    isName fieldTo type(
+      choice(
+        yesName lineTo type(),
+        noName lineTo type()
+      )
+    )
 
-val negateIsTypeLine: TypeLine get() =
-	line(atom(negateIsTypeField))
+val negateIsTypeLine: TypeLine
+  get() =
+    line(atom(negateIsTypeField))
 
-val negateIsTypeField: TypeField get() =
-	negateName fieldTo type(isTypeLine)
+val negateIsTypeField: TypeField
+  get() =
+    negateName fieldTo type(isTypeLine)
 
 val TypeLine.structure: TypeStructure get() = typeStructure(this)
 
 fun Type.getOrNull(name: String): Type? =
-	structureOrNull?.getOrNull(name)?.type
+  structureOrNull?.getOrNull(name)?.type
 
 fun TypeStructure.getOrNull(name: String): TypeStructure? =
-	getLineOrNull(name)?.structure
+  getLineOrNull(name)?.structure
 
 fun TypeStructure.getLineOrNull(name: String): TypeLine? =
-	onlyLineOrNull?.structureOrNull?.lineOrNull(name)
+  onlyLineOrNull?.structureOrNull?.lineOrNull(name)
 
 val TypeStructure.isEmpty: Boolean get() = lineStack.isEmpty
 val Type.isEmpty: Boolean get() = structureOrNull?.isEmpty ?: false
 
-val TypeStructure.nameOrNull: String? get() =
-	onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !rhsType.isEmpty }?.name
+val TypeStructure.nameOrNull: String?
+  get() =
+    onlyLineOrNull?.atomOrNull?.fieldOrNull?.orNullIf { !rhsType.isEmpty }?.name
 
-val Type.nameOrNull: String? get() =
-	structureOrNull?.nameOrNull
+val Type.nameOrNull: String?
+  get() =
+    structureOrNull?.nameOrNull
 
-val TypeStructure.lineSeq: Seq<TypeLine> get() =
-	lineStack.reverse.seq
+val TypeStructure.lineSeq: Seq<TypeLine>
+  get() =
+    lineStack.reverse.seq

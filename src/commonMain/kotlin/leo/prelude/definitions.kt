@@ -35,141 +35,218 @@ import leo.value
 import kotlin.math.PI
 import kotlin.math.sqrt
 
-val textAppendTextDefinition get() =
-	nativeDefinition(
-		value(
-			textAnyField,
-			appendName fieldTo textAnyValue)
-	) {
-		value(field(literal(
-			it.nativeValue(textName)
-				.textOrThrow
-				.plus(
-					it.nativeValue(appendName)
-						.nativeValue(textName)
-						.textOrThrow))
-		))
-	}
+val textAppendTextDefinition
+  get() =
+    nativeDefinition(
+      value(
+        textAnyField,
+        appendName fieldTo textAnyValue
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it.nativeValue(textName)
+              .textOrThrow
+              .plus(
+                it.nativeValue(appendName)
+                  .nativeValue(textName)
+                  .textOrThrow
+              )
+          )
+        )
+      )
+    }
 
-val numberTextDefinition get() =
-	nativeDefinition(
-		value(
-			textName fieldTo value(numberAnyField))) {
-		value(field(literal(
-			it
-				.nativeValue(textName)
-				.nativeValue(numberName)
-				.numberOrThrow
-				.string)))
-	}
+val numberTextDefinition
+  get() =
+    nativeDefinition(
+      value(
+        textName fieldTo value(numberAnyField)
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it
+              .nativeValue(textName)
+              .nativeValue(numberName)
+              .numberOrThrow
+              .string
+          )
+        )
+      )
+    }
 
-val numberPlusNumberDefinition get() =
-	nativeDefinition(
-		value(
-			numberAnyField,
-			plusName fieldTo value(numberAnyField))) {
-		value(field(literal(
-			it.nativeValue(numberName)
-				.numberOrThrow
-				.plus(
-					it.nativeValue(plusName)
-						.nativeValue(numberName)
-						.numberOrThrow))))
-	}
+val numberPlusNumberDefinition
+  get() =
+    nativeDefinition(
+      value(
+        numberAnyField,
+        plusName fieldTo value(numberAnyField)
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it.nativeValue(numberName)
+              .numberOrThrow
+              .plus(
+                it.nativeValue(plusName)
+                  .nativeValue(numberName)
+                  .numberOrThrow
+              )
+          )
+        )
+      )
+    }
 
-val numberMinusNumberDefinition get() =
-	nativeDefinition(
-		value(
-			numberAnyField,
-			minusName fieldTo value(numberAnyField))) {
-		value(field(literal(
-			it.nativeValue(numberName)
-				.numberOrThrow
-				.minus(
-					it.nativeValue(minusName)
-						.nativeValue(numberName)
-						.numberOrThrow))))
-	}
+val numberMinusNumberDefinition
+  get() =
+    nativeDefinition(
+      value(
+        numberAnyField,
+        minusName fieldTo value(numberAnyField)
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it.nativeValue(numberName)
+              .numberOrThrow
+              .minus(
+                it.nativeValue(minusName)
+                  .nativeValue(numberName)
+                  .numberOrThrow
+              )
+          )
+        )
+      )
+    }
 
-val numberTimesNumberDefinition get() =
-	nativeDefinition(
-		value(
-			numberAnyField,
-			timesName fieldTo value(numberAnyField))) {
-		value(field(literal(
-			it.nativeValue(numberName)
-				.numberOrThrow
-				.times(
-					it.nativeValue(timesName)
-						.nativeValue(numberName)
-						.numberOrThrow))))
-	}
+val numberTimesNumberDefinition
+  get() =
+    nativeDefinition(
+      value(
+        numberAnyField,
+        timesName fieldTo value(numberAnyField)
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it.nativeValue(numberName)
+              .numberOrThrow
+              .times(
+                it.nativeValue(timesName)
+                  .nativeValue(numberName)
+                  .numberOrThrow
+              )
+          )
+        )
+      )
+    }
 
-val numberDividedByNumberDefinition get() =
-	nativeDefinition(
-		value(
-			numberAnyField,
-			dividedName fieldTo value(byName fieldTo value(numberAnyField)))) {
-		value(field(literal(
-			it.nativeValue(numberName)
-				.numberOrThrow
-				.div(
-					it.nativeValue(dividedName)
-						.nativeValue(byName)
-						.nativeValue(numberName)
-						.numberOrThrow))))
-	}
+val numberDividedByNumberDefinition
+  get() =
+    nativeDefinition(
+      value(
+        numberAnyField,
+        dividedName fieldTo value(byName fieldTo value(numberAnyField))
+      )
+    ) {
+      value(
+        field(
+          literal(
+            it.nativeValue(numberName)
+              .numberOrThrow
+              .div(
+                it.nativeValue(dividedName)
+                  .nativeValue(byName)
+                  .nativeValue(numberName)
+                  .numberOrThrow
+              )
+          )
+        )
+      )
+    }
 
-val numberIsLessThanNumberDefinition get() =
-	nativeDefinition(
-		value(
-			numberAnyField,
-			isName fieldTo value(lessName fieldTo value(thanName fieldTo value(numberAnyField))))) {
-			(it.nativeValue(numberName)
-				.numberOrThrow <
-					it.nativeValue(isName)
-						.nativeValue(lessName)
-						.nativeValue(thanName)
-						.nativeValue(numberName)
-						.numberOrThrow).isValue
-	}
+val numberIsLessThanNumberDefinition
+  get() =
+    nativeDefinition(
+      value(
+        numberAnyField,
+        isName fieldTo value(lessName fieldTo value(thanName fieldTo value(numberAnyField)))
+      )
+    ) {
+      (it.nativeValue(numberName)
+        .numberOrThrow <
+          it.nativeValue(isName)
+            .nativeValue(lessName)
+            .nativeValue(thanName)
+            .nativeValue(numberName)
+            .numberOrThrow).isValue
+    }
 
-val numberSinusDefinition get() =
-	nativeDefinition(
-		value(sinusName fieldTo numberAnyValue)) {
-		value(field(literal(
-			it
-				.nativeValue(sinusName)
-				.nativeValue(numberName)
-				.numberOrThrow
-				.sinus)))
-	}
+val numberSinusDefinition
+  get() =
+    nativeDefinition(
+      value(sinusName fieldTo numberAnyValue)
+    ) {
+      value(
+        field(
+          literal(
+            it
+              .nativeValue(sinusName)
+              .nativeValue(numberName)
+              .numberOrThrow
+              .sinus
+          )
+        )
+      )
+    }
 
-val numberCosinusDefinition get() =
-	nativeDefinition(
-		value(cosinusName fieldTo numberAnyValue)) {
-		value(field(literal(
-			it
-				.nativeValue(cosinusName)
-				.nativeValue(numberName)
-				.numberOrThrow
-				.cosinus)))
-	}
+val numberCosinusDefinition
+  get() =
+    nativeDefinition(
+      value(cosinusName fieldTo numberAnyValue)
+    ) {
+      value(
+        field(
+          literal(
+            it
+              .nativeValue(cosinusName)
+              .nativeValue(numberName)
+              .numberOrThrow
+              .cosinus
+          )
+        )
+      )
+    }
 
-val numberRootDefinition get() =
-	nativeDefinition(
-		value(rootName fieldTo numberAnyValue)) {
-		value(field(literal(
-			it
-				.nativeValue(rootName)
-				.nativeValue(numberName)
-				.numberOrThrow
-				.double
-				.let(::sqrt))))
-	}
+val numberRootDefinition
+  get() =
+    nativeDefinition(
+      value(rootName fieldTo numberAnyValue)
+    ) {
+      value(
+        field(
+          literal(
+            it
+              .nativeValue(rootName)
+              .nativeValue(numberName)
+              .numberOrThrow
+              .double
+              .let(::sqrt)
+          )
+        )
+      )
+    }
 
-val piNumberDefinition get() =
-	nativeDefinition(
-		value(numberName fieldTo value(piName))) {
-		value(field(literal(PI)))
-	}
+val piNumberDefinition
+  get() =
+    nativeDefinition(
+      value(numberName fieldTo value(piName))
+    ) {
+      value(field(literal(PI)))
+    }

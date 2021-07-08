@@ -11,12 +11,14 @@ import leo.reverse
 import leo.seq
 import leo.stack
 
-data class Value(val lineStack: Stack<ValueLine>) { override fun toString() = scriptLine.toString() }
+data class Value(val lineStack: Stack<ValueLine>) {
+  override fun toString() = scriptLine.toString()
+}
 
 sealed class ValueLine
-data class FieldValueLine(val field: ValueField): ValueLine()
-data class FunctionValueLine(val function: ValueFunction): ValueLine()
-data class AnyValueLine(val any: Any?): ValueLine()
+data class FieldValueLine(val field: ValueField) : ValueLine()
+data class FunctionValueLine(val function: ValueFunction) : ValueLine()
+data class AnyValueLine(val any: Any?) : ValueLine()
 
 data class ValueField(val name: String, val value: Value)
 data class ValueFunction(val dictionary: Dictionary, val doing: Doing)

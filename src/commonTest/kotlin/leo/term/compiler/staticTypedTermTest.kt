@@ -17,35 +17,48 @@ import leo.type
 import kotlin.test.Test
 
 class StaticTypedTermTest {
-	@Test
-	fun staticTypedTerm() {
-		nativeEnvironment
-			.staticTypedTerm(
-				script(
-					"point" lineTo script(
-						"x" lineTo script("foo"),
-						"y" lineTo script("bar"))))
-			.assertEqualTo(
-				typed(
-					id(),
-					type(
-						"point" lineTo type(
-							"x" lineTo type("foo"),
-							"y" lineTo type("bar")))))
-	}
+  @Test
+  fun staticTypedTerm() {
+    nativeEnvironment
+      .staticTypedTerm(
+        script(
+          "point" lineTo script(
+            "x" lineTo script("foo"),
+            "y" lineTo script("bar")
+          )
+        )
+      )
+      .assertEqualTo(
+        typed(
+          id(),
+          type(
+            "point" lineTo type(
+              "x" lineTo type("foo"),
+              "y" lineTo type("bar")
+            )
+          )
+        )
+      )
+  }
 
-	@Test
-	fun resolveType() {
-		nativeEnvironment
-			.resolveType(
-				typedTerm(
-					"point" lineTo typedTerm(
-						"x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
-						"y" lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine)))))
-			.assertEqualTo(
-				typedTerm(
-					"point" lineTo typedTerm(
-						"x" lineTo typedTerm(anyName lineTo typedTerm(numberName)),
-						"y" lineTo typedTerm(anyName lineTo typedTerm(numberName)))))
-	}
+  @Test
+  fun resolveType() {
+    nativeEnvironment
+      .resolveType(
+        typedTerm(
+          "point" lineTo typedTerm(
+            "x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
+            "y" lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))
+          )
+        )
+      )
+      .assertEqualTo(
+        typedTerm(
+          "point" lineTo typedTerm(
+            "x" lineTo typedTerm(anyName lineTo typedTerm(numberName)),
+            "y" lineTo typedTerm(anyName lineTo typedTerm(numberName))
+          )
+        )
+      )
+  }
 }

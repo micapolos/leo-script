@@ -7,13 +7,13 @@ data class TypedLine(val expressionLine: ExpressionLine, val typeLine: TypeLine)
 data class Expression(val lineStack: Stack<ExpressionLine>)
 
 sealed class ExpressionLine
-data class AtomExpressionLine(val atom: ExpressionAtom): ExpressionLine()
-data class GetExpressionLine(val get: ExpressionGet): ExpressionLine()
+data class AtomExpressionLine(val atom: ExpressionAtom) : ExpressionLine()
+data class GetExpressionLine(val get: ExpressionGet) : ExpressionLine()
 
 sealed class ExpressionAtom
-data class FieldExpressionAtom(val field: ExpressionField): ExpressionAtom()
-data class LiteralExpressionAtom(val literal: Literal): ExpressionAtom()
-data class DoingExpressionAtom(val doing: ExpressionDoing): ExpressionAtom()
+data class FieldExpressionAtom(val field: ExpressionField) : ExpressionAtom()
+data class LiteralExpressionAtom(val literal: Literal) : ExpressionAtom()
+data class DoingExpressionAtom(val doing: ExpressionDoing) : ExpressionAtom()
 
 data class ExpressionField(val name: String, val rhs: Typed)
 data class ExpressionDoing(val lhsType: TypeStructure, val rhsTyped: TypeLine)

@@ -15,23 +15,23 @@ import leo.type
 import kotlin.test.Test
 
 class ExpressionDictionaryTest {
-	@Test
-	fun letBe() {
-		expression(line(let(type("x"), rhs(be(10.numberExpression)))))
-			.dictionary
-			.assertEqualTo(
-				dictionary(definition(type("x"), binding(10.numberValue)))
-			)
-	}
+  @Test
+  fun letBe() {
+    expression(line(let(type("x"), rhs(be(10.numberExpression)))))
+      .dictionary
+      .assertEqualTo(
+        dictionary(definition(type("x"), binding(10.numberValue)))
+      )
+  }
 
-	@Test
-	fun letDo() {
-		expression(line(let(type("y"), rhs(do_(doing(10.numberExpression))))))
-			.dictionary
-			.assertEqualTo(
-				dictionary(
-					definition(type("y"), binding(function(dictionary(), doing(10.numberExpression))))
-				)
-			)
-	}
+  @Test
+  fun letDo() {
+    expression(line(let(type("y"), rhs(do_(doing(10.numberExpression))))))
+      .dictionary
+      .assertEqualTo(
+        dictionary(
+          definition(type("y"), binding(function(dictionary(), doing(10.numberExpression))))
+        )
+      )
+  }
 }

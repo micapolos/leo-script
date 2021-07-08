@@ -13,6 +13,6 @@ data class Definition(val function: TypeFunction)
 fun definition(function: TypeFunction) = Definition(function)
 
 fun <V> Definition.resolveOrNull(variable: TermVariable, typedTerm: TypedTerm<V>): TypedTerm<V>? =
-	notNullIf(typedTerm.t == function.lhsType) {
-		typed(term<V>(variable).invoke(typedTerm.v), function.rhsType)
-	}
+  notNullIf(typedTerm.t == function.lhsType) {
+    typed(term<V>(variable).invoke(typedTerm.v), function.rhsType)
+  }

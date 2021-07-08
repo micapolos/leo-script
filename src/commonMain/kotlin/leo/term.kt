@@ -1,10 +1,10 @@
 package leo
 
 sealed class Term<out T>
-data class NativeTerm<T>(val value: T): Term<T>()
-data class AbstractionTerm<T>(val abstraction: TermAbstraction<T>): Term<T>()
-data class ApplicationTerm<T>(val application: TermApplication<T>): Term<T>()
-data class VariableTerm<T>(val variable: TermVariable): Term<T>()
+data class NativeTerm<T>(val value: T) : Term<T>()
+data class AbstractionTerm<T>(val abstraction: TermAbstraction<T>) : Term<T>()
+data class ApplicationTerm<T>(val application: TermApplication<T>) : Term<T>()
+data class VariableTerm<T>(val variable: TermVariable) : Term<T>()
 
 data class TermVariable(val index: Int)
 data class TermAbstraction<out T>(val variableCount: Int, val term: Term<T>)

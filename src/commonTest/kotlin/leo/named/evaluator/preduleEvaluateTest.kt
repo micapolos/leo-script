@@ -9,12 +9,13 @@ import leo.script
 import kotlin.test.Test
 
 class PreludeEvaluateTest {
-	@Test
-	fun numberPlusNumber() {
-		script(
-			line(literal(10)),
-			plusName lineTo script(literal(20)))
-			.preludeEvaluate
-			.assertEqualTo(script(literal(30)))
-	}
+  @Test
+  fun numberPlusNumber() {
+    script(
+      line(literal(10)),
+      plusName lineTo script(literal(20))
+    )
+      .preludeEvaluate
+      .assertEqualTo(script(literal(30)))
+  }
 }

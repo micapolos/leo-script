@@ -6,9 +6,9 @@ data class NameBegin(val name: String)
 object End
 
 sealed class Token
-data class BeginToken(val begin: NameBegin): Token()
-data class EndToken(val end: End): Token()
-data class LiteralToken(val literal: Literal): Token()
+data class BeginToken(val begin: NameBegin) : Token()
+data class EndToken(val end: End) : Token()
+data class LiteralToken(val literal: Literal) : Token()
 
 fun begin(name: String) = NameBegin(name)
 val end get() = End

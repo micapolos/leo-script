@@ -43,15 +43,15 @@ infix fun Chain.linkTo(name: String) = ChainLink(this, name)
 fun chain(atom: Atom, vararg names: String) = chain(atom).fold(names) { plus(it) }
 
 fun NotationLink.plus(literal: Literal): NotationLink =
-	notation(this) linkTo line(chain(atom(literal)))
+  notation(this) linkTo line(chain(atom(literal)))
 
 fun NotationLink.plus(name: String): NotationLink =
-	null
-		?: runIfNotNull(line.plusOrNull(name)) { lhs linkTo it }
-		?: notation(this) linkTo line(chain(atom(name)))
+  null
+    ?: runIfNotNull(line.plusOrNull(name)) { lhs linkTo it }
+    ?: notation(this) linkTo line(chain(atom(name)))
 
 fun NotationLine.plusOrNull(name: String): NotationLine? =
-	when (this) {
-		is ChainNotationLine -> line(chain.plus(name))
-		is FieldNotationLine -> null
-	}
+  when (this) {
+    is ChainNotationLine -> line(chain.plus(name))
+    is FieldNotationLine -> null
+  }

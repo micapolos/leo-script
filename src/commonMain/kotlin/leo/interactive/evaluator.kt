@@ -36,63 +36,65 @@ val Input.begin: Input get() = update { it.begin }
 fun Input.setValue(value: Value): Input = update { it.set(value) }
 fun Input.updateValue(fn: (Value) -> Value): Input = update { it.updateValue(fn) }
 
-val Input.tokenizerEvaluation: Output get() =
-	tokenizerEvaluation { error("unexpected end") }
+val Input.tokenizerEvaluation: Output
+  get() =
+    tokenizerEvaluation { error("unexpected end") }
 
 fun Input.tokenizerEvaluation(ret: Ret): Output =
   processor { token ->
-	  process(token) {
-		  ret(it)
-	  }
+    process(token) {
+      ret(it)
+    }
   }
 
 fun Input.process(token: Token, ret: Ret): Output =
-	when (token) {
-		is BeginToken -> process(token.begin, ret)
-		is EndToken -> process(token.end, ret)
-		is LiteralToken -> process(token.literal, ret)
-	}
+  when (token) {
+    is BeginToken -> process(token.begin, ret)
+    is EndToken -> process(token.end, ret)
+    is LiteralToken -> process(token.literal, ret)
+  }
 
 fun Input.process(@Suppress("UNUSED_PARAMETER") end: End, ret: Ret): Output =
-	ret(this)
+  ret(this)
 
 fun Input.process(nameBegin: NameBegin, ret: Ret): Output =
-	when (nameBegin.name) {
-		beName -> processBe(ret)
-		haveName -> processHave(ret)
-		else -> processField(nameBegin, ret)
-	}
+  when (nameBegin.name) {
+    beName -> processBe(ret)
+    haveName -> processHave(ret)
+    else -> processField(nameBegin, ret)
+  }
 
 fun Input.process(literal: Literal, ret: Ret): Output =
-	process(field(literal), ret)
+  process(field(literal), ret)
 
 fun Input.processBe(ret: Ret): Output =
-	begin.tokenizerEvaluation { rhs ->
-		setValue(rhs.evaluator.value).tokenizerEvaluation(ret)
-	}
+  begin.tokenizerEvaluation { rhs ->
+    setValue(rhs.evaluator.value).tokenizerEvaluation(ret)
+  }
 
 fun Input.processHave(ret: Ret): Output =
-	begin.tokenizerEvaluation { rhs ->
-		setValue(evaluator.value.have(rhs.evaluator.value)).tokenizerEvaluation(ret)
-	}
+  begin.tokenizerEvaluation { rhs ->
+    setValue(evaluator.value.have(rhs.evaluator.value)).tokenizerEvaluation(ret)
+  }
 
 fun Input.processField(nameBegin: NameBegin, ret: Ret): Output =
-	begin.tokenizerEvaluation { rhs ->
-		if (rhs.evaluator.value.isEmpty)
-			rhs.setValue(value()).process(nameBegin.name fieldTo evaluator.value, ret)
-		else
-			process(nameBegin.name fieldTo rhs.evaluator.value, ret)
-	}
+  begin.tokenizerEvaluation { rhs ->
+    if (rhs.evaluator.value.isEmpty)
+      rhs.setValue(value()).process(nameBegin.name fieldTo evaluator.value, ret)
+    else
+      process(nameBegin.name fieldTo rhs.evaluator.value, ret)
+  }
 
 fun Input.process(field: Field, ret: Ret): Output =
-	updateValue { it.plus(field) }
-		.resolve
-		.tokenizerEvaluation(ret)
+  updateValue { it.plus(field) }
+    .resolve
+    .tokenizerEvaluation(ret)
 
-val Input.resolve: Input get() =
-	evaluator
-		.dictionary
-		.applyEvaluationOrNull(evaluator.value)
-		.orIfNull { evaluator.value.resolve.evaluation }
-		.run(environment)
-		.update { value -> evaluator.set(value) }
+val Input.resolve: Input
+  get() =
+    evaluator
+      .dictionary
+      .applyEvaluationOrNull(evaluator.value)
+      .orIfNull { evaluator.value.resolve.evaluation }
+      .run(environment)
+      .update { value -> evaluator.set(value) }
