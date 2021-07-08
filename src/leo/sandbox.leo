@@ -1,4 +1,4 @@
-26
+30
 fibonacci
 do repeating
   number
