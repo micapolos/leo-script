@@ -11,21 +11,12 @@ class TypeNormalizeRecursionTest {
         "bar" lineTo type(
           recursiveLine(
             "foo" lineTo type(
-              "bar" lineTo type(recurseTypeLine)
-            )
-          )
-        )
-      )
-    )
+              "bar" lineTo type(recurseTypeLine))))))
       .normalizeRecursion
       .assertEqualTo(
         type(
           recursiveLine(
             "foo" lineTo type(
-              "bar" lineTo type(recurseTypeLine)
-            )
-          )
-        )
-      )
+              "bar" lineTo type(recurseTypeLine)))))
   }
 }

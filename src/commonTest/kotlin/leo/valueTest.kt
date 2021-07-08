@@ -13,9 +13,7 @@ class ValueTest {
     value(
       "point" fieldTo value(
         "first" fieldTo value("foo"),
-        "last" fieldTo value("bar")
-      )
-    )
+        "last" fieldTo value("bar")))
   }
 
   @Test
@@ -299,10 +297,7 @@ class ValueTest {
         value(
           "vector" fieldTo value(
             "x" fieldTo value(field(literal(30))),
-            "y" fieldTo value(field(literal(40)))
-          )
-        )
-      )
+            "y" fieldTo value(field(literal(40))))))
 
     value
       .nthOrNull(3, "vector")
