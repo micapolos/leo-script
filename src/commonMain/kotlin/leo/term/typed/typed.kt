@@ -37,6 +37,7 @@ import leo.term.anyTerm
 import leo.term.compiler.Get
 import leo.term.eitherFirst
 import leo.term.eitherSecond
+import leo.term.fix
 import leo.term.fn
 import leo.term.head
 import leo.term.id
@@ -195,6 +196,9 @@ fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 
 fun <V> TypedTerm<V>.do_(typedTerm: TypedTerm<V>): TypedTerm<V> =
   typed(fn(typedTerm.v).invoke(v), typedTerm.t)
+
+fun <V> TypedTerm<V>.doRepeating(typedTerm: TypedTerm<V>): TypedTerm<V> =
+  typed(fix<V>().invoke(fn(fn(typedTerm.v))).invoke(v), typedTerm.t)
 
 fun <V> typedFunctionLine(type: Type, typedTerm: TypedTerm<V>): TypedLine<V> =
   typed(fn(typedTerm.v), type functionLineTo typedTerm.t)

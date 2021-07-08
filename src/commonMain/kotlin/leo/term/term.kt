@@ -65,6 +65,16 @@ val <T> Term<T>.eitherSecond: Term<T> get() = fn(fn(fn(get<T>(0).invoke(get(2)))
 
 fun <T> fix(): Term<T> =
   fn(
-    fn(get<T>(1).invoke(fn(get<T>(1).invoke(get(1)).invoke(get(0)))))
-      .invoke(fn(get<T>(1).invoke(fn(get<T>(1).invoke(get(1)).invoke(get(0))))))
-  )
+    fn(
+      get<T>(1)
+        .invoke(
+          fn(
+            get<T>(1)
+              .invoke(get(1))
+              .invoke(get(0)))))
+      .invoke(
+        fn(get<T>(1)
+          .invoke(
+            fn(get<T>(1)
+              .invoke(get(1))
+              .invoke(get(0)))))))

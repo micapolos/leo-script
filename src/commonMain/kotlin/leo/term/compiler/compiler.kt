@@ -9,33 +9,48 @@ import leo.ScriptLine
 import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
-import leo.compiledName
+import leo.compileName
 import leo.doName
 import leo.functionLineTo
 import leo.functionName
+import leo.functionTo
 import leo.givingName
 import leo.isEmpty
 import leo.letName
 import leo.lineSeq
 import leo.lineTo
+import leo.literal
 import leo.matchInfix
+import leo.matchPrefix
+import leo.numberTypeLine
 import leo.quoteName
+import leo.repeatingName
 import leo.reverse
 import leo.script
-import leo.scriptLine
 import leo.selectName
 import leo.switchName
+import leo.term.compiler.js.js
+import leo.term.compiler.js.jsEnvironment
+import leo.term.compiler.julia.julia
+import leo.term.compiler.julia.juliaEnvironment
+import leo.term.compiler.leo.scriptEnvironment
+import leo.term.compiler.python.python
+import leo.term.compiler.python.pythonEnvironment
+import leo.term.compiler.scheme.scheme
+import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.fn
 import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.choicePlus
+import leo.term.typed.doRepeating
 import leo.term.typed.do_
 import leo.term.typed.lineTo
 import leo.term.typed.plus
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedTerm
+import leo.type
 
 data class Compiler<V>(
   val module: Module<V>,
@@ -76,7 +91,7 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
-    compiledName -> plusCompiled(field.rhs)
+    compileName -> plusCompile(field.rhs)
     functionName -> plusFunction(field.rhs)
     doName -> plusDo(field.rhs)
     letName -> plusLet(field.rhs)
@@ -86,17 +101,18 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     else -> null
   }
 
-fun <V> Compiler<V>.plusCompiled(script: Script): Compiler<V> =
-  environment.typedTerm(script).let {
-    plus(
-      environment.staticTypedLine(
-        "compiled" lineTo script(
-          "term" lineTo it.v.script,
-          it.t.scriptLine
-        )
-      )
-    )
-  }
+fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
+  if (!typedTerm.t.isEmpty) error("compile non empty")
+  else script.matchPrefix { name, rhs ->
+    when (name) {
+      "js" -> set(context.typedTerm(script("js" lineTo script(literal(jsEnvironment.typedTerm(rhs).v.js.string)))))
+      "julia" -> set(context.typedTerm(script("julia" lineTo script(literal(juliaEnvironment.typedTerm(rhs).v.julia.string)))))
+      "scheme" -> set(context.typedTerm(script("scheme" lineTo script(literal(schemeEnvironment.typedTerm(rhs).v.scheme.string)))))
+      "python" -> set(context.typedTerm(script("python" lineTo script(literal(pythonEnvironment.typedTerm(rhs).v.python.string)))))
+      "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script)))
+      else -> null
+    }
+  }.notNullOrError("compile $script")
 
 fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
@@ -111,7 +127,10 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   }.notNullOrError("parse error action")
 
 fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
-  set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
+  script.matchPrefix(repeatingName) { rhs ->
+    set(typedTerm.doRepeating(context.plus(binding(definition(typedTerm.t.functionTo(type(numberTypeLine))))).plus(binding(given(typedTerm.t))).typedTerm(rhs)))
+  }
+    ?: set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (typedTerm != typedTerm<V>()) error("let after term")

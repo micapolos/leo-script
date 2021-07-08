@@ -1,4 +1,4 @@
-package leo.term.compiler.js
+package leo.term.compiler.julia
 
 import leo.Literal
 import leo.lineTo
@@ -15,35 +15,35 @@ import leo.term.typed.typed
 import leo.textTypeLine
 import leo.type
 
-val jsEnvironment: Environment<Js>
+val juliaEnvironment: Environment<Julia>
   get() =
     Environment(
-      { literal -> literal.js.nativeTerm },
+      { literal -> literal.julia.nativeTerm },
       { typedTerm ->
         when (typedTerm.t) {
           type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x=>y=>x+y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->x+y)".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(numberTypeLine))
           type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x=>y=>x-y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->x-y)".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(numberTypeLine))
           type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x=>y=>x*y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->x*y)".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(numberTypeLine))
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x=>y=>x==y?(f0=>f1=>f0(x=>x)):(f0=>f1=>f1(x=>x)))".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->(x==y) ? (f0->f1->f0(x->x)) : (f0->f1->f1(x->x)))".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(equalsTypeLine))
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(
-              fn("(x=>y=>x+y)".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->x+y)".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(textTypeLine))
           else -> null
         }
       }
     )
 
-val Literal.js: Js get() = toString().js
+val Literal.julia: Julia get() = toString().julia

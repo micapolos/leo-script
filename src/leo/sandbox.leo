@@ -1,14 +1,20 @@
-let
-  any circle
-  do circle radius any number
-
-let
-  any circle
-  area
-  do area
-    pi.number
-    times radius.number
-    times radius.number
-
-circle radius 10
-area.number
+26
+fibonacci
+do repeating
+  number
+  equals 0
+  switch
+    yes 0
+    no
+      number
+      equals 1
+      switch
+        yes 1
+        no
+          number
+          minus 2
+          fibonacci
+          plus
+            number
+            minus 1
+            fibonacci

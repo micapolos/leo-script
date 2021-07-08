@@ -4,6 +4,7 @@ import leo.Literal
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
+import leo.term.compiler.equalsTypeLine
 import leo.term.fn
 import leo.term.get
 import leo.term.head
@@ -40,6 +41,13 @@ val pythonEnvironment: Environment<Python>
                 "(lambda x: lambda y: x * y)".python.nativeTerm.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)
               ).invoke(typedTerm.v),
               type(numberTypeLine)
+            )
+          type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
+            typed(
+              fn(
+                "(lambda x: lambda y: (lambda f0: lambda f1: f0(lambda x: x)) if (x == y) else (lambda f0: lambda f1: f1(lambda x: x)))".python.nativeTerm.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)
+              ).invoke(typedTerm.v),
+              type(equalsTypeLine)
             )
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(
