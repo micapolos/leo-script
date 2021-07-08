@@ -10,9 +10,9 @@ import leo.base.fold
 import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compiledName
+import leo.doName
 import leo.functionLineTo
 import leo.functionName
-import leo.giveName
 import leo.givingName
 import leo.isEmpty
 import leo.letName
@@ -30,7 +30,7 @@ import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.choicePlus
-import leo.term.typed.give
+import leo.term.typed.do_
 import leo.term.typed.lineTo
 import leo.term.typed.plus
 import leo.term.typed.typed
@@ -77,7 +77,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 	when (field.name) {
 		compiledName -> plusCompiled(field.rhs)
 		functionName -> plusFunction(field.rhs)
-		giveName -> plusGive(field.rhs)
+		doName -> plusDo(field.rhs)
 		letName -> plusLet(field.rhs)
 		selectName -> plusSelect(field.rhs)
 		switchName -> plusSwitch(field.rhs)
@@ -106,8 +106,8 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
 		}
 	}.notNullOrError("parse error action")
 
-fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
-	set(typedTerm.give(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
+fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
+	set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
 	if (typedTerm != typedTerm<V>()) error("let after term")

@@ -183,7 +183,7 @@ fun <V> TypedLine<V>.indirectOrNull(name: String): TypedLine<V>? =
 fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 	typedTerm(name lineTo this)
 
-fun <V> TypedTerm<V>.give(typedTerm: TypedTerm<V>): TypedTerm<V> =
+fun <V> TypedTerm<V>.do_(typedTerm: TypedTerm<V>): TypedTerm<V> =
 	typed(fn(typedTerm.v).invoke(v), typedTerm.t)
 
 fun <V> typedFunctionLine(type: Type, typedTerm: TypedTerm<V>): TypedLine<V> =

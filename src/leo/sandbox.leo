@@ -1,4 +1,6 @@
 vector
   x 12
   y 15
-type
+give
+  x.number
+  plus y.number

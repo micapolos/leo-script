@@ -1,7 +1,7 @@
 package leo.term.compiler.native
 
 import leo.base.assertEqualTo
-import leo.giveName
+import leo.doName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -39,7 +39,7 @@ class TypedValueTest {
 		script(
 			"x" lineTo script(literal(10)),
 			"y" lineTo script(literal(20)),
-			giveName lineTo script("x"))
+			doName lineTo script("x"))
 			.typedValue
 			.assertEqualTo(
 				typed(

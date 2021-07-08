@@ -3,9 +3,9 @@ package leo.term.compiler
 import leo.Script
 import leo.Stack
 import leo.base.notNullOrError
+import leo.doName
 import leo.fold
 import leo.functionTo
-import leo.giveName
 import leo.matchInfix
 import leo.push
 import leo.reverse
@@ -30,7 +30,7 @@ fun <V> Module<V>.seal(term: Term<V>): Term<V> =
 	term.fold(termStack) { fn(this) }.fold(termStack.reverse) { invoke(it) }
 
 fun <V> Module<V>.plusLet(script: Script): Module<V> =
-	script.matchInfix(giveName) { lhs, rhs ->
+	script.matchInfix(doName) { lhs, rhs ->
 		context.type(lhs).let { type ->
 			context.plus(binding(given(type))).typedTerm(rhs).let { bodyTypedTerm ->
 				this
