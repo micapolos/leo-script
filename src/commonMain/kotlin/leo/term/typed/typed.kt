@@ -1,6 +1,8 @@
 package leo.term.typed
 
+import leo.ChoiceType
 import leo.Literal
+import leo.StructureType
 import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
@@ -112,12 +114,15 @@ val <V> TypedTerm<V>.onlyLineOrNull: TypedLine<V>? get() =
 		notNullIf(lhs.t.isEmpty) { rhs }
 	}
 
-val <V> TypedTerm<V>.contentOrNull: TypedTerm<V>? get() =
-	onlyLineOrNull?.lineContentOrNull
+val <V> TypedTerm<V>.content: TypedTerm<V> get() =
+	when (t) {
+		is ChoiceType -> null
+		is StructureType -> onlyLineOrNull?.lineContentOrNull
+	} ?: this
 
 val <V> TypedLine<V>.lineContentOrNull: TypedTerm<V>? get() =
-	t.atomOrNull?.fieldOrNull?.rhsType?.let { type ->
-		typed(v, type)
+	t.atomOrNull?.fieldOrNull?.rhsType?.let { rhs ->
+		typed(v, rhs).content
 	}
 
 fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =
@@ -138,10 +143,10 @@ fun <V> TypedTerm<V>.getOrNull(name: String): TypedTerm<V>? =
 		?: getIndirectNull(name)
 
 fun <V> TypedTerm<V>.getDirectNull(name: String): TypedTerm<V>? =
-	contentOrNull?.lineSeq(name)?.onlyOrNull?.let { typedTerm(it) }
+	lineSeq(name).onlyOrNull?.let { typedTerm(it) }
 
 fun <V> TypedTerm<V>.getIndirectNull(name: String): TypedTerm<V>? =
-	contentOrNull?.indirectLineSeq(name)?.onlyOrNull?.let { typedTerm(it) }
+	indirectLineSeq(name).onlyOrNull?.let { typedTerm(it) }
 
 fun <V> TypedTerm<V>.lineOrNull(name: String): TypedLine<V>? =
 	pairOrNull?.let { (typedTerm, typedLine) ->
