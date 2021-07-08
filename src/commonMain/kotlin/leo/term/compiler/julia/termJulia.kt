@@ -9,10 +9,6 @@ import leo.term.TermApplication
 import leo.term.TermVariable
 import leo.term.VariableTerm
 
-data class Julia(val string: String)
-
-val String.julia: Julia get() = Julia(this)
-
 data class Scope(val depth: Int)
 
 val Scope.push: Scope get() = Scope(depth.inc())

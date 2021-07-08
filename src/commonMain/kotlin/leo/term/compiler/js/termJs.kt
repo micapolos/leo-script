@@ -9,10 +9,6 @@ import leo.term.TermApplication
 import leo.term.TermVariable
 import leo.term.VariableTerm
 
-data class Js(val string: String)
-
-val String.js: Js get() = Js(this)
-
 data class Scope(val depth: Int)
 
 val Scope.push: Scope get() = Scope(depth.inc())

@@ -35,7 +35,7 @@ val juliaEnvironment: Environment<Julia>
               type(numberTypeLine))
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x->y->(x==y) ? (f0->f1->f0(x->x)) : (f0->f1->f1(x->x)))".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->(x==y) ? ${yesJulia.string} : ${noJulia.string})".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(equalsTypeLine))
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(

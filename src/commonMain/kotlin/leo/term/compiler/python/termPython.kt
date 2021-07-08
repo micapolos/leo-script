@@ -9,10 +9,6 @@ import leo.term.TermApplication
 import leo.term.TermVariable
 import leo.term.VariableTerm
 
-data class Python(val string: String)
-
-val String.python: Python get() = Python(this)
-
 data class Scope(val depth: Int)
 
 val Scope.push: Scope get() = Scope(depth.inc())
