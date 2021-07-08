@@ -78,4 +78,19 @@ class EvaluateTest {
 			.evaluate
 			.assertEqualTo(script(literal(20)))
 	}
+
+	@Test
+	fun type() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))),
+			typeName lineTo script())
+			.evaluate
+			.assertEqualTo(
+				script(
+					"point" lineTo script(
+						"x" lineTo script(numberTypeScriptLine),
+						"y" lineTo script(numberTypeScriptLine))))
+	}
 }

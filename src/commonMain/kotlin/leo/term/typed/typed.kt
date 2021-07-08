@@ -121,8 +121,11 @@ val <V> TypedTerm<V>.content: TypedTerm<V> get() =
 	} ?: this
 
 val <V> TypedLine<V>.lineContentOrNull: TypedTerm<V>? get() =
+	rhsOrNull?.content
+
+val <V> TypedLine<V>.rhsOrNull: TypedTerm<V>? get() =
 	t.atomOrNull?.fieldOrNull?.rhsType?.let { rhs ->
-		typed(v, rhs).content
+		typed(v, rhs)
 	}
 
 fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =

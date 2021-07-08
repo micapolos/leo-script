@@ -9,7 +9,7 @@ fun <V, R: Any> TypedTerm<V>.empty(fn: () -> R?): R? =
 
 fun <V, R: Any> TypedTerm<V>.infix(fn: (TypedTerm<V>, String, TypedTerm<V>) -> R?): R? =
 	pairOrNull?.let { (term, line) ->
-		line.lineContentOrNull?.let { rhs ->
+		line.rhsOrNull?.let { rhs ->
 			fn(term, line.t.name, rhs)
 		}
 	}

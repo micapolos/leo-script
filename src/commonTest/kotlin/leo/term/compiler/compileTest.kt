@@ -33,7 +33,6 @@ import leo.term.typed.choicePlus
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.noSelection
-import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedFunctionLine
@@ -43,6 +42,7 @@ import leo.textTypeLine
 import leo.textTypeScriptLine
 import leo.theName
 import leo.type
+import leo.typeName
 import kotlin.test.Test
 
 class CompileTest {
@@ -210,5 +210,21 @@ class CompileTest {
 						"two" lineTo script("two", "number"))))
 			.assertEqualTo(
 				typed(20.0.native.nativeTerm.eitherSecond.invoke(id()).invoke(id()), type(numberTypeLine)))
+	}
+
+	@Test
+	fun type() {
+		script(
+			"point" lineTo script(
+				"x" lineTo script(literal(10)),
+				"y" lineTo script(literal(20))),
+			typeName lineTo script())
+			.typedTerm(nativeEnvironment)
+			.assertEqualTo(
+				nativeEnvironment.resolveType(
+					typedTerm(
+						"point" lineTo typedTerm(
+							"x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
+							"y" lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))))))
 	}
 }

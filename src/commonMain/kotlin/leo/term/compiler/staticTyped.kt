@@ -1,4 +1,4 @@
-package leo.term.typed
+package leo.term.compiler
 
 import leo.FieldScriptLine
 import leo.LiteralScriptLine
@@ -8,8 +8,17 @@ import leo.ScriptLine
 import leo.base.fold
 import leo.base.reverse
 import leo.lineSeq
-import leo.term.compiler.Environment
+import leo.script
+import leo.term.typed.TypedLine
+import leo.term.typed.TypedTerm
+import leo.term.typed.lineTo
+import leo.term.typed.plus
+import leo.term.typed.typed
+import leo.term.typed.typedTerm
 import leo.typeLine
+
+fun <V> Environment<V>.resolveType(typedTerm: TypedTerm<V>): TypedTerm<V> =
+	staticTypedTerm(typedTerm.t.script)
 
 fun <V> Environment<V>.staticTypedTerm(script: Script): TypedTerm<V> =
 	typedTerm<V>().fold(script.lineSeq.reverse) { plus(staticTypedLine(it)) }

@@ -19,7 +19,6 @@ import leo.letName
 import leo.lineSeq
 import leo.lineTo
 import leo.matchInfix
-import leo.named.compiler.selectChoice
 import leo.quoteName
 import leo.reverse
 import leo.script
@@ -34,8 +33,6 @@ import leo.term.typed.choicePlus
 import leo.term.typed.give
 import leo.term.typed.lineTo
 import leo.term.typed.plus
-import leo.term.typed.staticTypedLine
-import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedTerm
@@ -124,8 +121,8 @@ fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
 			.typedTerm)
 
 fun <V> Compiler<V>.plusSwitch(script: Script): Compiler<V> =
-	typedTerm.t.selectChoice.let { typeChoice ->
-		set(SwitchCompiler(context, typeChoice.lineStack.reverse, typedTerm.v, null).plus(script).typedTerm)
+	typedTerm.switchTypedChoice.let { typedChoice ->
+		set(SwitchCompiler(context, typedChoice.t.lineStack.reverse, typedChoice.v, null).plus(script).typedTerm)
 	}
 
 fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =

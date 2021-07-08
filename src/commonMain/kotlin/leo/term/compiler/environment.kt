@@ -2,12 +2,10 @@ package leo.term.compiler
 
 import leo.Literal
 import leo.Script
-import leo.script
 import leo.term.Term
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.prefix
-import leo.term.typed.staticTypedTerm
 import leo.term.typed.typed
 import leo.typeLine
 import leo.typeName
@@ -24,5 +22,8 @@ fun <V> Environment<V>.typedLine(literal: Literal): TypedLine<V> =
 
 fun <V> Environment<V>.resolveTypeOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>? =
 	typedTerm.prefix(typeName) { rhs ->
-		staticTypedTerm(rhs.t.script)
+		resolveType(rhs)
 	}
+
+fun <V> Script.typedTerm(environment: Environment<V>): TypedTerm<V> =
+	environment.typedTerm(this)
