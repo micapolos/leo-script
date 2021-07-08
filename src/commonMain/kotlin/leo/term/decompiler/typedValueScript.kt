@@ -23,6 +23,7 @@ import leo.atom
 import leo.base.Conditional
 import leo.base.stak.top
 import leo.fieldTo
+import leo.isEmpty
 import leo.isStatic
 import leo.line
 import leo.lineTo
@@ -31,14 +32,14 @@ import leo.literal
 import leo.plus
 import leo.script
 import leo.structure
-import leo.term.AbstractionTerm
-import leo.term.ApplicationTerm
 import leo.term.FunctionValue
 import leo.term.Value
-import leo.term.VariableTerm
+import leo.term.abstractionOrNull
+import leo.term.applicationOrNull
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.double
 import leo.term.compiler.native.string
+import leo.term.functionOrNull
 import leo.term.idValue
 import leo.term.native
 import leo.term.typed.Typed
@@ -46,6 +47,7 @@ import leo.term.typed.TypedValue
 import leo.term.typed.typed
 import leo.term.value
 import leo.term.variable
+import leo.term.variableOrNull
 import leo.type
 
 val TypedValue<Native>.script: Script get() =
@@ -57,9 +59,10 @@ val TypedValue<Native>.script: Script get() =
 val Typed<Value<Native>, TypeChoice>.choiceScript: Script get() =
 	t.lineStack.linkOrNull.let { linkOrNull ->
 		if (linkOrNull == null) error("impossible")
+		else if (linkOrNull.tail.isEmpty) script(typed(v, linkOrNull.head).scriptLine)
 		else v.eitherConditional.let { conditional ->
-			if (conditional.boolean) script(Typed(conditional.v, linkOrNull.head).scriptLine)
-			else Typed(conditional.v, TypeChoice(linkOrNull.tail)).choiceScript
+			if (conditional.boolean) script(typed(conditional.v, linkOrNull.head).scriptLine)
+			else typed(conditional.v, TypeChoice(linkOrNull.tail)).choiceScript
 		}
 	}
 
@@ -118,8 +121,8 @@ val <T> Value<T>.pair: Pair<Value<T>, Value<T>> get() =
 	}
 
 val <T> Value<T>.eitherConditional: Conditional<Value<T>> get() =
-	(this as FunctionValue).function.let { function ->
-		(((function.term as AbstractionTerm<T>).abstraction.term as ApplicationTerm<T>).application.lhs as VariableTerm).variable.index.let { index ->
+	functionOrNull!!.let { function ->
+		function.term.abstractionOrNull!!.term.applicationOrNull!!.lhs.variableOrNull!!.index.let { index ->
 			Conditional(index == 0, function.scope.valueStak.top!!)
 		}
 	}

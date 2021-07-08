@@ -9,6 +9,7 @@ import leo.notName
 import leo.numberTypeScriptLine
 import leo.script
 import leo.selectName
+import leo.switchName
 import leo.textTypeScriptLine
 import leo.theName
 import leo.typeName
@@ -33,7 +34,6 @@ class EvaluateTest {
 			.assertEqualTo(script(textTypeScriptLine))
 	}
 
-
 	@Test
 	fun selectType() {
 		script(
@@ -47,5 +47,35 @@ class EvaluateTest {
 					choiceName lineTo script(
 						numberTypeScriptLine,
 						textTypeScriptLine)))
+	}
+
+	@Test
+	fun switch() {
+		script(
+			"id" lineTo script(
+				selectName lineTo script(
+					theName lineTo script("one" lineTo script(literal(10))),
+					notName lineTo script("two" lineTo script(numberTypeScriptLine))
+				)
+			),
+			switchName lineTo script(
+				"one" lineTo script("one", "number"),
+				"two" lineTo script("two", "number")))
+			.evaluate
+			.assertEqualTo(script(literal(10)))
+	}
+
+	@Test
+	fun switch_secondOfTwo() {
+		script(
+			"id" lineTo script(
+				selectName lineTo script(
+					notName lineTo script("one" lineTo script(numberTypeScriptLine)),
+					theName lineTo script("two" lineTo script(literal(20))))),
+			switchName lineTo script(
+				"one" lineTo script("one", "number"),
+				"two" lineTo script("two", "number")))
+			.evaluate
+			.assertEqualTo(script(literal(20)))
 	}
 }

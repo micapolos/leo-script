@@ -56,6 +56,8 @@ sealed class TypedSelection<out V>
 data class YesTypedSelection<V>(val typedLine: TypedLine<V>): TypedSelection<V>()
 data class NoTypedSelection<V>(val typeLine: TypeLine): TypedSelection<V>()
 
+data class TypedSwitch<V>(val typedTerm: TypedTerm<V>?, val choice: TypeChoice)
+
 fun <V> noSelection(typeLine: TypeLine): TypedSelection<V> = NoTypedSelection(typeLine)
 fun <V> yesSelection(typedLine: TypedLine<V>): TypedSelection<V> = YesTypedSelection(typedLine)
 
@@ -190,6 +192,7 @@ fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> 
 		when (selection) {
 			is YesTypedSelection ->
 				if (v != null) error("already chosen")
+				else if (t.lineStack.isEmpty) selection.typedLine.v
 				else selection.typedLine.v.eitherSecond
 			is NoTypedSelection -> v?.eitherFirst
 		},
@@ -197,3 +200,5 @@ fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> 
 
 val <V> TypedChoice<V>.typedTerm: TypedTerm<V> get() =
 	Typed(v.notNullOrError("no choice"), type(t))
+
+fun <V> typedSwitch(choice: TypeChoice) = TypedSwitch<V>(null, choice)

@@ -22,7 +22,7 @@ fun Scope.js(term: Term<Js>): Js =
 	when (term) {
 		is AbstractionTerm -> js(term.abstraction)
 		is ApplicationTerm -> js(term.application)
-		is NativeTerm -> term.value
+		is NativeTerm -> term.native
 		is VariableTerm -> js(term.variable)
 	}
 

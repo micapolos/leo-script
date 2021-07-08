@@ -22,7 +22,7 @@ fun Scope.python(term: Term<Python>): Python =
 	when (term) {
 		is AbstractionTerm -> python(term.abstraction)
 		is ApplicationTerm -> python(term.application)
-		is NativeTerm -> term.value
+		is NativeTerm -> term.native
 		is VariableTerm -> python(term.variable)
 	}
 

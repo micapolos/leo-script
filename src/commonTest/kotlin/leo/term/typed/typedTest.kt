@@ -40,7 +40,7 @@ class TypedTest {
 			.typedTerm
 			.assertEqualTo(
 				Typed(
-					"one".nativeTerm.eitherSecond.eitherFirst.eitherFirst,
+					"one".nativeTerm.eitherFirst.eitherFirst,
 					type(
 						choice(
 							"one" lineTo type(),

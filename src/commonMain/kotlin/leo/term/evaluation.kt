@@ -14,7 +14,7 @@ fun <T> Scope<T>.valueEvaluation(term: Term<T>): Evaluation<T, Value<T>> =
 	when (term) {
 		is AbstractionTerm -> valueEvaluation(term.abstraction)
 		is ApplicationTerm -> valueEvaluation(term.application)
-		is NativeTerm -> valueEvaluation(term.value)
+		is NativeTerm -> valueEvaluation(term.native)
 		is VariableTerm -> valueEvaluation(term.variable)
 	}
 

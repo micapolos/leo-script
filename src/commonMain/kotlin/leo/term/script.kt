@@ -16,7 +16,7 @@ val <T> Term<T>.script: Script get() =
 	when (this) {
 		is AbstractionTerm -> abstraction.script
 		is ApplicationTerm -> application.script
-		is NativeTerm -> value.nativeScript
+		is NativeTerm -> native.nativeScript
 		is VariableTerm -> variable.script
 	}
 

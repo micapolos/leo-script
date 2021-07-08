@@ -9,12 +9,18 @@ import leo.lineTo
 import leo.literal
 import leo.notName
 import leo.numberTypeLine
+import leo.numberTypeScriptLine
 import leo.quoteName
 import leo.script
 import leo.selectName
+import leo.switchName
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
+import leo.term.eitherFirst
+import leo.term.eitherSecond
+import leo.term.id
+import leo.term.invoke
 import leo.term.nativeTerm
 import leo.term.typed.choicePlus
 import leo.term.typed.invoke
@@ -150,5 +156,37 @@ class CompileTest {
 					.choicePlus(yesSelection(typed(10.0.native.nativeTerm, numberTypeLine)))
 					.choicePlus(noSelection(textTypeLine))
 					.typedTerm)
+	}
+
+	@Test
+	fun switch_firstOfTwo() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					"id" lineTo script(
+						selectName lineTo script(
+							theName lineTo script("one" lineTo script(literal(10))),
+							notName lineTo script("two" lineTo script(numberTypeScriptLine)))),
+					switchName lineTo script(
+						"one" lineTo script("one", "number"),
+						"two" lineTo script("two", "number"))))
+			.assertEqualTo(
+				typed(10.0.native.nativeTerm.eitherFirst.invoke(id()).invoke(id()), type(numberTypeLine)))
+	}
+
+	@Test
+	fun switch_secondOfTwo() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					"id" lineTo script(
+						selectName lineTo script(
+							notName lineTo script("one" lineTo script(numberTypeScriptLine)),
+							theName lineTo script("two" lineTo script(literal(20))))),
+					switchName lineTo script(
+						"one" lineTo script("one", "number"),
+						"two" lineTo script("two", "number"))))
+			.assertEqualTo(
+				typed(20.0.native.nativeTerm.eitherSecond.invoke(id()).invoke(id()), type(numberTypeLine)))
 	}
 }

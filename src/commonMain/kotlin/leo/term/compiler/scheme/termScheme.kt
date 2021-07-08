@@ -21,7 +21,7 @@ fun Scope.scheme(term: Term<Scheme>): Scheme =
 	when (term) {
 		is AbstractionTerm -> scheme(term.abstraction)
 		is ApplicationTerm -> scheme(term.application)
-		is NativeTerm -> term.value
+		is NativeTerm -> term.native
 		is VariableTerm -> scheme(term.variable)
 	}
 

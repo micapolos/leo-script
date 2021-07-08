@@ -25,7 +25,7 @@ fun Scope.script(term: Term<Script>): Script =
 	when (term) {
 		is AbstractionTerm -> script(term.abstraction)
 		is ApplicationTerm -> script(term.application)
-		is NativeTerm -> term.value
+		is NativeTerm -> term.native
 		is VariableTerm -> script(term.variable)
 	}
 

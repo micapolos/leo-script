@@ -26,3 +26,8 @@ val Any?.anyString: String get() = (this as String)
 val Any?.anyDouble: Double get() = (this as Double)
 
 fun <T> idValue(): Value<T> = value(function(scope(), term(variable(0))))
+
+val <T> Value<T>.eitherFirst: Value<T> get() = value(function(scope(this), fn(get<T>(1).invoke(get(2)))))
+val <T> Value<T>.eitherSecond: Value<T> get() = value(function(scope(this), fn(get<T>(0).invoke(get(2)))))
+
+val <T> Value<T>.functionOrNull: Function<T>? get() = (this as? FunctionValue)?.function
