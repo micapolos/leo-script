@@ -6,7 +6,6 @@ import leo.equalsName
 import leo.functionName
 import leo.getName
 import leo.givingName
-import leo.isType
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -126,7 +125,7 @@ class CompileTest {
 				typedTerm(
 					typed(10.0.native.nativeTerm, numberTypeLine),
 					equalsName lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))).let {
-						typed(fn(get<Native>(0).tail.objectEqualsObject(get<Native>(0).head)).invoke(it.v), isType)
+						typed(fn(get<Native>(0).tail.objectEqualsObject(get<Native>(0).head)).invoke(it.v), type(equalsTypeLine))
 					})
 	}
 

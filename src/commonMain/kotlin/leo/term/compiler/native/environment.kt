@@ -1,9 +1,9 @@
 package leo.term.compiler.native
 
-import leo.isTypeLine
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
+import leo.term.compiler.equalsTypeLine
 import leo.term.fn
 import leo.term.get
 import leo.term.head
@@ -36,7 +36,7 @@ val nativeEnvironment: Environment<Native>
 					type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
 						typed(
 							fn(fn(fn(ObjectEqualsObjectNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)).invoke(typedTerm.v),
-							type(isTypeLine))
+							type(equalsTypeLine))
 					type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
 						typed(
 							fn(fn(fn(StringAppendStringNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)).invoke(typedTerm.v),
