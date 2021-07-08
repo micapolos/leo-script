@@ -2,9 +2,12 @@ package leo.term.compiler
 
 import leo.applyName
 import leo.base.assertEqualTo
+import leo.equalsName
 import leo.functionName
 import leo.getName
 import leo.givingName
+import leo.isType
+import leo.line
 import leo.lineTo
 import leo.literal
 import leo.notName
@@ -17,11 +20,16 @@ import leo.switchName
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
+import leo.term.compiler.native.objectEqualsObject
 import leo.term.eitherFirst
 import leo.term.eitherSecond
+import leo.term.fn
+import leo.term.get
+import leo.term.head
 import leo.term.id
 import leo.term.invoke
 import leo.term.nativeTerm
+import leo.term.tail
 import leo.term.typed.choicePlus
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
@@ -105,6 +113,21 @@ class CompileTest {
 			.assertEqualTo(
 				typedTerm(
 					"x" lineTo typedTerm("zero" lineTo typedTerm())))
+	}
+
+	@Test
+	fun numberEqualsNumber() {
+		nativeEnvironment
+			.typedTerm(
+				script(
+					line(literal(10)),
+					equalsName lineTo script(literal(20))))
+			.assertEqualTo(
+				typedTerm(
+					typed(10.0.native.nativeTerm, numberTypeLine),
+					equalsName lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))).let {
+						typed(fn(get<Native>(0).tail.objectEqualsObject(get<Native>(0).head)).invoke(it.v), isType)
+					})
 	}
 
 	@Test

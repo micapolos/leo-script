@@ -31,3 +31,5 @@ val <T> Value<T>.eitherFirst: Value<T> get() = value(function(scope(this), fn(ge
 val <T> Value<T>.eitherSecond: Value<T> get() = value(function(scope(this), fn(get<T>(0).invoke(get(2)))))
 
 val <T> Value<T>.functionOrNull: Function<T>? get() = (this as? FunctionValue)?.function
+
+fun <T> Boolean.isValue(): Value<T> = idValue<T>().let { if (this) it.eitherFirst else it.eitherSecond }

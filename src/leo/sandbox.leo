@@ -1,6 +1,5 @@
-id select
-  not text.any
-  the 10
+10
+equals 20
 switch
-  text 10
-  number number
+  yes "ok"
+  no "not ok"
