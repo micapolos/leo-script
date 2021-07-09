@@ -2,11 +2,11 @@ package leo.term.compiler.python
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -31,5 +31,5 @@ fun Scope.python(abstraction: TermAbstraction<Python>): Python =
 fun Scope.python(application: TermApplication<Python>): Python =
   (python(application.lhs).string + "(" + python(application.rhs).string + ")").python
 
-fun Scope.python(variable: TermVariable): Python =
+fun Scope.python(variable: IndexVariable): Python =
   "v${depth - variable.index - 1}".python

@@ -2,11 +2,11 @@ package leo.term.compiler.scheme
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 import scheme.Scheme
 import scheme.scheme
@@ -33,5 +33,5 @@ fun Scope.scheme(abstraction: TermAbstraction<Scheme>): Scheme =
 fun Scope.scheme(application: TermApplication<Scheme>): Scheme =
   ("(" + scheme(application.lhs).string + " " + scheme(application.rhs).string + ")").scheme
 
-fun Scope.scheme(variable: TermVariable): Scheme =
+fun Scope.scheme(variable: IndexVariable): Scheme =
   "v${depth - variable.index - 1}".scheme

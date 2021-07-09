@@ -2,12 +2,12 @@ package scheme
 
 import leo.AbstractionTerm
 import leo.ApplicationTerm
+import leo.IndexVariable
 import leo.NativeTerm
 import leo.Stateful
 import leo.Term
 import leo.TermAbstraction
 import leo.TermApplication
-import leo.TermVariable
 import leo.VariableTerm
 import leo.base.iterate
 import leo.bind
@@ -54,7 +54,7 @@ private val TermApplication<Scheme>.schemeTask: Task<Scheme>
         }
     }
 
-private val TermVariable.schemeTask: Task<Scheme>
+private val IndexVariable.schemeTask: Task<Scheme>
   get() =
     getStateful<State>().map { state ->
       state.depth.minus(this.index).dec().variableScheme

@@ -2,11 +2,11 @@ package leo.term.compiler.haskell
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -31,5 +31,5 @@ fun Scope.haskell(abstraction: TermAbstraction<Haskell>): Haskell =
 fun Scope.haskell(application: TermApplication<Haskell>): Haskell =
   ("(" + haskell(application.lhs).string + " " + haskell(application.rhs).string + ")").haskell
 
-fun Scope.haskell(variable: TermVariable): Haskell =
+fun Scope.haskell(variable: IndexVariable): Haskell =
   "v${depth - variable.index - 1}".haskell

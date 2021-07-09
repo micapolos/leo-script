@@ -16,11 +16,11 @@ data class ApplicationTerm<T>(val application: TermApplication<T>) : Term<T>() {
   override fun toString() = super.toString()
 }
 
-data class VariableTerm<T>(val variable: TermVariable) : Term<T>() {
+data class VariableTerm<T>(val variable: IndexVariable) : Term<T>() {
   override fun toString() = super.toString()
 }
 
-data class TermVariable(val index: Int) {
+data class IndexVariable(val index: Int) {
   override fun toString() = script.toString()
 }
 
@@ -35,15 +35,15 @@ data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
 fun <T> term(value: T): Term<T> = NativeTerm(value)
 fun <T> term(abstraction: TermAbstraction<T>): Term<T> = AbstractionTerm(abstraction)
 fun <T> term(application: TermApplication<T>): Term<T> = ApplicationTerm(application)
-fun <T> term(variable: TermVariable): Term<T> = VariableTerm(variable)
+fun <T> term(variable: IndexVariable): Term<T> = VariableTerm(variable)
 
 val <T> Term<T>.applicationOrNull: TermApplication<T>? get() = (this as? ApplicationTerm)?.application
 val <T> Term<T>.abstractionOrNull: TermAbstraction<T>? get() = (this as? AbstractionTerm)?.abstraction
-val <T> Term<T>.variableOrNull: TermVariable? get() = (this as? VariableTerm)?.variable
+val <T> Term<T>.variableOrNull: IndexVariable? get() = (this as? VariableTerm)?.variable
 val <T : Any> Term<T>.nativeOrNull: T? get() = (this as? NativeTerm)?.native
 
-fun variable(index: Int) = TermVariable(index)
-val Int.variable get() = TermVariable(this)
+fun variable(index: Int) = IndexVariable(index)
+val Int.variable get() = IndexVariable(this)
 
 // DSL
 val <T> T.nativeTerm: Term<T> get() = NativeTerm(this)

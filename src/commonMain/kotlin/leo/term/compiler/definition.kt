@@ -2,7 +2,7 @@ package leo.term.compiler
 
 import leo.TypeFunction
 import leo.base.notNullIf
-import leo.term.TermVariable
+import leo.term.IndexVariable
 import leo.term.invoke
 import leo.term.term
 import leo.term.typed.TypedTerm
@@ -12,7 +12,7 @@ data class Definition(val function: TypeFunction)
 
 fun definition(function: TypeFunction) = Definition(function)
 
-fun <V> Definition.resolveOrNull(variable: TermVariable, typedTerm: TypedTerm<V>): TypedTerm<V>? =
+fun <V> Definition.resolveOrNull(variable: IndexVariable, typedTerm: TypedTerm<V>): TypedTerm<V>? =
   notNullIf(typedTerm.t == function.lhsType) {
     typed(term<V>(variable).invoke(typedTerm.v), function.rhsType)
   }

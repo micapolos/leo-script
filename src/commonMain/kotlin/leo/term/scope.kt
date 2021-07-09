@@ -15,5 +15,5 @@ fun <T> scope(vararg values: Value<T>) =
 fun <T> Scope<T>.plus(value: Value<T>): Scope<T> =
   valueStak.push(value).let(::Scope)
 
-fun <T> Scope<T>.value(variable: TermVariable): Value<T> =
+fun <T> Scope<T>.value(variable: IndexVariable): Value<T> =
   valueStak.top(variable.index)!!

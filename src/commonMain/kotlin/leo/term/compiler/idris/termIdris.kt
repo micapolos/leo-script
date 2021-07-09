@@ -2,11 +2,11 @@ package leo.term.compiler.idris
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -31,5 +31,5 @@ fun Scope.idris(abstraction: TermAbstraction<Idris>): Idris =
 fun Scope.idris(application: TermApplication<Idris>): Idris =
   ("(" + idris(application.lhs).string + " " + idris(application.rhs).string + ")").idris
 
-fun Scope.idris(variable: TermVariable): Idris =
+fun Scope.idris(variable: IndexVariable): Idris =
   "v${depth - variable.index - 1}".idris

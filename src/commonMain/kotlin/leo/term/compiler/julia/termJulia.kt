@@ -2,11 +2,11 @@ package leo.term.compiler.julia
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -31,5 +31,5 @@ fun Scope.julia(abstraction: TermAbstraction<Julia>): Julia =
 fun Scope.julia(application: TermApplication<Julia>): Julia =
   (julia(application.lhs).string + "(" + julia(application.rhs).string + ")").julia
 
-fun Scope.julia(variable: TermVariable): Julia =
+fun Scope.julia(variable: IndexVariable): Julia =
   "v${depth - variable.index - 1}".julia

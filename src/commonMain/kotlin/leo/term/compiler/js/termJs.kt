@@ -2,11 +2,11 @@ package leo.term.compiler.js
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -31,5 +31,5 @@ fun Scope.js(abstraction: TermAbstraction<Js>): Js =
 fun Scope.js(application: TermApplication<Js>): Js =
   (js(application.lhs).string + "(" + js(application.rhs).string + ")").js
 
-fun Scope.js(variable: TermVariable): Js =
+fun Scope.js(variable: IndexVariable): Js =
   "v${depth - variable.index - 1}".js

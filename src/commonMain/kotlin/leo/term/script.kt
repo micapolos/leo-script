@@ -22,7 +22,7 @@ val <T> Term<T>.script: Script
       is VariableTerm -> variable.script
     }
 
-val TermVariable.script: Script
+val IndexVariable.script: Script
   get() =
     script("variable" lineTo script(literal(index)))
 

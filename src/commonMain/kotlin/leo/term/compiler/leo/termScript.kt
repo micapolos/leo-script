@@ -7,11 +7,11 @@ import leo.plus
 import leo.script
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
 import leo.term.TermAbstraction
 import leo.term.TermApplication
-import leo.term.TermVariable
 import leo.term.VariableTerm
 
 data class Scope(val depth: Int)
@@ -36,5 +36,5 @@ fun Scope.script(abstraction: TermAbstraction<Script>): Script =
 fun Scope.script(application: TermApplication<Script>): Script =
   script(application.lhs).plus("apply" lineTo script(application.rhs))
 
-fun Scope.script(variable: TermVariable): Script =
+fun Scope.script(variable: IndexVariable): Script =
   script("variable" lineTo script(literal(depth - variable.index - 1)))

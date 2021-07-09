@@ -29,7 +29,7 @@ fun <T> Scope<T>.valueEvaluation(application: TermApplication<T>): Evaluation<T,
     }
   }
 
-fun <T> Scope<T>.valueEvaluation(variable: TermVariable): Evaluation<T, Value<T>> =
+fun <T> Scope<T>.valueEvaluation(variable: IndexVariable): Evaluation<T, Value<T>> =
   value(variable).evaluation()
 
 fun <T> Scope<T>.valueEvaluation(native: T): Evaluation<T, Value<T>> =
