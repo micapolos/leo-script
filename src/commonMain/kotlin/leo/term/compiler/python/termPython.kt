@@ -2,6 +2,7 @@ package leo.term.compiler.python
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -19,6 +20,7 @@ val Term<Python>.python: Python
 
 fun Scope.python(term: Term<Python>): Python =
   when (term) {
+    is EmptyTerm -> "()".python
     is AbstractionTerm -> python(term.abstraction)
     is ApplicationTerm -> python(term.application)
     is NativeTerm -> term.native

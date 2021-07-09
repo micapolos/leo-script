@@ -1,9 +1,14 @@
 package leo.term
 
+import leo.Empty
 import leo.named.value.anyScriptLine
 
 sealed class Term<out T> {
   override fun toString() = scriptLine { anyScriptLine }.toString()
+}
+
+data class EmptyTerm<T>(val empty: Empty): Term<T>() {
+  override fun toString() = super.toString()
 }
 
 data class NativeTerm<T>(val native: T) : Term<T>() {

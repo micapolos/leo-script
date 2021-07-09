@@ -2,6 +2,7 @@ package leo.term.compiler.js
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -19,6 +20,7 @@ val Term<Js>.js: Js
 
 fun Scope.js(term: Term<Js>): Js =
   when (term) {
+    is EmptyTerm -> "undefined".js
     is AbstractionTerm -> js(term.abstraction)
     is ApplicationTerm -> js(term.application)
     is NativeTerm -> term.native

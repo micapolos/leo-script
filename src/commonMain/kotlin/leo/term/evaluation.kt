@@ -2,6 +2,7 @@ package leo.term
 
 import leo.Stateful
 import leo.bind
+import leo.empty
 import leo.getStateful
 import leo.map
 import leo.stateful
@@ -13,6 +14,7 @@ fun <T> evaluatorEvaluation(): Evaluation<T, Evaluator<T>> = getStateful()
 
 fun <T> Scope<T>.valueEvaluation(term: Term<T>): Evaluation<T, Value<T>> =
   when (term) {
+    is EmptyTerm -> value<T>(empty).evaluation()
     is AbstractionTerm -> valueEvaluation(term.abstraction)
     is ApplicationTerm -> valueEvaluation(term.application)
     is NativeTerm -> valueEvaluation(term.native)

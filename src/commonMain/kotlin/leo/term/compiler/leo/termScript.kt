@@ -7,6 +7,7 @@ import leo.plus
 import leo.script
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -24,6 +25,7 @@ val Term<Script>.script: Script
 
 fun Scope.script(term: Term<Script>): Script =
   when (term) {
+    is EmptyTerm -> script("empty")
     is AbstractionTerm -> script(term.abstraction)
     is ApplicationTerm -> script(term.application)
     is NativeTerm -> term.native

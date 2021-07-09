@@ -1,9 +1,14 @@
 package leo.term
 
+import leo.Empty
 import leo.named.value.anyScriptLine
 
 sealed class Value<out T> {
   override fun toString() = scriptLine { anyScriptLine }.toString()
+}
+
+data class EmptyValue<T>(val empty: Empty): Value<T>() {
+  override fun toString() = super.toString()
 }
 
 data class NativeValue<T>(val native: T) : Value<T>() {
@@ -21,10 +26,12 @@ data class Function<out T>(val scope: Scope<T>, val term: Term<T>) {
 @Suppress("UNCHECKED_CAST")
 fun <T> Value<T>.invokeEvaluation(value: Value<T>): Evaluation<T, Value<T>> =
   when (this) {
+    is EmptyValue -> null!!
     is FunctionValue -> function.scope.plus(value).valueEvaluation(function.term)
     is NativeValue -> null!!
   }
 
+fun <T> value(empty: Empty): Value<T> = EmptyValue(empty)
 fun <T> nativeValue(native: T): Value<T> = NativeValue(native)
 fun <T> value(function: Function<T>): Value<T> = FunctionValue(function)
 fun <T> function(scope: Scope<T>, term: Term<T>) = Function(scope, term)

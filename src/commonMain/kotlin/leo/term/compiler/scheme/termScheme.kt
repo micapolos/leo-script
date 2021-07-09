@@ -2,6 +2,7 @@ package leo.term.compiler.scheme
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -21,6 +22,7 @@ val Term<Scheme>.scheme: Scheme
 
 fun Scope.scheme(term: Term<Scheme>): Scheme =
   when (term) {
+    is EmptyTerm -> "()".scheme
     is AbstractionTerm -> scheme(term.abstraction)
     is ApplicationTerm -> scheme(term.application)
     is NativeTerm -> term.native

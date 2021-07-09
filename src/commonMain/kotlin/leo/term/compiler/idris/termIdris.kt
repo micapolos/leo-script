@@ -2,6 +2,7 @@ package leo.term.compiler.idris
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -19,6 +20,7 @@ val Term<Idris>.idris: Idris
 
 fun Scope.idris(term: Term<Idris>): Idris =
   when (term) {
+    is EmptyTerm -> "()".idris
     is AbstractionTerm -> idris(term.abstraction)
     is ApplicationTerm -> idris(term.application)
     is NativeTerm -> term.native

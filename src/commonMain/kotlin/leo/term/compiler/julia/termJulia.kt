@@ -2,6 +2,7 @@ package leo.term.compiler.julia
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -19,6 +20,7 @@ val Term<Julia>.julia: Julia
 
 fun Scope.julia(term: Term<Julia>): Julia =
   when (term) {
+    is EmptyTerm -> "()".julia
     is AbstractionTerm -> julia(term.abstraction)
     is ApplicationTerm -> julia(term.application)
     is NativeTerm -> term.native

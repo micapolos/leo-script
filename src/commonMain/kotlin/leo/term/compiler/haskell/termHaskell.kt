@@ -2,6 +2,7 @@ package leo.term.compiler.haskell
 
 import leo.term.AbstractionTerm
 import leo.term.ApplicationTerm
+import leo.term.EmptyTerm
 import leo.term.IndexVariable
 import leo.term.NativeTerm
 import leo.term.Term
@@ -19,6 +20,7 @@ val Term<Haskell>.haskell: Haskell
 
 fun Scope.haskell(term: Term<Haskell>): Haskell =
   when (term) {
+    is EmptyTerm -> "()".haskell
     is AbstractionTerm -> haskell(term.abstraction)
     is ApplicationTerm -> haskell(term.application)
     is NativeTerm -> term.native
