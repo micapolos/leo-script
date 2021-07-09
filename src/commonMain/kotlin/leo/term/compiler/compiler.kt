@@ -127,10 +127,18 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   }.notNullOrError("parse error action")
 
 fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
+  null
+    ?: plusDoRepeatingOrNull(script)
+    ?: plusDoNonRepeating(script)
+
+fun <V> Compiler<V>.plusDoRepeatingOrNull(script: Script): Compiler<V>? =
   script.matchPrefix(repeatingName) { rhs ->
-    set(typedTerm.doRepeating(context.plus(binding(definition(typedTerm.t.functionTo(type(numberTypeLine))))).plus(binding(given(typedTerm.t))).typedTerm(rhs)))
+    set(typedTerm.doRepeating(context.plus(binding(definition(typedTerm.t.functionTo(/* TODO: infer!!! */type(numberTypeLine))))).plus(binding(given(typedTerm.t))).typedTerm(rhs)))
   }
-    ?: set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
+
+fun <V> Compiler<V>.plusDoNonRepeating(script: Script): Compiler<V> =
+  set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
+
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (typedTerm != typedTerm<V>()) error("let after term")
