@@ -1,7 +1,10 @@
 package leo.term.compiler.scheme
 
 import leo.Literal
+import leo.isName
 import leo.lineTo
+import leo.natives.lessName
+import leo.natives.thanName
 import leo.numberTypeLine
 import leo.term.compiler.Environment
 import leo.term.compiler.equalsTypeLine
@@ -50,9 +53,17 @@ val schemeEnvironment: Environment<Scheme>
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
               fn(
-                "(lambda (x) (lambda (y) (if (= x y) (lambda (f0) (lambda (f1) (f0 (lambda (x) x)))) (lambda (f0) (lambda (f1) (f1 (lambda (x) x)))))))".scheme.nativeTerm.invoke(get<Scheme>(0).tail)
-                  .invoke(get<Scheme>(0).head)
-              ).invoke(typedTerm.v),
+                "(lambda (x) (lambda (y) ${"(= x y)".scheme.boolean.string}))".scheme.nativeTerm
+                  .invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
+              type(equalsTypeLine)
+            )
+          type(numberTypeLine, isName lineTo type(lessName lineTo type(thanName lineTo type(numberTypeLine)))) ->
+            typed(
+              fn(
+                "(lambda (x) (lambda (y) ${"(< x y)".scheme.boolean.string}))".scheme.nativeTerm
+                  .invoke(get<Scheme>(0).tail)
+                  .invoke(get<Scheme>(0).head)).invoke(typedTerm.v),
               type(equalsTypeLine)
             )
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->

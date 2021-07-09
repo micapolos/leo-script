@@ -1,7 +1,9 @@
 package leo.term.compiler.julia
 
-import leo.Literal
+import leo.isName
 import leo.lineTo
+import leo.natives.lessName
+import leo.natives.thanName
 import leo.numberTypeLine
 import leo.term.compiler.Environment
 import leo.term.compiler.equalsTypeLine
@@ -35,7 +37,11 @@ val juliaEnvironment: Environment<Julia>
               type(numberTypeLine))
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x->y->(x==y) ? ${yesJulia.string} : ${noJulia.string})".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
+              fn("(x->y->${"(x==y)".julia.boolean.string})".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
+              type(equalsTypeLine))
+          type(numberTypeLine, isName lineTo type(lessName lineTo type(thanName lineTo type(numberTypeLine)))) ->
+            typed(
+              fn("(x->y->${"(x<y)".julia.boolean.string})".julia.nativeTerm.invoke(get<Julia>(0).tail).invoke(get<Julia>(0).head)).invoke(typedTerm.v),
               type(equalsTypeLine))
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(
@@ -45,5 +51,3 @@ val juliaEnvironment: Environment<Julia>
         }
       }
     )
-
-val Literal.julia: Julia get() = toString().julia

@@ -1,7 +1,10 @@
 package leo.term.compiler.js
 
-import leo.Literal
+import leo.isName
+import leo.isTypeLine
 import leo.lineTo
+import leo.natives.lessName
+import leo.natives.thanName
 import leo.numberTypeLine
 import leo.term.compiler.Environment
 import leo.term.compiler.equalsTypeLine
@@ -35,7 +38,11 @@ val jsEnvironment: Environment<Js>
               type(numberTypeLine))
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
-              fn("(x=>y=>x==y?(f0=>f1=>f0(x=>x)):(f0=>f1=>f1(x=>x)))".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              fn("(x=>y=>${"x==y".js.boolean.string})".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
+              type(isTypeLine))
+          type(numberTypeLine, isName lineTo type(lessName lineTo type(thanName lineTo type(numberTypeLine)))) ->
+            typed(
+              fn("(x=>y=>${"x<y".js.boolean.string})".js.nativeTerm.invoke(get<Js>(0).tail).invoke(get<Js>(0).head)).invoke(typedTerm.v),
               type(equalsTypeLine))
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(
@@ -45,5 +52,3 @@ val jsEnvironment: Environment<Js>
         }
       }
     )
-
-val Literal.js: Js get() = toString().js

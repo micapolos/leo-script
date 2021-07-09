@@ -1,9 +1,9 @@
 package leo.term.compiler.python
 
-import leo.Literal
-import leo.NumberLiteral
-import leo.StringLiteral
+import leo.isName
 import leo.lineTo
+import leo.natives.lessName
+import leo.natives.thanName
 import leo.numberTypeLine
 import leo.term.compiler.Environment
 import leo.term.compiler.equalsTypeLine
@@ -47,7 +47,14 @@ val pythonEnvironment: Environment<Python>
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
               fn(
-                "(lambda x: lambda y: (lambda f0: lambda f1: f0(lambda x: x)) if (x == y) else (lambda f0: lambda f1: f1(lambda x: x)))".python.nativeTerm.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)
+                "(lambda x: lambda y: ${"x == y".python.boolean.string})".python.nativeTerm.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)
+              ).invoke(typedTerm.v),
+              type(equalsTypeLine)
+            )
+          type(numberTypeLine, isName lineTo type(lessName lineTo type(thanName lineTo type(numberTypeLine)))) ->
+            typed(
+              fn(
+                "(lambda x: lambda y: ${"x < y".python.boolean.string})".python.nativeTerm.invoke(get<Python>(0).tail).invoke(get<Python>(0).head)
               ).invoke(typedTerm.v),
               type(equalsTypeLine)
             )
@@ -62,9 +69,3 @@ val pythonEnvironment: Environment<Python>
         }
       }
     )
-
-val Literal.python: Python get() =
-  when (this) {
-    is NumberLiteral -> toString().python
-    is StringLiteral -> ("'" + string.replace("\n", "\\n").replace("'", "\\'") + "'").python
-  }
