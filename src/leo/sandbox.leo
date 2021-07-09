@@ -1,2 +1,2 @@
-compile sdfh
-  sdfghdf
+sdfgsdfg
+type fsg sdf
