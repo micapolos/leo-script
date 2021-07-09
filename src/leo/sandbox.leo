@@ -1,2 +1,3 @@
-"Hello, "
-plus "world!"
+compile python
+  "Hello, "
+  plus "world!"

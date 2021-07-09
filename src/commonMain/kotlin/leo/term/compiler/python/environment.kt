@@ -1,6 +1,8 @@
 package leo.term.compiler.python
 
 import leo.Literal
+import leo.NumberLiteral
+import leo.StringLiteral
 import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiler.Environment
@@ -61,4 +63,8 @@ val pythonEnvironment: Environment<Python>
       }
     )
 
-val Literal.python: Python get() = toString().python
+val Literal.python: Python get() =
+  when (this) {
+    is NumberLiteral -> toString().python
+    is StringLiteral -> ("'" + string.replace("\n", "\\n").replace("'", "\\'") + "'").python
+  }
