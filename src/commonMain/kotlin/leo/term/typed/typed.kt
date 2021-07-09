@@ -1,7 +1,6 @@
 package leo.term.typed
 
 import leo.ChoiceType
-import leo.Literal
 import leo.StructureType
 import leo.Type
 import leo.TypeChoice
@@ -30,7 +29,6 @@ import leo.isStatic
 import leo.lineTo
 import leo.linkOrNull
 import leo.name
-import leo.named.evaluator.any
 import leo.onlyLineOrNull
 import leo.plus
 import leo.script
@@ -40,7 +38,6 @@ import leo.structure
 import leo.structureOrNull
 import leo.term.Term
 import leo.term.Value
-import leo.term.anyTerm
 import leo.term.compiler.Get
 import leo.term.compiler.compileError
 import leo.term.eitherFirst
@@ -53,7 +50,6 @@ import leo.term.plus
 import leo.term.tail
 import leo.term.term
 import leo.type
-import leo.typeLine
 
 data class Typed<out V, out T>(val v: V, val t: T)
 
@@ -96,9 +92,6 @@ fun <V> typedTerm(vararg lines: TypedLine<V>): TypedTerm<V> =
 
 fun <V> typedTerm(name: String): TypedTerm<V> =
   typedTerm(name lineTo typedTerm())
-
-fun typedLine(literal: Literal): TypedLine<Any?> =
-  typed(literal.any.anyTerm, literal.typeLine)
 
 val <V> TypedTerm<V>.pairOrNull: Pair<TypedTerm<V>, TypedLine<V>>?
   get() =

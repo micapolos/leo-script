@@ -28,7 +28,6 @@ import leo.pickName
 import leo.plus
 import leo.quoteName
 import leo.repeatingName
-import leo.reverse
 import leo.script
 import leo.selectName
 import leo.switchName
@@ -203,7 +202,7 @@ fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.plusSwitch(script: Script): Compiler<V> =
   typedTerm.switchTypedChoice.let { typedChoice ->
-    set(SwitchCompiler(context, typedChoice.t.lineStack.reverse, typedChoice.v, null).plus(script).typedTerm)
+    set(SwitchCompiler(context, typedChoice.t.lineStack, typedChoice.v, null).plus(script).typedTerm)
   }
 
 fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =

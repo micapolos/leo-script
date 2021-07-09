@@ -16,7 +16,6 @@ import leo.lineTo
 import leo.linkOrNull
 import leo.name
 import leo.plus
-import leo.reverse
 import leo.rhsOrNull
 import leo.script
 import leo.term.Term
@@ -34,7 +33,7 @@ data class SwitchCompiler<V>(
 )
 
 fun <V> SwitchCompiler<V>.plus(script: Script): SwitchCompiler<V> =
-  fold(script.lineStack.reverse) { plus(it) }
+  fold(script.lineStack) { plus(it) }
 
 fun <V> SwitchCompiler<V>.plus(line: ScriptLine): SwitchCompiler<V> =
   when (line) {

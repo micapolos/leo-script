@@ -1,6 +1,7 @@
 package leo.term
 
 import leo.Empty
+import leo.empty
 import leo.named.value.anyScriptLine
 
 sealed class Value<out T> {
@@ -40,15 +41,9 @@ val <T> Value<T>.native: T get() = (this as NativeValue).native
 
 val <T> T.nativeValue: Value<T> get() = NativeValue(this)
 
-val Any?.anyValue: Value<Any?> get() = nativeValue
-val Any?.anyString: String get() = (this as String)
-val Any?.anyDouble: Double get() = (this as Double)
-
-fun <T> idValue(): Value<T> = value(function(scope(), term(variable(0))))
-
 val <T> Value<T>.eitherFirst: Value<T> get() = value(function(scope(this), fn(get<T>(1).invoke(get(2)))))
 val <T> Value<T>.eitherSecond: Value<T> get() = value(function(scope(this), fn(get<T>(0).invoke(get(2)))))
 
 val <T> Value<T>.functionOrNull: Function<T>? get() = (this as? FunctionValue)?.function
 
-fun <T> Boolean.isValue(): Value<T> = idValue<T>().let { if (this) it.eitherFirst else it.eitherSecond }
+fun <T> Boolean.isValue(): Value<T> = value<T>(empty).let { if (this) it.eitherFirst else it.eitherSecond }

@@ -40,7 +40,7 @@ data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
 }
 
 fun <T> term(empty: Empty): Term<T> = EmptyTerm(empty)
-fun <T> term(value: T): Term<T> = NativeTerm(value)
+fun <T> nativeTerm(value: T): Term<T> = NativeTerm(value)
 fun <T> term(abstraction: TermAbstraction<T>): Term<T> = AbstractionTerm(abstraction)
 fun <T> term(application: TermApplication<T>): Term<T> = ApplicationTerm(application)
 fun <T> term(variable: IndexVariable): Term<T> = VariableTerm(variable)
@@ -59,8 +59,6 @@ fun <T> get(index: Int): Term<T> = term(variable(index))
 fun <T> fn(term: Term<T>): Term<T> = term(TermAbstraction(term))
 fun <T> Term<T>.invoke(term: Term<T>): Term<T> = term(TermApplication(this, term))
 fun <T> id(): Term<T> = fn(get(0))
-
-val Any?.anyTerm: Term<Any?> get() = nativeTerm
 
 fun <T> Term<T>.plus(term: Term<T>): Term<T> =
   fn(fn(fn(get<T>(0).invoke(get(2)).invoke(get(1))))).invoke(this).invoke(term)

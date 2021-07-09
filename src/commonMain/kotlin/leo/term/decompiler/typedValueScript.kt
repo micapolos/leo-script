@@ -21,6 +21,7 @@ import leo.any
 import leo.atom
 import leo.base.Conditional
 import leo.base.stak.top
+import leo.empty
 import leo.fieldTo
 import leo.isEmpty
 import leo.isStatic
@@ -41,7 +42,6 @@ import leo.term.compiler.native.Native
 import leo.term.compiler.native.double
 import leo.term.compiler.native.string
 import leo.term.functionOrNull
-import leo.term.idValue
 import leo.term.native
 import leo.term.typed.Typed
 import leo.term.typed.TypedValue
@@ -77,15 +77,15 @@ val Typed<Value<Native>, TypeStructure>.structureScript: Script
       else
         if (linkOrNull.tail.structure.isStatic)
           if (linkOrNull.head.isStatic)
-            typed(idValue<Native>(), linkOrNull.tail.structure.type).script
-              .plus(typed(idValue<Native>(), linkOrNull.head).scriptLine)
+            typed(value<Native>(empty), linkOrNull.tail.structure.type).script
+              .plus(typed(value<Native>(empty), linkOrNull.head).scriptLine)
           else
-            typed(idValue<Native>(), linkOrNull.tail.structure.type).script
+            typed(value<Native>(empty), linkOrNull.tail.structure.type).script
               .plus(typed(v, linkOrNull.head).scriptLine)
         else
           if (linkOrNull.head.isStatic)
             typed(v, linkOrNull.tail.structure.type).script
-              .plus(typed(idValue<Native>(), linkOrNull.head).scriptLine)
+              .plus(typed(value<Native>(empty), linkOrNull.head).scriptLine)
           else
             v.pair.let { (lhs, rhs) ->
               typed(lhs, linkOrNull.tail.structure.type).script

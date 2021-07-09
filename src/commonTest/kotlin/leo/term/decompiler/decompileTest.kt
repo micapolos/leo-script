@@ -2,6 +2,7 @@ package leo.term.decompiler
 
 import leo.base.assertEqualTo
 import leo.choice
+import leo.empty
 import leo.lineTo
 import leo.literal
 import leo.numberTypeLine
@@ -10,9 +11,9 @@ import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.eitherFirst
 import leo.term.eitherSecond
-import leo.term.idValue
 import leo.term.nativeValue
 import leo.term.typed.typed
+import leo.term.value
 import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
@@ -71,7 +72,7 @@ class DecompileTest {
   @Test
   fun either_thirdOfThree() {
     typed(
-      idValue<Native>().eitherSecond,
+      value<Native>(empty).eitherSecond,
       type(choice(textTypeLine, numberTypeLine, "three" lineTo type()))
     )
       .script

@@ -34,8 +34,10 @@ val Literal.native: Native
 val Native.scriptLine get() =
   "native" lineTo
     when (this) {
-      is DoubleNative -> script("double" lineTo script(literal(double)))
-      is StringNative -> script("string" lineTo script(literal(double)))
+      is DoubleNative ->
+        script("double" lineTo script(literal(double)))
+      is StringNative ->
+        script("string" lineTo script(literal(string)))
       DoubleIsLessThanDoubleNative ->
         script(
           "double" lineTo script(),

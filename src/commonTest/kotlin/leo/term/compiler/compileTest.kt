@@ -278,6 +278,27 @@ class CompileTest {
   }
 
   @Test
+  fun switch_firstOfThree() {
+    nativeEnvironment
+      .typedTerm(
+        script(
+          "id" lineTo script(
+            pickName lineTo script("one" lineTo script(literal(10))),
+            dropName lineTo script("two" lineTo script(anyNumberScriptLine)),
+            dropName lineTo script("three" lineTo script(anyNumberScriptLine))),
+          switchName lineTo script(
+            "one" lineTo script(doingName lineTo script("one", "number")),
+            "two" lineTo script(doingName lineTo script("two", "number")),
+            "three" lineTo script(doingName lineTo script("three", "number"))
+          )
+        )
+      )
+      .assertEqualTo(
+        typed(10.0.native.nativeTerm.eitherFirst.eitherFirst.invoke(id()).invoke(id()).invoke(id()), type(numberTypeLine))
+      )
+  }
+
+  @Test
   fun type() {
     script(
       "point" lineTo script(
