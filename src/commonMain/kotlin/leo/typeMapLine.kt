@@ -46,10 +46,8 @@ fun TypeFunction.updateLine(fn: (TypeLine) -> TypeLine): TypeFunction =
 fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive =
   when (this) {
     is FieldTypePrimitive -> field.updateLine(fn).primitive
-    is LiteralTypePrimitive -> literal.updateLine(fn).primitive
+    is AnyTypePrimitive -> this
   }
 
 fun TypeField.updateLine(fn: (TypeLine) -> TypeLine): TypeField =
   name fieldTo rhsType.updateLine(fn)
-
-fun TypeLiteral.updateLine(@Suppress("UNUSED_PARAMETER") fn: (TypeLine) -> TypeLine): TypeLiteral = this

@@ -19,13 +19,5 @@ val TypePrimitive.name: String
   get() =
     when (this) {
       is FieldTypePrimitive -> field.name
-      is LiteralTypePrimitive -> literal.name
+      is AnyTypePrimitive -> any.name
     }
-
-val TypeLiteral.name: String
-  get() =
-    when (this) {
-      is NumberTypeLiteral -> numberName
-      is TextTypeLiteral -> textName
-    }
-

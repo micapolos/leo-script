@@ -48,7 +48,7 @@ val TypePrimitive.scriptLine: ScriptLine
   get() =
     when (this) {
       is FieldTypePrimitive -> field.scriptLine
-      is LiteralTypePrimitive -> literal.scriptLine
+      is AnyTypePrimitive -> any.scriptLine
     }
 
 val TypeField.scriptLine: ScriptLine
@@ -59,16 +59,9 @@ val TypeField.unescapedScriptLine: ScriptLine
   get() =
     name lineTo rhsType.script
 
-val TypeLiteral.scriptLine: ScriptLine
-  get() =
-    when (this) {
-      is NumberTypeLiteral -> anyNumberScriptLine
-      is TextTypeLiteral -> anyTextScriptLine
-    }
-
 val TypeFunction.scriptLine: ScriptLine
   get() =
-    functionName lineTo lhsType.script.plus(givesName lineTo rhsType.script)
+    functionName lineTo lhsType.script.plus(doingName lineTo rhsType.script)
 
 val TypeRecursive.scriptLine: ScriptLine
   get() =
@@ -89,3 +82,6 @@ val String.isTypeKeyword: Boolean
       theName -> true
       else -> false
     }
+
+val TypeAny.scriptLine: ScriptLine get() =
+  anyName lineTo script(name lineTo script)

@@ -16,7 +16,6 @@ import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
 import leo.giveName
-import leo.givingName
 import leo.isEmpty
 import leo.letName
 import leo.lineSeq
@@ -124,7 +123,7 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
 fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
-      givingName -> context.type(lhs).let { type ->
+      doingName -> context.type(lhs).let { type ->
         context.plus(binding(given(type))).typedTerm(rhs).let { typedTerm ->
           plus(typed(fn(typedTerm.v), type functionLineTo typedTerm.t))
         }

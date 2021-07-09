@@ -1,20 +1,19 @@
 package leo.named.value
 
+import leo.AnyTypePrimitive
 import leo.FieldTypePrimitive
 import leo.FunctionTypeAtom
-import leo.LiteralTypePrimitive
-import leo.NumberTypeLiteral
 import leo.PrimitiveTypeAtom
 import leo.Script
 import leo.ScriptLine
-import leo.TextTypeLiteral
 import leo.Type
+import leo.TypeAny
 import leo.TypeAtom
 import leo.TypeField
 import leo.TypeFunction
 import leo.TypeLine
-import leo.TypeLiteral
 import leo.TypePrimitive
+import leo.any
 import leo.atom
 import leo.base.runIf
 import leo.functionName
@@ -24,8 +23,11 @@ import leo.lineTo
 import leo.literal
 import leo.map
 import leo.named.typed.Typed
+import leo.nativeName
+import leo.numberName
 import leo.script
 import leo.takingName
+import leo.textName
 import leo.theName
 
 val Typed<Value, Type>.scriptLine: ScriptLine
@@ -51,14 +53,15 @@ val Typed<ValueLine, TypePrimitive>.primitiveScriptLine: ScriptLine
   get() =
     when (t) {
       is FieldTypePrimitive -> Typed(v.fieldOrNull!!, t.field).fieldScriptLine
-      is LiteralTypePrimitive -> Typed(v.anyOrNull, t.literal).literalScriptLine
+      is AnyTypePrimitive -> Typed(v.anyOrNull, t.any).anyScriptLine
     }
 
-val Typed<Any?, TypeLiteral>.literalScriptLine: ScriptLine
+val Typed<Any?, TypeAny>.anyScriptLine: ScriptLine
   get() =
     when (t) {
-      is NumberTypeLiteral -> line(literal((v as Double)))
-      is TextTypeLiteral -> line(literal((v as String)))
+      any(numberName) -> line(literal((v as Double)))
+      any(textName) -> line(literal((v as String)))
+      else -> nativeName lineTo script(literal("$v"))
     }
 
 val Typed<ValueField, TypeField>.fieldScriptLine: ScriptLine

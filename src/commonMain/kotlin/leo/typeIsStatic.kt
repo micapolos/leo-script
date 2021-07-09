@@ -35,11 +35,10 @@ val TypePrimitive.isStatic: Boolean
   get() =
     when (this) {
       is FieldTypePrimitive -> field.isStatic
-      is LiteralTypePrimitive -> literal.isStatic
+      is AnyTypePrimitive -> false
     }
 
 val TypeField.isStatic: Boolean get() = rhsType.isStatic
-val TypeLiteral.isStatic: Boolean get() = false
 val TypeRecurse.isStatic: Boolean get() = false
 val TypeRecursive.isStatic: Boolean get() = false
 val TypeFunction.isStatic: Boolean get() = false

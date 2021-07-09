@@ -62,14 +62,14 @@ val ScriptLine.typeFunctionOrNull: TypeFunction?
 val ScriptLine.typePrimitive: TypePrimitive
   get() =
     null
-      ?: typeLiteralOrNull?.primitive
+      ?: typeAnyOrNull?.primitive
       ?: typeField.primitive
 
-val ScriptLine.typeLiteralOrNull: TypeLiteral?
+val ScriptLine.typeAnyOrNull: TypeAny?
   get() =
     when (this) {
-      anyTextScriptLine -> literal(typeText)
-      anyNumberScriptLine -> literal(typeNumber)
+      anyTextScriptLine -> any(textName)
+      anyNumberScriptLine -> any(numberName)
       else -> null
     }
 

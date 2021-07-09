@@ -69,23 +69,11 @@ sealed class TypePrimitive {
   override fun toString() = scriptLine.toString()
 }
 
-data class LiteralTypePrimitive(val literal: TypeLiteral) : TypePrimitive() {
+data class AnyTypePrimitive(val any: TypeAny) : TypePrimitive() {
   override fun toString() = super.toString()
 }
 
 data class FieldTypePrimitive(val field: TypeField) : TypePrimitive() {
-  override fun toString() = super.toString()
-}
-
-sealed class TypeLiteral {
-  override fun toString() = scriptLine.toString()
-}
-
-data class TextTypeLiteral(val text: TypeText) : TypeLiteral() {
-  override fun toString() = super.toString()
-}
-
-data class NumberTypeLiteral(val number: TypeNumber) : TypeLiteral() {
   override fun toString() = super.toString()
 }
 
@@ -109,6 +97,8 @@ object TypeRecurse {
   override fun toString() = recurseName
 }
 
+data class TypeAny(val name: String, val script: Script)
+
 val Stack<TypeLine>.structure get() = TypeStructure(this)
 val Stack<TypeLine>.choice get() = TypeChoice(this)
 
@@ -121,11 +111,13 @@ fun structure(line: TypeLine, vararg lines: TypeLine): TypeStructure = stack(lin
 fun choice(vararg lines: TypeLine): TypeChoice = stack(*lines).choice
 fun type(vararg lines: TypeLine): Type = type(typeStructure(*lines))
 fun type(name: String): Type = type(name lineTo type())
+fun any(name: String, script: Script = script()) = TypeAny(name, script)
 
-val TypeLiteral.primitive: TypePrimitive get() = LiteralTypePrimitive(this)
 val TypeField.primitive: TypePrimitive get() = FieldTypePrimitive(this)
+val TypeAny.primitive: TypePrimitive get() = AnyTypePrimitive(this)
 
-val TypePrimitive.literalOrNull: TypeLiteral? get() = (this as? LiteralTypePrimitive)?.literal
+fun primitive(any: TypeAny) = any.primitive
+
 val TypePrimitive.fieldOrNull: TypeField? get() = (this as? FieldTypePrimitive)?.field
 
 val TypeStructure.type: Type get() = type(this)
@@ -139,16 +131,12 @@ val typeRecurse get() = TypeRecurse
 val recurseTypeLine get() = line(recursible(typeRecurse))
 fun recursiveLine(line: TypeLine) = line(recursive(line))
 
-fun literal(text: TypeText): TypeLiteral = TextTypeLiteral(text)
-fun literal(number: TypeNumber): TypeLiteral = NumberTypeLiteral(number)
-
 infix fun Type.functionTo(type: Type) = TypeFunction(this, type)
 infix fun Type.functionLineTo(type: Type) = line(atom(this functionTo type))
 
 fun atom(function: TypeFunction): TypeAtom = FunctionTypeAtom(function)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)
 fun atom(field: TypeField): TypeAtom = field.primitive.atom
-fun atom(literal: TypeLiteral): TypeAtom = literal.primitive.atom
 
 val TypeField.atom: TypeAtom get() = atom(this)
 val TypePrimitive.atom: TypeAtom get() = atom(this)
@@ -174,8 +162,8 @@ val TypeRecursible.line: TypeLine get() = RecursibleTypeLine(this)
 
 infix fun String.lineTo(type: Type): TypeLine = line(atom(this fieldTo type).recursible)
 
-val textTypeLine: TypeLine get() = line(atom(literal(typeText)))
-val numberTypeLine: TypeLine get() = line(atom(literal(typeNumber)))
+val textTypeLine: TypeLine get() = line(atom(primitive(any(textName))))
+val numberTypeLine: TypeLine get() = line(atom(primitive(any(numberName))))
 
 fun Type.plusOrNull(line: TypeLine): Type? = structureOrNull?.plus(line)?.type
 fun Type.plus(line: TypeLine): Type = plusOrNull(line).notNullOrError("$this.plus($line)")
@@ -188,8 +176,8 @@ val Literal.typeLine: TypeLine get() = line(typeAtom)
 val Literal.typeAtom: TypeAtom
   get() =
     when (this) {
-      is NumberLiteral -> atom(literal(typeNumber))
-      is StringLiteral -> atom(literal(typeText))
+      is NumberLiteral -> atom(primitive(any(numberName)))
+      is StringLiteral -> atom(primitive(any(textName)))
     }
 val TypeStructure.onlyLineOrNull: TypeLine? get() = lineStack.onlyOrNull
 val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.structure

@@ -10,7 +10,6 @@ import leo.functionName
 import leo.functionTo
 import leo.getName
 import leo.giveName
-import leo.givingName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -160,7 +159,7 @@ class CompileTest {
         script(
           functionName lineTo script(
             "zero" lineTo script(),
-            givingName lineTo script("one")
+            doingName lineTo script("one")
           )
         )
       )
@@ -180,7 +179,7 @@ class CompileTest {
           applyName lineTo script(
             functionName lineTo script(
               "ping" lineTo script(),
-              givingName lineTo script("pong")
+              doingName lineTo script("pong")
             )
           )
         )
