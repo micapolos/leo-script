@@ -1,3 +1,2 @@
-compile idris
-  10
-  plus 20
+"Hello, "
+plus "world!"
