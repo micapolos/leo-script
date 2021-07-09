@@ -7,11 +7,12 @@ import leo.StringLiteral
 sealed class Native
 data class DoubleNative(val double: Double) : Native()
 data class StringNative(val string: String) : Native()
-object DoubleAddDoubleNative : Native()
-object DoubleSubtractDoubleNative : Native()
-object DoubleMultiplyByDoubleNative : Native()
+object DoublePlusDoubleNative : Native()
+object DoubleMinusDoubleNative : Native()
+object DoubleTimesDoubleNative : Native()
+object DoubleIsLessThanDoubleNative : Native()
 object ObjectEqualsObjectNative : Native()
-object StringAppendStringNative : Native()
+object StringPlusStringNative : Native()
 object StringLengthNative : Native()
 
 val Double.native: Native get() = DoubleNative(this)

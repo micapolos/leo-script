@@ -1,6 +1,10 @@
 package leo.term.compiler.native
 
+import leo.isName
+import leo.isTypeLine
 import leo.lineTo
+import leo.natives.lessName
+import leo.natives.thanName
 import leo.numberName
 import leo.numberTypeLine
 import leo.term.compiler.Environment
@@ -25,21 +29,21 @@ val nativeEnvironment: Environment<Native>
           type(numberTypeLine, "plus" lineTo type(numberTypeLine)) ->
             typed(
               fn(
-                fn(fn(DoubleAddDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
+                fn(fn(DoublePlusDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
               ).invoke(typedTerm.v),
               type(numberTypeLine)
             )
           type(numberTypeLine, "minus" lineTo type(numberTypeLine)) ->
             typed(
               fn(
-                fn(fn(DoubleSubtractDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
+                fn(fn(DoubleMinusDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
               ).invoke(typedTerm.v),
               type(numberTypeLine)
             )
           type(numberTypeLine, "times" lineTo type(numberTypeLine)) ->
             typed(
               fn(
-                fn(fn(DoubleMultiplyByDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
+                fn(fn(DoubleTimesDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
               ).invoke(typedTerm.v),
               type(numberTypeLine)
             )
@@ -48,7 +52,6 @@ val nativeEnvironment: Environment<Native>
               PI.native.nativeTerm,
               type(numberTypeLine)
             )
-          // TODO: Could it work for any object?
           type(numberTypeLine, "equals" lineTo type(numberTypeLine)) ->
             typed(
               fn(
@@ -56,10 +59,17 @@ val nativeEnvironment: Environment<Native>
               ).invoke(typedTerm.v),
               type(equalsTypeLine)
             )
+          type(numberTypeLine, isName lineTo type(lessName lineTo type(thanName lineTo type(numberTypeLine)))) ->
+            typed(
+              fn(
+                fn(fn(DoubleIsLessThanDoubleNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
+              ).invoke(typedTerm.v),
+              type(isTypeLine)
+            )
           type(textTypeLine, "plus" lineTo type(textTypeLine)) ->
             typed(
               fn(
-                fn(fn(StringAppendStringNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
+                fn(fn(StringPlusStringNative.nativeTerm)).invoke(get<Native>(0).tail).invoke(get<Native>(0).head)
               ).invoke(typedTerm.v),
               type(textTypeLine)
             )

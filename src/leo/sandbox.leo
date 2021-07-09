@@ -1,20 +1,15 @@
-30
-fibonacci
+let
+  number.any.previous
+  do
+    number
+    minus 1
+
+25.fibonacci
 do repeating
   number
-  equals 0
+  is less than 2
   switch
-    yes 0
+    yes number
     no
-      number
-      equals 1
-      switch
-        yes 1
-        no
-          number
-          minus 2
-          fibonacci
-          plus
-            number
-            minus 1
-            fibonacci
+      number.decrement.decrement.fibonacci
+      plus number.decrement.fibonacci

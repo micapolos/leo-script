@@ -24,7 +24,7 @@ class EvaluatorTest {
 
   @Test
   fun doubleAddDouble() {
-    fn(fn(DoubleAddDoubleNative.nativeTerm))
+    fn(fn(DoublePlusDoubleNative.nativeTerm))
       .invoke(10.0.native.nativeTerm)
       .invoke(20.0.native.nativeTerm)
       .value
@@ -33,7 +33,7 @@ class EvaluatorTest {
 
   @Test
   fun doubleSubtractDouble() {
-    fn(fn(DoubleSubtractDoubleNative.nativeTerm))
+    fn(fn(DoubleMinusDoubleNative.nativeTerm))
       .invoke(30.0.native.nativeTerm)
       .invoke(20.0.native.nativeTerm)
       .value
@@ -42,7 +42,7 @@ class EvaluatorTest {
 
   @Test
   fun doubleMultiplyByDouble() {
-    fn(fn(DoubleMultiplyByDoubleNative.nativeTerm))
+    fn(fn(DoubleTimesDoubleNative.nativeTerm))
       .invoke(10.0.native.nativeTerm)
       .invoke(20.0.native.nativeTerm)
       .value
@@ -51,7 +51,7 @@ class EvaluatorTest {
 
   @Test
   fun stringAppendString() {
-    fn(fn(StringAppendStringNative.nativeTerm))
+    fn(fn(StringPlusStringNative.nativeTerm))
       .invoke("Hello, ".native.nativeTerm)
       .invoke("world!".native.nativeTerm)
       .value
