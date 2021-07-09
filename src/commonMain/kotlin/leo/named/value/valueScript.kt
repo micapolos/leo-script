@@ -33,7 +33,7 @@ val Any?.anyScriptLine: ScriptLine
     when (this) {
       is String -> line(literal(this))
       is Double -> line(literal(this))
-      else -> nativeName lineTo script(literal("${this?.javaClass}"))
+      else -> nativeName lineTo script(literal("$this"))
     }
 
 val ValueField.scriptLine: ScriptLine

@@ -4,7 +4,7 @@ import leo.Empty
 import leo.named.value.anyScriptLine
 
 sealed class Term<out T> {
-  override fun toString() = scriptLine { anyScriptLine }.toString()
+  override fun toString() = scriptLine { it.anyScriptLine }.toString()
 }
 
 data class EmptyTerm<T>(val empty: Empty): Term<T>() {
@@ -32,11 +32,11 @@ data class IndexVariable(val index: Int) {
 }
 
 data class TermAbstraction<out T>(val term: Term<T>) {
-  override fun toString() = script { anyScriptLine }.toString()
+  override fun toString() = script { it.anyScriptLine }.toString()
 }
 
 data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
-  override fun toString() = script { anyScriptLine }.toString()
+  override fun toString() = script { it.anyScriptLine }.toString()
 }
 
 fun <T> term(empty: Empty): Term<T> = EmptyTerm(empty)

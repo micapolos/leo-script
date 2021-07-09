@@ -5,7 +5,7 @@ import leo.empty
 import leo.named.value.anyScriptLine
 
 sealed class Value<out T> {
-  override fun toString() = scriptLine { anyScriptLine }.toString()
+  override fun toString() = scriptLine { it.anyScriptLine }.toString()
 }
 
 data class EmptyValue<T>(val empty: Empty): Value<T>() {
@@ -21,7 +21,7 @@ data class FunctionValue<T>(val function: Function<T>) : Value<T>() {
 }
 
 data class Function<out T>(val scope: Scope<T>, val term: Term<T>) {
-  override fun toString() = scriptLine { anyScriptLine }.toString()
+  override fun toString() = scriptLine { it.anyScriptLine }.toString()
 }
 
 @Suppress("UNCHECKED_CAST")
