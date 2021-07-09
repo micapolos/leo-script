@@ -1,4 +1,6 @@
 is
   pick yes
   drop no
-type
+switch
+  yes doing "yes"
+  no doing "no"
