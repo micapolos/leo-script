@@ -13,6 +13,7 @@ import leo.base.fold
 import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.base.onlyOrNull
+import leo.base.orIfNull
 import leo.base.seq
 import leo.base.the
 import leo.base.then
@@ -28,6 +29,8 @@ import leo.linkOrNull
 import leo.name
 import leo.named.evaluator.any
 import leo.plus
+import leo.script
+import leo.scriptLine
 import leo.stack
 import leo.structure
 import leo.structureOrNull
@@ -35,6 +38,7 @@ import leo.term.Term
 import leo.term.Value
 import leo.term.anyTerm
 import leo.term.compiler.Get
+import leo.term.compiler.compileError
 import leo.term.eitherFirst
 import leo.term.eitherSecond
 import leo.term.fix
@@ -139,8 +143,25 @@ val <V> TypedLine<V>.rhsOrNull: TypedTerm<V>?
     }
 
 fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =
-  t.functionOrNull.notNullOrError("$this not function").let { typeFunction ->
-    if (typedTerm.t != typeFunction.lhsType) error("$typedTerm not ${typeFunction.lhsType}")
+  t.functionOrNull.orIfNull {
+    compileError(
+      typedTerm.t.script
+        .plus("apply" lineTo t.script)
+        .plus(
+          "is" lineTo script(
+            "not" lineTo script(
+              "matching" lineTo script(
+                "any" lineTo script("expression"),
+                "apply" lineTo script("any" lineTo script("function")))))))
+  }.let { typeFunction ->
+    if (typedTerm.t != typeFunction.lhsType)
+      compileError(
+        typedTerm.t.script
+          .plus("apply" lineTo t.script)
+          .plus("is" lineTo script(
+            "not" lineTo script(
+              "matching" lineTo typeFunction.lhsType.script
+                .plus("apply" lineTo script(typeFunction.scriptLine))))))
     else typed(v.invoke(typedTerm.v), typeFunction.rhsType)
   }
 
@@ -214,7 +235,8 @@ fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> 
   Typed(
     when (selection) {
       is YesTypedSelection ->
-        if (v != null) error("already chosen")
+        if (v != null) compileError(script("select" lineTo script(
+          "duplicate" lineTo script("the" lineTo script(selection.typedLine.t.scriptLine)))))
         else if (t.lineStack.isEmpty) selection.typedLine.v
         else selection.typedLine.v.eitherSecond
       is NoTypedSelection -> v?.eitherFirst
@@ -224,6 +246,8 @@ fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> 
 
 val <V> TypedChoice<V>.typedTerm: TypedTerm<V>
   get() =
-    Typed(v.notNullOrError("no choice"), type(t))
+    Typed(
+      v ?: compileError(script("select" lineTo script("none" lineTo script("selected")))),
+      type(t))
 
 fun <V> typedSwitch(choice: TypeChoice) = TypedSwitch<V>(null, choice)

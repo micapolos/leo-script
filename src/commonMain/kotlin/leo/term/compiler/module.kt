@@ -2,13 +2,14 @@ package leo.term.compiler
 
 import leo.Script
 import leo.Stack
-import leo.base.notNullOrError
 import leo.doName
 import leo.fold
 import leo.functionTo
+import leo.lineTo
 import leo.matchInfix
 import leo.push
 import leo.reverse
+import leo.script
 import leo.stack
 import leo.term.Term
 import leo.term.fn
@@ -39,4 +40,12 @@ fun <V> Module<V>.plusLet(script: Script): Module<V> =
           .plus(fn(bodyTypedTerm.v))
       }
     }
-  }.notNullOrError("let $script")
+  }?:compileError(
+    script(
+      "let" lineTo script,
+      "is" lineTo script(
+        "not" lineTo script(
+          "matching" lineTo script(
+            "let" lineTo script(
+              "any" lineTo script("type"),
+              "do" lineTo script("any" lineTo script("expression"))))))))
