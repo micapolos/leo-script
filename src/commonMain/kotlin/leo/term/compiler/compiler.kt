@@ -11,7 +11,6 @@ import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compileName
 import leo.doName
-import leo.doingName
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -25,6 +24,7 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.quoteName
 import leo.recurseName
+import leo.repeatingName
 import leo.reverse
 import leo.script
 import leo.selectName
@@ -54,7 +54,6 @@ import leo.term.typed.recurse
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedTerm
-import leo.toName
 
 data class Compiler<V>(
   val module: Module<V>,
@@ -137,15 +136,13 @@ fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
   set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiler<V>.plusRecurse(script: Script): Compiler<V> =
-  script.matchInfix(doingName) { doingLhs, doingRhs ->
-    doingLhs.matchPrefix(toName) { toRhs ->
-      context.type(toRhs).let { type ->
-        set(
-          typedTerm.recurse(
-            context
-              .plus(binding(definition(typedTerm.t.functionTo(type))))
-              .plus(binding(given(typedTerm.t))).typedTerm(doingRhs)))
-      }
+  script.matchInfix(repeatingName) { lhs, rhs ->
+    context.type(lhs).let { type ->
+      set(
+        typedTerm.recurse(
+          context
+            .plus(binding(definition(typedTerm.t.functionTo(type))))
+            .plus(binding(given(typedTerm.t))).typedTerm(rhs)))
     }
   }?: compileError("recurse" lineTo script())
 

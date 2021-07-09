@@ -1,7 +1,7 @@
 10.fibonacci
-recurse
-  to any number
-  doing
+do
+  any number
+  repeating
     number
     is less than 2
     switch

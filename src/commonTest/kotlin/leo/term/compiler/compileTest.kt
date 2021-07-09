@@ -2,7 +2,6 @@ package leo.term.compiler
 
 import leo.applyName
 import leo.base.assertEqualTo
-import leo.doingName
 import leo.equalsName
 import leo.functionName
 import leo.functionTo
@@ -20,6 +19,7 @@ import leo.numberTypeScriptLine
 import leo.plus
 import leo.quoteName
 import leo.recurseName
+import leo.repeatingName
 import leo.script
 import leo.selectName
 import leo.switchName
@@ -49,7 +49,6 @@ import leo.term.typed.yesSelection
 import leo.textTypeLine
 import leo.textTypeScriptLine
 import leo.theName
-import leo.toName
 import leo.type
 import leo.typeName
 import leo.yesName
@@ -304,8 +303,8 @@ class CompileTest {
     inputScript
       .plus(
         recurseName lineTo script(
-          toName lineTo script(textTypeScriptLine),
-          doingName lineTo doingScript))
+          textTypeScriptLine,
+          repeatingName lineTo doingScript))
       .typedTerm(nativeEnvironment)
       .assertEqualTo(
         inputScript
