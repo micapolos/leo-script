@@ -4,10 +4,13 @@ import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.choiceName
+import leo.doingName
+import leo.dropName
 import leo.line
 import leo.lineTo
 import leo.literal
 import leo.notName
+import leo.pickName
 import leo.script
 import leo.selectName
 import leo.switchName
@@ -60,14 +63,11 @@ class EvaluateTest {
   fun switch() {
     script(
       "id" lineTo script(
-        selectName lineTo script(
-          theName lineTo script("one" lineTo script(literal(10))),
-          notName lineTo script("two" lineTo script(anyNumberScriptLine))
-        )
-      ),
+        pickName lineTo script("one" lineTo script(literal(10))),
+        dropName lineTo script("two" lineTo script(anyNumberScriptLine))),
       switchName lineTo script(
-        "one" lineTo script("one", "number"),
-        "two" lineTo script("two", "number")
+        "one" lineTo script(doingName lineTo script("one", "number")),
+        "two" lineTo script(doingName lineTo script("two", "number"))
       )
     )
       .evaluate
@@ -78,14 +78,12 @@ class EvaluateTest {
   fun switch_secondOfTwo() {
     script(
       "id" lineTo script(
-        selectName lineTo script(
-          notName lineTo script("one" lineTo script(anyNumberScriptLine)),
-          theName lineTo script("two" lineTo script(literal(20)))
-        )
+        dropName lineTo script("one" lineTo script(anyNumberScriptLine)),
+        pickName lineTo script("two" lineTo script(literal(20)))
       ),
       switchName lineTo script(
-        "one" lineTo script("one", "number"),
-        "two" lineTo script("two", "number")
+        "one" lineTo script(doingName lineTo script("one", "number")),
+        "two" lineTo script(doingName lineTo script("two", "number"))
       )
     )
       .evaluate

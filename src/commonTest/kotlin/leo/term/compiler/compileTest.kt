@@ -5,6 +5,7 @@ import leo.anyTextScriptLine
 import leo.applyName
 import leo.base.assertEqualTo
 import leo.doingName
+import leo.dropName
 import leo.equalsName
 import leo.functionName
 import leo.functionTo
@@ -18,6 +19,7 @@ import leo.noName
 import leo.notName
 import leo.numberName
 import leo.numberTypeLine
+import leo.pickName
 import leo.plus
 import leo.quoteName
 import leo.repeatingName
@@ -219,19 +221,34 @@ class CompileTest {
   }
 
   @Test
+  fun pickDrop() {
+    nativeEnvironment
+      .typedTerm(
+        script(
+          pickName lineTo script(literal(10)),
+          dropName lineTo script(anyTextScriptLine)
+        )
+      )
+      .assertEqualTo(
+        typedChoice<Native>()
+          .choicePlus(yesSelection(typed(10.0.native.nativeTerm, numberTypeLine)))
+          .choicePlus(noSelection(textTypeLine))
+          .typedTerm
+      )
+  }
+
+  @Test
   fun switch_firstOfTwo() {
     nativeEnvironment
       .typedTerm(
         script(
           "id" lineTo script(
-            selectName lineTo script(
-              theName lineTo script("one" lineTo script(literal(10))),
-              notName lineTo script("two" lineTo script(anyNumberScriptLine))
-            )
+            pickName lineTo script("one" lineTo script(literal(10))),
+            dropName lineTo script("two" lineTo script(anyNumberScriptLine))
           ),
           switchName lineTo script(
-            "one" lineTo script("one", "number"),
-            "two" lineTo script("two", "number")
+            "one" lineTo script(doingName lineTo script("one", "number")),
+            "two" lineTo script(doingName lineTo script("two", "number"))
           )
         )
       )
@@ -246,14 +263,12 @@ class CompileTest {
       .typedTerm(
         script(
           "id" lineTo script(
-            selectName lineTo script(
-              notName lineTo script("one" lineTo script(anyNumberScriptLine)),
-              theName lineTo script("two" lineTo script(literal(20)))
-            )
+            dropName lineTo script("one" lineTo script(anyNumberScriptLine)),
+            pickName lineTo script("two" lineTo script(literal(20)))
           ),
           switchName lineTo script(
-            "one" lineTo script("one", "number"),
-            "two" lineTo script("two", "number")
+            "one" lineTo script(doingName lineTo script("one", "number")),
+            "two" lineTo script(doingName lineTo script("two", "number"))
           )
         )
       )
@@ -311,11 +326,12 @@ class CompileTest {
         numberName lineTo script(),
         equalsName lineTo script(literal(0)),
         switchName lineTo script(
-          yesName lineTo script(literal("OK")),
+          yesName lineTo script(doingName lineTo script(literal("OK"))),
           noName lineTo script(
-            numberName lineTo script(),
-            minusName lineTo script(literal(1)),
-            "countdown" lineTo script())))
+            doingName lineTo script(
+              numberName lineTo script(),
+              minusName lineTo script(literal(1)),
+              "countdown" lineTo script()))))
 
     inputScript
       .plus(

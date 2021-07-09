@@ -14,10 +14,12 @@ import leo.base.notNullIf
 import leo.base.notNullOrError
 import leo.base.onlyOrNull
 import leo.base.orIfNull
+import leo.base.orNullIf
 import leo.base.seq
 import leo.base.the
 import leo.base.then
 import leo.choice
+import leo.choiceOrNull
 import leo.fieldOrNull
 import leo.fold
 import leo.functionLineTo
@@ -28,6 +30,7 @@ import leo.lineTo
 import leo.linkOrNull
 import leo.name
 import leo.named.evaluator.any
+import leo.onlyLineOrNull
 import leo.plus
 import leo.script
 import leo.scriptLine
@@ -251,3 +254,66 @@ val <V> TypedChoice<V>.typedTerm: TypedTerm<V>
       type(t))
 
 fun <V> typedSwitch(choice: TypeChoice) = TypedSwitch<V>(null, choice)
+
+val Type.pickDropChoiceOrNull: TypeChoice? get() =
+  choiceOrNull ?: structureOrNull?.orNullIf { !isEmpty }?.let { choice() }
+
+fun <V> TypedTerm<V>.pick(typedTerm: TypedTerm<V>): TypedTerm<V> =
+  t.pickDropChoiceOrNull
+    .orIfNull {
+      compileError(
+        t.script
+          .plus("pick" lineTo script(typedTerm.t.scriptLine))
+          .plus("is" lineTo script(
+            "not" lineTo script(
+              "matching" lineTo script(
+                "any" lineTo script("choice"),
+                "pick" lineTo script("any" lineTo script("expression")))))))
+    }
+    .let { choice ->
+      typedTerm.onlyLineOrNull.orIfNull {
+        compileError(
+          t.script
+            .plus("pick" lineTo script(typedTerm.t.scriptLine))
+            .plus("is" lineTo script(
+              "not" lineTo script(
+                "matching" lineTo script(
+                  "any" lineTo script("choice"),
+                  "pick" lineTo script("any" lineTo script("expression")))))))
+      }.let { typedLine ->
+        typed(
+          if (choice.lineStack.isEmpty) typedLine.v
+          else typedLine.v.eitherSecond,
+          type(choice.plus(typedLine.t)))
+      }
+    }
+
+fun <V> TypedTerm<V>.drop(type: Type): TypedTerm<V> =
+  t.pickDropChoiceOrNull
+    .orIfNull {
+      compileError(
+        t.script
+          .plus("pick" lineTo type.script)
+          .plus("is" lineTo script(
+            "not" lineTo script(
+              "matching" lineTo script(
+                "any" lineTo script("choice"),
+                "pick" lineTo script("any" lineTo script("type")))))))
+    }
+    .let { choice ->
+      type.onlyLineOrNull.orIfNull {
+        compileError(
+          t.script
+            .plus("pick" lineTo type.script)
+            .plus("is" lineTo script(
+              "not" lineTo script(
+                "matching" lineTo script(
+                  "any" lineTo script("choice"),
+                  "pick" lineTo script("any" lineTo script("type")))))))
+      }.let { typeLine ->
+        typed(
+          if (choice.lineStack.isEmpty) id()
+          else v.eitherFirst,
+          type(choice.plus(typeLine)))
+      }
+    }

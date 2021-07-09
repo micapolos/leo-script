@@ -11,6 +11,7 @@ import leo.base.reverse
 import leo.compileName
 import leo.doName
 import leo.doingName
+import leo.dropName
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -22,6 +23,7 @@ import leo.lineTo
 import leo.literal
 import leo.matchInfix
 import leo.matchPrefix
+import leo.pickName
 import leo.plus
 import leo.quoteName
 import leo.repeatingName
@@ -48,7 +50,9 @@ import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.choicePlus
 import leo.term.typed.do_
+import leo.term.typed.drop
 import leo.term.typed.lineTo
+import leo.term.typed.pick
 import leo.term.typed.plus
 import leo.term.typed.repeat
 import leo.term.typed.typed
@@ -96,9 +100,11 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     compileName -> plusCompile(field.rhs)
     doName -> plusDo(field.rhs)
+    dropName -> plusDrop(field.rhs)
     giveName -> plusGive(field.rhs)
     functionName -> plusFunction(field.rhs)
     letName -> plusLet(field.rhs)
+    pickName -> plusPick(field.rhs)
     selectName -> plusSelect(field.rhs)
     switchName -> plusSwitch(field.rhs)
     quoteName -> plusQuote(field.rhs)
@@ -175,6 +181,12 @@ fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (!typedTerm.t.isEmpty) compileError(script("let" lineTo script("after" lineTo typedTerm.t.script)))
   else set(module.plusLet(script))
+
+fun <V> Compiler<V>.plusPick(script: Script): Compiler<V> =
+  set(typedTerm.pick(context.typedTerm(script)))
+
+fun <V> Compiler<V>.plusDrop(script: Script): Compiler<V> =
+  set(typedTerm.drop(context.type(script)))
 
 fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
   if (!typedTerm.t.isEmpty) compileError(script("select" lineTo script("after" lineTo typedTerm.t.script)))
