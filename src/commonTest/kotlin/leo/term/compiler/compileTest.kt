@@ -1,7 +1,10 @@
 package leo.term.compiler
 
+import leo.anyNumberScriptLine
+import leo.anyTextScriptLine
 import leo.applyName
 import leo.base.assertEqualTo
+import leo.doingName
 import leo.equalsName
 import leo.functionName
 import leo.functionTo
@@ -16,7 +19,6 @@ import leo.noName
 import leo.notName
 import leo.numberName
 import leo.numberTypeLine
-import leo.numberTypeScriptLine
 import leo.plus
 import leo.quoteName
 import leo.repeatingName
@@ -37,6 +39,7 @@ import leo.term.invoke
 import leo.term.nativeTerm
 import leo.term.tail
 import leo.term.typed.choicePlus
+import leo.term.typed.do_
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.noSelection
@@ -47,7 +50,6 @@ import leo.term.typed.typedFunctionLine
 import leo.term.typed.typedTerm
 import leo.term.typed.yesSelection
 import leo.textTypeLine
-import leo.textTypeScriptLine
 import leo.theName
 import leo.type
 import leo.typeName
@@ -205,7 +207,7 @@ class CompileTest {
         script(
           selectName lineTo script(
             theName lineTo script(literal(10)),
-            notName lineTo script(textTypeScriptLine)
+            notName lineTo script(anyTextScriptLine)
           )
         )
       )
@@ -225,7 +227,7 @@ class CompileTest {
           "id" lineTo script(
             selectName lineTo script(
               theName lineTo script("one" lineTo script(literal(10))),
-              notName lineTo script("two" lineTo script(numberTypeScriptLine))
+              notName lineTo script("two" lineTo script(anyNumberScriptLine))
             )
           ),
           switchName lineTo script(
@@ -246,7 +248,7 @@ class CompileTest {
         script(
           "id" lineTo script(
             selectName lineTo script(
-              notName lineTo script("one" lineTo script(numberTypeScriptLine)),
+              notName lineTo script("one" lineTo script(anyNumberScriptLine)),
               theName lineTo script("two" lineTo script(literal(20)))
             )
           ),
@@ -284,7 +286,23 @@ class CompileTest {
   }
 
   @Test
-  fun recurse() {
+  fun giveDoing() {
+    script(
+      line(literal(1)),
+      giveName lineTo script(
+        "ok" lineTo script(anyNumberScriptLine),
+        doingName lineTo script("ok" lineTo script(numberName))))
+      .typedTerm(nativeEnvironment)
+      .assertEqualTo(
+        script(line(literal(1)))
+          .typedTerm(nativeEnvironment)
+          .do_(nativeEnvironment.context
+            .plus(binding(given(type(numberTypeLine))))
+            .typedTerm(script("ok" lineTo script(numberName)))))
+  }
+
+  @Test
+  fun giveRepeating() {
     val inputScript = script(
       line(literal(10)),
       "countdown" lineTo script())
@@ -303,7 +321,7 @@ class CompileTest {
     inputScript
       .plus(
         giveName lineTo script(
-          textTypeScriptLine,
+          anyTextScriptLine,
           repeatingName lineTo doingScript))
       .typedTerm(nativeEnvironment)
       .assertEqualTo(

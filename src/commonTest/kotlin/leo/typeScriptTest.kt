@@ -16,8 +16,8 @@ class TypeScriptTest {
       .assertEqualTo(
         script(
           "point" lineTo script(
-            "x" lineTo script(numberTypeScriptLine),
-            "y" lineTo script(numberTypeScriptLine)
+            "x" lineTo script(anyNumberScriptLine),
+            "y" lineTo script(anyNumberScriptLine)
           )
         )
       )
@@ -72,7 +72,7 @@ class TypeScriptTest {
                 "empty" lineTo script(),
                 "link" lineTo script(
                   recurseName lineTo script(),
-                  numberTypeScriptLine
+                  anyNumberScriptLine
                 )
               )
             )

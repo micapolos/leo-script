@@ -1,5 +1,7 @@
 package leo.named.evaluator
 
+import leo.anyNumberScriptLine
+import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
@@ -13,7 +15,6 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.numberName
-import leo.numberTypeScriptLine
 import leo.ofName
 import leo.privateName
 import leo.quoteName
@@ -21,7 +22,6 @@ import leo.script
 import leo.selectName
 import leo.takeName
 import leo.takingName
-import leo.textTypeScriptLine
 import leo.typeName
 import leo.withName
 import kotlin.test.Test
@@ -142,8 +142,8 @@ class ScriptEvaluateTest {
       .evaluate
       .assertEqualTo(
         script(
-          "name" lineTo script(textTypeScriptLine),
-          "age" lineTo script(numberTypeScriptLine)
+          "name" lineTo script(anyTextScriptLine),
+          "age" lineTo script(anyNumberScriptLine)
         )
       )
   }
@@ -230,8 +230,8 @@ class ScriptEvaluateTest {
         "red" lineTo script(literal(10)),
         ofName lineTo script(
           choiceName lineTo script(
-            "red" lineTo script(numberTypeScriptLine),
-            "blue" lineTo script(numberTypeScriptLine)
+            "red" lineTo script(anyNumberScriptLine),
+            "blue" lineTo script(anyNumberScriptLine)
           )
         )
       ),
@@ -254,8 +254,8 @@ class ScriptEvaluateTest {
         "blue" lineTo script(literal(20)),
         ofName lineTo script(
           choiceName lineTo script(
-            "red" lineTo script(numberTypeScriptLine),
-            "blue" lineTo script(numberTypeScriptLine)
+            "red" lineTo script(anyNumberScriptLine),
+            "blue" lineTo script(anyNumberScriptLine)
           )
         )
       ),

@@ -11,6 +11,7 @@ import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compileName
 import leo.doName
+import leo.doingName
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -136,15 +137,26 @@ fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
   set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
 fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
-  script.matchInfix(repeatingName) { lhs, rhs ->
+  script.matchInfix { lhs, name, rhs ->
     context.type(lhs).let { type ->
-      set(
-        typedTerm.repeat(
-          context
-            .plus(binding(definition(typedTerm.t.functionTo(type))))
-            .plus(binding(given(typedTerm.t))).typedTerm(rhs)))
+      when (name) {
+        doingName ->
+          set(
+            typedTerm
+              .do_(context.plus(binding(given(typedTerm.t))).typedTerm(rhs))
+              .check(type))
+        repeatingName ->
+          set(
+            typedTerm
+              .repeat(
+                context
+                  .plus(binding(definition(typedTerm.t.functionTo(type))))
+                  .plus(binding(given(typedTerm.t))).typedTerm(rhs))
+            .check(type))
+        else -> null
+      }
     }
-  }?: compileError("recurse" lineTo script())
+  }?: compileError("give" lineTo script)
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (typedTerm != typedTerm<V>()) error("let after term")

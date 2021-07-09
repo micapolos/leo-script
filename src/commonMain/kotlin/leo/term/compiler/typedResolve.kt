@@ -1,5 +1,6 @@
 package leo.term.compiler
 
+import leo.Type
 import leo.TypeChoice
 import leo.applyName
 import leo.choiceOrNull
@@ -43,3 +44,6 @@ val <V> TypedTerm<V>.switchTypedChoice: Typed<Term<V>, TypeChoice>
         else typed(content.v, choice)
       }
     }
+
+fun <V> TypedTerm<V>.check(type: Type): TypedTerm<V> =
+  also { if (t != type) compileError("type" lineTo script()) }

@@ -24,8 +24,8 @@ val TypeChoice.script: Script
 val TypeLine.scriptLine: ScriptLine
   get() =
     when (this) {
-      numberName lineTo type() -> theName lineTo script(numberTypeScriptLine)
-      textName lineTo type() -> theName lineTo script(textTypeScriptLine)
+      numberName lineTo type() -> theName lineTo script(anyNumberScriptLine)
+      textName lineTo type() -> theName lineTo script(anyTextScriptLine)
       is RecursiveTypeLine -> recursive.scriptLine
       is RecursibleTypeLine -> recursible.scriptLine
     }
@@ -62,8 +62,8 @@ val TypeField.unescapedScriptLine: ScriptLine
 val TypeLiteral.scriptLine: ScriptLine
   get() =
     when (this) {
-      is NumberTypeLiteral -> numberTypeScriptLine
-      is TextTypeLiteral -> textTypeScriptLine
+      is NumberTypeLiteral -> anyNumberScriptLine
+      is TextTypeLiteral -> anyTextScriptLine
     }
 
 val TypeFunction.scriptLine: ScriptLine

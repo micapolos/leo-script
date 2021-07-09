@@ -1,16 +1,16 @@
 package leo.term.evaluator
 
+import leo.anyNumberScriptLine
+import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.choiceName
 import leo.line
 import leo.lineTo
 import leo.literal
 import leo.notName
-import leo.numberTypeScriptLine
 import leo.script
 import leo.selectName
 import leo.switchName
-import leo.textTypeScriptLine
 import leo.theName
 import leo.typeName
 import kotlin.test.Test
@@ -23,7 +23,7 @@ class EvaluateTest {
       typeName lineTo script()
     )
       .evaluate
-      .assertEqualTo(script(numberTypeScriptLine))
+      .assertEqualTo(script(anyNumberScriptLine))
   }
 
   @Test
@@ -33,7 +33,7 @@ class EvaluateTest {
       typeName lineTo script()
     )
       .evaluate
-      .assertEqualTo(script(textTypeScriptLine))
+      .assertEqualTo(script(anyTextScriptLine))
   }
 
   @Test
@@ -41,7 +41,7 @@ class EvaluateTest {
     script(
       selectName lineTo script(
         theName lineTo script(literal(10)),
-        notName lineTo script(textTypeScriptLine)
+        notName lineTo script(anyTextScriptLine)
       ),
       typeName lineTo script()
     )
@@ -49,8 +49,8 @@ class EvaluateTest {
       .assertEqualTo(
         script(
           choiceName lineTo script(
-            numberTypeScriptLine,
-            textTypeScriptLine
+            anyNumberScriptLine,
+            anyTextScriptLine
           )
         )
       )
@@ -62,7 +62,7 @@ class EvaluateTest {
       "id" lineTo script(
         selectName lineTo script(
           theName lineTo script("one" lineTo script(literal(10))),
-          notName lineTo script("two" lineTo script(numberTypeScriptLine))
+          notName lineTo script("two" lineTo script(anyNumberScriptLine))
         )
       ),
       switchName lineTo script(
@@ -79,7 +79,7 @@ class EvaluateTest {
     script(
       "id" lineTo script(
         selectName lineTo script(
-          notName lineTo script("one" lineTo script(numberTypeScriptLine)),
+          notName lineTo script("one" lineTo script(anyNumberScriptLine)),
           theName lineTo script("two" lineTo script(literal(20)))
         )
       ),
@@ -105,8 +105,8 @@ class EvaluateTest {
       .assertEqualTo(
         script(
           "point" lineTo script(
-            "x" lineTo script(numberTypeScriptLine),
-            "y" lineTo script(numberTypeScriptLine)
+            "x" lineTo script(anyNumberScriptLine),
+            "y" lineTo script(anyNumberScriptLine)
           )
         )
       )

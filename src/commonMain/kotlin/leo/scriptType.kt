@@ -1,7 +1,7 @@
 package leo
 
-val textTypeScriptLine get() = anyName lineTo script(textName)
-val numberTypeScriptLine get() = anyName lineTo script(numberName)
+val anyTextScriptLine get() = anyName lineTo script(textName)
+val anyNumberScriptLine get() = anyName lineTo script(numberName)
 
 val Script.type: Type
   get() =
@@ -68,8 +68,8 @@ val ScriptLine.typePrimitive: TypePrimitive
 val ScriptLine.typeLiteralOrNull: TypeLiteral?
   get() =
     when (this) {
-      textTypeScriptLine -> literal(typeText)
-      numberTypeScriptLine -> literal(typeNumber)
+      anyTextScriptLine -> literal(typeText)
+      anyNumberScriptLine -> literal(typeNumber)
       else -> null
     }
 

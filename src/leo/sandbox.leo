@@ -1,5 +1,5 @@
 10.fibonacci
-do
+give
   any number
   repeating
     number
