@@ -164,11 +164,11 @@ fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
   }?: compileError(script("give" lineTo script))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
-  if (typedTerm != typedTerm<V>()) error("let after term")
+  if (typedTerm != typedTerm<V>()) compileError(script("let" lineTo script("after" lineTo typedTerm.t.script)))
   else set(module.plusLet(script))
 
 fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
-  if (typedTerm != typedTerm<V>()) compileError(script("select" lineTo script()))
+  if (typedTerm != typedTerm<V>()) compileError(script("select" lineTo script("after" lineTo typedTerm.t.script)))
   else set(
     typedChoice<V>()
       .fold(script.lineSeq.reverse) { choicePlus(context.typedSelection(it)) }
