@@ -2,17 +2,24 @@ package leo.term.compiler
 
 import leo.applyName
 import leo.base.assertEqualTo
+import leo.doingName
 import leo.equalsName
 import leo.functionName
+import leo.functionTo
 import leo.getName
 import leo.givingName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.natives.minusName
+import leo.noName
 import leo.notName
+import leo.numberName
 import leo.numberTypeLine
 import leo.numberTypeScriptLine
+import leo.plus
 import leo.quoteName
+import leo.recurseName
 import leo.script
 import leo.selectName
 import leo.switchName
@@ -33,6 +40,7 @@ import leo.term.typed.choicePlus
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.noSelection
+import leo.term.typed.recurse
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedFunctionLine
@@ -41,8 +49,10 @@ import leo.term.typed.yesSelection
 import leo.textTypeLine
 import leo.textTypeScriptLine
 import leo.theName
+import leo.toName
 import leo.type
 import leo.typeName
+import leo.yesName
 import kotlin.test.Test
 
 class CompileTest {
@@ -272,5 +282,42 @@ class CompileTest {
           )
         )
       )
+  }
+
+  @Test
+  fun recurse() {
+    val inputScript = script(
+      line(literal(10)),
+      "countdown" lineTo script())
+
+    val doingScript =
+      script(
+        numberName lineTo script(),
+        equalsName lineTo script(literal(0)),
+        switchName lineTo script(
+          yesName lineTo script(literal("OK")),
+          noName lineTo script(
+            numberName lineTo script(),
+            minusName lineTo script(literal(1)),
+            "countdown" lineTo script())))
+
+    inputScript
+      .plus(
+        recurseName lineTo script(
+          toName lineTo script(textTypeScriptLine),
+          doingName lineTo doingScript))
+      .typedTerm(nativeEnvironment)
+      .assertEqualTo(
+        inputScript
+          .typedTerm(nativeEnvironment)
+          .let { typedTerm ->
+            typedTerm
+              .recurse(
+                nativeEnvironment
+                  .context
+                  .plus(binding(definition(typedTerm.t functionTo type(textTypeLine))))
+                  .plus(binding(given(typedTerm.t)))
+                  .typedTerm(doingScript))
+          })
   }
 }

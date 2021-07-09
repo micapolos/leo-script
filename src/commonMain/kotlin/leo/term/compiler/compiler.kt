@@ -11,6 +11,7 @@ import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compileName
 import leo.doName
+import leo.doingName
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -22,9 +23,8 @@ import leo.lineTo
 import leo.literal
 import leo.matchInfix
 import leo.matchPrefix
-import leo.numberTypeLine
 import leo.quoteName
-import leo.repeatingName
+import leo.recurseName
 import leo.reverse
 import leo.script
 import leo.selectName
@@ -47,14 +47,14 @@ import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
 import leo.term.typed.choicePlus
-import leo.term.typed.doRepeating
 import leo.term.typed.do_
 import leo.term.typed.lineTo
 import leo.term.typed.plus
+import leo.term.typed.recurse
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedTerm
-import leo.type
+import leo.toName
 
 data class Compiler<V>(
   val module: Module<V>,
@@ -101,6 +101,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     letName -> plusLet(field.rhs)
     selectName -> plusSelect(field.rhs)
     switchName -> plusSwitch(field.rhs)
+    recurseName -> plusRecurse(field.rhs)
     quoteName -> plusQuote(field.rhs)
     else -> null
   }
@@ -133,18 +134,20 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   }.notNullOrError("parse error action")
 
 fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
-  null
-    ?: plusDoRepeatingOrNull(script)
-    ?: plusDoNonRepeating(script)
-
-fun <V> Compiler<V>.plusDoRepeatingOrNull(script: Script): Compiler<V>? =
-  script.matchPrefix(repeatingName) { rhs ->
-    set(typedTerm.doRepeating(context.plus(binding(definition(typedTerm.t.functionTo(/* TODO: infer!!! */type(numberTypeLine))))).plus(binding(given(typedTerm.t))).typedTerm(rhs)))
-  }
-
-fun <V> Compiler<V>.plusDoNonRepeating(script: Script): Compiler<V> =
   set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
 
+fun <V> Compiler<V>.plusRecurse(script: Script): Compiler<V> =
+  script.matchInfix(doingName) { doingLhs, doingRhs ->
+    doingLhs.matchPrefix(toName) { toRhs ->
+      context.type(toRhs).let { type ->
+        set(
+          typedTerm.recurse(
+            context
+              .plus(binding(definition(typedTerm.t.functionTo(type))))
+              .plus(binding(given(typedTerm.t))).typedTerm(doingRhs)))
+      }
+    }
+  }?: compileError("recurse" lineTo script())
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (typedTerm != typedTerm<V>()) error("let after term")
