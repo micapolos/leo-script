@@ -3,9 +3,9 @@ package leo.term.evaluator
 import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.base.assertEqualTo
-import leo.choiceName
 import leo.doingName
 import leo.dropName
+import leo.eitherName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -51,12 +51,8 @@ class EvaluateTest {
       .evaluate
       .assertEqualTo(
         script(
-          choiceName lineTo script(
-            anyNumberScriptLine,
-            anyTextScriptLine
-          )
-        )
-      )
+          eitherName lineTo script(anyNumberScriptLine),
+          eitherName lineTo script(anyTextScriptLine)))
   }
 
   @Test

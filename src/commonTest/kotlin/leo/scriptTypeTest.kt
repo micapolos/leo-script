@@ -4,7 +4,7 @@ import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.choice
-import leo.choiceName
+import leo.eitherName
 import leo.lineTo
 import leo.numberTypeLine
 import leo.orName
@@ -70,12 +70,9 @@ class ScriptTest {
   @Test
   fun choice() {
     script(
-      choiceName lineTo script(
-        anyTextScriptLine,
-        anyNumberScriptLine,
-        "foo" lineTo script()
-      )
-    )
+      eitherName lineTo script(anyTextScriptLine),
+      eitherName lineTo script(anyNumberScriptLine),
+      eitherName lineTo script("foo" lineTo script()))
       .type
       .assertEqualTo(
         type(choice(textTypeLine, numberTypeLine, "foo" lineTo type()))

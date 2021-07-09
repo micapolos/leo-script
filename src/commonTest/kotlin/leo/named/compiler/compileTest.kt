@@ -4,10 +4,10 @@ import leo.base.assertEqualTo
 import leo.beName
 import leo.bindName
 import leo.choice
-import leo.choiceName
 import leo.defineName
 import leo.doName
 import leo.doingName
+import leo.eitherName
 import leo.equalName
 import leo.functionLineTo
 import leo.functionName
@@ -53,11 +53,9 @@ import leo.selectName
 import leo.takeName
 import leo.takingName
 import leo.textTypeLine
-import leo.theName
 import leo.toName
 import leo.type
 import leo.typeName
-import leo.withName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -385,14 +383,8 @@ class CompileTest {
     script(
       "yes" lineTo script(),
       ofName lineTo script(
-        choiceName lineTo script(
-          theName lineTo script(
-            "yes" lineTo script(),
-            "no" lineTo script()
-          )
-        )
-      )
-    )
+        eitherName lineTo script("yes" lineTo script()),
+        eitherName lineTo script("no" lineTo script())))
       .typedExpression
       .assertEqualTo(
         expression().make("yes").of(type(choice("yes" lineTo type(), "no" lineTo type())))
@@ -405,12 +397,8 @@ class CompileTest {
       "boolean" lineTo script(
         "yes" lineTo script(),
         ofName lineTo script(
-          choiceName lineTo script(
-            withName lineTo script("yes"),
-            withName lineTo script("no")
-          )
-        )
-      ),
+          eitherName lineTo script("yes"),
+          eitherName lineTo script("no"))),
       selectName lineTo script(
         "yes" lineTo script(literal(10)),
         "no" lineTo script(literal(20))
@@ -459,11 +447,9 @@ class CompileTest {
       defineName lineTo script(
         typeName lineTo script(
           "color" lineTo script(
-            choiceName lineTo script(
-              withName lineTo script("red" lineTo script()),
-              withName lineTo script("green" lineTo script()),
-              withName lineTo script("blue" lineTo script())
-            )
+            eitherName lineTo script("red"),
+            eitherName lineTo script("green"),
+            eitherName lineTo script("blue")
           )
         )
       )

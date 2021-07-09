@@ -6,9 +6,9 @@ import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
 import leo.bindName
-import leo.choiceName
 import leo.doName
 import leo.doingName
+import leo.eitherName
 import leo.functionName
 import leo.giveName
 import leo.line
@@ -229,12 +229,8 @@ class ScriptEvaluateTest {
       "color" lineTo script(
         "red" lineTo script(literal(10)),
         ofName lineTo script(
-          choiceName lineTo script(
-            "red" lineTo script(anyNumberScriptLine),
-            "blue" lineTo script(anyNumberScriptLine)
-          )
-        )
-      ),
+          eitherName lineTo script("red" lineTo script(anyNumberScriptLine)),
+          eitherName lineTo script("blue" lineTo script(anyNumberScriptLine)))),
       selectName lineTo script(
         "red" lineTo script(
           "red" lineTo script(),
@@ -253,12 +249,8 @@ class ScriptEvaluateTest {
       "color" lineTo script(
         "blue" lineTo script(literal(20)),
         ofName lineTo script(
-          choiceName lineTo script(
-            "red" lineTo script(anyNumberScriptLine),
-            "blue" lineTo script(anyNumberScriptLine)
-          )
-        )
-      ),
+          eitherName lineTo script("red" lineTo script(anyNumberScriptLine)),
+          eitherName lineTo script("blue" lineTo script(anyNumberScriptLine)))),
       selectName lineTo script(
         "red" lineTo script(
           "red" lineTo script(),

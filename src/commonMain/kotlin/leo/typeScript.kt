@@ -19,7 +19,7 @@ val TypeStructure.script: Script
 
 val TypeChoice.script: Script
   get() =
-    script(choiceName lineTo lineStack.map { scriptLine }.script)
+    lineStack.map { eitherName lineTo script(scriptLine) }.script
 
 val TypeLine.scriptLine: ScriptLine
   get() =
@@ -75,7 +75,7 @@ val TypeRecurse.scriptLine: ScriptLine
 val String.isTypeKeyword: Boolean
   get() =
     when (this) {
-      choiceName -> true
+      eitherName -> true
       functionName -> true
       recurseName -> true
       recursiveName -> true

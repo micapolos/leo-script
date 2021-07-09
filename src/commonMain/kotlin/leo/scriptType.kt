@@ -1,19 +1,34 @@
 package leo
 
+import leo.base.orIfNull
+import leo.term.compiler.compileError
+import leo.term.typed.pickDropChoiceOrNull
+
 val anyTextScriptLine get() = anyName lineTo script(textName)
 val anyNumberScriptLine get() = anyName lineTo script(numberName)
 
 val Script.type: Type
   get() =
-    null
-      ?: typeChoiceOrNull?.type
-      ?: typeStructure.type
+    type().fold(lineStack.reverse) { plus(it) }
 
-val Script.typeChoiceOrNull: TypeChoice?
-  get() =
-    matchPrefix(choiceName) { rhs ->
-      rhs.lineStack.map { typeLine }.choice
-    }
+fun Type.plus(scriptLine: ScriptLine): Type =
+  when (scriptLine) {
+    is FieldScriptLine -> plus(scriptLine.field)
+    is LiteralScriptLine -> plusLine(scriptLine)
+  }
+
+fun Type.plus(scriptField: ScriptField): Type =
+  if (scriptField.name == eitherName) plusEither(scriptField.rhs)
+  else plusLine(line(scriptField))
+
+fun Type.plusEither(script: Script): Type =
+  pickDropChoiceOrNull
+    .orIfNull { compileError(script("either")) }
+    .plus(script.type.onlyLineOrNull.orIfNull { compileError(script("either")) })
+    .type
+
+fun Type.plusLine(scriptLine: ScriptLine): Type =
+  plus(scriptLine.typeLine)
 
 val Script.typeStructure: TypeStructure
   get() =
