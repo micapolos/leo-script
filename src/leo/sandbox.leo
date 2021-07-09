@@ -1,11 +1,8 @@
 let
-  boolean true
-  do boolean
-    pick true
-    drop false
+  any kleene
+  do kleene
+    either true
+    either maybe
+    either false
 
-let
-  boolean false
-  do boolean
-    drop true
-    pick false
+kleene false
