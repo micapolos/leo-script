@@ -2,14 +2,15 @@ package leo.term.compiler
 
 import leo.anyName
 import leo.base.assertEqualTo
+import leo.empty
 import leo.lineTo
 import leo.numberName
 import leo.numberTypeLine
 import leo.script
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
-import leo.term.id
 import leo.term.nativeTerm
+import leo.term.term
 import leo.term.typed.lineTo
 import leo.term.typed.typed
 import leo.term.typed.typedTerm
@@ -30,7 +31,7 @@ class StaticTypedTermTest {
       )
       .assertEqualTo(
         typed(
-          id(),
+          term(empty),
           type(
             "point" lineTo type(
               "x" lineTo type("foo"),

@@ -20,6 +20,7 @@ import leo.base.the
 import leo.base.then
 import leo.choice
 import leo.choiceOrNull
+import leo.empty
 import leo.fieldOrNull
 import leo.fold
 import leo.functionLineTo
@@ -47,10 +48,10 @@ import leo.term.eitherSecond
 import leo.term.fix
 import leo.term.fn
 import leo.term.head
-import leo.term.id
 import leo.term.invoke
 import leo.term.plus
 import leo.term.tail
+import leo.term.term
 import leo.type
 import leo.typeLine
 
@@ -72,14 +73,14 @@ data class TypedSwitch<V>(val typedTerm: TypedTerm<V>?, val choice: TypeChoice)
 fun <V> noSelection(typeLine: TypeLine): TypedSelection<V> = NoTypedSelection(typeLine)
 fun <V> yesSelection(typedLine: TypedLine<V>): TypedSelection<V> = YesTypedSelection(typedLine)
 
-fun <V> typedTerm(): TypedTerm<V> = Typed(id(), type())
+fun <V> typedTerm(): TypedTerm<V> = Typed(term(empty), type())
 
 fun <V> typedChoice(): TypedChoice<V> = Typed(null, choice())
 
 fun <V> TypedTerm<V>.plus(line: TypedLine<V>): TypedTerm<V> =
   typed(
     if (t.isStatic)
-      if (line.t.isStatic) id()
+      if (line.t.isStatic) term(empty)
       else line.v
     else
       if (line.t.isStatic) v
@@ -105,10 +106,10 @@ val <V> TypedTerm<V>.pairOrNull: Pair<TypedTerm<V>, TypedLine<V>>?
       link.tail.structure.type.let { type ->
         link.head.let { line ->
           if (type.isStatic)
-            if (line.isStatic) typed(id<V>(), type) to typed(id(), line)
-            else typed(id<V>(), type) to typed(v, line)
+            if (line.isStatic) typed(term<V>(empty), type) to typed(term(empty), line)
+            else typed(term<V>(empty), type) to typed(v, line)
           else
-            if (line.isStatic) typed(v, type) to typed(id(), line)
+            if (line.isStatic) typed(v, type) to typed(term(empty), line)
             else typed(v.tail, type) to typed(v.head, line)
         }
       }
@@ -312,7 +313,7 @@ fun <V> TypedTerm<V>.drop(type: Type): TypedTerm<V> =
                   "pick" lineTo script("any" lineTo script("type")))))))
       }.let { typeLine ->
         typed(
-          if (choice.lineStack.isEmpty) id()
+          if (choice.lineStack.isEmpty) term(empty)
           else v.eitherFirst,
           type(choice.plus(typeLine)))
       }

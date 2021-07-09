@@ -39,6 +39,7 @@ data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
   override fun toString() = script { anyScriptLine }.toString()
 }
 
+fun <T> term(empty: Empty): Term<T> = EmptyTerm(empty)
 fun <T> term(value: T): Term<T> = NativeTerm(value)
 fun <T> term(abstraction: TermAbstraction<T>): Term<T> = AbstractionTerm(abstraction)
 fun <T> term(application: TermApplication<T>): Term<T> = ApplicationTerm(application)
