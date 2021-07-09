@@ -6,6 +6,7 @@ import leo.equalsName
 import leo.functionName
 import leo.functionTo
 import leo.getName
+import leo.giveName
 import leo.givingName
 import leo.line
 import leo.lineTo
@@ -18,7 +19,6 @@ import leo.numberTypeLine
 import leo.numberTypeScriptLine
 import leo.plus
 import leo.quoteName
-import leo.recurseName
 import leo.repeatingName
 import leo.script
 import leo.selectName
@@ -40,7 +40,7 @@ import leo.term.typed.choicePlus
 import leo.term.typed.invoke
 import leo.term.typed.lineTo
 import leo.term.typed.noSelection
-import leo.term.typed.recurse
+import leo.term.typed.repeat
 import leo.term.typed.typed
 import leo.term.typed.typedChoice
 import leo.term.typed.typedFunctionLine
@@ -302,7 +302,7 @@ class CompileTest {
 
     inputScript
       .plus(
-        recurseName lineTo script(
+        giveName lineTo script(
           textTypeScriptLine,
           repeatingName lineTo doingScript))
       .typedTerm(nativeEnvironment)
@@ -311,7 +311,7 @@ class CompileTest {
           .typedTerm(nativeEnvironment)
           .let { typedTerm ->
             typedTerm
-              .recurse(
+              .repeat(
                 nativeEnvironment
                   .context
                   .plus(binding(definition(typedTerm.t functionTo type(textTypeLine))))

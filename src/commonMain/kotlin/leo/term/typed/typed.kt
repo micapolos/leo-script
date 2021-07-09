@@ -197,7 +197,7 @@ fun <V> TypedTerm<V>.make(name: String): TypedTerm<V> =
 fun <V> TypedTerm<V>.do_(typedTerm: TypedTerm<V>): TypedTerm<V> =
   typed(fn(typedTerm.v).invoke(v), typedTerm.t)
 
-fun <V> TypedTerm<V>.recurse(typedTerm: TypedTerm<V>): TypedTerm<V> =
+fun <V> TypedTerm<V>.repeat(typedTerm: TypedTerm<V>): TypedTerm<V> =
   typed(fix<V>().invoke(fn(fn(typedTerm.v))).invoke(v), typedTerm.t)
 
 fun <V> typedFunctionLine(type: Type, typedTerm: TypedTerm<V>): TypedLine<V> =
