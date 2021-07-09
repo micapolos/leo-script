@@ -7,7 +7,6 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.base.fold
-import leo.base.notNullOrError
 import leo.base.reverse
 import leo.compileName
 import leo.doName
@@ -116,9 +115,9 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
       "scheme" -> set(context.typedTerm(script("scheme" lineTo script(literal(schemeEnvironment.typedTerm(rhs).v.scheme.string)))))
       "python" -> set(context.typedTerm(script("python" lineTo script(literal(pythonEnvironment.typedTerm(rhs).v.python.string)))))
       "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script)))
-      else -> null
+      else -> compileError(script("compile" lineTo script(name)))
     }
-  }.notNullOrError("compile $script")
+  }?: compileError(script("compile" lineTo script))
 
 fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
@@ -164,11 +163,11 @@ fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
   }?: compileError(script("give" lineTo script))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
-  if (typedTerm != typedTerm<V>()) compileError(script("let" lineTo script("after" lineTo typedTerm.t.script)))
+  if (!typedTerm.t.isEmpty) compileError(script("let" lineTo script("after" lineTo typedTerm.t.script)))
   else set(module.plusLet(script))
 
 fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
-  if (typedTerm != typedTerm<V>()) compileError(script("select" lineTo script("after" lineTo typedTerm.t.script)))
+  if (!typedTerm.t.isEmpty) compileError(script("select" lineTo script("after" lineTo typedTerm.t.script)))
   else set(
     typedChoice<V>()
       .fold(script.lineSeq.reverse) { choicePlus(context.typedSelection(it)) }
@@ -180,7 +179,7 @@ fun <V> Compiler<V>.plusSwitch(script: Script): Compiler<V> =
   }
 
 fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) error("$typedTerm not empty")
+  if (!typedTerm.t.isEmpty) compileError(script("quote" lineTo script("after" lineTo typedTerm.t.script)))
   else set(environment.staticTypedTerm(script))
 
 fun <V> Compiler<V>.plus(typedLine: TypedLine<V>): Compiler<V> =
