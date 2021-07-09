@@ -9,6 +9,7 @@ import leo.ScriptLine
 import leo.base.fold
 import leo.base.reverse
 import leo.compileName
+import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.dropName
@@ -99,6 +100,7 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     compileName -> plusCompile(field.rhs)
+    debugName -> plusDebug(field.rhs)
     doName -> plusDo(field.rhs)
     dropName -> plusDrop(field.rhs)
     giveName -> plusGive(field.rhs)
@@ -134,6 +136,10 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))
+
+fun <V> Compiler<V>.plusDebug(script: Script): Compiler<V> =
+  if (!typedTerm.t.isEmpty) compileError(script("debug" lineTo script()))
+  else set(environment.staticTypedTerm(script("debug" lineTo script(toScriptLine))))
 
 fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->

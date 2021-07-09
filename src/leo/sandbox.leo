@@ -21,8 +21,4 @@ let
     either any rectangle
     either any triangle
 
-shape
-  drop any rectangle
-  drop any triangle
-  pick circle radius 10
-type
+debug
