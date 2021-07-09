@@ -29,6 +29,10 @@ import leo.reverse
 import leo.script
 import leo.selectName
 import leo.switchName
+import leo.term.compiler.haskell.haskell
+import leo.term.compiler.haskell.haskellEnvironment
+import leo.term.compiler.idris.idris
+import leo.term.compiler.idris.idrisEnvironment
 import leo.term.compiler.js.js
 import leo.term.compiler.js.jsEnvironment
 import leo.term.compiler.julia.julia
@@ -107,6 +111,8 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
     when (name) {
       "js" -> set(context.typedTerm(script("js" lineTo script(literal(jsEnvironment.typedTerm(rhs).v.js.string)))))
       "julia" -> set(context.typedTerm(script("julia" lineTo script(literal(juliaEnvironment.typedTerm(rhs).v.julia.string)))))
+      "haskell" -> set(context.typedTerm(script("haskell" lineTo script(literal(haskellEnvironment.typedTerm(rhs).v.haskell.string)))))
+      "idris" -> set(context.typedTerm(script("idris" lineTo script(literal(idrisEnvironment.typedTerm(rhs).v.idris.string)))))
       "scheme" -> set(context.typedTerm(script("scheme" lineTo script(literal(schemeEnvironment.typedTerm(rhs).v.scheme.string)))))
       "python" -> set(context.typedTerm(script("python" lineTo script(literal(pythonEnvironment.typedTerm(rhs).v.python.string)))))
       "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script)))
