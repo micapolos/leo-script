@@ -22,6 +22,7 @@ import leo.lineTo
 import leo.literal
 import leo.matchInfix
 import leo.matchPrefix
+import leo.plus
 import leo.quoteName
 import leo.repeatingName
 import leo.reverse
@@ -105,7 +106,16 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   }
 
 fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) error("compile non empty")
+  if (!typedTerm.t.isEmpty) compileError(
+    typedTerm.t.script
+      .plus("compile" lineTo script)
+      .plus("is" lineTo script(
+        "not" lineTo script(
+          "matching" lineTo script(
+            "compile" lineTo script(
+              "any" lineTo script(
+                "language" lineTo script(
+                  "any" lineTo script("script")))))))))
   else script.matchPrefix { name, rhs ->
     when (name) {
       "js" -> set(context.typedTerm(script("js" lineTo script(literal(jsEnvironment.typedTerm(rhs).v.js.string)))))
