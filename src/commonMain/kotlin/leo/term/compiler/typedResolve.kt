@@ -6,6 +6,7 @@ import leo.applyName
 import leo.choiceOrNull
 import leo.contentName
 import leo.lineTo
+import leo.plus
 import leo.script
 import leo.term.Term
 import leo.term.typed.Typed
@@ -40,10 +41,10 @@ val <V> TypedTerm<V>.switchTypedChoice: Typed<Term<V>, TypeChoice>
   get() =
     content.let { content ->
       content.t.choiceOrNull.let { choice ->
-        if (choice == null) compileError("switch" lineTo script())
+        if (choice == null) compileError(t.script.plus("is" lineTo script("not" lineTo script("choice"))))
         else typed(content.v, choice)
       }
     }
 
 fun <V> TypedTerm<V>.check(type: Type): TypedTerm<V> =
-  also { if (t != type) compileError("type" lineTo script()) }
+  also { if (t != type) compileError(t.script.plus("is" lineTo script("not" lineTo type.script))) }

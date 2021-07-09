@@ -1,7 +1,6 @@
 package leo.term.evaluator
 
 import leo.Script
-import leo.compileName
 import leo.errorName
 import leo.lineTo
 import leo.named.compiler.CompileError
@@ -14,9 +13,5 @@ val Script.evaluate: Script
     try {
       typedValue.script
     } catch (compileError: CompileError) {
-      script(
-        errorName lineTo script(
-          compileName lineTo compileError.scriptFn()
-        )
-      )
+      script(errorName lineTo compileError.scriptFn())
     }

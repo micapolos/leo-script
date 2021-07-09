@@ -1,6 +1,6 @@
-function
-  number.any
-  doing
-    number
-    and "foo"
-type
+20
+equals 30
+switch
+  yes 10
+  no 123
+

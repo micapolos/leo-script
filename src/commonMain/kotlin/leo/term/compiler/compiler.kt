@@ -130,7 +130,13 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
       }
       else -> null
     }
-  }.notNullOrError("parse error action")
+  }?: compileError(
+    script(
+      "function" lineTo script,
+      "is" lineTo script("not" lineTo script("matching" lineTo script(
+        "function" lineTo script(
+          "any" lineTo script("type"),
+          "doing" lineTo script("any" lineTo script("expression"))))))))
 
 fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
   set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
@@ -155,14 +161,14 @@ fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
         else -> null
       }
     }
-  }?: compileError("give" lineTo script)
+  }?: compileError(script("give" lineTo script))
 
 fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
   if (typedTerm != typedTerm<V>()) error("let after term")
   else set(module.plusLet(script))
 
 fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
-  if (typedTerm != typedTerm<V>()) compileError("select" lineTo script())
+  if (typedTerm != typedTerm<V>()) compileError(script("select" lineTo script()))
   else set(
     typedChoice<V>()
       .fold(script.lineSeq.reverse) { choicePlus(context.typedSelection(it)) }
