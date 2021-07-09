@@ -49,5 +49,6 @@ val juliaEnvironment: Environment<Julia>
               type(textTypeLine))
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )

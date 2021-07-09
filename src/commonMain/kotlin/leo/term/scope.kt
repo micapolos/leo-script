@@ -4,9 +4,10 @@ import leo.base.stak.Stak
 import leo.base.stak.push
 import leo.base.stak.stakOf
 import leo.base.stak.top
+import leo.named.value.anyScriptLine
 
 data class Scope<out T>(val valueStak: Stak<Value<T>>) {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine { anyScriptLine }.toString()
 }
 
 fun <T> scope(vararg values: Value<T>) =

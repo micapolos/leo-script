@@ -9,51 +9,42 @@ import leo.literal
 import leo.plus
 import leo.script
 
-val <T> Term<T>.scriptLine: ScriptLine
-  get() =
-    "term" lineTo script
+fun <T> Term<T>.scriptLine(fn: (T) -> ScriptLine): ScriptLine =
+  "term" lineTo script(fn)
 
-val <T> Term<T>.script: Script
-  get() =
-    when (this) {
-      is AbstractionTerm -> abstraction.script
-      is ApplicationTerm -> application.script
-      is NativeTerm -> native.nativeScript
-      is VariableTerm -> variable.script
-    }
+fun <T> Term<T>.script(fn: (T) -> ScriptLine): Script =
+  when (this) {
+    is AbstractionTerm -> abstraction.script(fn)
+    is ApplicationTerm -> application.script(fn)
+    is NativeTerm -> native.nativeScript(fn)
+    is VariableTerm -> variable.script
+  }
 
 val IndexVariable.script: Script
   get() =
     script("variable" lineTo script(literal(index)))
 
-val <T> T.nativeScript: Script
-  get() =
-    script("native" lineTo script(literal(toString())))
+fun <T> T.nativeScript(fn: (T) -> ScriptLine): Script =
+    script("native" lineTo script(fn(this)))
 
-val <T> TermApplication<T>.script: Script
-  get() =
-    lhs.script.plus("apply" lineTo rhs.script)
+fun <T> TermApplication<T>.script(fn: (T) -> ScriptLine): Script =
+    lhs.script(fn).plus("apply" lineTo rhs.script(fn))
 
-val <T> TermAbstraction<T>.script: Script
-  get() =
-    script("lambda" lineTo term.script)
+fun <T> TermAbstraction<T>.script(fn: (T) -> ScriptLine): Script =
+    script("lambda" lineTo term.script(fn))
 
-val <T> Value<T>.scriptLine: ScriptLine
-  get() =
-    "value" lineTo script
+fun <T> Value<T>.scriptLine(fn: (T) -> ScriptLine): ScriptLine =
+    "value" lineTo script(fn)
 
-val <T> Value<T>.script: Script
-  get() =
-    when (this) {
-      is FunctionValue -> script(function.scriptLine)
-      is NativeValue -> native.nativeScript
-    }
+fun <T> Value<T>.script(fn: (T) -> ScriptLine): Script =
+  when (this) {
+    is FunctionValue -> script(function.scriptLine(fn))
+    is NativeValue -> native.nativeScript(fn)
+  }
 
-val <T> Function<T>.scriptLine
-  get() =
-    "function" lineTo script(scope.scriptLine, term.scriptLine)
+fun <T> Function<T>.scriptLine(fn: (T) -> ScriptLine): ScriptLine =
+    "function" lineTo script(scope.scriptLine(fn), term.scriptLine(fn))
 
 
-val <T> Scope<T>.scriptLine
-  get() =
-    "scope" lineTo script("values" lineTo valueStak.map { scriptLine }.stack.script)
+fun <T> Scope<T>.scriptLine(fn: (T) -> ScriptLine): ScriptLine =
+    "scope" lineTo script("values" lineTo valueStak.map { scriptLine(fn) }.stack.script)

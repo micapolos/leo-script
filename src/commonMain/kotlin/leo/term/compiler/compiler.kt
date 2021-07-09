@@ -130,7 +130,7 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
       "idris" -> set(context.typedTerm(script("idris" lineTo script(literal(idrisEnvironment.typedTerm(rhs).v.idris.string)))))
       "scheme" -> set(context.typedTerm(script("scheme" lineTo script(literal(schemeEnvironment.typedTerm(rhs).v.scheme.string)))))
       "python" -> set(context.typedTerm(script("python" lineTo script(literal(pythonEnvironment.typedTerm(rhs).v.python.string)))))
-      "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script)))
+      "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script(scriptEnvironment.scriptLineFn))))
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))

@@ -50,5 +50,6 @@ val jsEnvironment: Environment<Js>
               type(textTypeLine))
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )

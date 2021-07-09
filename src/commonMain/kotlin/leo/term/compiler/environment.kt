@@ -2,6 +2,7 @@ package leo.term.compiler
 
 import leo.Literal
 import leo.Script
+import leo.ScriptLine
 import leo.isEmpty
 import leo.lineTo
 import leo.plus
@@ -16,8 +17,8 @@ import leo.typeName
 
 data class Environment<V>(
   val literalFn: (Literal) -> Term<V>,
-  val resolveOrNullFn: (TypedTerm<V>) -> TypedTerm<V>?
-)
+  val resolveOrNullFn: (TypedTerm<V>) -> TypedTerm<V>?,
+  val scriptLineFn: (V) -> ScriptLine)
 
 fun <V> Environment<V>.typedTerm(script: Script): TypedTerm<V> =
   context.typedTerm(script)

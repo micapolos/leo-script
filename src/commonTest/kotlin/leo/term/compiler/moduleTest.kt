@@ -20,9 +20,10 @@ class ModuleTest {
       .plusCast(
         type(
           "my" lineTo type(
-            "boolean" lineTo type(
+            "kleene" lineTo type(
               choice(
                 "true" lineTo type(),
+                "maybe" lineTo type(),
                 "false" lineTo type())))))
       .assertEqualTo(
         nativeEnvironment
@@ -32,21 +33,34 @@ class ModuleTest {
             binding(
               definition(
                 function(
-                  type("my" lineTo type("boolean" lineTo type("true"))),
-                  type("my" lineTo type("boolean" lineTo type(
+                  type("my" lineTo type("kleene" lineTo type("true"))),
+                  type("my" lineTo type("kleene" lineTo type(
                     choice(
                       "true" lineTo type(),
+                      "maybe" lineTo type(),
                       "false" lineTo type()))))))))
           .plus(
             binding(
               definition(
                 function(
-                  type("my" lineTo type("boolean" lineTo type("false"))),
-                  type("my" lineTo type("boolean" lineTo type(
+                  type("my" lineTo type("kleene" lineTo type("maybe"))),
+                  type("my" lineTo type("kleene" lineTo type(
                     choice(
                       "true" lineTo type(),
+                      "maybe" lineTo type(),
                       "false" lineTo type()))))))))
-          .plus(fn(fn(get<Native>(0)).eitherFirst))
-          .plus(fn(fn(get<Native>(0)).eitherSecond)))
+          .plus(
+            binding(
+              definition(
+                function(
+                  type("my" lineTo type("kleene" lineTo type("false"))),
+                  type("my" lineTo type("kleene" lineTo type(
+                    choice(
+                      "true" lineTo type(),
+                      "maybe" lineTo type(),
+                      "false" lineTo type()))))))))
+          .plus(fn(get<Native>(0).eitherFirst.eitherFirst))
+          .plus(fn(get<Native>(0).eitherSecond.eitherFirst))
+          .plus(fn(get<Native>(0).eitherSecond)))
   }
 }

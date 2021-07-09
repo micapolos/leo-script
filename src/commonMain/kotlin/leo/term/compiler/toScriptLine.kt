@@ -13,7 +13,7 @@ val <V> Environment<V>.toScriptLine: ScriptLine get() =
 val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(
     context.toScriptLine,
-    "term" lineTo termStack.listScriptLine { scriptLine }.script)
+    "term" lineTo termStack.listScriptLine { scriptLine(context.environment.scriptLineFn) }.script)
 
 val <V> Context<V>.toScriptLine: ScriptLine get() =
   "context" lineTo script(

@@ -49,5 +49,6 @@ val haskellEnvironment: Environment<Haskell>
               type(textTypeLine))
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )

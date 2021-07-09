@@ -1,7 +1,9 @@
 package leo.term
 
+import leo.named.value.anyScriptLine
+
 sealed class Term<out T> {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine { anyScriptLine }.toString()
 }
 
 data class NativeTerm<T>(val native: T) : Term<T>() {
@@ -25,11 +27,11 @@ data class IndexVariable(val index: Int) {
 }
 
 data class TermAbstraction<out T>(val term: Term<T>) {
-  override fun toString() = script.toString()
+  override fun toString() = script { anyScriptLine }.toString()
 }
 
 data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
-  override fun toString() = script.toString()
+  override fun toString() = script { anyScriptLine }.toString()
 }
 
 fun <T> term(value: T): Term<T> = NativeTerm(value)

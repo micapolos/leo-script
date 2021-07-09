@@ -76,7 +76,8 @@ val schemeEnvironment: Environment<Scheme>
             )
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )
 
 val Literal.scheme: Scheme get() = toString().scheme

@@ -67,5 +67,6 @@ val pythonEnvironment: Environment<Python>
             )
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )

@@ -80,4 +80,5 @@ val nativeEnvironment: Environment<Native>
             )
           else -> null
         }
-      })
+      },
+      { it.scriptLine })

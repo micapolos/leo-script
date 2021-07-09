@@ -44,7 +44,8 @@ val idrisEnvironment: Environment<Idris>
               type(textTypeLine))
           else -> null
         }
-      }
+      },
+      { it.scriptLine }
     )
 
 val Literal.idris: Idris get() = toString().idris
