@@ -2,6 +2,7 @@ package leo.term.compiler
 
 import leo.base.assertEqualTo
 import leo.choice
+import leo.empty
 import leo.function
 import leo.lineTo
 import leo.term.compiler.native.Native
@@ -9,7 +10,7 @@ import leo.term.compiler.native.nativeEnvironment
 import leo.term.eitherFirst
 import leo.term.eitherSecond
 import leo.term.fn
-import leo.term.get
+import leo.term.term
 import leo.type
 import kotlin.test.Test
 
@@ -59,8 +60,9 @@ class ModuleTest {
                       "true" lineTo type(),
                       "maybe" lineTo type(),
                       "false" lineTo type()))))))))
-          .plus(fn(get<Native>(0).eitherFirst.eitherFirst))
-          .plus(fn(get<Native>(0).eitherSecond.eitherFirst))
-          .plus(fn(get<Native>(0).eitherSecond)))
+            // TODO: Is it really correct?
+          .plus(fn(term<Native>(empty).eitherFirst.eitherFirst))
+          .plus(fn(term<Native>(empty).eitherSecond.eitherFirst))
+          .plus(fn(term<Native>(empty).eitherSecond)))
   }
 }
