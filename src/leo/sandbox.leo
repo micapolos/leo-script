@@ -1,11 +1,17 @@
-id
-  drop any text
-  drop any number
-  pick doo
+let
+  any id
+  do id
+    either any number
+    either any text
+    either secret
+
+id secret
 switch
-  text doing
-    text.length.number
   number doing
     number
     plus 1
-  doo doing 1000000
+  text doing
+    text
+    length
+    number
+  secret doing 0
