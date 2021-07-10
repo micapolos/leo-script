@@ -243,7 +243,7 @@ fun rhs(do_: Do): LetRhs = DoLetRhs(do_)
 fun function(type: Type, expression: Expression) = function(type, doing(expression))
 fun function(type: Type, fn: Dictionary.() -> Value) = function(type, doing(fn))
 
-fun Select.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.expression($name)")
+fun Select.expression(name: String): Expression = expressionOrNull(name).notNullOrError("$this.compiled($name)")
 fun Select.expressionOrNull(name: String): Expression? = cases.mapFirst { expressionOrNull(name) }
 fun Case.expressionOrNull(name: String): Expression? = notNullIf(this.name == name) { expression }
 

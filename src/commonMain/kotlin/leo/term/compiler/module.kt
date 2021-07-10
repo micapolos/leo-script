@@ -73,7 +73,7 @@ fun <V> Module<V>.plusLet(script: Script): Module<V> =
           "matching" lineTo script(
             "let" lineTo script(
               "any" lineTo script("type"),
-              "do" lineTo script("any" lineTo script("expression"))))))))
+              "do" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Module<V>.plusCast(type: Type): Module<V> =
   plusCast(stack(), type)

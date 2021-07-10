@@ -148,7 +148,7 @@ fun <V> TypedTerm<V>.invoke(typedTerm: TypedTerm<V>): TypedTerm<V> =
           "is" lineTo script(
             "not" lineTo script(
               "matching" lineTo script(
-                "any" lineTo script("expression"),
+                "any" lineTo script("compiled"),
                 "apply" lineTo script("any" lineTo script("function")))))))
   }.let { typeFunction ->
     if (typedTerm.t != typeFunction.lhsType)
@@ -269,7 +269,7 @@ fun <V> TypedTerm<V>.pick(typedTerm: TypedTerm<V>): TypedTerm<V> =
             "not" lineTo script(
               "matching" lineTo script(
                 "any" lineTo script("choice"),
-                "pick" lineTo script("any" lineTo script("expression")))))))
+                "pick" lineTo script("any" lineTo script("compiled")))))))
     }
     .let { choice ->
       typedTerm.onlyLineOrNull.orIfNull {
@@ -280,7 +280,7 @@ fun <V> TypedTerm<V>.pick(typedTerm: TypedTerm<V>): TypedTerm<V> =
               "not" lineTo script(
                 "matching" lineTo script(
                   "any" lineTo script("choice"),
-                  "pick" lineTo script("any" lineTo script("expression")))))))
+                  "pick" lineTo script("any" lineTo script("compiled")))))))
       }.let { typedLine ->
         typed(
           if (choice.lineStack.isEmpty) typedLine.v

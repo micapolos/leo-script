@@ -24,4 +24,4 @@ fun Binding.resolve(typedExpression: TypedExpression): TypedExpression =
 
 fun Binding.expression(typedExpression: TypedExpression): Expression =
   typedExpression.expression.invoke(typedExpression.type)
-//.runIf(!isConstant) { give(typedExpression.expression) }
+//.runIf(!isConstant) { give(typedExpression.compiled) }

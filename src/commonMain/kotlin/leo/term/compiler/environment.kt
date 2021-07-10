@@ -36,7 +36,7 @@ fun <V> Environment<V>.resolveTypeOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>?
             "matching" lineTo script(
               "type" lineTo script(
                 "any" lineTo script(
-                  "expression")))))))
+                  "compiled")))))))
     else resolveType(rhs)
   }
 

@@ -163,7 +163,7 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
       "is" lineTo script("not" lineTo script("matching" lineTo script(
         "function" lineTo script(
           "any" lineTo script("type"),
-          "doing" lineTo script("any" lineTo script("expression"))))))))
+          "doing" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
   set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
