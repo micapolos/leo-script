@@ -3,6 +3,7 @@ package leo.term.compiler
 import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.applyName
+import leo.asName
 import leo.base.assertEqualTo
 import leo.doingName
 import leo.dropName
@@ -56,6 +57,7 @@ import leo.type
 import leo.typeName
 import leo.yesName
 import kotlin.test.Test
+import kotlin.test.assertFails
 
 class CompileTest {
   @Test
@@ -372,5 +374,24 @@ class CompileTest {
                   .plus(binding(given(typedTerm.t)))
                   .typedTerm(doingScript))
           })
+  }
+
+  @Test
+  fun as_matching() {
+    script(
+      line(literal(10)),
+      asName lineTo script(anyNumberScriptLine))
+      .typedTerm(nativeEnvironment)
+      .assertEqualTo(typed(10.0.native.nativeTerm, type(numberTypeLine)))
+  }
+
+  @Test
+  fun as_notMatching() {
+    assertFails {
+      script(
+        line(literal(10)),
+        asName lineTo script(anyTextScriptLine))
+        .typedTerm(nativeEnvironment)
+    }
   }
 }

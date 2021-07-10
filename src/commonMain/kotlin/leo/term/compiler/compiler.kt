@@ -6,6 +6,7 @@ import leo.LiteralScriptLine
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
+import leo.asName
 import leo.base.fold
 import leo.base.reverse
 import leo.compileName
@@ -49,6 +50,7 @@ import leo.term.fn
 import leo.term.script
 import leo.term.typed.TypedLine
 import leo.term.typed.TypedTerm
+import leo.term.typed.as_
 import leo.term.typed.choicePlus
 import leo.term.typed.do_
 import leo.term.typed.drop
@@ -99,6 +101,7 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
+    asName -> plusAs(field.rhs)
     compileName -> plusCompile(field.rhs)
     debugName -> plusDebug(field.rhs)
     doName -> plusDo(field.rhs)
@@ -112,6 +115,9 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     quoteName -> plusQuote(field.rhs)
     else -> null
   }
+
+fun <V> Compiler<V>.plusAs(script: Script): Compiler<V> =
+  set(typedTerm.as_(context.type(script)))
 
 fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
   if (!typedTerm.t.isEmpty) compileError(
