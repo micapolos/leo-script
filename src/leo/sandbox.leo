@@ -1,24 +1,11 @@
-let
-  any circle
-  do circle radius any number
-
-let
-  any rectangle
-  do rectangle
-    width any number
-    height any number
-
-let
-  any triangle
-  do triangle
-    base any number
-    height any number
-
-let
-  any shape
-  do shape
-    either any circle
-    either any rectangle
-    either any triangle
-
-debug
+id
+  drop any text
+  drop any number
+  pick doo
+switch
+  text doing
+    text.length.number
+  number doing
+    number
+    plus 1
+  doo doing 1000000

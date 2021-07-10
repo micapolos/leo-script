@@ -294,7 +294,7 @@ class CompileTest {
         )
       )
       .assertEqualTo(
-        typed(10.0.native.nativeTerm.eitherFirst.eitherFirst.invoke(id()).invoke(id()).invoke(id()), type(numberTypeLine))
+        typed(10.0.native.nativeTerm.eitherFirst.eitherFirst.invoke(fn(get<Native>(0).invoke(id()).invoke(id()))).invoke(id()), type(numberTypeLine))
       )
   }
 
