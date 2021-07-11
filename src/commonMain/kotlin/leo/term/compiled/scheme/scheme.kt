@@ -1,5 +1,7 @@
 package leo.term.compiled.scheme
 
+import leo.ChoiceType
+import leo.StructureType
 import leo.array
 import leo.base.iterate
 import leo.base.map
@@ -14,6 +16,7 @@ import leo.term.compiled.Apply
 import leo.term.compiled.ApplyExpression
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
+import leo.term.compiled.Field
 import leo.term.compiled.FieldLine
 import leo.term.compiled.Function
 import leo.term.compiled.FunctionLine
@@ -32,8 +35,11 @@ import leo.term.compiled.VariableExpression
 import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
+import scheme.lhs
+import scheme.rhs
 import scheme.scheme
 import scheme.tupleScheme
+import scheme.vectorRef
 
 fun Compiled<Scheme>.scheme(scope: Scope): Scheme =
   when (expression) {
@@ -45,18 +51,28 @@ fun Compiled<Scheme>.scheme(scope: Scope): Scheme =
   }
 
 fun Apply<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(lhs.scheme(scope), rhs.scheme(scope))
+  when (lhs.type) {
+    is ChoiceType -> null
+    is StructureType ->
+      when (lhs.expression) {
+        is TupleExpression -> scheme(rhs.scheme(scope), *lhs.expression.tuple.lineStack.map { scheme(scope) }.array)
+        else -> null
+      }
+  } ?: TODO()
 
 fun Tuple<Scheme>.scheme(scope: Scope): Scheme =
   tupleScheme(*lineStack.map { scheme(scope) }.array)
 
 fun Line<Scheme>.scheme(scope: Scope): Scheme =
   when (this) {
+    is NativeLine -> native
     is FieldLine -> field.rhs.scheme(scope)
     is FunctionLine -> function.scheme(scope)
     is GetLine -> get.scheme(scope)
-    is NativeLine -> native
   }
+
+fun Field<Scheme>.scheme(scope: Scope): Scheme =
+  rhs.scheme(scope)
 
 fun Function<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
@@ -69,7 +85,11 @@ fun Body<Scheme>.scheme(scope: Scope): Scheme =
   else TODO()
 
 fun Get<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(scheme("vector-ref"), lhs.scheme(scope), scheme("$index"))
+  when (lhs.type.lineCount) {
+    1 -> lhs.scheme(scope)
+    2 -> lhs.scheme(scope).run { if (index == 0) lhs else rhs }
+    else -> lhs.scheme(scope).vectorRef(scheme(index))
+  }
 
 fun IndexVariable.scheme(scope: Scope): Scheme =
   scheme(variable(scope.depth - index - 1))
