@@ -2,6 +2,7 @@ package leo.term.compiled
 
 import leo.base.assertEqualTo
 import leo.base.assertFails
+import leo.base.assertNotNull
 import leo.functionType
 import leo.numberTypeLine
 import leo.textTypeLine
@@ -15,7 +16,7 @@ class DslTest {
     compiled(
       "x" lineTo nativeCompiled(10, type(numberTypeLine)),
       "y" lineTo nativeCompiled(20, type(numberTypeLine)))
-      .assertEqualTo(null)
+      .assertNotNull
   }
 
   @Test

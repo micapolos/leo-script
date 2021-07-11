@@ -60,7 +60,9 @@ fun <V> Line<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   }
 
 fun <V> Field<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
-  fieldName lineTo script(name lineTo script(rhs.toScriptLine(fn)))
+  fieldName lineTo script(
+    "name" lineTo script(name),
+    rhs.toScriptLine(fn))
 
 fun <V> Function<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   functionName lineTo script(

@@ -6,10 +6,14 @@ import leo.TypeChoice
 import leo.TypeLine
 import leo.TypeStructure
 import leo.lineTo
+import leo.named.value.anyScriptLine
 import leo.stack
 import leo.term.IndexVariable
 
-data class Compiled<out V>(val expression: Expression<V>, val type: Type)
+data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
+  override fun toString() = toScriptLine { it.anyScriptLine }.toString()
+}
+
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
 
