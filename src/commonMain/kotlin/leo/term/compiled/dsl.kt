@@ -52,3 +52,4 @@ fun <V> Compiled<V>.apply(compiled: Compiled<V>): Compiled<V> =
 
 fun <V> Compiled<V>.do_(body: Body<V>): Compiled<V> =
   apply(compiled(compiled(line(function(type, body)), type functionLineTo body.compiled.type)))
+
