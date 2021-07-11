@@ -21,6 +21,25 @@ val Stack<Scheme>.schemeSpaced: Scheme
   get() =
     map { string }.array.joinToString(" ").scheme
 
-val Scheme.parenthesize: Scheme
-  get() =
-    "($string)".scheme
+val Scheme.parenthesize: Scheme get() = "($string)".scheme
+fun scheme(int: Int): Scheme = scheme("$int")
+
+val nilScheme get() = listScheme()
+fun spacedScheme(vararg schemes: Scheme): Scheme = schemes.joinToString(" ") { it.string }.scheme
+fun scheme(vararg schemes: Scheme): Scheme = "(${spacedScheme(*schemes).string})".scheme
+fun listScheme(vararg schemes: Scheme): Scheme = "`${scheme(*schemes).string}".scheme
+fun vectorScheme(vararg schemes: Scheme): Scheme = "#${scheme(*schemes).string}".scheme
+fun Scheme.plus(rhs: Scheme): Scheme = listScheme(this, scheme("."), rhs)
+val Scheme.lhs: Scheme get() = scheme(scheme("cdr"), this)
+val Scheme.rhs: Scheme get() = scheme(scheme("car"), this)
+
+fun valueScheme(vararg schemes: Scheme): Scheme =
+  when (schemes.size) {
+    0 -> nilScheme
+    1 -> schemes[0]
+    2 -> schemes[0].plus(schemes[1])
+    else -> vectorScheme(*schemes)
+  }
+
+fun Scheme.vectorRef(index: Scheme): Scheme = scheme(scheme("vector-ref"), this, index)
+fun Scheme.case(vararg schemes: Scheme): Scheme = scheme(scheme("case"), scheme(*schemes))
