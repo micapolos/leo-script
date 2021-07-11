@@ -7,7 +7,6 @@ import leo.functionType
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.type
-import scheme.scheme
 import kotlin.test.Test
 
 class DslTest {
@@ -21,30 +20,37 @@ class DslTest {
 
   @Test
   fun apply() {
-    nativeCompiled(scheme("num"), type(numberTypeLine))
-      .apply(nativeCompiled(scheme("fn"), functionType(type(numberTypeLine), type(textTypeLine))))
+    nativeCompiled("num", type(numberTypeLine))
+      .apply(nativeCompiled("fn", functionType(type(numberTypeLine), type(textTypeLine))))
       .assertEqualTo(
         compiled(
           expression(
             apply(
-              nativeCompiled(scheme("num"), type(numberTypeLine)),
-              nativeCompiled(scheme("fn"), functionType(type(numberTypeLine), type(textTypeLine))))),
+              nativeCompiled("num", type(numberTypeLine)),
+              nativeCompiled("fn", functionType(type(numberTypeLine), type(textTypeLine))))),
           type(textTypeLine)))
   }
 
   @Test
   fun apply_notFunction() {
     assertFails {
-      nativeCompiled(scheme("num"), type(numberTypeLine))
-        .apply(nativeCompiled(scheme("fn"), type(numberTypeLine)))
+      nativeCompiled("num", type(numberTypeLine))
+        .apply(nativeCompiled("fn", type(numberTypeLine)))
     }
   }
 
   @Test
   fun apply_typeMismatch() {
     assertFails {
-      nativeCompiled(scheme("num"), type(numberTypeLine))
-        .apply(nativeCompiled(scheme("fn"), functionType(type(textTypeLine), type(numberTypeLine))))
+      nativeCompiled("num", type(numberTypeLine))
+        .apply(nativeCompiled("fn", functionType(type(textTypeLine), type(numberTypeLine))))
     }
+  }
+
+  @Test
+  fun do_() {
+    nativeCompiled("number", type(numberTypeLine))
+      .do_(body(nativeCompiled("text", type(textTypeLine))))
+      .assertNotNull
   }
 }

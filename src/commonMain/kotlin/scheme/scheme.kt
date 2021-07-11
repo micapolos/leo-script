@@ -1,6 +1,6 @@
 package scheme
 
-import leo.Scriptable
+import leo.Leo
 import leo.Stack
 import leo.Text
 import leo.array
@@ -11,7 +11,7 @@ import leo.map
 import leo.script
 import leo.string
 
-data class Scheme(val string: String): Scriptable {
+data class Scheme(val string: String): Leo() {
   override val toScriptLine get() = "scheme" lineTo script(literal(string))
 }
 

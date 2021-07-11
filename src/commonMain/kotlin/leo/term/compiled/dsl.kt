@@ -5,6 +5,7 @@ import leo.applyName
 import leo.base.fold
 import leo.base.notNullIf
 import leo.base.orIfNull
+import leo.functionLineTo
 import leo.functionOrNull
 import leo.lineTo
 import leo.onlyOrNull
@@ -48,3 +49,6 @@ fun <V> Compiled<V>.apply(compiled: Compiled<V>): Compiled<V> =
       }
     }
     ?: compileError(compiled.type.script.plus(applyName lineTo compiled.type.script))
+
+fun <V> Compiled<V>.do_(body: Body<V>): Compiled<V> =
+  apply(compiled(compiled(line(function(type, body)), type functionLineTo body.compiled.type)))
