@@ -2,6 +2,7 @@ package leo.term.compiled
 
 import leo.Type
 import leo.applyName
+import leo.base.fold
 import leo.base.notNullIf
 import leo.base.orIfNull
 import leo.functionOrNull
@@ -13,6 +14,9 @@ import leo.script
 import leo.structureOrNull
 import leo.term.compiler.compileError
 import leo.type
+
+fun <V> compiled(vararg lines: CompiledLine<V>): Compiled<V> =
+  Compiled(expression(tuple<V>()), type()).fold(lines) { plus(it) }
 
 fun <V> nativeCompiled(native: V, type: Type): Compiled<V> =
   compiled(expression(tuple(nativeLine(native))), type)

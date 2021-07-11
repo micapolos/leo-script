@@ -1,13 +1,19 @@
 package scheme
 
+import leo.Scriptable
 import leo.Stack
 import leo.Text
 import leo.array
+import leo.lineTo
+import leo.literal
 import leo.literalString
 import leo.map
+import leo.script
 import leo.string
 
-data class Scheme(val string: String)
+data class Scheme(val string: String): Scriptable {
+  override val toScriptLine get() = "scheme" lineTo script(literal(string))
+}
 
 fun scheme(string: String): Scheme = Scheme(string)
 val String.scheme get() = Scheme(this)

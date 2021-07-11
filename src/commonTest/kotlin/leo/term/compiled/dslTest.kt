@@ -11,6 +11,14 @@ import kotlin.test.Test
 
 class DslTest {
   @Test
+  fun empty() {
+    compiled(
+      "x" lineTo nativeCompiled(10, type(numberTypeLine)),
+      "y" lineTo nativeCompiled(20, type(numberTypeLine)))
+      .assertEqualTo(null)
+  }
+
+  @Test
   fun apply() {
     nativeCompiled(scheme("num"), type(numberTypeLine))
       .apply(nativeCompiled(scheme("fn"), functionType(type(numberTypeLine), type(textTypeLine))))
