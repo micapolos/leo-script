@@ -93,9 +93,13 @@ class SchemeTest {
 
   @Test
   fun select() {
-    select(choice(numberTypeLine), 0, nativeLine(scheme("a")))
+    select(choice("a" lineTo type()), 128, nativeLine(scheme("a")))
       .scheme(scope())
-      .assertEqualTo(scheme("a"))
+      .assertEqualTo(scheme(128))
+
+    select(choice(numberTypeLine), 128, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(pair(scheme(128), scheme("a")))
 
     select(choice("a" lineTo type(), "b" lineTo type()), 128, nativeLine(scheme("a")))
       .scheme(scope())

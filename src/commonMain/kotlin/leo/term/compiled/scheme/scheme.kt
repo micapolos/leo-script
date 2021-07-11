@@ -7,7 +7,7 @@ import leo.base.iterate
 import leo.isSimple
 import leo.lineCount
 import leo.map
-import leo.size
+import leo.switchChoiceOrNull
 import leo.term.IndexVariable
 import leo.term.compiled.Apply
 import leo.term.compiled.ApplyExpression
@@ -32,7 +32,11 @@ import leo.term.compiled.VariableExpression
 import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
+import scheme.indexSwitch
+import scheme.nilScheme
 import scheme.pair
+import scheme.pairFirst
+import scheme.pairSecond
 import scheme.scheme
 import scheme.tupleScheme
 import scheme.vectorRef
@@ -95,21 +99,29 @@ fun IndexVariable.scheme(scope: Scope): Scheme =
 
 fun Select<Scheme>.scheme(scope: Scope): Scheme =
   line.scheme(scope).let { lineScheme ->
-    when (choice.lineStack.size) {
-      1 -> lineScheme
-      else ->
-        scheme(index).let { indexScheme ->
-          if (choice.isSimple) indexScheme
-          else pair(indexScheme, lineScheme)
-        }
+    scheme(index).let { indexScheme ->
+      if (choice.isSimple) indexScheme
+      else pair(indexScheme, lineScheme)
     }
   }
 
 fun Switch<Scheme>.scheme(scope: Scope): Scheme =
-  when (lineStack.size) {
-    1 -> TODO()
-    2 -> TODO()
-    else -> TODO()
+  lhs.type.switchChoiceOrNull!!.let { choice ->
+    if (choice.isSimple)
+      scheme(
+        scheme("let"),
+        scheme(
+          scheme(scheme("idx"), lhs.scheme(scope)),
+          scheme(scheme(variable(scope.depth)), scheme("x").pairSecond)),
+        scheme("idx").indexSwitch(*lineStack.map { scheme(scope.push) }.array))
+    else
+      scheme(
+        scheme("let"),
+        scheme(
+          scheme(scheme("x"), lhs.scheme(scope)),
+          scheme(scheme("idx"), scheme("x").pairFirst),
+          scheme(scheme(variable(scope.depth)), nilScheme),
+          scheme("idx").indexSwitch(*lineStack.map { scheme(scope.push) }.array)))
   }
 
 fun scheme(vararg schemes: Scheme) =
