@@ -33,7 +33,7 @@ fun Scheme.plus(rhs: Scheme): Scheme = listScheme(this, scheme("."), rhs)
 val Scheme.lhs: Scheme get() = scheme(scheme("cdr"), this)
 val Scheme.rhs: Scheme get() = scheme(scheme("car"), this)
 
-fun valueScheme(vararg schemes: Scheme): Scheme =
+fun tupleScheme(vararg schemes: Scheme): Scheme =
   when (schemes.size) {
     0 -> nilScheme
     1 -> schemes[0]
@@ -41,6 +41,11 @@ fun valueScheme(vararg schemes: Scheme): Scheme =
     else -> vectorScheme(*schemes)
   }
 
-fun Scheme.vectorRef(index: Scheme): Scheme = scheme(scheme("vector-ref"), this, index)
-fun Scheme.case(vararg schemes: Scheme): Scheme = scheme(scheme("case"), this, *schemes)
-fun Scheme.indexSwitch(vararg schemes: Scheme): Scheme = case(*schemes.mapIndexed { index, scheme -> scheme(scheme(index), scheme) }.toTypedArray())
+fun Scheme.vectorRef(index: Scheme): Scheme =
+  scheme(scheme("vector-ref"), this, index)
+
+fun Scheme.case(vararg schemes: Scheme): Scheme =
+  scheme(scheme("case"), this, *schemes)
+
+fun Scheme.indexSwitch(vararg schemes: Scheme): Scheme =
+  case(*schemes.mapIndexed { index, scheme -> scheme(scheme(index), scheme) }.toTypedArray())

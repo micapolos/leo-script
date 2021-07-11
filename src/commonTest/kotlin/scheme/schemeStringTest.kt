@@ -33,11 +33,11 @@ class SchemeStringTest {
   }
 
   @Test
-  fun value() {
-    valueScheme().string.assertEqualTo("`()")
-    valueScheme(scheme("a")).string.assertEqualTo("a")
-    valueScheme(scheme("a"), scheme("b")).string.assertEqualTo("`(a . b)")
-    valueScheme(scheme("a"), scheme("b"), scheme("c")).string.assertEqualTo("#(a b c)")
+  fun tuple() {
+    tupleScheme().string.assertEqualTo("`()")
+    tupleScheme(scheme("a")).string.assertEqualTo("a")
+    tupleScheme(scheme("a"), scheme("b")).string.assertEqualTo("`(a . b)")
+    tupleScheme(scheme("a"), scheme("b"), scheme("c")).string.assertEqualTo("#(a b c)")
   }
 
   @Test

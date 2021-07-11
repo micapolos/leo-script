@@ -1,10 +1,12 @@
-package leo.term.compiled.codegen.scheme
+package leo.term.compiled.scheme
 
 import leo.array
+import leo.base.iterate
 import leo.base.map
 import leo.base.mapIndexed
 import leo.base.reverse
 import leo.base.reverseStack
+import leo.lineCount
 import leo.map
 import leo.seq
 import leo.term.IndexVariable
@@ -19,6 +21,7 @@ import leo.term.compiled.Get
 import leo.term.compiled.GetLine
 import leo.term.compiled.Line
 import leo.term.compiled.NativeLine
+import leo.term.compiled.Scope
 import leo.term.compiled.Select
 import leo.term.compiled.SelectExpression
 import leo.term.compiled.Switch
@@ -26,11 +29,11 @@ import leo.term.compiled.SwitchExpression
 import leo.term.compiled.Tuple
 import leo.term.compiled.TupleExpression
 import leo.term.compiled.VariableExpression
-import leo.term.compiler.scheme.Scope
-import leo.term.compiler.scheme.push
+import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
 import scheme.scheme
+import scheme.tupleScheme
 
 fun Compiled<Scheme>.scheme(scope: Scope): Scheme =
   when (expression) {
@@ -45,7 +48,7 @@ fun Apply<Scheme>.scheme(scope: Scope): Scheme =
   scheme(lhs.scheme(scope), rhs.scheme(scope))
 
 fun Tuple<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(*lineStack.map { scheme(scope) }.array)
+  tupleScheme(*lineStack.map { scheme(scope) }.array)
 
 fun Line<Scheme>.scheme(scope: Scope): Scheme =
   when (this) {
@@ -56,7 +59,10 @@ fun Line<Scheme>.scheme(scope: Scope): Scheme =
   }
 
 fun Function<Scheme>.scheme(scope: Scope): Scheme =
-  scheme("lambda".scheme, scheme(variable(scope.depth)), body.scheme(scope.push))
+  scheme(
+    scheme("lambda"),
+    scheme(*(0 until paramType.lineCount).map { scheme(variable(it + scope.depth)) }.toTypedArray()),
+    body.scheme(scope.iterate(paramType.lineCount) { push }))
 
 fun Body<Scheme>.scheme(scope: Scope): Scheme =
   if (!isRecursive) compiled.scheme(scope)
