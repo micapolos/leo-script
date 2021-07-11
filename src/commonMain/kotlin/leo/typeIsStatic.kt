@@ -9,6 +9,7 @@ val Type.isStatic: Boolean
 
 val TypeStructure.isStatic: Boolean get() = lineStack.all { isStatic }
 val TypeChoice.isStatic: Boolean get() = false
+val TypeChoice.isSimple: Boolean get() = lineStack.all { isStatic }
 
 val TypeLine.isStatic: Boolean
   get() =

@@ -1,6 +1,8 @@
 package leo.term.compiled.scheme
 
 import leo.base.assertEqualTo
+import leo.choice
+import leo.lineTo
 import leo.numberTypeLine
 import leo.term.compiled.apply
 import leo.term.compiled.body
@@ -11,10 +13,12 @@ import leo.term.compiled.function
 import leo.term.compiled.get
 import leo.term.compiled.nativeLine
 import leo.term.compiled.scope
+import leo.term.compiled.select
 import leo.term.compiled.tuple
 import leo.textTypeLine
 import leo.type
 import scheme.Scheme
+import scheme.plus
 import scheme.scheme
 import kotlin.test.Test
 
@@ -94,6 +98,37 @@ class SchemeTest {
       .scheme(scope())
       .string
       .assertEqualTo("(lambda (v0 v1) `())")
+  }
+
+  @Test
+  fun select() {
+    select(choice(numberTypeLine), 0, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(scheme("a"))
+
+    select(choice("a" lineTo type(), "b" lineTo type()), 0, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(true.scheme)
+
+    select(choice("a" lineTo type(), "b" lineTo type()), 1, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(false.scheme)
+
+    select(choice("a" lineTo type(), "b" lineTo type(), "c" lineTo type()), 2, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(scheme(2))
+
+    select(choice(numberTypeLine, numberTypeLine), 0, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(true.scheme.plus(scheme("a")))
+
+    select(choice(numberTypeLine, numberTypeLine), 1, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(false.scheme.plus(scheme("a")))
+
+    select(choice(numberTypeLine, numberTypeLine, numberTypeLine), 2, nativeLine(scheme("a")))
+      .scheme(scope())
+      .assertEqualTo(scheme(2).plus(scheme("a")))
   }
 
   @Test

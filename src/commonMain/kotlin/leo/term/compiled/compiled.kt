@@ -2,6 +2,7 @@ package leo.term.compiled
 
 import leo.Stack
 import leo.Type
+import leo.TypeChoice
 import leo.TypeLine
 import leo.stack
 import leo.term.IndexVariable
@@ -27,7 +28,7 @@ data class GetLine<V>(val get: Get<V>): Line<V>()
 
 data class Field<out V>(val name: String, val rhs: Compiled<V>)
 
-data class Select<out V>(val index: Int, val line: Line<V>)
+data class Select<out V>(val choice: TypeChoice, val index: Int, val line: Line<V>)
 
 data class Function<out V>(val paramType: Type, val body: Body<V>)
 data class Body<out V>(val compiled: Compiled<V>, val isRecursive: Boolean)
@@ -52,3 +53,4 @@ fun <V> recursive(body: Body<V>) = body.copy(isRecursive = true)
 fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
+fun <V> select(choice: TypeChoice, index: Int, line: Line<V>) = Select(choice, index, line)

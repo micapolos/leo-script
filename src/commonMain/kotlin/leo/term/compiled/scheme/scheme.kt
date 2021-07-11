@@ -8,9 +8,11 @@ import leo.base.map
 import leo.base.mapIndexed
 import leo.base.reverse
 import leo.base.reverseStack
+import leo.isSimple
 import leo.lineCount
 import leo.map
 import leo.seq
+import leo.size
 import leo.term.IndexVariable
 import leo.term.compiled.Apply
 import leo.term.compiled.ApplyExpression
@@ -36,6 +38,7 @@ import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
 import scheme.lhs
+import scheme.plus
 import scheme.rhs
 import scheme.scheme
 import scheme.tupleScheme
@@ -95,7 +98,20 @@ fun IndexVariable.scheme(scope: Scope): Scheme =
   scheme(variable(scope.depth - index - 1))
 
 fun Select<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(scheme("cons"), scheme(index), line.scheme(scope))
+  line.scheme(scope).let { lineScheme ->
+    when (choice.lineStack.size) {
+      1 -> lineScheme
+      2 -> index.equals(0).scheme.let { indexScheme ->
+        if (choice.isSimple) indexScheme
+        else indexScheme.plus(lineScheme)
+      }
+      else ->
+        scheme(index).let { indexScheme ->
+          if (choice.isSimple) indexScheme
+          else indexScheme.plus(lineScheme)
+        }
+    }
+  }
 
 fun Switch<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
