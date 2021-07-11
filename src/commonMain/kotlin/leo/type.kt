@@ -134,6 +134,7 @@ fun recursiveLine(line: TypeLine) = line(recursive(line))
 fun function(lhs: Type, rhs: Type) = TypeFunction(lhs, rhs)
 infix fun Type.functionTo(type: Type) = TypeFunction(this, type)
 infix fun Type.functionLineTo(type: Type) = line(atom(this functionTo type))
+fun functionType(lhs: Type, rhs: Type) = type(line(atom(function(lhs, rhs))))
 
 fun atom(function: TypeFunction): TypeAtom = FunctionTypeAtom(function)
 fun atom(primitive: TypePrimitive): TypeAtom = PrimitiveTypeAtom(primitive)

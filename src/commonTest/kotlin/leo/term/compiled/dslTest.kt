@@ -2,7 +2,7 @@ package leo.term.compiled
 
 import leo.base.assertEqualTo
 import leo.base.assertFails
-import leo.functionLineTo
+import leo.functionType
 import leo.numberTypeLine
 import leo.textTypeLine
 import leo.type
@@ -13,13 +13,13 @@ class DslTest {
   @Test
   fun apply() {
     nativeCompiled(scheme("num"), type(numberTypeLine))
-      .apply(nativeCompiled(scheme("fn"), type(type(numberTypeLine) functionLineTo type(textTypeLine))))
+      .apply(nativeCompiled(scheme("fn"), functionType(type(numberTypeLine), type(textTypeLine))))
       .assertEqualTo(
         compiled(
           expression(
             apply(
               nativeCompiled(scheme("num"), type(numberTypeLine)),
-              nativeCompiled(scheme("fn"), type(type(numberTypeLine) functionLineTo type(textTypeLine))))),
+              nativeCompiled(scheme("fn"), functionType(type(numberTypeLine), type(textTypeLine))))),
           type(textTypeLine)))
   }
 
@@ -35,7 +35,7 @@ class DslTest {
   fun apply_typeMismatch() {
     assertFails {
       nativeCompiled(scheme("num"), type(numberTypeLine))
-        .apply(nativeCompiled(scheme("fn"), type(type(textTypeLine) functionLineTo type(numberTypeLine))))
+        .apply(nativeCompiled(scheme("fn"), functionType(type(textTypeLine), type(numberTypeLine))))
     }
   }
 }

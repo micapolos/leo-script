@@ -4,12 +4,14 @@ import leo.Stack
 import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
+import leo.TypeStructure
 import leo.stack
 import leo.term.IndexVariable
 import leo.type
 
 data class Compiled<out V>(val expression: Expression<V>, val type: Type)
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
+data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
 
 sealed class Expression<out V>
 data class TupleExpression<out V>(val tuple: Tuple<V>): Expression<V>()
@@ -45,9 +47,11 @@ fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)
 fun <V> line(function: Function<V>): Line<V> = FunctionLine(function)
+fun <V> line(get: Get<V>): Line<V> = GetLine(get)
 
 fun <V> compiled(): Compiled<V> = Compiled(expression(tuple()), type())
 fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(expression, type)
+fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)
 fun <V> recursive(body: Body<V>) = body.copy(isRecursive = true)
@@ -55,3 +59,4 @@ fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, index: Int, line: Line<V>) = Select(choice, index, line)
+
