@@ -39,4 +39,12 @@ class SchemeStringTest {
     valueScheme(scheme("a"), scheme("b")).string.assertEqualTo("`(a . b)")
     valueScheme(scheme("a"), scheme("b"), scheme("c")).string.assertEqualTo("#(a b c)")
   }
+
+  @Test
+  fun indexSwitch() {
+    scheme("x")
+      .indexSwitch(scheme("a"), scheme("b"), scheme("c"))
+      .string
+      .assertEqualTo("(case x (0 a) (1 b) (2 c))")
+  }
 }

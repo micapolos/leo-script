@@ -42,4 +42,5 @@ fun valueScheme(vararg schemes: Scheme): Scheme =
   }
 
 fun Scheme.vectorRef(index: Scheme): Scheme = scheme(scheme("vector-ref"), this, index)
-fun Scheme.case(vararg schemes: Scheme): Scheme = scheme(scheme("case"), scheme(*schemes))
+fun Scheme.case(vararg schemes: Scheme): Scheme = scheme(scheme("case"), this, *schemes)
+fun Scheme.indexSwitch(vararg schemes: Scheme): Scheme = case(*schemes.mapIndexed { index, scheme -> scheme(scheme(index), scheme) }.toTypedArray())
