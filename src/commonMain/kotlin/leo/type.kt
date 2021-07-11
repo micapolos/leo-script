@@ -254,3 +254,6 @@ val Type.nameOrNull: String?
 val TypeStructure.lineSeq: Seq<TypeLine>
   get() =
     lineStack.reverse.seq
+
+val Type.switchChoiceOrNull: TypeChoice? get() =
+  structureOrNull?.onlyLineOrNull?.atom?.fieldOrNull?.rhsType?.choiceOrNull

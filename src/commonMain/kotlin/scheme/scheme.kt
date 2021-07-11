@@ -24,20 +24,19 @@ val Stack<Scheme>.schemeSpaced: Scheme
 val Scheme.parenthesize: Scheme get() = "($string)".scheme
 fun scheme(int: Int): Scheme = scheme("$int")
 
-val nilScheme get() = listScheme()
+val nilScheme get() = scheme("`()")
 fun spacedScheme(vararg schemes: Scheme): Scheme = schemes.joinToString(" ") { it.string }.scheme
 fun scheme(vararg schemes: Scheme): Scheme = "(${spacedScheme(*schemes).string})".scheme
-fun listScheme(vararg schemes: Scheme): Scheme = "`${scheme(*schemes).string}".scheme
-fun vectorScheme(vararg schemes: Scheme): Scheme = "#${scheme(*schemes).string}".scheme
-fun Scheme.plus(rhs: Scheme): Scheme = listScheme(this, scheme("."), rhs)
-val Scheme.lhs: Scheme get() = scheme(scheme("cdr"), this)
-val Scheme.rhs: Scheme get() = scheme(scheme("car"), this)
+fun listScheme(vararg schemes: Scheme): Scheme = scheme(scheme("list"), *schemes)
+fun vectorScheme(vararg schemes: Scheme): Scheme = scheme(scheme("vector"), *schemes)
+fun pair(lhs: Scheme, rhs: Scheme): Scheme = scheme(scheme("cons"), lhs, rhs)
+val Scheme.pairFirst: Scheme get() = scheme(scheme("cdr"), this)
+val Scheme.pairSecond: Scheme get() = scheme(scheme("car"), this)
 
 fun tupleScheme(vararg schemes: Scheme): Scheme =
   when (schemes.size) {
     0 -> nilScheme
     1 -> schemes[0]
-    2 -> schemes[0].plus(schemes[1])
     else -> vectorScheme(*schemes)
   }
 

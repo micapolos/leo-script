@@ -4,14 +4,9 @@ import leo.ChoiceType
 import leo.StructureType
 import leo.array
 import leo.base.iterate
-import leo.base.map
-import leo.base.mapIndexed
-import leo.base.reverse
-import leo.base.reverseStack
 import leo.isSimple
 import leo.lineCount
 import leo.map
-import leo.seq
 import leo.size
 import leo.term.IndexVariable
 import leo.term.compiled.Apply
@@ -37,9 +32,7 @@ import leo.term.compiled.VariableExpression
 import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
-import scheme.lhs
-import scheme.plus
-import scheme.rhs
+import scheme.pair
 import scheme.scheme
 import scheme.tupleScheme
 import scheme.vectorRef
@@ -61,7 +54,11 @@ fun Apply<Scheme>.scheme(scope: Scope): Scheme =
         is TupleExpression -> scheme(rhs.scheme(scope), *lhs.expression.tuple.lineStack.map { scheme(scope) }.array)
         else -> null
       }
-  } ?: TODO()
+  } ?: when (lhs.type.lineCount) {
+    0 -> scheme(rhs.scheme(scope))
+    1 -> scheme(rhs.scheme(scope), lhs.scheme(scope))
+    else -> TODO()
+  }
 
 fun Tuple<Scheme>.scheme(scope: Scope): Scheme =
   tupleScheme(*lineStack.map { scheme(scope) }.array)
@@ -90,7 +87,6 @@ fun Body<Scheme>.scheme(scope: Scope): Scheme =
 fun Get<Scheme>.scheme(scope: Scope): Scheme =
   when (lhs.type.lineCount) {
     1 -> lhs.scheme(scope)
-    2 -> lhs.scheme(scope).run { if (index == 0) lhs else rhs }
     else -> lhs.scheme(scope).vectorRef(scheme(index))
   }
 
@@ -101,23 +97,20 @@ fun Select<Scheme>.scheme(scope: Scope): Scheme =
   line.scheme(scope).let { lineScheme ->
     when (choice.lineStack.size) {
       1 -> lineScheme
-      2 -> index.equals(0).scheme.let { indexScheme ->
-        if (choice.isSimple) indexScheme
-        else indexScheme.plus(lineScheme)
-      }
       else ->
         scheme(index).let { indexScheme ->
           if (choice.isSimple) indexScheme
-          else indexScheme.plus(lineScheme)
+          else pair(indexScheme, lineScheme)
         }
     }
   }
 
 fun Switch<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(
-    scheme("case"),
-    scheme(scheme("car"), lhs.scheme(scope)),
-    scheme(*lineStack.seq.reverse.mapIndexed.map { scheme(scheme(index), scheme(scope.push)) }.reverseStack.array))
+  when (lineStack.size) {
+    1 -> TODO()
+    2 -> TODO()
+    else -> TODO()
+  }
 
 fun scheme(vararg schemes: Scheme) =
   ("(" + schemes.joinToString(", ") + ")").scheme

@@ -18,7 +18,7 @@ import leo.term.compiled.tuple
 import leo.textTypeLine
 import leo.type
 import scheme.Scheme
-import scheme.plus
+import scheme.pair
 import scheme.scheme
 import kotlin.test.Test
 
@@ -61,7 +61,7 @@ class SchemeTest {
       0)
       .scheme(scope())
       .string
-      .assertEqualTo("(cdr a)")
+      .assertEqualTo("(vector-ref a 0)")
 
     get(
       compiled(
@@ -70,16 +70,7 @@ class SchemeTest {
       1)
       .scheme(scope())
       .string
-      .assertEqualTo("(car a)")
-
-    get(
-      compiled(
-        expression(tuple(nativeLine(scheme("a")))),
-        type(numberTypeLine, numberTypeLine, numberTypeLine)),
-      2)
-      .scheme(scope())
-      .string
-      .assertEqualTo("(vector-ref a 2)")
+      .assertEqualTo("(vector-ref a 1)")
   }
 
   @Test
@@ -106,29 +97,13 @@ class SchemeTest {
       .scheme(scope())
       .assertEqualTo(scheme("a"))
 
-    select(choice("a" lineTo type(), "b" lineTo type()), 0, nativeLine(scheme("a")))
+    select(choice("a" lineTo type(), "b" lineTo type()), 128, nativeLine(scheme("a")))
       .scheme(scope())
-      .assertEqualTo(true.scheme)
+      .assertEqualTo(scheme(128))
 
-    select(choice("a" lineTo type(), "b" lineTo type()), 1, nativeLine(scheme("a")))
+    select(choice(numberTypeLine, numberTypeLine), 128, nativeLine(scheme("a")))
       .scheme(scope())
-      .assertEqualTo(false.scheme)
-
-    select(choice("a" lineTo type(), "b" lineTo type(), "c" lineTo type()), 2, nativeLine(scheme("a")))
-      .scheme(scope())
-      .assertEqualTo(scheme(2))
-
-    select(choice(numberTypeLine, numberTypeLine), 0, nativeLine(scheme("a")))
-      .scheme(scope())
-      .assertEqualTo(true.scheme.plus(scheme("a")))
-
-    select(choice(numberTypeLine, numberTypeLine), 1, nativeLine(scheme("a")))
-      .scheme(scope())
-      .assertEqualTo(false.scheme.plus(scheme("a")))
-
-    select(choice(numberTypeLine, numberTypeLine, numberTypeLine), 2, nativeLine(scheme("a")))
-      .scheme(scope())
-      .assertEqualTo(scheme(2).plus(scheme("a")))
+      .assertEqualTo(pair(scheme(128), scheme("a")))
   }
 
   @Test

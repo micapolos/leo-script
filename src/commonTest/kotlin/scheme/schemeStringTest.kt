@@ -12,32 +12,24 @@ class SchemeStringTest {
   }
 
   @Test
-  fun pair() {
-    scheme("a").plus(scheme("b"))
-      .string
-      .assertEqualTo("`(a . b)")
-  }
-
-  @Test
   fun list() {
     listScheme(scheme("a"), scheme("b"), scheme("c"))
       .string
-      .assertEqualTo("`(a b c)")
+      .assertEqualTo("(list a b c)")
   }
 
   @Test
   fun vector() {
     vectorScheme(scheme("a"), scheme("b"), scheme("c"))
       .string
-      .assertEqualTo("#(a b c)")
+      .assertEqualTo("(vector a b c)")
   }
 
   @Test
   fun tuple() {
     tupleScheme().string.assertEqualTo("`()")
     tupleScheme(scheme("a")).string.assertEqualTo("a")
-    tupleScheme(scheme("a"), scheme("b")).string.assertEqualTo("`(a . b)")
-    tupleScheme(scheme("a"), scheme("b"), scheme("c")).string.assertEqualTo("#(a b c)")
+    tupleScheme(scheme("a"), scheme("b")).string.assertEqualTo("(vector a b)")
   }
 
   @Test
