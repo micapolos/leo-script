@@ -9,6 +9,7 @@ import leo.string
 
 data class Scheme(val string: String)
 
+fun scheme(string: String): Scheme = Scheme(string)
 val String.scheme get() = Scheme(this)
 
 val Text.scheme: Scheme get() = string.literalString.scheme
