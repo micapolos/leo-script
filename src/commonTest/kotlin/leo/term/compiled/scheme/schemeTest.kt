@@ -170,4 +170,14 @@ class SchemeTest {
       .string
       .assertEqualTo("(apply v1 (vector->list v0))")
   }
+
+  @Test
+  fun plus() {
+    apply(
+      compiled(expression(tuple(nativeLine(scheme("2")), nativeLine(scheme("3")))), type()),
+      compiled(expression(tuple(nativeLine(scheme("+")))), type()))
+      .scheme(scope())
+      .string
+      .assertEqualTo("(+ 2 3)")
+  }
 }

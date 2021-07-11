@@ -4,10 +4,10 @@ import leo.ChoiceType
 import leo.StructureType
 import leo.array
 import leo.base.iterate
+import leo.choiceOrNull
 import leo.isSimple
 import leo.lineCount
 import leo.map
-import leo.switchChoiceOrNull
 import leo.term.IndexVariable
 import leo.term.compiled.Apply
 import leo.term.compiled.ApplyExpression
@@ -109,7 +109,7 @@ fun Select<Scheme>.scheme(scope: Scope): Scheme =
   }
 
 fun Switch<Scheme>.scheme(scope: Scope): Scheme =
-  lhs.type.switchChoiceOrNull!!.let { choice ->
+  lhs.type.choiceOrNull!!.let { choice ->
     if (choice.isSimple)
       scheme(
         scheme("let"),
