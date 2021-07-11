@@ -15,6 +15,7 @@ import leo.term.compiled.nativeLine
 import leo.term.compiled.scope
 import leo.term.compiled.select
 import leo.term.compiled.tuple
+import leo.term.variable
 import leo.textTypeLine
 import leo.type
 import scheme.Scheme
@@ -111,12 +112,62 @@ class SchemeTest {
   }
 
   @Test
-  fun apply_() {
+  fun applyTupleEmpty() {
     apply(
-      compiled(expression(tuple(nativeLine(scheme("a")))), type(numberTypeLine)),
-      compiled(expression(tuple(nativeLine(scheme("b")))), type(numberTypeLine)))
+      compiled(expression(tuple()), type()),
+      compiled(expression(tuple(nativeLine(scheme("fn")))), type()))
+      .scheme(scope(2))
+      .string
+      .assertEqualTo("(fn)")
+  }
+
+  @Test
+  fun applyTupleLine() {
+    apply(
+      compiled(expression(tuple(nativeLine(scheme("l")))), type()),
+      compiled(expression(tuple(nativeLine(scheme("fn")))), type()))
       .scheme(scope())
       .string
-      .assertEqualTo("(b a)")
+      .assertEqualTo("(fn l)")
+  }
+
+  @Test
+  fun applyTupleLines() {
+    apply(
+      compiled(expression(tuple(nativeLine(scheme("l1")), nativeLine(scheme("l2")))), type()),
+      compiled(expression(tuple(nativeLine(scheme("fn")))), type()))
+      .scheme(scope())
+      .string
+      .assertEqualTo("(fn l1 l2)")
+  }
+
+  @Test
+  fun applyExpressionEmpty() {
+    apply(
+      compiled(expression<Scheme>(variable(1)), type()),
+      compiled(expression(variable(0)), type()))
+      .scheme(scope(2))
+      .string
+      .assertEqualTo("(v1)")
+  }
+
+  @Test
+  fun applyExpressionLine() {
+    apply(
+      compiled(expression<Scheme>(variable(1)), type(numberTypeLine)),
+      compiled(expression(variable(0)), type()))
+      .scheme(scope(2))
+      .string
+      .assertEqualTo("(v1 v0)")
+  }
+
+  @Test
+  fun applyExpressionLines() {
+    apply(
+      compiled(expression<Scheme>(variable(1)), type(numberTypeLine, numberTypeLine)),
+      compiled(expression(variable(0)), type()))
+      .scheme(scope(2))
+      .string
+      .assertEqualTo("(apply v1 (vector->list v0))")
   }
 }

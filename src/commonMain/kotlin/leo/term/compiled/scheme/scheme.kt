@@ -61,7 +61,10 @@ fun Apply<Scheme>.scheme(scope: Scope): Scheme =
   } ?: when (lhs.type.lineCount) {
     0 -> scheme(rhs.scheme(scope))
     1 -> scheme(rhs.scheme(scope), lhs.scheme(scope))
-    else -> TODO()
+    else -> scheme(
+      scheme("apply"),
+      rhs.scheme(scope),
+      scheme(scheme("vector->list"), lhs.scheme(scope)))
   }
 
 fun Tuple<Scheme>.scheme(scope: Scope): Scheme =

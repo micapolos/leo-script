@@ -40,6 +40,7 @@ data class Switch<out V>(val lhs: Compiled<V>, val lineStack: Stack<Line<V>>)
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)
 fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
+fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)
