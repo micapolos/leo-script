@@ -9,8 +9,6 @@ import leo.term.indexed.EmptyExpression
 import leo.term.indexed.Expression
 import leo.term.indexed.Function
 import leo.term.indexed.FunctionExpression
-import leo.term.indexed.Get
-import leo.term.indexed.GetExpression
 import leo.term.indexed.IndexExpression
 import leo.term.indexed.IndexSwitch
 import leo.term.indexed.IndexSwitchExpression
@@ -25,6 +23,8 @@ import leo.term.indexed.Recursive
 import leo.term.indexed.RecursiveExpression
 import leo.term.indexed.Tuple
 import leo.term.indexed.TupleExpression
+import leo.term.indexed.TupleGet
+import leo.term.indexed.TupleGetExpression
 import leo.term.indexed.VariableExpression
 import leo.variable
 import scheme.Scheme
@@ -43,7 +43,7 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is InvokeExpression -> invoke.scheme(scope)
     is FunctionExpression -> function.scheme(scope)
     is RecursiveExpression -> recursive.scheme(scope)
-    is GetExpression -> get.scheme(scope)
+    is TupleGetExpression -> get.scheme(scope)
     is IndexExpression -> scheme(index)
     is IndexSwitchExpression -> switch.scheme(scope)
     is IndexedExpression -> indexed.scheme(scope)
@@ -71,7 +71,7 @@ fun Recursive<Scheme>.scheme(scope: Scope): Scheme =
 fun Tuple<Scheme>.scheme(scope: Scope): Scheme =
   listScheme(*list.map { it.scheme(scope) }.toTypedArray())
 
-fun Get<Scheme>.scheme(scope: Scope): Scheme =
+fun TupleGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
 
 fun Indexed<Scheme>.scheme(scope: Scope): Scheme =
