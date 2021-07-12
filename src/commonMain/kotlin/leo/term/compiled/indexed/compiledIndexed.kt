@@ -3,6 +3,7 @@ package leo.term.compiled.indexed
 import leo.ChoiceType
 import leo.IndexVariable
 import leo.StructureType
+import leo.choiceOrNull
 import leo.isSimple
 import leo.lineCount
 import leo.map
@@ -11,8 +12,12 @@ import leo.term.indexed.Expression
 import leo.term.indexed.Function
 import leo.term.indexed.FunctionExpression
 import leo.term.indexed.IndexExpression
+import leo.term.indexed.IndexSwitch
+import leo.term.indexed.IndexSwitchExpression
 import leo.term.indexed.Indexed
 import leo.term.indexed.IndexedExpression
+import leo.term.indexed.IndexedSwitch
+import leo.term.indexed.IndexedSwitchExpression
 import leo.term.indexed.Invoke
 import leo.term.indexed.InvokeExpression
 import leo.term.indexed.NativeExpression
@@ -48,15 +53,22 @@ val <V> leo.term.compiled.Apply<V>.indexedExpression: Expression<V> get() =
       is ChoiceType -> null
       is StructureType ->
         when (lhs.expression) {
-          is leo.term.compiled.TupleExpression -> Invoke(
-            rhs.indexedExpression,
-            lhs.expression.tuple.lineStack.map { indexedExpression }.toList())
+          is leo.term.compiled.TupleExpression ->
+              Invoke(
+                rhs.indexedExpression,
+                lhs.expression.tuple.lineStack.map { indexedExpression }.toList())
           else -> null
         }
     } ?: when (lhs.type.lineCount) {
       0 -> Invoke(rhs.indexedExpression, listOf())
       1 -> Invoke(rhs.indexedExpression, listOf(lhs.indexedExpression))
-      else -> TODO() // Must go through invoke, and get
+      else -> Invoke(
+        FunctionExpression(Function(1, rhs.indexedExpression)),
+        listOf(
+          InvokeExpression(
+            Invoke(
+              lhs.indexedExpression,
+              0.until(lhs.type.lineCount).map { VariableExpression<V>(IndexVariable(it)) }.toList()))))
     }
   )
 
@@ -67,7 +79,18 @@ val <V> leo.term.compiled.Select<V>.indexedExpression: Expression<V> get() =
   }
 
 val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =
-  TODO()
+  lhs.type.choiceOrNull!!.let { choice ->
+    if (choice.isSimple)
+      IndexSwitchExpression(
+        IndexSwitch(
+          lhs.indexedExpression,
+          lineStack.map { indexedExpression }.toList()))
+    else
+      IndexedSwitchExpression(
+        IndexedSwitch(
+          lhs.indexedExpression,
+          lineStack.map { indexedExpression }.toList()))
+  }
 
 val <V> leo.term.compiled.Tuple<V>.indexedExpression: Expression<V> get() =
   TupleExpression(Tuple(lineStack.map { indexedExpression }.toList()))
