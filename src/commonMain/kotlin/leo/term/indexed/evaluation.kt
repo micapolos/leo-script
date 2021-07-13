@@ -46,8 +46,8 @@ fun <V> ExpressionTuple<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, 
     value(*valueStack.array)
   }
 
-fun <V> Int.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  value<V>(this).evaluation()
+fun <V> ExpressionIndex.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
+  value<V>(index).evaluation()
 
 fun <V> ExpressionSwitch<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
   lhs.valueEvaluation(scope).bind { lhsValue ->

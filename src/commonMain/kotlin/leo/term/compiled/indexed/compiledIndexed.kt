@@ -7,11 +7,11 @@ import leo.choiceOrNull
 import leo.isSimple
 import leo.lineCount
 import leo.map
+import leo.size
 import leo.term.compiled.Compiled
 import leo.term.indexed.Expression
 import leo.term.indexed.ExpressionFunction
 import leo.term.indexed.ExpressionGet
-import leo.term.indexed.ExpressionIndexed
 import leo.term.indexed.ExpressionIndexedSwitch
 import leo.term.indexed.ExpressionInvoke
 import leo.term.indexed.ExpressionRecursive
@@ -19,15 +19,16 @@ import leo.term.indexed.ExpressionSwitch
 import leo.term.indexed.ExpressionTuple
 import leo.term.indexed.FunctionExpression
 import leo.term.indexed.GetExpression
-import leo.term.indexed.IndexExpression
 import leo.term.indexed.IndexSwitchExpression
-import leo.term.indexed.IndexedExpression
 import leo.term.indexed.IndexedSwitchExpression
 import leo.term.indexed.InvokeExpression
 import leo.term.indexed.NativeExpression
 import leo.term.indexed.RecursiveExpression
 import leo.term.indexed.TupleExpression
 import leo.term.indexed.VariableExpression
+import leo.term.indexed.expression
+import leo.term.indexed.index
+import leo.term.indexed.indexed
 import leo.toList
 
 val <V> Compiled<V>.indexedExpression: Expression<V> get() =
@@ -74,8 +75,8 @@ val <V> leo.term.compiled.Apply<V>.indexedExpression: Expression<V> get() =
 
 val <V> leo.term.compiled.Select<V>.indexedExpression: Expression<V> get() =
   line.indexedExpression.let { lineScheme ->
-    if (choice.isSimple) IndexExpression(index)
-    else IndexedExpression(ExpressionIndexed(index, lineScheme))
+    if (choice.isSimple) expression(index(index, choice.lineStack.size))
+    else expression(indexed(index, choice.lineStack.size, lineScheme))
   }
 
 val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =

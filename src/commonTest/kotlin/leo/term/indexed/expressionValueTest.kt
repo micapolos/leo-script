@@ -63,20 +63,24 @@ class ExpressionValueTest {
   }
 
   @Test
-  fun index() {
-    expression<Int>(10)
+  fun index_boolean() {
+    expression<Int>(index(0, 2))
       .value(incEvaluator)
-      .assertEqualTo(value(10))
+      .assertEqualTo(value(0))
+
+    expression<Int>(index(1, 2))
+      .value(incEvaluator)
+      .assertEqualTo(value(1))
   }
 
   @Test
   fun switch() {
-    expression<Int>(0)
+    expression<Int>(index(0, 2))
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
       .assertEqualTo(nativeValue(10))
 
-    expression<Int>(1)
+    expression<Int>(index(1, 2))
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
       .assertEqualTo(nativeValue(20))
@@ -84,21 +88,21 @@ class ExpressionValueTest {
 
   @Test
   fun indexed() {
-    expression(indexed(0, nativeExpression(10)))
+    expression(indexed(0, 2, nativeExpression(10)))
       .value(incEvaluator)
       .assertEqualTo(value(indexed(0, nativeValue(10))))
   }
 
   @Test
   fun indexedSwitch() {
-    expression(indexed(0, nativeExpression(100)))
+    expression(indexed(0, 2, nativeExpression(100)))
       .indexedSwitch(
         expression(nativeExpression(10), expression(variable(0))),
         expression(nativeExpression(20), expression(variable(0))))
       .value(incEvaluator)
       .assertEqualTo(value(nativeValue(10), nativeValue(100)))
 
-    expression(indexed(1, nativeExpression(100)))
+    expression(indexed(1, 2, nativeExpression(100)))
       .indexedSwitch(
         expression(nativeExpression(10), expression(variable(0))),
         expression(nativeExpression(20), expression(variable(0))))

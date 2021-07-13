@@ -10,6 +10,7 @@ import leo.term.indexed.EmptyExpression
 import leo.term.indexed.Expression
 import leo.term.indexed.ExpressionFunction
 import leo.term.indexed.ExpressionGet
+import leo.term.indexed.ExpressionIndex
 import leo.term.indexed.ExpressionIndexed
 import leo.term.indexed.ExpressionIndexedSwitch
 import leo.term.indexed.ExpressionInvoke
@@ -47,7 +48,7 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is FunctionExpression -> function.scheme(scope)
     is RecursiveExpression -> recursive.scheme(scope)
     is GetExpression -> get.scheme(scope)
-    is IndexExpression -> scheme(index)
+    is IndexExpression -> index.scheme(scope)
     is IndexSwitchExpression -> switch.scheme(scope)
     is IndexedExpression -> indexed.scheme(scope)
     is IndexedSwitchExpression -> switch.scheme(scope)
@@ -80,8 +81,15 @@ fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
 fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
 
+fun ExpressionIndex.scheme(scope: Scope): Scheme =
+  if (size == 2) (index == 0).scheme
+  else scheme(index)
+
 fun ExpressionIndexed<Scheme>.scheme(scope: Scope): Scheme =
-  pair(scheme(index), expression.scheme(scope))
+  pair(
+    if (size == 2) (index == 0).scheme
+    else scheme(index),
+    expression.scheme(scope))
 
 fun ExpressionSwitch<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).indexSwitch(*cases.map { it.scheme(scope) }.toTypedArray())

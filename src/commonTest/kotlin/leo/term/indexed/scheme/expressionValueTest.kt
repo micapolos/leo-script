@@ -5,6 +5,7 @@ import leo.empty
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.get
+import leo.term.indexed.index
 import leo.term.indexed.indexed
 import leo.term.indexed.indexedSwitch
 import leo.term.indexed.invoke
@@ -71,36 +72,73 @@ class ExpressionValueTest {
 
   @Test
   fun index() {
-    expression<Scheme>(1)
+    expression<Scheme>(index(0, 2))
       .scheme
-      .assertEqualTo(scheme("1"))
+      .assertEqualTo(scheme("#t"))
+
+    expression<Scheme>(index(1, 2))
+      .scheme
+      .assertEqualTo(scheme("#f"))
+
+    expression<Scheme>(index(2, 10))
+      .scheme
+      .assertEqualTo(scheme("2"))
   }
 
   @Test
-  fun indexed() {
-    expression(indexed(1, nativeExpression(scheme("a"))))
+  fun indexed_bool() {
+    expression(indexed(1, 2, nativeExpression(scheme("a"))))
+      .scheme
+      .assertEqualTo(scheme("(cons #f a)"))
+  }
+
+  @Test
+  fun indexed_int() {
+    expression(indexed(1, 3, nativeExpression(scheme("a"))))
       .scheme
       .assertEqualTo(scheme("(cons 1 a)"))
   }
 
   @Test
-  fun switch() {
-    nativeExpression(scheme("a"))
+  fun switch_bool() {
+    nativeExpression(scheme("b"))
       .switch(
-        nativeExpression(scheme("a")),
-        nativeExpression(scheme("b")))
+        nativeExpression(scheme("x")),
+        nativeExpression(scheme("y")))
       .scheme
-      .assertEqualTo(scheme("(case a (0 a) (1 b))"))
+      .assertEqualTo(scheme("(if b x y)"))
   }
 
   @Test
-  fun indexedSwitch() {
-    expression(indexed(0, nativeExpression(scheme("10"))))
+  fun switch_int() {
+    nativeExpression(scheme("i"))
+      .switch(
+        nativeExpression(scheme("a")),
+        nativeExpression(scheme("b")),
+        nativeExpression(scheme("c")))
+      .scheme
+      .assertEqualTo(scheme("(case i (0 a) (1 b) (2 c))"))
+  }
+
+  @Test
+  fun indexedSwitch_bool() {
+    expression(indexed(0, 2, nativeExpression(scheme("10"))))
       .indexedSwitch(
         expression(nativeExpression(scheme("100")), expression(variable(0))),
         expression(nativeExpression(scheme("200")), expression(variable(0))))
       .scheme
-      .assertEqualTo(scheme("(let* ((x (cons 0 10)) (i (car x)) (v0 (cdr x))) (case i (0 (vector 100 v0)) (1 (vector 200 v0))))"))
+      .assertEqualTo(scheme("(let* ((x (cons #t 10)) (i (car x)) (v0 (cdr x))) (if i (vector 100 v0) (vector 200 v0)))"))
+  }
+
+  @Test
+  fun indexedSwitch_int() {
+    expression(indexed(0, 3, nativeExpression(scheme("10"))))
+      .indexedSwitch(
+        expression(nativeExpression(scheme("100")), expression(variable(0))),
+        expression(nativeExpression(scheme("200")), expression(variable(0))),
+        expression(nativeExpression(scheme("300")), expression(variable(0))))
+      .scheme
+      .assertEqualTo(scheme("(let* ((x (cons 0 10)) (i (car x)) (v0 (cdr x))) (case i (0 (vector 100 v0)) (1 (vector 200 v0)) (2 (vector 300 v0))))"))
   }
 
   @Test
@@ -138,6 +176,6 @@ class ExpressionValueTest {
                           nativeExpression(scheme("1")))))))))
       .invoke(nativeExpression(scheme("10")))
       .scheme
-      .assertEqualTo(scheme("((letrec ((v0 (lambda (v1) (case (< v1 2) (#t v1) (#f (+ (v0 (- v1 2)) (v0 (- v1 1)))))))) v0) 10)"))
+      .assertEqualTo(scheme("((letrec ((v0 (lambda (v1) (if (< v1 2) v1 (+ (v0 (- v1 2)) (v0 (- v1 1))))))) v0) 10)"))
   }
 }
