@@ -6,11 +6,16 @@ import leo.Type
 import leo.base.notNullOrError
 import leo.fieldOrNull
 import leo.fold
+import leo.matchPrefix
 import leo.name
 import leo.named.compiler.compileStructure
 import leo.onlyLineOrNull
+import leo.recursiveName
 import leo.reverse
+import leo.term.compiled.Body
 import leo.term.compiled.Compiled
+import leo.term.compiled.body
+import leo.term.compiled.recursive
 import leo.term.compiled.tupleOnlyLineOrNull
 import leo.term.typed.TypedSelection
 import leo.term.typed.noSelection
@@ -28,6 +33,11 @@ val <V> Environment<V>.context
 
 fun <V> Context<V>.compiled(script: Script): Compiled<V> =
   module.compiler.plus(script).completeCompiled
+
+fun <V> Context<V>.body(script: Script): Body<V> =
+  script.matchPrefix(recursiveName) { recursiveScript ->
+    recursive(body(recursiveScript))
+  }?: body(compiled(script))
 
 fun <V> Context<V>.plus(binding: Binding): Context<V> =
   copy(scope = scope.plus(binding))

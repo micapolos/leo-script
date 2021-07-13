@@ -7,24 +7,24 @@ import leo.term.compiled.Scope
 import leo.term.compiled.push
 import leo.term.indexed.EmptyExpression
 import leo.term.indexed.Expression
-import leo.term.indexed.Function
+import leo.term.indexed.ExpressionFunction
+import leo.term.indexed.ExpressionGet
+import leo.term.indexed.ExpressionIndexed
+import leo.term.indexed.ExpressionIndexedSwitch
+import leo.term.indexed.ExpressionInvoke
+import leo.term.indexed.ExpressionRecursive
+import leo.term.indexed.ExpressionSwitch
+import leo.term.indexed.ExpressionTuple
 import leo.term.indexed.FunctionExpression
+import leo.term.indexed.GetExpression
 import leo.term.indexed.IndexExpression
-import leo.term.indexed.IndexSwitch
 import leo.term.indexed.IndexSwitchExpression
-import leo.term.indexed.Indexed
 import leo.term.indexed.IndexedExpression
-import leo.term.indexed.IndexedSwitch
 import leo.term.indexed.IndexedSwitchExpression
-import leo.term.indexed.Invoke
 import leo.term.indexed.InvokeExpression
 import leo.term.indexed.NativeExpression
-import leo.term.indexed.Recursive
 import leo.term.indexed.RecursiveExpression
-import leo.term.indexed.Tuple
 import leo.term.indexed.TupleExpression
-import leo.term.indexed.TupleGet
-import leo.term.indexed.TupleGetExpression
 import leo.term.indexed.VariableExpression
 import leo.variable
 import scheme.Scheme
@@ -43,7 +43,7 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is InvokeExpression -> invoke.scheme(scope)
     is FunctionExpression -> function.scheme(scope)
     is RecursiveExpression -> recursive.scheme(scope)
-    is TupleGetExpression -> get.scheme(scope)
+    is GetExpression -> get.scheme(scope)
     is IndexExpression -> scheme(index)
     is IndexSwitchExpression -> switch.scheme(scope)
     is IndexedExpression -> indexed.scheme(scope)
@@ -56,28 +56,28 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
 val Empty.scheme: Scheme get() =
   scheme("`()")
 
-fun Invoke<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionInvoke<Scheme>.scheme(scope: Scope): Scheme =
   scheme(lhs.scheme(scope), *params.map { scheme(scope) }.toTypedArray())
 
-fun Function<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionFunction<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
     scheme("lambda"),
     scheme(*0.until(arity).map { variable(scope.depth + it).scheme }.toTypedArray()),
     expression.scheme(scope.iterate(arity) { push }))
 
-fun Recursive<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionRecursive<Scheme>.scheme(scope: Scope): Scheme =
   TODO()
 
-fun Tuple<Scheme>.scheme(scope: Scope): Scheme =
-  listScheme(*list.map { it.scheme(scope) }.toTypedArray())
+fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
+  listScheme(*expressionList.map { it.scheme(scope) }.toTypedArray())
 
-fun TupleGet<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
 
-fun Indexed<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionIndexed<Scheme>.scheme(scope: Scope): Scheme =
   pair(scheme(index), expression.scheme(scope))
 
-fun IndexSwitch<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionSwitch<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
     scheme("let"),
     scheme(
@@ -85,7 +85,7 @@ fun IndexSwitch<Scheme>.scheme(scope: Scope): Scheme =
       scheme(variable(scope.depth).scheme, scheme("x").pairSecond)),
     scheme("idx").indexSwitch(*cases.map { scheme(scope.push) }.toTypedArray()))
 
-fun IndexedSwitch<Scheme>.scheme(scope: Scope): Scheme =
+fun ExpressionIndexedSwitch<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
     scheme("let"),
     scheme(

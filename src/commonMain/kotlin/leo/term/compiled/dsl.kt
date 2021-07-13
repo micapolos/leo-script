@@ -73,7 +73,7 @@ fun <V> Compiled<V>.invoke(compiled: Compiled<V>): Compiled<V> =
   compiled.apply(this)
 
 fun <V> Compiled<V>.do_(body: Body<V>): Compiled<V> =
-  apply(compiled(compiled(line(function(type, body)), type functionLineTo body.compiled.type)))
+  apply(fn(type, body))
 
 fun <V> Compiled<V>.as_(type: Type): Compiled<V> =
   also {
@@ -84,8 +84,14 @@ fun <V> Compiled<V>.as_(type: Type): Compiled<V> =
             "equal" lineTo type.script))))
   }
 
+fun <V> fn(type: Type, body: Body<V>): Compiled<V> =
+  compiled(fnLine(type, body))
+
 fun <V> fn(type: Type, body: Compiled<V>): Compiled<V> =
   compiled(fnLine(type, body))
+
+fun <V> fnLine(type: Type, body: Body<V>): CompiledLine<V> =
+  compiled(line(function(type, body)), type functionLineTo body.compiled.type)
 
 fun <V> fnLine(type: Type, body: Compiled<V>): CompiledLine<V> =
   compiled(line(function(type, body(body))), type functionLineTo body.type)
