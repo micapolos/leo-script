@@ -36,8 +36,8 @@ fun scheme(vararg schemes: Scheme): Scheme = "(${spacedScheme(*schemes).string})
 fun listScheme(vararg schemes: Scheme): Scheme = scheme(scheme("list"), *schemes)
 fun vectorScheme(vararg schemes: Scheme): Scheme = scheme(scheme("vector"), *schemes)
 fun pair(lhs: Scheme, rhs: Scheme): Scheme = scheme(scheme("cons"), lhs, rhs)
-val Scheme.pairFirst: Scheme get() = scheme(scheme("cdr"), this)
-val Scheme.pairSecond: Scheme get() = scheme(scheme("car"), this)
+val Scheme.pairFirst: Scheme get() = scheme(scheme("car"), this)
+val Scheme.pairSecond: Scheme get() = scheme(scheme("cdr"), this)
 
 fun tupleScheme(vararg schemes: Scheme): Scheme =
   when (schemes.size) {

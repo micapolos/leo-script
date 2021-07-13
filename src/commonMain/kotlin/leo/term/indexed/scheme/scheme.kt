@@ -5,6 +5,7 @@ import leo.IndexVariable
 import leo.base.iterate
 import leo.term.compiled.Scope
 import leo.term.compiled.push
+import leo.term.compiled.scope
 import leo.term.indexed.EmptyExpression
 import leo.term.indexed.Expression
 import leo.term.indexed.ExpressionFunction
@@ -29,13 +30,15 @@ import leo.term.indexed.VariableExpression
 import leo.variable
 import scheme.Scheme
 import scheme.indexSwitch
-import scheme.listScheme
-import scheme.nilScheme
 import scheme.pair
 import scheme.pairFirst
 import scheme.pairSecond
 import scheme.scheme
 import scheme.vectorRef
+import scheme.vectorScheme
+
+val Expression<Scheme>.scheme: Scheme get() =
+  scheme(scope())
 
 fun Expression<Scheme>.scheme(scope: Scope): Scheme =
   when (this) {
@@ -50,14 +53,14 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is IndexedSwitchExpression -> switch.scheme(scope)
     is TupleExpression -> tuple.scheme(scope)
     is NativeExpression -> native
-    is VariableExpression -> variable.scheme
+    is VariableExpression -> variable.scheme(scope)
   }
 
 val Empty.scheme: Scheme get() =
   scheme("`()")
 
 fun ExpressionInvoke<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(lhs.scheme(scope), *params.map { scheme(scope) }.toTypedArray())
+  scheme(lhs.scheme(scope), *params.map { it.scheme(scope) }.toTypedArray())
 
 fun ExpressionFunction<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
@@ -66,10 +69,13 @@ fun ExpressionFunction<Scheme>.scheme(scope: Scope): Scheme =
     expression.scheme(scope.iterate(arity) { push }))
 
 fun ExpressionRecursive<Scheme>.scheme(scope: Scope): Scheme =
-  TODO()
+  scheme(
+    scheme("letrec"),
+    scheme(scheme(variable(scope.depth).scheme, function.scheme(scope.push))),
+    variable(scope.depth).scheme)
 
 fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
-  listScheme(*expressionList.map { it.scheme(scope) }.toTypedArray())
+  vectorScheme(*expressionList.map { it.scheme(scope) }.toTypedArray())
 
 fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
@@ -78,20 +84,18 @@ fun ExpressionIndexed<Scheme>.scheme(scope: Scope): Scheme =
   pair(scheme(index), expression.scheme(scope))
 
 fun ExpressionSwitch<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(
-    scheme("let"),
-    scheme(
-      scheme(scheme("idx"), lhs.scheme(scope)),
-      scheme(variable(scope.depth).scheme, scheme("x").pairSecond)),
-    scheme("idx").indexSwitch(*cases.map { scheme(scope.push) }.toTypedArray()))
+  lhs.scheme(scope).indexSwitch(*cases.map { it.scheme(scope) }.toTypedArray())
 
 fun ExpressionIndexedSwitch<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
-    scheme("let"),
+    scheme("let*"),
     scheme(
       scheme(scheme("x"), lhs.scheme(scope)),
-      scheme(scheme("idx"), scheme("x").pairFirst),
-      scheme(variable(scope.depth).scheme, nilScheme),
-      scheme("idx").indexSwitch(*cases.map { scheme(scope.push) }.toTypedArray())))
+      scheme(scheme("i"), scheme("x").pairFirst),
+      scheme(variable(scope.depth).scheme, scheme("x").pairSecond)),
+    scheme("i").indexSwitch(*cases.map { it.scheme(scope.push) }.toTypedArray()))
+
+fun IndexVariable.scheme(scope: Scope) =
+  variable(scope.depth - index - 1).scheme
 
 val IndexVariable.scheme get() = Scheme("v${index}")

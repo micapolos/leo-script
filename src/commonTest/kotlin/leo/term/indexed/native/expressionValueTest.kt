@@ -48,7 +48,7 @@ class ExpressionValueTest {
   }
 
   @Test
-  fun recursiveFunction() {
+  fun fibonacci() {
     expression(
       recursive(
         function(1,
