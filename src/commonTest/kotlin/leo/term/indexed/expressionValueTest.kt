@@ -10,7 +10,7 @@ class ExpressionValueTest {
   fun native() {
     nativeExpression(10)
       .value(incEvaluator)
-      .assertEqualTo(nativeValue(11))
+      .assertEqualTo(nativeValue(10))
   }
 
   @Test
@@ -24,7 +24,7 @@ class ExpressionValueTest {
   fun tuple() {
     expression(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(11), nativeValue(21)))
+      .assertEqualTo(value(nativeValue(10), nativeValue(20)))
   }
 
   @Test
@@ -32,12 +32,12 @@ class ExpressionValueTest {
     expression(nativeExpression(10), nativeExpression(20))
       .get(0)
       .value(incEvaluator)
-      .assertEqualTo(nativeValue(11))
+      .assertEqualTo(nativeValue(10))
 
     expression(nativeExpression(10), nativeExpression(20))
       .get(1)
       .value(incEvaluator)
-      .assertEqualTo(nativeValue(21))
+      .assertEqualTo(nativeValue(20))
   }
 
   @Test
@@ -52,7 +52,14 @@ class ExpressionValueTest {
     expression<Int>(function(2, expression(expression(variable(1)), expression(variable(0)))))
       .invoke(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(11), nativeValue(21)))
+      .assertEqualTo(value(nativeValue(10), nativeValue(20)))
+  }
+
+  @Test
+  fun nativeInvoke() {
+    nativeExpression(100).invoke(nativeExpression(10), nativeExpression(20))
+      .value(incEvaluator)
+      .assertEqualTo(nativeValue(102))
   }
 
   @Test
@@ -67,19 +74,19 @@ class ExpressionValueTest {
     expression<Int>(0)
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
-      .assertEqualTo(nativeValue(11))
+      .assertEqualTo(nativeValue(10))
 
     expression<Int>(1)
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
-      .assertEqualTo(nativeValue(21))
+      .assertEqualTo(nativeValue(20))
   }
 
   @Test
   fun indexed() {
     expression(indexed(0, nativeExpression(10)))
       .value(incEvaluator)
-      .assertEqualTo(value(indexed(0, nativeValue(11))))
+      .assertEqualTo(value(indexed(0, nativeValue(10))))
   }
 
   @Test
@@ -89,13 +96,13 @@ class ExpressionValueTest {
         expression(nativeExpression(10), expression(variable(0))),
         expression(nativeExpression(20), expression(variable(0))))
       .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(11), nativeValue(101)))
+      .assertEqualTo(value(nativeValue(10), nativeValue(100)))
 
     expression(indexed(1, nativeExpression(100)))
       .indexedSwitch(
         expression(nativeExpression(10), expression(variable(0))),
         expression(nativeExpression(20), expression(variable(0))))
       .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(21), nativeValue(101)))
+      .assertEqualTo(value(nativeValue(20), nativeValue(100)))
   }
 }

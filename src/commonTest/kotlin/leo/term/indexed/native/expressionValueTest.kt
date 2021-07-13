@@ -7,7 +7,6 @@ import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.StringPlusStringNative
 import leo.term.compiler.native.native
-import leo.term.indexed.NativeExpression
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.invoke
@@ -22,7 +21,7 @@ import kotlin.test.Test
 class ExpressionValueTest {
   @Test
   fun stringPlusString() {
-    expression(function(2, nativeExpression(StringPlusStringNative)))
+    nativeExpression(StringPlusStringNative)
       .invoke(
         nativeExpression("Hello, ".native),
         nativeExpression("world!".native))
@@ -32,14 +31,14 @@ class ExpressionValueTest {
 
   @Test
   fun doubleIsLessThanDouble() {
-    expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+    nativeExpression(DoubleIsLessThanDoubleNative)
       .invoke(
         nativeExpression(3.0.native),
         nativeExpression(2.0.native))
       .value(nativeEvaluator)
       .assertEqualTo(value(false.switchIndex))
 
-    expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+    nativeExpression(DoubleIsLessThanDoubleNative)
       .invoke(
         nativeExpression(1.0.native),
         nativeExpression(2.0.native))
@@ -52,21 +51,21 @@ class ExpressionValueTest {
     expression(
       recursive(
         function(1,
-          expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+          nativeExpression(DoubleIsLessThanDoubleNative)
             .invoke(expression(variable(0)), nativeExpression(2.0.native))
             .switch(
               expression(variable(0)),
-              expression(function(2, NativeExpression(DoublePlusDoubleNative)))
+              nativeExpression(DoublePlusDoubleNative)
                 .invoke(
                   expression<Native>(variable(1))
                     .invoke(
-                      expression(function(2, nativeExpression(DoubleMinusDoubleNative)))
+                      nativeExpression(DoubleMinusDoubleNative)
                         .invoke(
                           expression(variable(0)),
                           nativeExpression(2.0.native))),
                   expression<Native>(variable(1))
                     .invoke(
-                      expression(function(2, nativeExpression(DoubleMinusDoubleNative)))
+                      nativeExpression(DoubleMinusDoubleNative)
                         .invoke(
                           expression(variable(0)),
                           nativeExpression(1.0.native))))))))

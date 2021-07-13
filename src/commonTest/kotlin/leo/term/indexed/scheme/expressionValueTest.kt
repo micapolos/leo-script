@@ -2,7 +2,6 @@ package leo.term.indexed.scheme
 
 import leo.base.assertEqualTo
 import leo.empty
-import leo.term.indexed.NativeExpression
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.get
@@ -10,7 +9,6 @@ import leo.term.indexed.indexed
 import leo.term.indexed.indexedSwitch
 import leo.term.indexed.invoke
 import leo.term.indexed.nativeExpression
-import leo.term.indexed.nativeValue
 import leo.term.indexed.recursive
 import leo.term.indexed.switch
 import leo.variable
@@ -92,7 +90,7 @@ class ExpressionValueTest {
         nativeExpression(scheme("a")),
         nativeExpression(scheme("b")))
       .scheme
-      .assertEqualTo(scheme("(cons 1 a)"))
+      .assertEqualTo(scheme("(case a (0 a) (1 b))"))
   }
 
   @Test
@@ -120,26 +118,26 @@ class ExpressionValueTest {
     expression(
       recursive(
         function(1,
-          expression(function(2, nativeExpression(scheme("<"))))
-            .invoke(expression(variable(0)), nativeExpression(scheme("2"))
+          nativeExpression(scheme("<"))
+            .invoke(expression(variable(0)), nativeExpression(scheme("2")))
             .switch(
               expression(variable(0)),
-              expression(function(2, NativeExpression(scheme("+"))))
+              nativeExpression(scheme("+"))
                 .invoke(
                   expression<Scheme>(variable(1))
                     .invoke(
-                      expression(function(2, nativeExpression(scheme("-"))))
+                      nativeExpression(scheme("-"))
                         .invoke(
                           expression(variable(0)),
                           nativeExpression(scheme("2")))),
                   expression<Scheme>(variable(1))
                     .invoke(
-                      expression(function(2, nativeExpression(scheme("-"))))
+                      nativeExpression(scheme("-"))
                         .invoke(
                           expression(variable(0)),
-                          nativeExpression(scheme("1"))))))))))
+                          nativeExpression(scheme("1")))))))))
       .invoke(nativeExpression(scheme("10")))
       .scheme
-      .assertEqualTo(nativeValue(scheme("55")))
+      .assertEqualTo(scheme("((letrec ((v0 (lambda (v1) (case (< v1 2) (0 v1) (1 (+ (v0 (- v1 2)) (v0 (- v1 1)))))))) v0) 10)"))
   }
 }

@@ -15,33 +15,31 @@ import leo.term.compiler.native.native
 import leo.term.compiler.native.string
 import leo.term.indexed.Evaluator
 import leo.term.indexed.Value
-import leo.term.indexed.ValueScope
 import leo.term.indexed.native
 import leo.term.indexed.nativeValue
 import leo.term.indexed.value
-import leo.variable
 
 val nativeEvaluator: Evaluator<Native> get() =
-  Evaluator { it.value(this) }
+  Evaluator { value(*it) }
 
-fun Native.value(scope: ValueScope<Native>): Value<Native> =
+fun Native.value(vararg params: Value<Native>): Value<Native> =
   when (this) {
     is DoubleNative -> nativeValue(this)
     is StringNative -> nativeValue(this)
     DoublePlusDoubleNative ->
-      nativeValue(scope.value(variable(1)).native.double.plus(scope.value(variable(0)).native.double).native)
+      nativeValue(params[0].native.double.plus(params[1].native.double).native)
     DoubleMinusDoubleNative ->
-      nativeValue(scope.value(variable(1)).native.double.minus(scope.value(variable(0)).native.double).native)
+      nativeValue(params[0].native.double.minus(params[1].native.double).native)
     DoubleTimesDoubleNative ->
-      nativeValue(scope.value(variable(1)).native.double.times(scope.value(variable(0)).native.double).native)
+      nativeValue(params[0].native.double.times(params[1].native.double).native)
     DoubleIsLessThanDoubleNative ->
-      value((scope.value(variable(1)).native.double < scope.value(variable(0)).native.double).switchIndex)
+      value((params[0].native.double < params[1].native.double).switchIndex)
     ObjectEqualsObjectNative ->
-      value((scope.value(variable(1)).native == scope.value(variable(0)).native).switchIndex)
+      value((params[0].native == params[1].native).switchIndex)
     StringPlusStringNative ->
-      nativeValue(scope.value(variable(1)).native.string.plus(scope.value(variable(0)).native.string).native)
+      nativeValue(params[0].native.string.plus(params[1].native.string).native)
     StringLengthNative ->
-      nativeValue(scope.value(variable(0)).native.string.length.toDouble().native)
+      nativeValue(params[0].native.string.length.toDouble().native)
   }
 
 val Boolean.switchIndex: Int get() = if (this) 0 else 1

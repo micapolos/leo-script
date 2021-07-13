@@ -35,9 +35,7 @@ fun <V> Expression<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
 
 @Suppress("unused")
 fun <V> V.nativeValueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  evaluatorEvaluation<V>().map { evaluator ->
-    evaluator.valueFn.invoke(scope, this)
-  }
+  nativeValue(this).evaluation()
 
 @Suppress("unused")
 fun <V> Empty.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
@@ -91,6 +89,7 @@ fun <V> Value<V>.invokeValueEvaluation(vararg params: Value<V>): Evaluation<V, V
   when (this) {
     is FunctionValue -> function.invokeValueEvaluation(*params)
     is RecursiveValue -> recursive.invokeValueEvaluation(*params)
+    is NativeValue -> evaluatorEvaluation<V>().map { it.invokeFn.invoke(native, params) }
     else -> null!!
   }
 
