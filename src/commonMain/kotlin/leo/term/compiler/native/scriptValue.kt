@@ -2,15 +2,14 @@ package leo.term.compiler.native
 
 import leo.Script
 import leo.term.Value
-import leo.term.compiler.typedTerm
+import leo.term.compiler.compiled
 import leo.term.typed.TypedValue
-import leo.term.typed.typed
-import leo.term.value
 
 val Script.typedValue: TypedValue<Native>
   get() =
-    nativeEnvironment.typedTerm(this).let { typedTerm ->
-      typed(nativeEvaluator.value(typedTerm.v), typedTerm.t)
+    nativeEnvironment.compiled(this).let { typedTerm ->
+      TODO()
+      //typed(nativeEvaluator.value(typedTerm.v), typedTerm.t)
     }
 
 val Script.value: Value<Native> get() = typedValue.v

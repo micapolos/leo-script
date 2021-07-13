@@ -38,6 +38,7 @@ import leo.structure
 import leo.structureOrNull
 import leo.term.Term
 import leo.term.Value
+import leo.term.compiled.CompiledLine
 import leo.term.compiler.Get
 import leo.term.compiler.compileError
 import leo.term.eitherFirst
@@ -61,13 +62,13 @@ typealias TypedLine<V> = Typed<Term<V>, TypeLine>
 typealias TypedChoice<V> = Typed<Term<V>?, TypeChoice>
 
 sealed class TypedSelection<out V>
-data class YesTypedSelection<V>(val typedLine: TypedLine<V>) : TypedSelection<V>()
+data class YesTypedSelection<V>(val typedLine: CompiledLine<V>) : TypedSelection<V>()
 data class NoTypedSelection<V>(val typeLine: TypeLine) : TypedSelection<V>()
 
 data class TypedSwitch<V>(val typedTerm: TypedTerm<V>?, val choice: TypeChoice)
 
 fun <V> noSelection(typeLine: TypeLine): TypedSelection<V> = NoTypedSelection(typeLine)
-fun <V> yesSelection(typedLine: TypedLine<V>): TypedSelection<V> = YesTypedSelection(typedLine)
+fun <V> yesSelection(compiledLine: CompiledLine<V>): TypedSelection<V> = YesTypedSelection(compiledLine)
 
 fun <V> typedTerm(): TypedTerm<V> = Typed(term(empty), type())
 
@@ -227,26 +228,6 @@ fun <V> TypedTerm<V>.repeat(typedTerm: TypedTerm<V>): TypedTerm<V> =
 
 fun <V> typedFunctionLine(type: Type, typedTerm: TypedTerm<V>): TypedLine<V> =
   typed(fn(typedTerm.v), type functionLineTo typedTerm.t)
-
-val <V> TypedSelection<V>.typeLine: TypeLine
-  get() =
-    when (this) {
-      is NoTypedSelection -> typeLine
-      is YesTypedSelection -> typedLine.t
-    }
-
-fun <V> TypedChoice<V>.choicePlus(selection: TypedSelection<V>): TypedChoice<V> =
-  Typed(
-    when (selection) {
-      is YesTypedSelection ->
-        if (v != null) compileError(script("select" lineTo script(
-          "duplicate" lineTo script("the" lineTo script(selection.typedLine.t.scriptLine)))))
-        else if (t.lineStack.isEmpty) selection.typedLine.v
-        else selection.typedLine.v.eitherSecond
-      is NoTypedSelection -> v?.eitherFirst
-    },
-    t.plus(selection.typeLine)
-  )
 
 val <V> TypedChoice<V>.typedTerm: TypedTerm<V>
   get() =

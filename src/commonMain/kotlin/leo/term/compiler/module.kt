@@ -24,38 +24,40 @@ import leo.reverse
 import leo.ropeOrNull
 import leo.script
 import leo.stack
-import leo.term.Term
-import leo.term.fn
-import leo.term.get
-import leo.term.invoke
-import leo.term.typed.drop
-import leo.term.typed.pick
-import leo.term.typed.typed
-import leo.term.typed.typedTerm
+import leo.term.compiled.Compiled
+import leo.term.compiled.compiled
+import leo.term.compiled.drop
+import leo.term.compiled.expression
+import leo.term.compiled.fn
+import leo.term.compiled.invoke
+import leo.term.compiled.pick
+import leo.term.variable
 import leo.type
 
 data class Module<V>(
   val context: Context<V>,
-  val termStack: Stack<Term<V>>) { override fun toString() = toScriptLine.toString() }
+  val compiledStack: Stack<Compiled<V>>) { override fun toString() = toScriptLine.toString() }
 
 val <V> Context<V>.module get() = Module(this, stack())
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
   copy(context = context.plus(binding))
 
-fun <V> Module<V>.plus(term: Term<V>): Module<V> =
-  copy(termStack = termStack.push(term))
+fun <V> Module<V>.plus(compiled: Compiled<V>): Module<V> =
+  copy(compiledStack = compiledStack.push(compiled))
 
-fun <V> Module<V>.seal(term: Term<V>): Term<V> =
-  term.fold(termStack) { fn(this) }.fold(termStack.reverse) { invoke(it) }
+fun <V> Module<V>.seal(compiled: Compiled<V>): Compiled<V> =
+  compiled
+    .fold(compiledStack) { fn(it.type, this) } // Is it correct?
+    .fold(compiledStack.reverse) { invoke(it) }
 
 fun <V> Module<V>.plusLet(script: Script): Module<V> =
   script.matchInfix(doName) { lhs, rhs ->
     context.type(lhs).let { type ->
-      context.plus(binding(given(type))).typedTerm(rhs).let { bodyTypedTerm ->
+      context.plus(binding(given(type))).compiled(rhs).let { bodyCompiled ->
         this
-          .plus(binding(definition(type functionTo bodyTypedTerm.t)))
-          .plus(fn(bodyTypedTerm.v))
+          .plus(binding(definition(type functionTo bodyCompiled.type)))
+          .plus(fn(type, bodyCompiled))
           .run {
             lhs.matchPrefix(anyName) {
               context.type(lhs).let { type ->
@@ -100,8 +102,8 @@ fun <V> Module<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Modu
               rope.stack.reverse.choice.type.fold(nameStack) { make(it) })))
     .plus(
       fn(
-        typedTerm<V>()
+        type(rope.current),
+        compiled<V>()
           .fold(rope.head) { drop(type(it)) }
-          .pick(typed(get(0), type(rope.current)))
-          .fold(rope.tail.reverse) { drop(type(it)) }
-          .v))
+          .pick(compiled(expression(variable(0)), type(rope.current)))
+          .fold(rope.tail.reverse) { drop(type(it)) }))

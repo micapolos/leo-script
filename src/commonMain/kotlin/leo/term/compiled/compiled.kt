@@ -16,6 +16,9 @@ data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
 
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
+data class CompiledFragment<out V>(val fragment: Fragment<V>, val type: Type)
+
+data class Fragment<out V>(val expression: Expression<V>, val tuple: Tuple<V>)
 
 sealed class Expression<out V>
 data class TupleExpression<out V>(val tuple: Tuple<V>): Expression<V>()
@@ -56,6 +59,7 @@ fun <V> line(get: Get<V>): Line<V> = GetLine(get)
 fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(expression, type)
 fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
+fun <V> compiled(fragment: Fragment<V>, type: Type) = CompiledFragment(fragment, type)
 
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)
@@ -64,6 +68,10 @@ fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, index: Int, line: Line<V>) = Select(choice, index, line)
+fun <V> fragment(expression: Expression<V>, tuple: Tuple<V>) = Fragment(expression, tuple)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)
+
+val <V> Expression<V>.tupleOrNull: Tuple<V>? get() = (this as? TupleExpression<V>)?.tuple
+val <V> Line<V>.fieldOrNull: Field<V>? get() = (this as? FieldLine<V>)?.field

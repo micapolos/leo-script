@@ -4,33 +4,41 @@ import leo.Literal
 import leo.Script
 import leo.ScriptLine
 import leo.isEmpty
+import leo.line
 import leo.lineTo
 import leo.plus
 import leo.script
-import leo.term.Term
-import leo.term.typed.TypedLine
-import leo.term.typed.TypedTerm
-import leo.term.typed.infix
-import leo.term.typed.typed
+import leo.term.compiled.Compiled
+import leo.term.compiled.CompiledLine
+import leo.term.compiled.Line
+import leo.term.compiled.compiled
+import leo.term.compiled.infix
+import leo.term.compiled.nativeLine
 import leo.typeLine
 import leo.typeName
 
 data class Environment<V>(
-  val literalFn: (Literal) -> Term<V>,
-  val resolveOrNullFn: (TypedTerm<V>) -> TypedTerm<V>?,
+  val literalFn: (Literal) -> Line<V>,
+  val resolveOrNullFn: (Compiled<V>) -> Compiled<V>?,
   val scriptLineFn: (V) -> ScriptLine)
 
-fun <V> Environment<V>.typedTerm(script: Script): TypedTerm<V> =
-  context.typedTerm(script)
+val literalEnvironment: Environment<Literal> get() =
+  Environment(
+    { literal -> nativeLine(literal) },
+    { compiled -> null },
+    { literal -> line(literal) })
 
-fun <V> Environment<V>.typedLine(literal: Literal): TypedLine<V> =
-  typed(literalFn(literal), literal.typeLine)
+fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
+  context.compiled(script)
 
-fun <V> Environment<V>.resolveTypeOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>? =
-  typedTerm.infix(typeName) { lhs, rhs ->
-    if (!lhs.t.isEmpty) compileError(
-      lhs.t.script
-        .plus("type" lineTo rhs.t.script)
+fun <V> Environment<V>.compiledLine(literal: Literal): CompiledLine<V> =
+  compiled(literalFn(literal), literal.typeLine)
+
+fun <V> Environment<V>.resolveTypeOrNull(compiled: Compiled<V>): Compiled<V>? =
+  compiled.infix(typeName) { lhs, rhs ->
+    if (!lhs.type.isEmpty) compileError(
+      lhs.type.script
+        .plus("type" lineTo rhs.type.script)
         .plus("is" lineTo script(
           "not" lineTo script(
             "matching" lineTo script(
@@ -40,5 +48,5 @@ fun <V> Environment<V>.resolveTypeOrNull(typedTerm: TypedTerm<V>): TypedTerm<V>?
     else resolveType(rhs)
   }
 
-fun <V> Script.typedTerm(environment: Environment<V>): TypedTerm<V> =
-  environment.typedTerm(this)
+fun <V> Script.compiled(environment: Environment<V>): Compiled<V> =
+  environment.compiled(this)

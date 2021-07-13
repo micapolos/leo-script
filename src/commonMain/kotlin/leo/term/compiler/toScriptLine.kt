@@ -5,8 +5,7 @@ import leo.lineTo
 import leo.listScriptLine
 import leo.script
 import leo.scriptLine
-import leo.term.scriptLine
-import leo.term.typed.toScriptLine
+import leo.term.compiled.toScriptLine
 
 val <V> Environment<V>.toScriptLine: ScriptLine get() =
   "environment" lineTo script("native")
@@ -14,12 +13,12 @@ val <V> Environment<V>.toScriptLine: ScriptLine get() =
 val <V> Compiler<V>.toScriptLine: ScriptLine get() =
   "compiler" lineTo script(
     module.toScriptLine,
-    typedTerm.toScriptLine(environment.scriptLineFn))
+    compiled.toScriptLine(environment.scriptLineFn))
 
 val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(
     context.toScriptLine,
-    "term" lineTo termStack.listScriptLine { scriptLine(context.environment.scriptLineFn) }.script)
+    "term" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
 
 val <V> Context<V>.toScriptLine: ScriptLine get() =
   "context" lineTo script(

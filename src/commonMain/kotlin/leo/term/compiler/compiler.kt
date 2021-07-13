@@ -6,6 +6,8 @@ import leo.LiteralScriptLine
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
+import leo.Type
+import leo.TypeLine
 import leo.asName
 import leo.base.fold
 import leo.base.reverse
@@ -14,15 +16,12 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.dropName
-import leo.functionLineTo
 import leo.functionName
-import leo.functionTo
 import leo.giveName
 import leo.isEmpty
 import leo.letName
 import leo.lineSeq
 import leo.lineTo
-import leo.literal
 import leo.matchInfix
 import leo.matchPrefix
 import leo.pickName
@@ -31,46 +30,31 @@ import leo.quoteName
 import leo.repeatingName
 import leo.reverse
 import leo.script
-import leo.selectName
 import leo.switchName
-import leo.term.compiler.haskell.haskell
-import leo.term.compiler.haskell.haskellEnvironment
-import leo.term.compiler.idris.idris
-import leo.term.compiler.idris.idrisEnvironment
-import leo.term.compiler.js.js
-import leo.term.compiler.js.jsEnvironment
-import leo.term.compiler.julia.julia
-import leo.term.compiler.julia.juliaEnvironment
-import leo.term.compiler.leo.scriptEnvironment
-import leo.term.compiler.python.python
-import leo.term.compiler.python.pythonEnvironment
-import leo.term.compiler.scheme.scheme
-import leo.term.compiler.scheme.schemeEnvironment
-import leo.term.fn
-import leo.term.script
-import leo.term.typed.TypedLine
-import leo.term.typed.TypedTerm
-import leo.term.typed.as_
-import leo.term.typed.choicePlus
-import leo.term.typed.do_
-import leo.term.typed.drop
-import leo.term.typed.lineTo
-import leo.term.typed.pick
-import leo.term.typed.plus
-import leo.term.typed.repeat
-import leo.term.typed.typed
-import leo.term.typed.typedChoice
-import leo.term.typed.typedTerm
+import leo.term.compiled.Body
+import leo.term.compiled.Compiled
+import leo.term.compiled.CompiledLine
+import leo.term.compiled.as_
+import leo.term.compiled.body
+import leo.term.compiled.compiled
+import leo.term.compiled.do_
+import leo.term.compiled.drop
+import leo.term.compiled.fnLine
+import leo.term.compiled.lineTo
+import leo.term.compiled.onlyCompiledLine
+import leo.term.compiled.pick
+import leo.term.compiled.plus
 
 data class Compiler<V>(
   val module: Module<V>,
-  val typedTerm: TypedTerm<V>
+  val compiled: Compiled<V>
 )
 
-val <V> Module<V>.compiler: Compiler<V> get() = Compiler(this, typedTerm())
+fun <V> Module<V>.compiler(compiled: Compiled<V>): Compiler<V> = Compiler(this, compiled)
+val <V> Module<V>.compiler: Compiler<V> get() = compiler(compiled())
 
-fun <V> Compiler<V>.set(typedTerm: TypedTerm<V>): Compiler<V> =
-  copy(typedTerm = typedTerm)
+fun <V> Compiler<V>.set(compiled: Compiled<V>): Compiler<V> =
+  copy(compiled = compiled)
 
 fun <V> Compiler<V>.set(module: Module<V>): Compiler<V> =
   copy(module = module)
@@ -88,7 +72,7 @@ fun <V> Compiler<V>.plus(scriptLine: ScriptLine): Compiler<V> =
   }
 
 fun <V> Compiler<V>.plus(literal: Literal): Compiler<V> =
-  plus(environment.typedLine(literal))
+  plus(environment.compiledLine(literal))
 
 fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
   null
@@ -96,32 +80,34 @@ fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
     ?: plusNamed(field)
 
 fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
-  if (field.rhs.isEmpty) set(typedTerm()).plus(field.name lineTo typedTerm)
-  else plus(field.name lineTo context.typedTerm(field.rhs))
+  if (field.rhs.isEmpty) set(compiled()).plus(field.name lineTo compiled)
+  else plus(field.name lineTo context.compiled(field.rhs))
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
-    asName -> plusAs(field.rhs)
-    compileName -> plusCompile(field.rhs)
-    debugName -> plusDebug(field.rhs)
-    doName -> plusDo(field.rhs)
-    dropName -> plusDrop(field.rhs)
-    giveName -> plusGive(field.rhs)
-    functionName -> plusFunction(field.rhs)
-    letName -> plusLet(field.rhs)
-    pickName -> plusPick(field.rhs)
-    selectName -> plusSelect(field.rhs)
-    switchName -> plusSwitch(field.rhs)
-    quoteName -> plusQuote(field.rhs)
+    asName -> as_(field.rhs)
+    compileName -> compile(field.rhs)
+    debugName -> debug(field.rhs)
+    doName -> do_(field.rhs)
+    dropName -> drop(field.rhs)
+    giveName -> give(field.rhs)
+    functionName -> function(field.rhs)
+    letName -> let(field.rhs)
+    pickName -> pick(field.rhs)
+    switchName -> switch(field.rhs)
+    quoteName -> quote(field.rhs)
     else -> null
   }
 
-fun <V> Compiler<V>.plusAs(script: Script): Compiler<V> =
-  set(typedTerm.as_(context.type(script)))
+fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
+  as_(context.type(script))
 
-fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) compileError(
-    typedTerm.t.script
+fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
+  set(compiled.as_(type))
+
+fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(
+    compiled.type.script
       .plus("compile" lineTo script)
       .plus("is" lineTo script(
         "not" lineTo script(
@@ -132,27 +118,20 @@ fun <V> Compiler<V>.plusCompile(script: Script): Compiler<V> =
                   "any" lineTo script("script")))))))))
   else script.matchPrefix { name, rhs ->
     when (name) {
-      "js" -> set(context.typedTerm(script("js" lineTo script(literal(jsEnvironment.typedTerm(rhs).v.js.string)))))
-      "julia" -> set(context.typedTerm(script("julia" lineTo script(literal(juliaEnvironment.typedTerm(rhs).v.julia.string)))))
-      "haskell" -> set(context.typedTerm(script("haskell" lineTo script(literal(haskellEnvironment.typedTerm(rhs).v.haskell.string)))))
-      "idris" -> set(context.typedTerm(script("idris" lineTo script(literal(idrisEnvironment.typedTerm(rhs).v.idris.string)))))
-      "scheme" -> set(context.typedTerm(script("scheme" lineTo script(literal(schemeEnvironment.typedTerm(rhs).v.scheme.string)))))
-      "python" -> set(context.typedTerm(script("python" lineTo script(literal(pythonEnvironment.typedTerm(rhs).v.python.string)))))
-      "lambda" -> set(context.typedTerm(script("lambda" lineTo scriptEnvironment.typedTerm(rhs).v.script(scriptEnvironment.scriptLineFn))))
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))
 
-fun <V> Compiler<V>.plusDebug(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) compileError(script("debug" lineTo script()))
-  else set(environment.staticTypedTerm(script("debug" lineTo script(toScriptLine))))
+fun <V> Compiler<V>.debug(script: Script): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(script("debug" lineTo script()))
+  else set(environment.staticCompiled(script("debug" lineTo script(toScriptLine))))
 
-fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
+fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
       doingName -> context.type(lhs).let { type ->
-        context.plus(binding(given(type))).typedTerm(rhs).let { typedTerm ->
-          plus(typed(fn(typedTerm.v), type functionLineTo typedTerm.t))
+        context.plus(binding(given(type))).compiled(rhs).let { compiled ->
+          plus(fnLine(type, compiled))
         }
       }
       else -> null
@@ -165,60 +144,62 @@ fun <V> Compiler<V>.plusFunction(script: Script): Compiler<V> =
           "any" lineTo script("type"),
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
-fun <V> Compiler<V>.plusDo(script: Script): Compiler<V> =
-  set(typedTerm.do_(context.plus(binding(given(typedTerm.t))).typedTerm(script)))
+fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
+  do_(body(context.plus(binding(given(compiled.type))).compiled(script)))
 
-fun <V> Compiler<V>.plusGive(script: Script): Compiler<V> =
+fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
+  set(compiled.do_(body))
+
+fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     context.type(lhs).let { type ->
       when (name) {
         doingName ->
           set(
-            typedTerm
-              .do_(context.plus(binding(given(typedTerm.t))).typedTerm(rhs))
-              .check(type))
-        repeatingName ->
-          set(
-            typedTerm
-              .repeat(
-                context
-                  .plus(binding(definition(typedTerm.t.functionTo(type))))
-                  .plus(binding(given(typedTerm.t))).typedTerm(rhs))
-            .check(type))
+            compiled
+              .do_(body(context.plus(binding(given(compiled.type))).compiled(rhs)))
+              .as_(type))
+        repeatingName -> TODO()
+//          set(
+//            compiled
+//              .repeat(
+//                context
+//                  .plus(binding(definition(compiled.type.functionTo(type))))
+//                  .plus(binding(given(compiled.type))).compiled(rhs))
+//            .as_(type))
         else -> null
       }
     }
   }?: compileError(script("give" lineTo script))
 
-fun <V> Compiler<V>.plusLet(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) compileError(script("let" lineTo script("after" lineTo typedTerm.t.script)))
+fun <V> Compiler<V>.let(script: Script): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(module.plusLet(script))
 
-fun <V> Compiler<V>.plusPick(script: Script): Compiler<V> =
-  set(typedTerm.pick(context.typedTerm(script)))
+fun <V> Compiler<V>.pick(script: Script): Compiler<V> =
+  pick(context.compiled(script).onlyCompiledLine)
 
-fun <V> Compiler<V>.plusDrop(script: Script): Compiler<V> =
-  set(typedTerm.drop(context.type(script)))
+fun <V> Compiler<V>.pick(line: CompiledLine<V>): Compiler<V> =
+  set(compiled.pick(line))
 
-fun <V> Compiler<V>.plusSelect(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) compileError(script("select" lineTo script("after" lineTo typedTerm.t.script)))
-  else set(
-    typedChoice<V>()
-      .fold(script.lineSeq.reverse) { choicePlus(context.typedSelection(it)) }
-      .typedTerm)
+fun <V> Compiler<V>.drop(script: Script): Compiler<V> =
+  drop(context.type(script).onlyLine)
 
-fun <V> Compiler<V>.plusSwitch(script: Script): Compiler<V> =
-  typedTerm.switchTypedChoice.let { typedChoice ->
-    set(SwitchCompiler(context, typedChoice.t.lineStack.reverse, null, null, null).plus(script).typedTerm(typedChoice.v))
+fun <V> Compiler<V>.drop(typeLine: TypeLine): Compiler<V> =
+  set(compiled.drop(typeLine))
+
+fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
+  compiled.switchTypedChoice.let { typedChoice ->
+    set(SwitchCompiler(context, typedChoice.t.lineStack.reverse, null, null, null).plus(script).compiled(compiled))
   }
 
-fun <V> Compiler<V>.plusQuote(script: Script): Compiler<V> =
-  if (!typedTerm.t.isEmpty) compileError(script("quote" lineTo script("after" lineTo typedTerm.t.script)))
-  else set(environment.staticTypedTerm(script))
+fun <V> Compiler<V>.quote(script: Script): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(script("quote" lineTo script("after" lineTo compiled.type.script)))
+  else set(environment.staticCompiled(script))
 
-fun <V> Compiler<V>.plus(typedLine: TypedLine<V>): Compiler<V> =
-  set(context.resolve(typedTerm.plus(typedLine)))
+fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
+  set(context.resolve(compiled.plus(compiledLine)))
 
-val <V> Compiler<V>.compiledTypedTerm: TypedTerm<V>
+val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =
-    typed(module.seal(typedTerm.v), typedTerm.t)
+    module.seal(compiled)

@@ -8,6 +8,8 @@ import leo.equalsName
 import leo.isStatic
 import leo.lineTo
 import leo.noName
+import leo.onlyLineOrNull
+import leo.script
 import leo.term.compiler.native.Native
 import leo.term.decompiler.script
 import leo.term.typed.TypedTerm
@@ -29,3 +31,6 @@ val equalsTypeLine: TypeLine
         noName lineTo type()
       )
     )
+
+val Type.onlyLine: TypeLine get() =
+  onlyLineOrNull ?: compileError(script("line"))

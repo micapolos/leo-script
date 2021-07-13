@@ -9,25 +9,24 @@ import leo.base.fold
 import leo.base.reverse
 import leo.lineSeq
 import leo.script
-import leo.term.typed.TypedLine
-import leo.term.typed.TypedTerm
-import leo.term.typed.lineTo
-import leo.term.typed.plus
-import leo.term.typed.typed
-import leo.term.typed.typedTerm
+import leo.term.compiled.Compiled
+import leo.term.compiled.CompiledLine
+import leo.term.compiled.compiled
+import leo.term.compiled.lineTo
+import leo.term.compiled.plus
 import leo.typeLine
 
-fun <V> Environment<V>.resolveType(typedTerm: TypedTerm<V>): TypedTerm<V> =
-  staticTypedTerm(typedTerm.t.script)
+fun <V> Environment<V>.resolveType(compiled: Compiled<V>): Compiled<V> =
+  staticCompiled(compiled.type.script)
 
-fun <V> Environment<V>.staticTypedTerm(script: Script): TypedTerm<V> =
-  typedTerm<V>().fold(script.lineSeq.reverse) { plus(staticTypedLine(it)) }
+fun <V> Environment<V>.staticCompiled(script: Script): Compiled<V> =
+  compiled<V>().fold(script.lineSeq.reverse) { plus(staticTypedLine(it)) }
 
-fun <V> Environment<V>.staticTypedLine(scriptLine: ScriptLine): TypedLine<V> =
+fun <V> Environment<V>.staticTypedLine(scriptLine: ScriptLine): CompiledLine<V> =
   when (scriptLine) {
     is FieldScriptLine -> staticTypedLine(scriptLine.field)
-    is LiteralScriptLine -> typed(literalFn(scriptLine.literal), scriptLine.literal.typeLine)
+    is LiteralScriptLine -> compiled(literalFn(scriptLine.literal), scriptLine.literal.typeLine)
   }
 
-fun <V> Environment<V>.staticTypedLine(scriptField: ScriptField): TypedLine<V> =
-  scriptField.name lineTo staticTypedTerm(scriptField.rhs)
+fun <V> Environment<V>.staticTypedLine(scriptField: ScriptField): CompiledLine<V> =
+  scriptField.name lineTo staticCompiled(scriptField.rhs)

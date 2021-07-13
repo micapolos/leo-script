@@ -2,26 +2,22 @@ package leo.term.compiler
 
 import leo.anyName
 import leo.base.assertEqualTo
-import leo.empty
 import leo.lineTo
 import leo.numberName
 import leo.numberTypeLine
 import leo.script
+import leo.term.compiled.compiled
+import leo.term.compiled.lineTo
+import leo.term.compiled.nativeLine
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
-import leo.term.nativeTerm
-import leo.term.term
-import leo.term.typed.lineTo
-import leo.term.typed.typed
-import leo.term.typed.typedTerm
-import leo.type
 import kotlin.test.Test
 
 class StaticTypedTermTest {
   @Test
   fun staticTypedTerm() {
     nativeEnvironment
-      .staticTypedTerm(
+      .staticCompiled(
         script(
           "point" lineTo script(
             "x" lineTo script("foo"),
@@ -30,34 +26,28 @@ class StaticTypedTermTest {
         )
       )
       .assertEqualTo(
-        typed(
-          term(empty),
-          type(
-            "point" lineTo type(
-              "x" lineTo type("foo"),
-              "y" lineTo type("bar")
-            )
-          )
-        )
-      )
+        compiled(
+          "point" lineTo compiled(
+              "x" lineTo compiled("foo"),
+              "y" lineTo compiled("bar"))))
   }
 
   @Test
   fun resolveType() {
     nativeEnvironment
       .resolveType(
-        typedTerm(
-          "point" lineTo typedTerm(
-            "x" lineTo typedTerm(typed(10.0.native.nativeTerm, numberTypeLine)),
-            "y" lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))
+        compiled(
+          "point" lineTo compiled(
+            "x" lineTo compiled(compiled(nativeLine(10.0.native), numberTypeLine)),
+            "y" lineTo compiled(compiled(nativeLine(20.0.native), numberTypeLine))
           )
         )
       )
       .assertEqualTo(
-        typedTerm(
-          "point" lineTo typedTerm(
-            "x" lineTo typedTerm(anyName lineTo typedTerm(numberName)),
-            "y" lineTo typedTerm(anyName lineTo typedTerm(numberName))
+        compiled(
+          "point" lineTo compiled(
+            "x" lineTo compiled(anyName lineTo compiled(numberName)),
+            "y" lineTo compiled(anyName lineTo compiled(numberName))
           )
         )
       )

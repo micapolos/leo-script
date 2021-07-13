@@ -20,19 +20,15 @@ import leo.plus
 import leo.reverse
 import leo.rhsOrNull
 import leo.script
-import leo.term.Term
-import leo.term.fn
-import leo.term.get
-import leo.term.invoke
-import leo.term.typed.Typed
-import leo.term.typed.TypedTerm
+import leo.term.compiled.Compiled
+import leo.term.compiled.invoke
 import leo.type
 
 data class SwitchCompiler<V>(
   val context: Context<V>,
   val remainingCaseStack: Stack<TypeLine>,
-  val firstTermOrNull: Term<V>?,
-  val secondTermOrNull: Term<V>?,
+  val firstTermOrNull: Compiled<V>?,
+  val secondTermOrNull: Compiled<V>?,
   val typeOrNull: Type?,
 )
 
@@ -70,14 +66,14 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
         .let { rhs ->
           context
             .plus(binding(given(type(remainingCaseStackLink.head))))
-            .typedTerm(rhs)
+            .compiled(rhs)
             .let { caseTypedTerm ->
-              caseTypedTerm.t.also {
+              caseTypedTerm.type.also {
                 if (typeOrNull != null && typeOrNull != it) {
                   compileError(
                     script(
                       "switch" lineTo script(
-                        "case" lineTo caseTypedTerm.t.script.plus(
+                        "case" lineTo caseTypedTerm.type.script.plus(
                           "is" lineTo script(
                             "not" lineTo typeOrNull.script)))))
                 }
@@ -87,7 +83,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
                     SwitchCompiler(
                       context,
                       remainingCaseStackLink.tail,
-                      fn(caseTypedTerm.v),
+                      TODO(),//fn(caseTypedTerm.v),
                       null,
                       newType)
                   else if (secondTermOrNull == null)
@@ -95,21 +91,21 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
                       context,
                       remainingCaseStackLink.tail,
                       firstTermOrNull,
-                      fn(caseTypedTerm.v),
+                      TODO(),//fn(caseTypedTerm.v),
                       newType)
                   else
                     SwitchCompiler(
                       context,
                       remainingCaseStackLink.tail,
-                      fn(get<V>(0).invoke(firstTermOrNull).invoke(secondTermOrNull)),
-                      fn(caseTypedTerm.v),
+                      TODO(),//fn(get<V>(0).invoke(firstTermOrNull).invoke(secondTermOrNull)),
+                      TODO(),//fn(caseTypedTerm.v),
                       newType)
                 }
             }
         }
     }
 
-fun <V> SwitchCompiler<V>.typedTerm(inputTerm: Term<V>): TypedTerm<V> =
+fun <V> SwitchCompiler<V>.compiled(inputTerm: Compiled<V>): Compiled<V> =
     if (typeOrNull == null || firstTermOrNull == null)
       compileError(script("empty" lineTo script("switch")))
     else remainingCaseStack.linkOrNull.let { link ->
@@ -120,9 +116,8 @@ fun <V> SwitchCompiler<V>.typedTerm(inputTerm: Term<V>): TypedTerm<V> =
               "case" lineTo script(
                 "expected" lineTo script(
                   link.head.name)))))
-      else Typed(
+      else
         inputTerm
           .invoke(firstTermOrNull)
-          .ifNotNull(secondTermOrNull) { invoke(it) },
-        typeOrNull)
+          .ifNotNull(secondTermOrNull) { invoke(it) }
     }
