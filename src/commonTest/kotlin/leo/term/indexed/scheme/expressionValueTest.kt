@@ -138,6 +138,6 @@ class ExpressionValueTest {
                           nativeExpression(scheme("1")))))))))
       .invoke(nativeExpression(scheme("10")))
       .scheme
-      .assertEqualTo(scheme("((letrec ((v0 (lambda (v1) (case (< v1 2) (0 v1) (1 (+ (v0 (- v1 2)) (v0 (- v1 1)))))))) v0) 10)"))
+      .assertEqualTo(scheme("((letrec ((v0 (lambda (v1) (case (< v1 2) (#t v1) (#f (+ (v0 (- v1 2)) (v0 (- v1 1)))))))) v0) 10)"))
   }
 }
