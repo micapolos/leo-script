@@ -1,11 +1,13 @@
 package leo.term.indexed.native
 
 import leo.base.assertEqualTo
+import leo.term.compiler.native.DoubleIsLessThanDoubleNative
 import leo.term.compiler.native.DoubleMinusDoubleNative
+import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
-import leo.term.compiler.native.ObjectEqualsObjectNative
 import leo.term.compiler.native.StringPlusStringNative
 import leo.term.compiler.native.native
+import leo.term.indexed.NativeExpression
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.invoke
@@ -29,22 +31,47 @@ class ExpressionValueTest {
   }
 
   @Test
+  fun doubleIsLessThanDouble() {
+    expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+      .invoke(
+        nativeExpression(3.0.native),
+        nativeExpression(2.0.native))
+      .value(nativeEvaluator)
+      .assertEqualTo(value(false.switchIndex))
+
+    expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+      .invoke(
+        nativeExpression(1.0.native),
+        nativeExpression(2.0.native))
+      .value(nativeEvaluator)
+      .assertEqualTo(value(true.switchIndex))
+  }
+
+  @Test
   fun recursiveFunction() {
     expression(
       recursive(
         function(1,
-          expression(function(2, nativeExpression(ObjectEqualsObjectNative)))
-            .invoke(expression(variable(0)), nativeExpression(0.0.native))
+          expression(function(2, nativeExpression(DoubleIsLessThanDoubleNative)))
+            .invoke(expression(variable(0)), nativeExpression(2.0.native))
             .switch(
-              nativeExpression("Hello, world!".native),
-              expression<Native>(variable(1))
+              expression(variable(0)),
+              expression(function(2, NativeExpression(DoublePlusDoubleNative)))
                 .invoke(
-                expression(function(2, nativeExpression(DoubleMinusDoubleNative)))
-                  .invoke(
-                    expression(variable(0)),
-                    nativeExpression(1.0.native)))))))
+                  expression<Native>(variable(1))
+                    .invoke(
+                      expression(function(2, nativeExpression(DoubleMinusDoubleNative)))
+                        .invoke(
+                          expression(variable(0)),
+                          nativeExpression(2.0.native))),
+                  expression<Native>(variable(1))
+                    .invoke(
+                      expression(function(2, nativeExpression(DoubleMinusDoubleNative)))
+                        .invoke(
+                          expression(variable(0)),
+                          nativeExpression(1.0.native))))))))
       .invoke(nativeExpression(10.0.native))
       .value(nativeEvaluator)
-      .assertEqualTo(nativeValue("Hello, world!".native))
+      .assertEqualTo(nativeValue(55.0.native))
   }
 }

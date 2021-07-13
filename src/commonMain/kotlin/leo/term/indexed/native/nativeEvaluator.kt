@@ -35,13 +35,13 @@ fun Native.value(scope: ValueScope<Native>): Value<Native> =
     DoubleTimesDoubleNative ->
       nativeValue(scope.value(variable(1)).native.double.times(scope.value(variable(0)).native.double).native)
     DoubleIsLessThanDoubleNative ->
-      value((scope.value(variable(1)).native.double < scope.value(variable(0)).native.double).oneZeroInt)
+      value((scope.value(variable(1)).native.double < scope.value(variable(0)).native.double).switchIndex)
     ObjectEqualsObjectNative ->
-      value((scope.value(variable(1)).native == scope.value(variable(0)).native).oneZeroInt)
+      value((scope.value(variable(1)).native == scope.value(variable(0)).native).switchIndex)
     StringPlusStringNative ->
       nativeValue(scope.value(variable(1)).native.string.plus(scope.value(variable(0)).native.string).native)
     StringLengthNative ->
       nativeValue(scope.value(variable(0)).native.string.length.toDouble().native)
   }
 
-val Boolean.oneZeroInt: Int get() = if (this) 0 else 1
+val Boolean.switchIndex: Int get() = if (this) 0 else 1
