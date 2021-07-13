@@ -1,6 +1,6 @@
 package leo.term.indexed
 
-import leo.term.Scope
-import leo.term.Value
+data class Evaluator<V>(val valueFn: ValueScope<V>.(V) -> Value<V>)
 
-data class Evaluator<V>(val valueFn: Scope<V>.(V) -> Value<V>)
+val incEvaluator: Evaluator<Int> get() = Evaluator { nativeValue(it.inc()) }
+val nothingEvaluator: Evaluator<Nothing> get() = Evaluator { error("nothing") }

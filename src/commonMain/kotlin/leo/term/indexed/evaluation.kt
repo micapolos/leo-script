@@ -5,15 +5,17 @@ import leo.IndexVariable
 import leo.Stateful
 import leo.array
 import leo.base.fold
+import leo.base.reverseStack
 import leo.base.seq
-import leo.base.stack
 import leo.bind
 import leo.flat
+import leo.getStateful
 import leo.map
 import leo.stateful
 
 typealias Evaluation<V, T> = Stateful<Evaluator<V>, T>
 fun <V, T> T.evaluation(): Evaluation<V, T> = stateful()
+fun <V> evaluatorEvaluation(): Evaluation<V, Evaluator<V>> = getStateful()
 
 fun <V> Expression<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
   when (this) {
@@ -33,14 +35,16 @@ fun <V> Expression<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
 
 @Suppress("unused")
 fun <V> V.nativeValueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  nativeValue(this).evaluation()
+  evaluatorEvaluation<V>().map { evaluator ->
+    evaluator.valueFn.invoke(scope, this)
+  }
 
 @Suppress("unused")
 fun <V> Empty.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  value<V>().evaluation()
+  value<V>(this).evaluation()
 
 fun <V> ExpressionTuple<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  expressionList.seq.stack.map { valueEvaluation(scope) }.flat.map { valueStack ->
+  expressionList.seq.reverseStack.map { valueEvaluation(scope) }.flat.map { valueStack ->
     value(*valueStack.array)
   }
 
@@ -78,13 +82,20 @@ fun <V> IndexVariable.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
 
 fun <V> ExpressionInvoke<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
   lhs.valueEvaluation(scope).bind { lhsValue ->
-    params.seq.stack.map { valueEvaluation(scope) }.flat.bind { paramStack ->
+    params.seq.reverseStack.map { valueEvaluation(scope) }.flat.bind { paramStack ->
       lhsValue.invokeValueEvaluation(*paramStack.array)
     }
   }
 
 fun <V> Value<V>.invokeValueEvaluation(vararg params: Value<V>): Evaluation<V, Value<V>> =
-  (this as FunctionValue).function.invokeValueEvaluation(*params)
+  when (this) {
+    is FunctionValue -> function.invokeValueEvaluation(*params)
+    is RecursiveValue -> recursive.invokeValueEvaluation(*params)
+    else -> null!!
+  }
 
 fun <V> ValueFunction<V>.invokeValueEvaluation(vararg params: Value<V>): Evaluation<V, Value<V>> =
   expression.valueEvaluation(scope.fold(params) { plus(it) })
+
+fun <V> ValueRecursive<V>.invokeValueEvaluation(vararg params: Value<V>): Evaluation<V, Value<V>> =
+  function.recursive.invokeValueEvaluation(*params)
