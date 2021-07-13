@@ -31,8 +31,9 @@ fun <V> indexed(index: Int, value: Value<V>) = ValueIndexed(index, value)
 fun <V> function(scope: ValueScope<V>, expression: Expression<V>) = ValueFunction(scope, expression)
 fun <V> recursive(function: ValueFunction<V>) = ValueRecursive(function)
 
+val <V> Value<V>.native: V get() = (this as NativeValue).native
 val <V> Value<V>.index: Int get() = (this as IndexValue).index
 val <V> Value<V>.indexed: ValueIndexed<V> get() = (this as IndexedValue).indexed
 fun <V> Value<V>.get(index: Int): Value<V> = (this as TupleValue).tuple.valueList[index]
 
-val <V> ValueFunction<V>.recursive get() = copy(scope = scope.plus(value(this)))
+val <V> ValueFunction<V>.recursive get() = copy(scope = scope.plus(value(recursive(this))))
