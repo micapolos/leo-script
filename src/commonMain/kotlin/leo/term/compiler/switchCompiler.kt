@@ -65,7 +65,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
         .orIfNull { compileError(script("doing")) }
         .let { rhs ->
           context
-            .plus(binding(given(type(remainingCaseStackLink.head))))
+            .bind(type(remainingCaseStackLink.head))
             .compiled(rhs)
             .let { caseTypedTerm ->
               caseTypedTerm.type.also {

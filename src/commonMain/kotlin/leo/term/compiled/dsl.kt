@@ -32,6 +32,7 @@ import leo.term.compiler.compileError
 import leo.textTypeLine
 import leo.type
 import leo.typeStructure
+import leo.zip
 
 fun <V> compiled(vararg lines: CompiledLine<V>): Compiled<V> =
   Compiled(expression(tuple<V>()), type()).fold(lines) { plus(it) }
@@ -242,3 +243,7 @@ val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
 
 val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
   onlyCompiledLineOrNull ?: compileError(script("line"))
+
+val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
+  zip(compiledTuple.tuple.lineStack, compiledTuple.typeStructure.lineStack)
+    .mapIt { compiled(it.first!!, it.second!!) }

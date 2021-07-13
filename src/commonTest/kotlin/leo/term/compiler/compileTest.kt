@@ -338,7 +338,7 @@ class CompileTest {
           .do_(
             body(
               nativeEnvironment.context
-                .plus(binding(given(type(numberTypeLine))))
+                .bind(type(numberTypeLine))
                 .compiled(script("ok" lineTo script(numberName))))))
   }
 

@@ -1,8 +1,10 @@
 package leo.term.compiler
 
 import leo.ScriptLine
+import leo.beingName
 import leo.lineTo
 import leo.listScriptLine
+import leo.plus
 import leo.script
 import leo.scriptLine
 import leo.term.compiled.toScriptLine
@@ -32,12 +34,9 @@ val Scope.toScriptLine: ScriptLine get() =
 val Binding.toScriptLine: ScriptLine get() =
   "binding" lineTo script(
     when (this) {
-      is DefinitionBinding -> definition.toScriptLine
-      is GivenBinding -> given.toScriptLine
+      is FunctionBinding -> function.scriptLine
+      is ConstantBinding -> constant.scriptLine
     })
 
-val Definition.toScriptLine: ScriptLine get() =
-  "definition" lineTo script(function.scriptLine)
-
-val Given.toScriptLine: ScriptLine get() =
-  "given" lineTo script(type.scriptLine)
+val Constant.scriptLine: ScriptLine get() =
+  "constant" lineTo lhsType.script.plus(beingName lineTo rhsType.script)

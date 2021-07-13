@@ -5,7 +5,11 @@ import leo.ScriptLine
 import leo.Type
 import leo.base.notNullOrError
 import leo.fieldOrNull
+import leo.fold
+import leo.name
+import leo.named.compiler.compileStructure
 import leo.onlyLineOrNull
+import leo.reverse
 import leo.term.compiled.Compiled
 import leo.term.compiled.tupleOnlyLineOrNull
 import leo.term.typed.TypedSelection
@@ -27,6 +31,11 @@ fun <V> Context<V>.compiled(script: Script): Compiled<V> =
 
 fun <V> Context<V>.plus(binding: Binding): Context<V> =
   copy(scope = scope.plus(binding))
+
+fun <V> Context<V>.bind(type: Type): Context<V> =
+  fold(type.compileStructure.lineStack.reverse) { typeLine ->
+    plus(binding(constant(type(typeLine.name), type(typeLine))))
+  }
 
 fun <V> Context<V>.resolve(compiled: Compiled<V>): Compiled<V> =
   null

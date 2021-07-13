@@ -1,21 +1,30 @@
 package leo.term.compiler
 
+import leo.TypeFunction
+import leo.atom
+import leo.base.notNullIf
+import leo.line
 import leo.term.IndexVariable
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiled
+import leo.term.compiled.expression
+import leo.term.compiled.invoke
+import leo.type
 
 sealed class Binding
-data class GivenBinding(val given: Given) : Binding()
-data class DefinitionBinding(val definition: Definition) : Binding()
+data class ConstantBinding(val constant: Constant) : Binding()
+data class FunctionBinding(val function: TypeFunction) : Binding()
 
-fun binding(given: Given): Binding = GivenBinding(given)
-fun binding(definition: Definition): Binding = DefinitionBinding(definition)
+fun binding(constant: Constant): Binding = ConstantBinding(constant)
+fun binding(function: TypeFunction): Binding = FunctionBinding(function)
 
-fun <V> Binding.resolveOrNull(variable: IndexVariable, typedTerm: Compiled<V>): Compiled<V>? =
+fun <V> Binding.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   when (this) {
-    is DefinitionBinding -> definition.resolveOrNull(variable, typedTerm)
-    is GivenBinding -> given.resolveOrNull(variable, typedTerm)
+    is FunctionBinding -> function.resolveOrNull(variable, compiled)
+    is ConstantBinding -> constant.resolveOrNull(variable, compiled)
   }
 
-fun <V> Binding.getOrNull(variable: IndexVariable, name: String): Compiled<V>? =
-  resolveOrNull(variable, compiled(name))
+fun <V> TypeFunction.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
+  notNullIf(compiled.type == lhsType) {
+    compiled(expression<V>(variable), type(line(atom(this)))).invoke(compiled)
+  }

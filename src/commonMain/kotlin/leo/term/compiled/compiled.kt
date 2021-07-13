@@ -3,6 +3,7 @@ package leo.term.compiled
 import leo.Stack
 import leo.Type
 import leo.TypeChoice
+import leo.TypeFunction
 import leo.TypeLine
 import leo.TypeStructure
 import leo.lineTo
@@ -17,6 +18,7 @@ data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
 data class CompiledFragment<out V>(val fragment: Fragment<V>, val type: Type)
+data class CompiledFunction<out V>(val function: Function<V>, val typeFunction: TypeFunction)
 
 data class Fragment<out V>(val expression: Expression<V>, val tuple: Tuple<V>)
 

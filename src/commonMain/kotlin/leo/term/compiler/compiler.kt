@@ -130,7 +130,7 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
       doingName -> context.type(lhs).let { type ->
-        context.plus(binding(given(type))).compiled(rhs).let { compiled ->
+        context.bind(type).compiled(rhs).let { compiled ->
           plus(fnLine(type, compiled))
         }
       }
@@ -145,7 +145,7 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
-  do_(body(context.plus(binding(given(compiled.type))).compiled(script)))
+  do_(body(context.bind(compiled.type).compiled(script)))
 
 fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
   set(compiled.do_(body))
@@ -157,7 +157,7 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
         doingName ->
           set(
             compiled
-              .do_(body(context.plus(binding(given(compiled.type))).compiled(rhs)))
+              .do_(body(context.bind(compiled.type).compiled(rhs)))
               .as_(type))
         repeatingName -> TODO()
 //          set(
