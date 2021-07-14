@@ -9,11 +9,13 @@ import leo.functionName
 import leo.functionType
 import leo.lineTo
 import leo.literal
+import leo.nativeName
 import leo.numberType
 import leo.numberTypeLine
 import leo.script
 import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
+import leo.term.compiler.native.StringPlusStringNative
 import leo.term.compiler.native.native
 import leo.term.indexed.nativeValue
 import leo.term.indexed.value
@@ -45,17 +47,28 @@ class ValueScriptTest {
   }
 
   @Test
-  fun number() {
+  fun nativeDouble() {
     nativeValue(128.0.native)
       .script(numberType)
       .assertEqualTo(script(literal(128)))
   }
 
   @Test
-  fun text() {
+  fun nativeString() {
     nativeValue("Hello, world!".native)
       .script(textType)
       .assertEqualTo(script(literal("Hello, world!")))
+  }
+
+  @Test
+  fun nativeFunction() {
+    nativeValue(StringPlusStringNative)
+      .script(textType)
+      .assertEqualTo(
+        script(
+          nativeName lineTo script(
+            "string" lineTo script(),
+            "plus" lineTo script("string"))))
   }
 
   @Test

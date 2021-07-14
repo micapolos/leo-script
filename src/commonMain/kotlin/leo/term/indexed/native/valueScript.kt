@@ -27,6 +27,7 @@ import leo.lineTo
 import leo.literal
 import leo.map
 import leo.mapIt
+import leo.nativeName
 import leo.onlyLineOrNull
 import leo.primitiveOrNull
 import leo.script
@@ -134,13 +135,35 @@ fun Empty.scriptLine(typeField: TypeField): ScriptLine =
 
 val Native.scriptLine: ScriptLine get() =
   when (this) {
-    is DoubleNative -> line(literal(double))
-    is StringNative -> line(literal(string))
-    DoubleIsLessThanDoubleNative -> null
-    DoubleMinusDoubleNative -> null
-    DoublePlusDoubleNative -> null
-    DoubleTimesDoubleNative -> null
-    ObjectEqualsObjectNative -> null
-    StringLengthNative -> null
-    StringPlusStringNative -> null
-  }!!
+    is DoubleNative ->
+      line(literal(double))
+    is StringNative ->
+      line(literal(string))
+    DoubleIsLessThanDoubleNative ->
+      nativeName lineTo script(
+        "double" lineTo script(),
+        "is" lineTo script("less" lineTo script("than" lineTo script("double"))))
+    DoubleMinusDoubleNative ->
+      nativeName lineTo script(
+        "double" lineTo script(),
+        "minus" lineTo script("double"))
+    DoublePlusDoubleNative ->
+      nativeName lineTo script(
+        "double" lineTo script(),
+        "plus" lineTo script("double"))
+    DoubleTimesDoubleNative ->
+      nativeName lineTo script(
+        "double" lineTo script(),
+        "times" lineTo script("double"))
+    ObjectEqualsObjectNative ->
+      nativeName lineTo script(
+        "object" lineTo script(),
+        "equals" lineTo script("object"))
+    StringLengthNative ->
+      nativeName lineTo script(
+        "length" lineTo script("string"))
+    StringPlusStringNative ->
+      nativeName lineTo script(
+        "string" lineTo script(),
+        "plus" lineTo script("string"))
+  }
