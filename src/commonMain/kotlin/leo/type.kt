@@ -261,3 +261,6 @@ val TypeStructure.lineSeq: Seq<TypeLine>
 
 val Type.switchChoiceOrNull: TypeChoice? get() =
   structureOrNull?.onlyLineOrNull?.atom?.fieldOrNull?.rhsType?.choiceOrNull
+
+val Type.switchChoice: TypeChoice get() =
+  switchChoiceOrNull?:compileError(script("switch"))

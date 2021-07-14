@@ -116,7 +116,7 @@ fun Switch<Scheme>.scheme(scope: Scope): Scheme =
         scheme(
           scheme(scheme("idx"), lhs.scheme(scope)),
           scheme(scheme(variable(scope.depth)), scheme("x").pairSecond)),
-        scheme("idx").switch(*lineStack.map { scheme(scope.push) }.array))
+        scheme("idx").switch(*caseStack.map { scheme(scope.push) }.array))
     else
       scheme(
         scheme("let"),
@@ -124,7 +124,7 @@ fun Switch<Scheme>.scheme(scope: Scope): Scheme =
           scheme(scheme("x"), lhs.scheme(scope)),
           scheme(scheme("idx"), scheme("x").pairFirst),
           scheme(scheme(variable(scope.depth)), nilScheme),
-          scheme("idx").switch(*lineStack.map { scheme(scope.push) }.array)))
+          scheme("idx").switch(*caseStack.map { scheme(scope.push) }.array)))
   }
 
 fun scheme(vararg schemes: Scheme) =

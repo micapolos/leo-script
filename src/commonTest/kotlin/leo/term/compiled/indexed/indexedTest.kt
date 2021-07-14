@@ -16,10 +16,13 @@ import leo.term.compiled.lineTo
 import leo.term.compiled.nativeCompiled
 import leo.term.compiled.nativeCompiledLine
 import leo.term.compiled.pick
+import leo.term.compiled.switch
 import leo.term.indexed.expression
 import leo.term.indexed.function
+import leo.term.indexed.ifThenElse
 import leo.term.indexed.invoke
 import leo.term.indexed.nativeExpression
+import leo.term.indexed.switch
 import leo.textType
 import leo.textTypeLine
 import leo.type
@@ -179,4 +182,64 @@ class IndexedTest {
       .indexedExpression
       .assertEqualTo(expression(expression(2), nativeExpression(10)))
   }
+
+  @Test
+  fun switchSimpleBoolean() {
+    compiled(
+      "is" lineTo compiledSelect<String>()
+        .pick("yes" lineTo compiled())
+        .drop("no" lineTo type())
+        .compiled)
+      .switch(
+        textType,
+        nativeCompiled("OK", textType),
+        nativeCompiled("fail", textType))
+      .indexedExpression
+      .assertEqualTo(
+        expression<String>(true)
+          .ifThenElse(
+            nativeExpression("OK"),
+            nativeExpression("fail")))
+  }
+
+  @Test
+  fun switchSimpleIndex() {
+    compiled(
+      "is" lineTo compiledSelect<String>()
+        .pick("yes" lineTo compiled())
+        .drop("no" lineTo type())
+        .drop("maybe" lineTo type())
+        .compiled)
+      .switch(
+        textType,
+        nativeCompiled("OK", textType),
+        nativeCompiled("fail", textType),
+        nativeCompiled("maybe", textType))
+      .indexedExpression
+      .assertEqualTo(
+        expression<String>(0)
+          .switch(
+            nativeExpression("OK"),
+            nativeExpression("fail"),
+            nativeExpression("maybe")))
+  }
+
+//  @Test
+//  fun switchComplex() {
+//    compiled(
+//      "is" lineTo compiledSelect<String>()
+//        .pick("yes" lineTo nativeCompiled("foo", textType))
+//        .drop("no" lineTo textType)
+//        .compiled)
+//      .switch(
+//        textType,
+//        compiled<String>(expression(leo.term.variable(0)), type("yes" lineTo textType)).getOrNull(textName)!!,
+//        compiled<String>(expression(leo.term.variable(0)), type("no" lineTo textType)).getOrNull(textName)!!)
+//      .indexedExpression
+//      .assertEqualTo(
+//        expression<String>(true)
+//          .switch(
+//            nativeExpression("OK"),
+//            nativeExpression("fail")))
+//  }
 }

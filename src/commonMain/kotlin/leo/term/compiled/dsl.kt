@@ -4,6 +4,7 @@ import leo.Stack
 import leo.Type
 import leo.TypeLine
 import leo.applyName
+import leo.array
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
@@ -21,6 +22,7 @@ import leo.plus
 import leo.push
 import leo.script
 import leo.size
+import leo.stack
 import leo.structure
 import leo.structureOrNull
 import leo.term.compiler.compileError
@@ -78,6 +80,12 @@ fun <V> Compiled<V>.as_(type: Type): Compiled<V> =
           "not" lineTo script(
             "equal" lineTo type.script))))
   }
+
+fun <V> Compiled<V>.switch(caseStack: Stack<Compiled<V>>, type: Type): Compiled<V> =
+  compiled(expression(switch(this, *caseStack.array)), type)
+
+fun <V> Compiled<V>.switch(type: Type, vararg cases: Compiled<V>): Compiled<V> =
+  switch(stack(*cases), type)
 
 fun <V> fn(type: Type, body: Body<V>): Compiled<V> =
   compiled(fnLine(type, body))

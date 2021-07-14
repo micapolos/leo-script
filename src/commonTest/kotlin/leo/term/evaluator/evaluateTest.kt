@@ -40,14 +40,29 @@ class EvaluateTest {
   @Test
   fun selectType() {
     script(
-      pickName lineTo script(literal(10)),
-      dropName lineTo script(anyTextScriptLine),
+      "id" lineTo script(
+        pickName lineTo script(literal(10)),
+        dropName lineTo script(anyTextScriptLine)),
       typeName lineTo script())
       .evaluate
       .assertEqualTo(
         script(
-          eitherName lineTo script(anyNumberScriptLine),
-          eitherName lineTo script(anyTextScriptLine)))
+          "id" lineTo script(
+            eitherName lineTo script(anyNumberScriptLine),
+            eitherName lineTo script(anyTextScriptLine))))
+  }
+
+  @Test
+  fun switch_simple() {
+    script(
+      "is" lineTo script(
+        pickName lineTo script("yes"),
+        dropName lineTo script("no")),
+      switchName lineTo script(
+        "yes" lineTo script(doingName lineTo script(literal("OK"))),
+        "no" lineTo script(doingName lineTo script(literal("not OK")))))
+      .evaluate
+      .assertEqualTo(script(literal("OK")))
   }
 
   @Test
@@ -58,9 +73,7 @@ class EvaluateTest {
         dropName lineTo script("two" lineTo script(anyNumberScriptLine))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
-        "two" lineTo script(doingName lineTo script("two", "number"))
-      )
-    )
+        "two" lineTo script(doingName lineTo script("two", "number"))))
       .evaluate
       .assertEqualTo(script(literal(10)))
   }
@@ -70,13 +83,10 @@ class EvaluateTest {
     script(
       "id" lineTo script(
         dropName lineTo script("one" lineTo script(anyNumberScriptLine)),
-        pickName lineTo script("two" lineTo script(literal(20)))
-      ),
+        pickName lineTo script("two" lineTo script(literal(20)))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
-        "two" lineTo script(doingName lineTo script("two", "number"))
-      )
-    )
+        "two" lineTo script(doingName lineTo script("two", "number"))))
       .evaluate
       .assertEqualTo(script(literal(20)))
   }

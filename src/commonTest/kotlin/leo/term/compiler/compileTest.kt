@@ -9,7 +9,6 @@ import leo.choice
 import leo.doName
 import leo.doingName
 import leo.dropName
-import leo.equalsName
 import leo.functionLineTo
 import leo.functionName
 import leo.getName
@@ -17,16 +16,12 @@ import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.natives.minusName
-import leo.noName
 import leo.numberName
 import leo.numberType
 import leo.numberTypeLine
 import leo.pickName
-import leo.plus
 import leo.plusName
 import leo.quoteName
-import leo.repeatingName
 import leo.script
 import leo.switchName
 import leo.term.compiled.apply
@@ -38,6 +33,7 @@ import leo.term.compiled.drop
 import leo.term.compiled.expression
 import leo.term.compiled.field
 import leo.term.compiled.fn
+import leo.term.compiled.get
 import leo.term.compiled.indexed
 import leo.term.compiled.line
 import leo.term.compiled.lineTo
@@ -47,24 +43,16 @@ import leo.term.compiled.nativeNumberCompiled
 import leo.term.compiled.nativeNumberCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.select
+import leo.term.compiled.switch
 import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeCompiler
 import leo.term.compiler.native.nativeEnvironment
-import leo.term.eitherFirst
-import leo.term.eitherSecond
-import leo.term.fn
-import leo.term.get
-import leo.term.id
-import leo.term.invoke
-import leo.term.nativeTerm
-import leo.term.typed.typed
 import leo.term.variable
 import leo.textTypeLine
 import leo.type
 import leo.typeName
-import leo.yesName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -248,47 +236,35 @@ class CompileTest {
   }
 
   @Test
-  fun switch_firstOfTwo() {
+  fun switch_simple() {
     nativeEnvironment
       .compiled(
         script(
           "id" lineTo script(
-            pickName lineTo script("one" lineTo script(literal(10))),
-            dropName lineTo script("two" lineTo script(anyNumberScriptLine))
-          ),
+            pickName lineTo script("one"),
+            dropName lineTo script("two"),
+            dropName lineTo script("three")),
           switchName lineTo script(
-            "one" lineTo script(doingName lineTo script("one", "number")),
-            "two" lineTo script(doingName lineTo script("two", "number"))
-          )
-        )
-      )
+            "one" lineTo script(doingName lineTo script(literal(1))),
+            "two" lineTo script(doingName lineTo script(literal(2))),
+            "three" lineTo script(doingName lineTo script(literal(3))))))
       .assertEqualTo(
-        typed(10.0.native.nativeTerm.eitherFirst.invoke(id()).invoke(id()), type(numberTypeLine))
-      )
+        compiled(
+          "id" lineTo
+              compiledSelect<Native>()
+                .pick("one" lineTo compiled())
+                .drop("two" lineTo type())
+                .drop("three" lineTo type())
+                .compiled)
+          .switch(
+            numberType,
+            nativeNumberCompiled(1.0.native),
+            nativeNumberCompiled(2.0.native),
+            nativeNumberCompiled(3.0.native)))
   }
 
   @Test
-  fun switch_secondOfTwo() {
-    nativeEnvironment
-      .compiled(
-        script(
-          "id" lineTo script(
-            dropName lineTo script("one" lineTo script(anyNumberScriptLine)),
-            pickName lineTo script("two" lineTo script(literal(20)))
-          ),
-          switchName lineTo script(
-            "one" lineTo script(doingName lineTo script("one", "number")),
-            "two" lineTo script(doingName lineTo script("two", "number"))
-          )
-        )
-      )
-      .assertEqualTo(
-        typed(20.0.native.nativeTerm.eitherSecond.invoke(id()).invoke(id()), type(numberTypeLine))
-      )
-  }
-
-  @Test
-  fun switch_firstOfThree() {
+  fun switch_complex() {
     nativeEnvironment
       .compiled(
         script(
@@ -304,12 +280,22 @@ class CompileTest {
         )
       )
       .assertEqualTo(
-        typed(10.0.native.nativeTerm.eitherFirst.eitherFirst.invoke(fn(get<Native>(0).invoke(id()).invoke(id()))).invoke(id()), type(numberTypeLine))
-      )
+        compiled(
+          "id" lineTo
+            compiledSelect<Native>()
+              .pick("one" lineTo nativeNumberCompiled(10.0.native))
+              .drop("two" lineTo numberType)
+              .drop("three" lineTo numberType)
+              .compiled)
+          .switch(
+            numberType,
+            compiled(expression<Native>(variable(0)), type("one" lineTo numberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("two" lineTo numberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("three" lineTo numberType)).get(numberName)))
   }
 
   @Test
-  fun type() {
+  fun type_() {
     script(
       "point" lineTo script(
         "x" lineTo script(literal(10)),
@@ -348,43 +334,43 @@ class CompileTest {
                 .compiled(script("ok" lineTo script(numberName))))))
   }
 
-  @Test
-  fun giveRepeating() {
-    val inputScript = script(
-      line(literal(10)),
-      "countdown" lineTo script())
-
-    val doingScript =
-      script(
-        numberName lineTo script(),
-        equalsName lineTo script(literal(0)),
-        switchName lineTo script(
-          yesName lineTo script(doingName lineTo script(literal("OK"))),
-          noName lineTo script(
-            doingName lineTo script(
-              numberName lineTo script(),
-              minusName lineTo script(literal(1)),
-              "countdown" lineTo script()))))
-
-    inputScript
-      .plus(
-        giveName lineTo script(
-          anyTextScriptLine,
-          repeatingName lineTo doingScript))
-      .compiled(nativeEnvironment)
-      .assertEqualTo(
-        inputScript
-          .compiled(nativeEnvironment)
-          .let { typedTerm -> TODO()
-//            typedTerm
-//              .repeat(
-//                nativeEnvironment
-//                  .context
-//                  .plus(binding(definition(typedTerm.t functionTo type(textTypeLine))))
-//                  .plus(binding(given(typedTerm.t)))
-//                  .compiled(doingScript))
-          })
-  }
+//  @Test
+//  fun giveRepeating() {
+//    val inputScript = script(
+//      line(literal(10)),
+//      "countdown" lineTo script())
+//
+//    val doingScript =
+//      script(
+//        numberName lineTo script(),
+//        equalsName lineTo script(literal(0)),
+//        switchName lineTo script(
+//          yesName lineTo script(doingName lineTo script(literal("OK"))),
+//          noName lineTo script(
+//            doingName lineTo script(
+//              numberName lineTo script(),
+//              minusName lineTo script(literal(1)),
+//              "countdown" lineTo script()))))
+//
+//    inputScript
+//      .plus(
+//        giveName lineTo script(
+//          anyTextScriptLine,
+//          repeatingName lineTo doingScript))
+//      .compiled(nativeEnvironment)
+//      .assertEqualTo(
+//        inputScript
+//          .compiled(nativeEnvironment)
+//          .let { typedTerm -> TODO()
+////            typedTerm
+////              .repeat(
+////                nativeEnvironment
+////                  .context
+////                  .plus(binding(definition(typedTerm.t functionTo type(textTypeLine))))
+////                  .plus(binding(given(typedTerm.t)))
+////                  .compiled(doingScript))
+//          })
+//  }
 
   @Test
   fun as_matching() {
@@ -415,9 +401,9 @@ class CompileTest {
         compiled(
           expression(
             select(
-              choice("foo" lineTo leo.type(), "bar" lineTo leo.type()),
+              choice("foo" lineTo type(), "bar" lineTo type()),
               indexed(0, line(field("foo", compiled()))))),
-          type(choice("foo" lineTo leo.type(), "bar" lineTo leo.type()))))
+          type(choice("foo" lineTo type(), "bar" lineTo type()))))
   }
 
   @Test

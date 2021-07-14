@@ -151,17 +151,6 @@ class DslTest {
   }
 
   @Test
-  fun compiledTupleOrNull_expression_empty() {
-    val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
-      type())
-
-    compiled
-      .compiledTupleOrNull
-      .assertEqualTo(compiledTuple())
-  }
-
-  @Test
   fun compiledTupleOrNull_expression_singleLine() {
     val compiled = compiled(
       expression<Unit>(leo.term.variable(0)),
@@ -170,22 +159,6 @@ class DslTest {
     compiled
       .compiledTupleOrNull
       .assertEqualTo(compiledTuple(compiled("tuple" lineTo compiled).getLineOrNull(0)!!))
-  }
-
-  @Test
-  fun compiledTupleOrNull_expression_multiLine() {
-    val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
-      type(
-        "x" lineTo type("zero"),
-        "y" lineTo type("one")))
-
-    compiled
-      .compiledTupleOrNull
-      .assertEqualTo(
-        compiledTuple(
-          compiled("tuple" lineTo compiled).getLineOrNull(0)!!,
-          compiled("tuple" lineTo compiled).getLineOrNull(1)!!))
   }
 
   @Test

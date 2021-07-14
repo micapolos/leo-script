@@ -5,17 +5,19 @@ import leo.EmptyStack
 import leo.LinkStack
 import leo.StructureType
 import leo.array
-import leo.choiceOrNull
 import leo.empty
+import leo.getFromBottom
 import leo.isSimple
 import leo.lineCount
 import leo.map
 import leo.size
+import leo.switchChoice
 import leo.term.compiled.Compiled
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.get
+import leo.term.indexed.ifThenElse
 import leo.term.indexed.indirect
 import leo.term.indexed.invoke
 import leo.term.indexed.nativeExpression
@@ -71,12 +73,23 @@ val <V> leo.term.compiled.Select<V>.indexExpression: Expression<V> get() =
   else expression(lineIndexed.index)
 
 val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =
-  lhs.type.choiceOrNull!!.let { choice ->
+  lhs.type.switchChoice.let { choice ->
     if (choice.isSimple)
-      lhs.indexedExpression.switch(*lineStack.map { indexedExpression }.array)
+      if (choice.lineStack.size == 2)
+        lhs.indexedExpression.ifThenElse(
+          caseStack.getFromBottom(0)!!.indexedExpression,
+          caseStack.getFromBottom(1)!!.indexedExpression)
+      else
+        lhs.indexedExpression.switch(*caseStack.map { indexedExpression }.array)
     else
       lhs.indexedExpression.indirect {
-        it.get(0).switch(*lineStack.map { expression(function(1, indexedExpression)).invoke(it.get(1)) }.array)
+        if (choice.lineStack.size == 2)
+          it.get(0).ifThenElse(
+            expression(function(1, caseStack.getFromBottom(0)!!.indexedExpression)).invoke(it.get(1)),
+            expression(function(1, caseStack.getFromBottom(1)!!.indexedExpression)).invoke(it.get(1)))
+        else
+          it.get(0)
+            .switch(*caseStack.map { expression(function(1, indexedExpression)).invoke(it.get(1)) }.array)
       }
   }
 

@@ -19,6 +19,7 @@ import leo.dropName
 import leo.functionName
 import leo.giveName
 import leo.isEmpty
+import leo.isSimple
 import leo.letName
 import leo.lineSeq
 import leo.lineTo
@@ -30,6 +31,8 @@ import leo.quoteName
 import leo.repeatingName
 import leo.reverse
 import leo.script
+import leo.stack
+import leo.switchChoice
 import leo.switchName
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
@@ -189,8 +192,16 @@ fun <V> Compiler<V>.drop(typeLine: TypeLine): Compiler<V> =
   set(compiled.drop(typeLine))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
-  compiled.switchTypedChoice.let { typedChoice ->
-    set(SwitchCompiler(context, typedChoice.t.lineStack.reverse, null, null, null).plus(script).compiled(compiled))
+  compiled.type.switchChoice.let { choice ->
+    set(
+      SwitchCompiler(
+        context,
+        choice.lineStack.reverse,
+        choice.isSimple,
+        stack(),
+        null)
+        .plus(script)
+        .compiled(compiled))
   }
 
 fun <V> Compiler<V>.quote(script: Script): Compiler<V> =

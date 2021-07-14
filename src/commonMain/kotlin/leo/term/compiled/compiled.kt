@@ -43,23 +43,20 @@ data class FunctionLine<V>(val function: Function<V>): Line<V>()
 data class GetLine<V>(val get: Get<V>): Line<V>()
 
 data class LineIndexed<out V>(val index: Int, val line: Line<V>)
-
 data class Field<out V>(val name: String, val rhs: Compiled<V>)
-
 data class Select<out V>(val choice: TypeChoice, val lineIndexed: LineIndexed<V>)
-
 data class Function<out V>(val paramType: Type, val body: Body<V>)
 data class Body<out V>(val compiled: Compiled<V>, val isRecursive: Boolean)
-
 data class Get<out V>(val lhs: Compiled<V>, val index: Int)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
-data class Switch<out V>(val lhs: Compiled<V>, val lineStack: Stack<Line<V>>)
+data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
 
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)
 fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
 fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 fun <V> expression(select: Select<V>): Expression<V> = SelectExpression(select)
+fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
 
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)
@@ -77,6 +74,7 @@ fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, lineIndexedOrNull: LineIndexed<V>) = Select(choice, lineIndexedOrNull)
+fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(*cases))
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)

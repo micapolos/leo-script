@@ -43,7 +43,7 @@ fun <V> Select<V>.toScript(fn: (V) -> ScriptLine): Script =
 
 fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
   script(lhs.toScriptLine(fn))
-    .plus("switch" lineTo lineStack.map { toScriptLine(fn) }.script)
+    .plus("switch" lineTo caseStack.map { toScriptLine(fn) }.script)
 
 fun <V> Tuple<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("tuple" lineTo lineStack.map { toScriptLine(fn) }.script)
