@@ -39,9 +39,9 @@ data class TermApplication<out T>(val lhs: Term<T>, val rhs: Term<T>) {
   override fun toString() = script { it.anyScriptLine }.toString()
 }
 
-@JvmName("toTerm")
+@kotlin.jvm.JvmName("toTerm")
 fun <T> Empty.term(): Term<T> = term(this)
-@JvmName("toTerm")
+@kotlin.jvm.JvmName("toTerm")
 fun <T> IndexVariable.term(): Term<T> = term(this)
 
 fun <T> term(empty: Empty): Term<T> = EmptyTerm(empty)
