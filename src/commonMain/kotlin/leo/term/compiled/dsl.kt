@@ -253,3 +253,14 @@ val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
 val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
   zip(compiledTuple.tuple.lineStack, compiledTuple.typeStructure.lineStack)
     .mapIt { compiled(it.first!!, it.second!!) }
+
+fun <V> CompiledSelect<V>.pick(compiledLine: CompiledLine<V>): CompiledSelect<V> =
+  if (lineIndexedOrNull != null) compileError(script("selected"))
+  else CompiledSelect(indexed(choice.lineStack.size, compiledLine.line), choice.plus(compiledLine.typeLine))
+
+fun <V> CompiledSelect<V>.drop(typeLine: TypeLine): CompiledSelect<V> =
+  CompiledSelect(lineIndexedOrNull, choice.plus(typeLine))
+
+val <V> CompiledSelect<V>.compiled: Compiled<V> get() =
+  if (lineIndexedOrNull == null) compileError(script("not" lineTo script("selected")))
+  else compiled(expression(select(choice, lineIndexedOrNull)), type(choice))

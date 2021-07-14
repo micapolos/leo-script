@@ -101,8 +101,8 @@ fun IndexVariable.scheme(scope: Scope): Scheme =
   scheme(variable(scope.depth - index - 1))
 
 fun Select<Scheme>.scheme(scope: Scope): Scheme =
-  line.scheme(scope).let { lineScheme ->
-    scheme(index).let { indexScheme ->
+  lineIndexed.line.scheme(scope).let { lineScheme ->
+    scheme(lineIndexed.index).let { indexScheme ->
       if (choice.isSimple) indexScheme
       else pair(indexScheme, lineScheme)
     }

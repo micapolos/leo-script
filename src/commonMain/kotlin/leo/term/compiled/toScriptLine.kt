@@ -37,9 +37,9 @@ fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
 fun <V> Select<V>.toScript(fn: (V) -> ScriptLine): Script =
   choice.script
     .plus(
-      "select" lineTo script(
-        "index" lineTo script(literal(index)),
-        line.toScriptLine(fn)))
+      "indexed" lineTo script(
+        "index" lineTo script(literal(lineIndexed.index)),
+        lineIndexed.line.toScriptLine(fn)))
 
 fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
   script(lhs.toScriptLine(fn))

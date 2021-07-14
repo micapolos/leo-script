@@ -2,6 +2,7 @@ package leo.term.indexed
 
 import leo.Empty
 import leo.IndexVariable
+import leo.variable
 
 sealed class Expression<out V>
 
@@ -52,3 +53,6 @@ fun <V> Expression<V>.get(index: Int) = expression(get(this, index))
 fun <V> Expression<V>.switch(vararg cases: Expression<V>) = expression(leo.term.indexed.switch(this, *cases))
 fun <V> Expression<V>.ifThenElse(trueCase: Expression<V>, falseCase: Expression<V>): Expression<V> =
   expression(ExpressionConditional(this, trueCase, falseCase))
+
+fun <V> Expression<V>.indirect(fn: (Expression<V>) -> Expression<V>): Expression<V> =
+  expression(function(1, fn(expression(variable(0))))).invoke(this)

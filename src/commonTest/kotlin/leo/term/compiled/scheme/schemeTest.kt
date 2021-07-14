@@ -11,6 +11,7 @@ import leo.term.compiled.expression
 import leo.term.compiled.field
 import leo.term.compiled.function
 import leo.term.compiled.get
+import leo.term.compiled.indexed
 import leo.term.compiled.nativeLine
 import leo.term.compiled.scope
 import leo.term.compiled.select
@@ -94,19 +95,19 @@ class SchemeTest {
 
   @Test
   fun select() {
-    select(choice("a" lineTo type()), 128, nativeLine(scheme("a")))
+    select(choice("a" lineTo type()), indexed(128, nativeLine(scheme("a"))))
       .scheme(scope())
       .assertEqualTo(scheme(128))
 
-    select(choice(numberTypeLine), 128, nativeLine(scheme("a")))
+    select(choice(numberTypeLine), indexed(128, nativeLine(scheme("a"))))
       .scheme(scope())
       .assertEqualTo(pair(scheme(128), scheme("a")))
 
-    select(choice("a" lineTo type(), "b" lineTo type()), 128, nativeLine(scheme("a")))
+    select(choice("a" lineTo type(), "b" lineTo type()), indexed(128, nativeLine(scheme("a"))))
       .scheme(scope())
       .assertEqualTo(scheme(128))
 
-    select(choice(numberTypeLine, numberTypeLine), 128, nativeLine(scheme("a")))
+    select(choice(numberTypeLine, numberTypeLine), indexed(128, nativeLine(scheme("a"))))
       .scheme(scope())
       .assertEqualTo(pair(scheme(128), scheme("a")))
   }
