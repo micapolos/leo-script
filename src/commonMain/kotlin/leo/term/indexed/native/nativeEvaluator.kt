@@ -24,8 +24,10 @@ val nativeEvaluator: Evaluator<Native> get() =
 
 fun Native.value(vararg params: Value<Native>): Value<Native> =
   when (this) {
-    is DoubleNative -> nativeValue(this)
-    is StringNative -> nativeValue(this)
+    is DoubleNative ->
+      nativeValue(this)
+    is StringNative ->
+      nativeValue(this)
     DoublePlusDoubleNative ->
       nativeValue(params[0].native.double.plus(params[1].native.double).native)
     DoubleMinusDoubleNative ->
