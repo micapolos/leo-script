@@ -32,12 +32,12 @@ import leo.term.compiled.VariableExpression
 import leo.term.compiled.push
 import leo.term.variable
 import scheme.Scheme
-import scheme.indexSwitch
 import scheme.nilScheme
 import scheme.pair
 import scheme.pairFirst
 import scheme.pairSecond
 import scheme.scheme
+import scheme.switch
 import scheme.tupleScheme
 import scheme.vectorRef
 
@@ -116,7 +116,7 @@ fun Switch<Scheme>.scheme(scope: Scope): Scheme =
         scheme(
           scheme(scheme("idx"), lhs.scheme(scope)),
           scheme(scheme(variable(scope.depth)), scheme("x").pairSecond)),
-        scheme("idx").indexSwitch(*lineStack.map { scheme(scope.push) }.array))
+        scheme("idx").switch(*lineStack.map { scheme(scope.push) }.array))
     else
       scheme(
         scheme("let"),
@@ -124,7 +124,7 @@ fun Switch<Scheme>.scheme(scope: Scope): Scheme =
           scheme(scheme("x"), lhs.scheme(scope)),
           scheme(scheme("idx"), scheme("x").pairFirst),
           scheme(scheme(variable(scope.depth)), nilScheme),
-          scheme("idx").indexSwitch(*lineStack.map { scheme(scope.push) }.array)))
+          scheme("idx").switch(*lineStack.map { scheme(scope.push) }.array)))
   }
 
 fun scheme(vararg schemes: Scheme) =

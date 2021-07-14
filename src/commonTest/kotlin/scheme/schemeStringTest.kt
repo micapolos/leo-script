@@ -35,7 +35,7 @@ class SchemeStringTest {
   @Test
   fun indexSwitch() {
     scheme("x")
-      .indexSwitch(scheme("a"), scheme("b"), scheme("c"))
+      .switch(scheme("a"), scheme("b"), scheme("c"))
       .string
       .assertEqualTo("(case x (0 a) (1 b) (2 c))")
   }

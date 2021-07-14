@@ -21,10 +21,10 @@ fun <V> Expression<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
   when (this) {
     is EmptyExpression -> empty.valueEvaluation(scope)
     is FunctionExpression -> function.valueEvaluation(scope)
+    is BooleanExpression -> boolean.valueEvaluation(scope)
+    is ConditionalExpression -> conditional.valueEvaluation(scope)
     is IndexExpression -> index.valueEvaluation(scope)
-    is IndexSwitchExpression -> switch.valueEvaluation(scope)
-    is IndexedExpression -> indexed.valueEvaluation(scope)
-    is IndexedSwitchExpression -> switch.valueEvaluation(scope)
+    is SwitchExpression -> switch.valueEvaluation(scope)
     is InvokeExpression -> invoke.valueEvaluation(scope)
     is NativeExpression -> native.nativeValueEvaluation(scope)
     is RecursiveExpression -> recursive.valueEvaluation(scope)
@@ -41,29 +41,26 @@ fun <V> V.nativeValueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<
 fun <V> Empty.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
   value<V>(this).evaluation()
 
+@Suppress("unused")
+fun <V> Boolean.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
+  value<V>(this).evaluation()
+
 fun <V> ExpressionTuple<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
   expressionList.seq.reverseStack.map { valueEvaluation(scope) }.flat.map { valueStack ->
     value(*valueStack.array)
   }
 
-fun <V> ExpressionIndex.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  value<V>(index).evaluation()
+fun <V> Int.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
+  value<V>(this).evaluation()
 
 fun <V> ExpressionSwitch<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
   lhs.valueEvaluation(scope).bind { lhsValue ->
     cases[lhsValue.index].valueEvaluation(scope)
   }
 
-fun <V> ExpressionIndexed<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  expression.valueEvaluation(scope).map { value ->
-    value(indexed(index, value))
-  }
-
-fun <V> ExpressionIndexedSwitch<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  lhs.valueEvaluation(scope).bind { lhsValue ->
-    lhsValue.indexed.let { indexed ->
-      cases[indexed.index].valueEvaluation(scope.plus(indexed.value))
-    }
+fun <V> ExpressionConditional<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
+  condition.valueEvaluation(scope).bind { conditionValue ->
+    if (conditionValue.boolean) trueCase.valueEvaluation(scope) else falseCase.valueEvaluation(scope)
   }
 
 fun <V> ExpressionFunction<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =

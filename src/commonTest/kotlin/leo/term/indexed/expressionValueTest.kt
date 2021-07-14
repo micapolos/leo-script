@@ -21,6 +21,30 @@ class ExpressionValueTest {
   }
 
   @Test
+  fun boolean() {
+    expression<Int>(true)
+      .value(incEvaluator)
+      .assertEqualTo(value(true))
+
+    expression<Int>(false)
+      .value(incEvaluator)
+      .assertEqualTo(value(false))
+  }
+
+  @Test
+  fun ifThenElse() {
+    expression<Int>(true)
+      .ifThenElse(nativeExpression(10), nativeExpression(20))
+      .value(incEvaluator)
+      .assertEqualTo(nativeValue(10))
+
+    expression<Int>(false)
+      .ifThenElse(nativeExpression(10), nativeExpression(20))
+      .value(incEvaluator)
+      .assertEqualTo(nativeValue(20))
+  }
+
+  @Test
   fun tuple() {
     expression(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
@@ -64,49 +88,25 @@ class ExpressionValueTest {
 
   @Test
   fun index_boolean() {
-    expression<Int>(index(0, 2))
+    expression<Int>(0)
       .value(incEvaluator)
       .assertEqualTo(value(0))
 
-    expression<Int>(index(1, 2))
+    expression<Int>(1)
       .value(incEvaluator)
       .assertEqualTo(value(1))
   }
 
   @Test
   fun switch() {
-    expression<Int>(index(0, 2))
+    expression<Int>(0)
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
       .assertEqualTo(nativeValue(10))
 
-    expression<Int>(index(1, 2))
+    expression<Int>(1)
       .switch(nativeExpression(10), nativeExpression(20))
       .value(incEvaluator)
       .assertEqualTo(nativeValue(20))
-  }
-
-  @Test
-  fun indexed() {
-    expression(indexed(0, 2, nativeExpression(10)))
-      .value(incEvaluator)
-      .assertEqualTo(value(indexed(0, nativeValue(10))))
-  }
-
-  @Test
-  fun indexedSwitch() {
-    expression(indexed(0, 2, nativeExpression(100)))
-      .indexedSwitch(
-        expression(nativeExpression(10), expression(variable(0))),
-        expression(nativeExpression(20), expression(variable(0))))
-      .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(10), nativeValue(100)))
-
-    expression(indexed(1, 2, nativeExpression(100)))
-      .indexedSwitch(
-        expression(nativeExpression(10), expression(variable(0))),
-        expression(nativeExpression(20), expression(variable(0))))
-      .value(incEvaluator)
-      .assertEqualTo(value(nativeValue(20), nativeValue(100)))
   }
 }

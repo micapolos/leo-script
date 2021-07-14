@@ -52,6 +52,5 @@ fun Scheme.vectorRef(index: Scheme): Scheme =
 fun Scheme.case(vararg schemes: Scheme): Scheme =
   scheme(scheme("case"), this, *schemes)
 
-fun Scheme.indexSwitch(vararg schemes: Scheme): Scheme =
-  if (schemes.size == 2) scheme(scheme("if"), this, schemes[0], schemes[1])
-  else case(*schemes.mapIndexed { index, scheme -> scheme(scheme(index), scheme) }.toTypedArray())
+fun Scheme.switch(vararg schemes: Scheme): Scheme =
+  case(*schemes.mapIndexed { index, scheme -> scheme(scheme(index), scheme) }.toTypedArray())

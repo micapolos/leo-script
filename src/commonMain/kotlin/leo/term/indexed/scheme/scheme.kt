@@ -6,13 +6,13 @@ import leo.base.iterate
 import leo.term.compiled.Scope
 import leo.term.compiled.push
 import leo.term.compiled.scope
+import leo.term.indexed.BooleanExpression
+import leo.term.indexed.ConditionalExpression
 import leo.term.indexed.EmptyExpression
 import leo.term.indexed.Expression
+import leo.term.indexed.ExpressionConditional
 import leo.term.indexed.ExpressionFunction
 import leo.term.indexed.ExpressionGet
-import leo.term.indexed.ExpressionIndex
-import leo.term.indexed.ExpressionIndexed
-import leo.term.indexed.ExpressionIndexedSwitch
 import leo.term.indexed.ExpressionInvoke
 import leo.term.indexed.ExpressionRecursive
 import leo.term.indexed.ExpressionSwitch
@@ -20,21 +20,16 @@ import leo.term.indexed.ExpressionTuple
 import leo.term.indexed.FunctionExpression
 import leo.term.indexed.GetExpression
 import leo.term.indexed.IndexExpression
-import leo.term.indexed.IndexSwitchExpression
-import leo.term.indexed.IndexedExpression
-import leo.term.indexed.IndexedSwitchExpression
 import leo.term.indexed.InvokeExpression
 import leo.term.indexed.NativeExpression
 import leo.term.indexed.RecursiveExpression
+import leo.term.indexed.SwitchExpression
 import leo.term.indexed.TupleExpression
 import leo.term.indexed.VariableExpression
 import leo.variable
 import scheme.Scheme
-import scheme.indexSwitch
-import scheme.pair
-import scheme.pairFirst
-import scheme.pairSecond
 import scheme.scheme
+import scheme.switch
 import scheme.vectorRef
 import scheme.vectorScheme
 
@@ -49,12 +44,12 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is RecursiveExpression -> recursive.scheme(scope)
     is GetExpression -> get.scheme(scope)
     is IndexExpression -> index.scheme(scope)
-    is IndexSwitchExpression -> switch.scheme(scope)
-    is IndexedExpression -> indexed.scheme(scope)
-    is IndexedSwitchExpression -> switch.scheme(scope)
+    is SwitchExpression -> switch.scheme(scope)
     is TupleExpression -> tuple.scheme(scope)
     is NativeExpression -> native
     is VariableExpression -> variable.scheme(scope)
+    is BooleanExpression -> boolean.scheme
+    is ConditionalExpression -> conditional.scheme(scope)
   }
 
 val Empty.scheme: Scheme get() =
@@ -81,27 +76,18 @@ fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
 fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
 
-fun ExpressionIndex.scheme(scope: Scope): Scheme =
-  if (size == 2) (index == 0).scheme
-  else scheme(index)
+fun Int.scheme(scope: Scope): Scheme =
+  scheme(this)
 
-fun ExpressionIndexed<Scheme>.scheme(scope: Scope): Scheme =
-  pair(
-    if (size == 2) (index == 0).scheme
-    else scheme(index),
-    expression.scheme(scope))
+fun ExpressionConditional<Scheme>.scheme(scope: Scope): Scheme =
+  scheme(
+    scheme("if"),
+    condition.scheme(scope),
+    trueCase.scheme(scope),
+    falseCase.scheme(scope))
 
 fun ExpressionSwitch<Scheme>.scheme(scope: Scope): Scheme =
-  lhs.scheme(scope).indexSwitch(*cases.map { it.scheme(scope) }.toTypedArray())
-
-fun ExpressionIndexedSwitch<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(
-    scheme("let*"),
-    scheme(
-      scheme(scheme("x"), lhs.scheme(scope)),
-      scheme(scheme("i"), scheme("x").pairFirst),
-      scheme(variable(scope.depth).scheme, scheme("x").pairSecond)),
-    scheme("i").indexSwitch(*cases.map { it.scheme(scope.push) }.toTypedArray()))
+  lhs.scheme(scope).switch(*cases.map { it.scheme(scope) }.toTypedArray())
 
 fun IndexVariable.scheme(scope: Scope) =
   variable(scope.depth - index - 1).scheme
