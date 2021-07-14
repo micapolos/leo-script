@@ -4,8 +4,10 @@ import leo.Script
 import leo.ScriptLine
 import leo.Type
 import leo.base.notNullOrError
+import leo.base.nullOf
 import leo.fieldOrNull
 import leo.fold
+import leo.lineStack
 import leo.matchPrefix
 import leo.name
 import leo.named.compiler.compileStructure
@@ -14,7 +16,10 @@ import leo.recursiveName
 import leo.reverse
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
+import leo.term.compiled.CompiledSelect
 import leo.term.compiled.body
+import leo.term.compiled.compiled
+import leo.term.compiled.compiledSelect
 import leo.term.compiled.recursive
 import leo.term.compiled.tupleOnlyLineOrNull
 import leo.term.typed.TypedSelection
@@ -32,7 +37,9 @@ val <V> Environment<V>.context
     Context(this, scope())
 
 fun <V> Context<V>.compiled(script: Script): Compiled<V> =
-  module.compiler.plus(script).completeCompiled
+  null
+    ?: compiledSelectOrNull(script)?.compiled
+    ?: module.compiler.plus(script).completeCompiled
 
 fun <V> Context<V>.body(script: Script): Body<V> =
   script.matchPrefix(recursiveName) { recursiveScript ->
@@ -65,3 +72,10 @@ fun <V> Context<V>.typedSelection(scriptLine: ScriptLine): TypedSelection<V> =
       else noSelection(type(field.rhs).onlyLineOrNull.notNullOrError("dupa kabana"))
     }
   }
+
+fun <V> Context<V>.compiledSelectOrNull(script: Script): CompiledSelect<V>? =
+  nullOf<SelectCompiler<V>>().fold(script.lineStack.reverse) { scriptLine ->
+    null
+      ?: this?.plus(scriptLine)
+      ?: SelectCompiler(this@compiledSelectOrNull, compiledSelect()).plusOrNull(scriptLine)
+  }?.compiledSelect

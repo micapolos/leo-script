@@ -8,6 +8,7 @@ import leo.TypeLine
 import leo.TypeStructure
 import leo.any
 import leo.atom
+import leo.choice
 import leo.line
 import leo.lineTo
 import leo.named.value.anyScriptLine
@@ -21,7 +22,6 @@ data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
 
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
-data class CompiledFragment<out V>(val fragment: Fragment<V>, val type: Type)
 data class CompiledFunction<out V>(val function: Function<V>, val typeFunction: TypeFunction)
 data class CompiledSelect<out V>(val lineIndexedOrNull: LineIndexed<V>?, val choice: TypeChoice)
 
@@ -69,7 +69,6 @@ fun <V> line(get: Get<V>): Line<V> = GetLine(get)
 fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(expression, type)
 fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
-fun <V> compiled(fragment: Fragment<V>, type: Type) = CompiledFragment(fragment, type)
 
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)
@@ -78,7 +77,6 @@ fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, lineIndexedOrNull: LineIndexed<V>) = Select(choice, lineIndexedOrNull)
-fun <V> fragment(expression: Expression<V>, tuple: Tuple<V>) = Fragment(expression, tuple)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)
@@ -94,3 +92,4 @@ fun <V> nativeCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(nat
 
 fun <V> indexed(index: Int, line: Line<V>) = LineIndexed(index, line)
 fun <V> select(lineIndexedOrNull: LineIndexed<V>?, typeChoice: TypeChoice) = CompiledSelect(lineIndexedOrNull, typeChoice)
+fun <V> compiledSelect(): CompiledSelect<V> = select(null, choice())

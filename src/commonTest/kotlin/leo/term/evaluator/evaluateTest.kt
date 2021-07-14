@@ -9,12 +9,10 @@ import leo.eitherName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.notName
 import leo.pickName
+import leo.plusName
 import leo.script
-import leo.selectName
 import leo.switchName
-import leo.theName
 import leo.typeName
 import kotlin.test.Test
 
@@ -42,12 +40,9 @@ class EvaluateTest {
   @Test
   fun selectType() {
     script(
-      selectName lineTo script(
-        theName lineTo script(literal(10)),
-        notName lineTo script(anyTextScriptLine)
-      ),
-      typeName lineTo script()
-    )
+      pickName lineTo script(literal(10)),
+      dropName lineTo script(anyTextScriptLine),
+      typeName lineTo script())
       .evaluate
       .assertEqualTo(
         script(
@@ -104,5 +99,14 @@ class EvaluateTest {
           )
         )
       )
+  }
+
+  @Test
+  fun numberPlusNumber() {
+    script(
+      line(literal(10)),
+      plusName lineTo script(literal(20)))
+      .evaluate
+      .assertEqualTo(script(literal(30)))
   }
 }

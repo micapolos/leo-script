@@ -2,25 +2,31 @@ package leo.term.compiler
 
 import leo.Script
 import leo.ScriptField
+import leo.ScriptLine
 import leo.TypeLine
 import leo.dropName
-import leo.line
+import leo.fieldOrNull
 import leo.lineTo
 import leo.onlyLineOrNull
 import leo.pickName
 import leo.script
 import leo.term.compiled.CompiledLine
 import leo.term.compiled.CompiledSelect
+import leo.term.compiled.drop
 import leo.term.compiled.onlyCompiledLineOrNull
+import leo.term.compiled.pick
 
 data class SelectCompiler<V>(
   val context: Context<V>,
   val compiledSelect: CompiledSelect<V>)
 
-fun <V> SelectCompiler<V>.plus(scriptField: ScriptField): SelectCompiler<V> =
+fun <V> SelectCompiler<V>.plus(scriptLine: ScriptLine): SelectCompiler<V> =
   null
-    ?: plusOrNull(scriptField)
-    ?: compileError(script("select" lineTo script(line(scriptField))))
+    ?: plusOrNull(scriptLine)
+    ?: compileError(script("select" lineTo script(scriptLine)))
+
+fun <V> SelectCompiler<V>.plusOrNull(scriptLine: ScriptLine): SelectCompiler<V>? =
+  scriptLine.fieldOrNull?.let { plusOrNull(it) }
 
 fun <V> SelectCompiler<V>.plusOrNull(scriptField: ScriptField): SelectCompiler<V>? =
   when (scriptField.name) {
@@ -40,8 +46,8 @@ fun <V> SelectCompiler<V>.drop(script: Script): SelectCompiler<V> =
     ?: compileError(script(dropName lineTo script))
 
 fun <V> SelectCompiler<V>.pick(compiledLine: CompiledLine<V>): SelectCompiler<V> =
-  TODO()
+  copy(compiledSelect = compiledSelect.pick(compiledLine))
 
 fun <V> SelectCompiler<V>.drop(typeLine: TypeLine): SelectCompiler<V> =
-  TODO()
+  copy(compiledSelect = compiledSelect.drop(typeLine))
 

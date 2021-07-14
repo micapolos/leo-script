@@ -5,10 +5,12 @@ import leo.anyTextScriptLine
 import leo.applyName
 import leo.asName
 import leo.base.assertEqualTo
+import leo.choice
 import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.equalsName
+import leo.functionLineTo
 import leo.functionName
 import leo.getName
 import leo.giveName
@@ -22,6 +24,7 @@ import leo.numberType
 import leo.numberTypeLine
 import leo.pickName
 import leo.plus
+import leo.plusName
 import leo.quoteName
 import leo.repeatingName
 import leo.script
@@ -29,32 +32,34 @@ import leo.switchName
 import leo.term.compiled.apply
 import leo.term.compiled.body
 import leo.term.compiled.compiled
+import leo.term.compiled.compiledSelect
 import leo.term.compiled.do_
 import leo.term.compiled.drop
 import leo.term.compiled.expression
+import leo.term.compiled.field
 import leo.term.compiled.fn
+import leo.term.compiled.indexed
+import leo.term.compiled.line
 import leo.term.compiled.lineTo
+import leo.term.compiled.nativeCompiled
 import leo.term.compiled.nativeLine
 import leo.term.compiled.nativeNumberCompiled
 import leo.term.compiled.nativeNumberCompiledLine
 import leo.term.compiled.pick
+import leo.term.compiled.select
+import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeCompiler
 import leo.term.compiler.native.nativeEnvironment
-import leo.term.compiler.native.objectEqualsObject
 import leo.term.eitherFirst
 import leo.term.eitherSecond
 import leo.term.fn
 import leo.term.get
-import leo.term.head
 import leo.term.id
 import leo.term.invoke
 import leo.term.nativeTerm
-import leo.term.tail
-import leo.term.typed.lineTo
 import leo.term.typed.typed
-import leo.term.typed.typedTerm
 import leo.term.variable
 import leo.textTypeLine
 import leo.type
@@ -168,21 +173,22 @@ class CompileTest {
   }
 
   @Test
-  fun numberEqualsNumber() {
+  fun numberPlusNumber() {
     nativeEnvironment
       .compiled(
         script(
           line(literal(10)),
-          equalsName lineTo script(literal(20))
+          plusName lineTo script(literal(20))
         )
       )
       .assertEqualTo(
-        typedTerm(
-          typed(10.0.native.nativeTerm, numberTypeLine),
-          equalsName lineTo typedTerm(typed(20.0.native.nativeTerm, numberTypeLine))
-        ).let {
-          typed(fn(get<Native>(0).tail.objectEqualsObject(get<Native>(0).head)).invoke(it.v), type(equalsTypeLine))
-        })
+        compiled(
+          nativeNumberCompiledLine(10.0.native),
+          "plus" lineTo nativeNumberCompiled(20.0.native))
+          .apply(
+            nativeCompiled(
+              DoublePlusDoubleNative,
+              type(type(numberTypeLine, "plus" lineTo numberType) functionLineTo numberType))))
   }
 
   @Test
@@ -235,10 +241,10 @@ class CompileTest {
         )
       )
       .assertEqualTo(
-        compiled<Native>()
-          .pick(compiled(compiled(nativeLine(10.0.native), numberTypeLine)))
-          .drop(type(textTypeLine))
-      )
+        compiledSelect<Native>()
+          .pick(compiled(nativeLine(10.0.native), numberTypeLine))
+          .drop(textTypeLine)
+          .compiled)
   }
 
   @Test
@@ -395,6 +401,40 @@ class CompileTest {
       script(
         line(literal(10)),
         asName lineTo script(anyTextScriptLine))
+        .compiled(nativeEnvironment)
+    }
+  }
+
+  @Test
+  fun selectIndex() {
+    script(
+      pickName lineTo script("foo"),
+      dropName lineTo script("bar"))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled(
+          expression(
+            select(
+              choice("foo" lineTo leo.type(), "bar" lineTo leo.type()),
+              indexed(0, line(field("foo", compiled()))))),
+          type(choice("foo" lineTo leo.type(), "bar" lineTo leo.type()))))
+  }
+
+  @Test
+  fun select_syntaxError() {
+    assertFails {
+      script(
+        pickName lineTo script("foo"),
+        "drup" lineTo script("bar"))
+        .compiled(nativeEnvironment)
+    }
+  }
+
+  @Test
+  fun select_noSelection() {
+    assertFails {
+      script(
+        dropName lineTo script("foo"))
         .compiled(nativeEnvironment)
     }
   }

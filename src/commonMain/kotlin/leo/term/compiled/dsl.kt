@@ -4,18 +4,13 @@ import leo.Stack
 import leo.Type
 import leo.TypeLine
 import leo.applyName
-import leo.array
 import leo.base.fold
 import leo.base.ifOrNull
-import leo.base.mapIndexed
 import leo.base.notNullIf
-import leo.base.reverse
-import leo.base.stack
 import leo.functionLineTo
 import leo.functionOrNull
 import leo.getFromBottom
 import leo.isEmpty
-import leo.lineSeq
 import leo.lineTo
 import leo.linkOrNull
 import leo.mapIt
@@ -201,13 +196,8 @@ val <V> Compiled<V>.tupleCompiledTupleOrNull: CompiledTuple<V>? get() =
   expression.tupleOrNull?.let { compiled(it, type.structureOrNull!!) }
 
 val <V> Compiled<V>.resolvedCompiledTupleOrNull: CompiledTuple<V>? get() =
-  type.structureOrNull?.let { typeStructure ->
-    compiled("tuple" lineTo this).indirectIf(typeStructure.lineStack.size >= 2) { target ->
-      compiled(
-        *typeStructure.lineSeq.mapIndexed.reverse.stack.mapIt { indexedTypeLine ->
-          compiled(line(get(target, indexedTypeLine.index)), indexedTypeLine.value)
-        }.array)
-    }.tupleCompiledTupleOrNull?:compileError(script("tuple"))
+  type.onlyLineOrNull?.let { typeLine ->
+    compiled(tuple(line(get(compiled("tuple" lineTo this), 0))), typeStructure(typeLine))
   }
 
 val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
@@ -218,10 +208,6 @@ val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
 fun <V> Compiled<V>.indirect(fn: (Compiled<V>) -> Compiled<V>): Compiled<V> =
   fn(type, fn(compiledVariable(0, type))).invoke(this)
 
-fun <V> Compiled<V>.indirectIf(condition: Boolean, fn: (Compiled<V>) -> Compiled<V>): Compiled<V> =
-  if (condition) indirect(fn)
-  else this
-
 fun <V> compiledVariable(index: Int, type: Type): Compiled<V> =
   compiled(expression(leo.term.variable(index)), type)
 
@@ -230,15 +216,6 @@ fun <V> Tuple<V>.plus(line: Line<V>): Tuple<V> =
 
 fun <V> Fragment<V>.plus(line: Line<V>): Fragment<V> =
   copy(tuple = tuple.plus(line))
-
-val <V> Compiled<V>.compiledFragment: CompiledFragment<V> get() =
-  compiled(fragment(expression, tuple()), type)
-
-fun <V> CompiledFragment<V>.plus(compiledLine: CompiledLine<V>): CompiledFragment<V> =
-  compiled(fragment.plus(compiledLine.line), type.plus(compiledLine.typeLine))
-
-fun <V> CompiledFragment<V>.resolveCompiledLines(fn: (Stack<CompiledLine<V>>) -> Compiled<V>): Compiled<V> =
-  TODO()
 
 val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
