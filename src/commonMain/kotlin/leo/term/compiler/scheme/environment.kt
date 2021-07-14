@@ -37,7 +37,7 @@ val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
     type(textTypeLine, "plus" lineTo textType) ->
       nativeCompiled(scheme("string-append"), type(type functionLineTo textType))
     type("length" lineTo textType) ->
-      nativeCompiled(scheme("string->length"), type(type functionLineTo type("length" lineTo numberType)))
+      nativeCompiled(scheme("string-length"), type(type functionLineTo type("length" lineTo numberType)))
     type(numberTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo numberType))) ->
       nativeCompiled(scheme("="), type(type functionLineTo isType))
     type(textTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo textType))) ->
