@@ -43,10 +43,13 @@ import leo.term.compiled.compiled
 import leo.term.compiled.do_
 import leo.term.compiled.drop
 import leo.term.compiled.fnLine
+import leo.term.compiled.indexed.indexedExpression
 import leo.term.compiled.lineTo
 import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.plus
+import leo.term.compiler.scheme.schemeEnvironment
+import leo.term.indexed.scheme.scheme
 
 data class Compiler<V>(
   val module: Module<V>,
@@ -121,6 +124,7 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
                   "any" lineTo script("script")))))))))
   else script.matchPrefix { name, rhs ->
     when (name) {
+      "scheme" -> set(environment.staticCompiled(script(rhs.compiled(schemeEnvironment).indexedExpression.scheme.toScriptLine)))
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))
