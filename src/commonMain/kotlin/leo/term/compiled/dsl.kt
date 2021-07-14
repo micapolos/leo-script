@@ -99,11 +99,6 @@ fun <V> fnLine(type: Type, body: Body<V>): CompiledLine<V> =
 fun <V> fnLine(type: Type, body: Compiled<V>): CompiledLine<V> =
   compiled(line(function(type, body(body))), type functionLineTo body.type)
 
-fun <V> Compiled<V>.pick(compiledLine: CompiledLine<V>): Compiled<V> = TODO()
-fun <V> Compiled<V>.drop(typeLine: TypeLine): Compiled<V> = TODO()
-
-fun <V> Compiled<V>.pick(compiled: Compiled<V>): Compiled<V> = TODO()
-fun <V> Compiled<V>.drop(type: Type): Compiled<V> = TODO()
 val <V> Compiled<V>.content: Compiled<V> get() = TODO()
 
 val <V> Compiled<V>.tupleContentOrNull: Compiled<V>? get() =

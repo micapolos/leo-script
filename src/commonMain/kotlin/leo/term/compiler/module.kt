@@ -29,11 +29,13 @@ import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledFunction
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledLineStack
+import leo.term.compiled.compiledSelect
 import leo.term.compiled.drop
 import leo.term.compiled.expression
 import leo.term.compiled.fn
 import leo.term.compiled.invoke
 import leo.term.compiled.line
+import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
 import leo.term.variable
 import leo.type
@@ -116,7 +118,8 @@ fun <V> Module<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Modu
     .plus(
       fn(
         type(rope.current),
-        compiled<V>()
-          .fold(rope.head) { drop(type(it)) }
-          .pick(compiled(expression(variable(0)), type(rope.current)))
-          .fold(rope.tail.reverse) { drop(type(it)) }))
+        compiledSelect<V>()
+          .fold(rope.head) { drop(it) }
+          .pick(compiled(expression<V>(variable(0)), type(rope.current)).onlyCompiledLine)
+          .fold(rope.tail.reverse) { drop(it) }
+          .compiled))

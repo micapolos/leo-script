@@ -7,7 +7,6 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.Type
-import leo.TypeLine
 import leo.asName
 import leo.base.fold
 import leo.base.reverse
@@ -15,7 +14,6 @@ import leo.compileName
 import leo.debugName
 import leo.doName
 import leo.doingName
-import leo.dropName
 import leo.functionName
 import leo.giveName
 import leo.isEmpty
@@ -25,7 +23,6 @@ import leo.lineSeq
 import leo.lineTo
 import leo.matchInfix
 import leo.matchPrefix
-import leo.pickName
 import leo.plus
 import leo.quoteName
 import leo.repeatingName
@@ -41,12 +38,9 @@ import leo.term.compiled.as_
 import leo.term.compiled.body
 import leo.term.compiled.compiled
 import leo.term.compiled.do_
-import leo.term.compiled.drop
 import leo.term.compiled.fnLine
 import leo.term.compiled.indexed.indexedExpression
 import leo.term.compiled.lineTo
-import leo.term.compiled.onlyCompiledLine
-import leo.term.compiled.pick
 import leo.term.compiled.plus
 import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.scheme.scheme
@@ -95,11 +89,9 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     compileName -> compile(field.rhs)
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
-    dropName -> drop(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
-    pickName -> pick(field.rhs)
     switchName -> switch(field.rhs)
     quoteName -> quote(field.rhs)
     else -> null
@@ -182,18 +174,6 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(module.plusLet(script))
-
-fun <V> Compiler<V>.pick(script: Script): Compiler<V> =
-  pick(context.compiled(script).onlyCompiledLine)
-
-fun <V> Compiler<V>.pick(line: CompiledLine<V>): Compiler<V> =
-  set(compiled.pick(line))
-
-fun <V> Compiler<V>.drop(script: Script): Compiler<V> =
-  drop(context.type(script).onlyLine)
-
-fun <V> Compiler<V>.drop(typeLine: TypeLine): Compiler<V> =
-  set(compiled.drop(typeLine))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->

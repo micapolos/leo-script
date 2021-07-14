@@ -1,4 +1,5 @@
 compile scheme
-  "Hello, "
-  plus "world!"
-  length
+  point
+    x 10
+    y 20
+  y.number
