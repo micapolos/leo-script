@@ -1,4 +1,4 @@
-package leo.term.indexed.script
+package leo.term.indexed.native
 
 import leo.AnyTypePrimitive
 import leo.ChoiceType
@@ -21,13 +21,13 @@ import leo.TypeStructure
 import leo.atom
 import leo.empty
 import leo.fieldOrNull
-import leo.get
 import leo.getFromBottom
 import leo.line
 import leo.lineTo
 import leo.literal
 import leo.map
 import leo.mapIt
+import leo.onlyLineOrNull
 import leo.primitiveOrNull
 import leo.script
 import leo.scriptLine
@@ -74,18 +74,20 @@ fun Value<Native>.script(typeChoice: TypeChoice): Script =
   }!!
 
 fun Value<Native>.script(typeStructure: TypeStructure): Script =
-  when (this) {
-    is BooleanValue -> null
-    is EmptyValue -> null
-    is FunctionValue -> null
-    is IndexValue -> null
-    is NativeValue -> null
-    is RecursiveValue -> null
-    is TupleValue -> tuple.script(typeStructure)
-  }!!
+  typeStructure.onlyLineOrNull
+    ?.let { script(scriptLine(it)) }
+    ?: when (this) {
+      is BooleanValue -> null
+      is EmptyValue -> empty.script(typeStructure)
+      is FunctionValue -> null
+      is IndexValue -> null
+      is NativeValue -> null
+      is RecursiveValue -> null
+      is TupleValue -> tuple.script(typeStructure)
+    }!!
 
 fun Boolean.scriptLine(typeChoice: TypeChoice): ScriptLine =
-  value<Native>(empty).scriptLine(typeChoice.lineStack.get(if (this) 1 else 0)!!)
+  value<Native>(empty).scriptLine(typeChoice.lineStack.getFromBottom(if (this) 0 else 1)!!)
 
 fun Int.scriptLine(typeChoice: TypeChoice): ScriptLine =
   value<Native>(empty).scriptLine(typeChoice.lineStack.getFromBottom(this)!!)
@@ -119,7 +121,10 @@ fun Value<Native>.scriptLine(typeField: TypeField): ScriptLine =
   typeField.name lineTo script(typeField.rhsType)
 
 fun Empty.script(type: Type): Script =
-  type.structureOrNull!!.lineStack.mapIt { scriptLine(it) }.script
+  script(type.structureOrNull!!)
+
+fun Empty.script(typeStructure: TypeStructure): Script =
+  typeStructure.lineStack.mapIt { scriptLine(it) }.script
 
 fun Empty.scriptLine(typeLine: TypeLine): ScriptLine =
   scriptLine(typeLine.atom.primitiveOrNull!!.fieldOrNull!!)
