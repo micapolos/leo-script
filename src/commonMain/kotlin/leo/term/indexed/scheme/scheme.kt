@@ -52,6 +52,7 @@ fun Expression<Scheme>.scheme(scope: Scope): Scheme =
     is ConditionalExpression -> conditional.scheme(scope)
   }
 
+@Suppress("unused")
 val Empty.scheme: Scheme get() =
   scheme("`()")
 
