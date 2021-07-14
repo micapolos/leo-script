@@ -9,11 +9,11 @@ import leo.term.compiler.native.StringPlusStringNative
 import leo.term.compiler.native.native
 import leo.term.indexed.expression
 import leo.term.indexed.function
+import leo.term.indexed.ifThenElse
 import leo.term.indexed.invoke
 import leo.term.indexed.nativeExpression
 import leo.term.indexed.nativeValue
 import leo.term.indexed.recursive
-import leo.term.indexed.switch
 import leo.term.indexed.value
 import leo.variable
 import kotlin.test.Test
@@ -36,14 +36,14 @@ class ExpressionValueTest {
         nativeExpression(3.0.native),
         nativeExpression(2.0.native))
       .value(nativeEvaluator)
-      .assertEqualTo(value(false.switchIndex))
+      .assertEqualTo(value(false))
 
     nativeExpression(DoubleIsLessThanDoubleNative)
       .invoke(
         nativeExpression(1.0.native),
         nativeExpression(2.0.native))
       .value(nativeEvaluator)
-      .assertEqualTo(value(true.switchIndex))
+      .assertEqualTo(value(true))
   }
 
   @Test
@@ -53,7 +53,7 @@ class ExpressionValueTest {
         function(1,
           nativeExpression(DoubleIsLessThanDoubleNative)
             .invoke(expression(variable(0)), nativeExpression(2.0.native))
-            .switch(
+            .ifThenElse(
               expression(variable(0)),
               nativeExpression(DoublePlusDoubleNative)
                 .invoke(

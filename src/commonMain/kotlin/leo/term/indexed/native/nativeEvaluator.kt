@@ -33,13 +33,11 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
     DoubleTimesDoubleNative ->
       nativeValue(params[0].native.double.times(params[1].native.double).native)
     DoubleIsLessThanDoubleNative ->
-      value((params[0].native.double < params[1].native.double).switchIndex)
+      value(params[0].native.double < params[1].native.double)
     ObjectEqualsObjectNative ->
-      value((params[0].native == params[1].native).switchIndex)
+      value(params[0].native == params[1].native)
     StringPlusStringNative ->
       nativeValue(params[0].native.string.plus(params[1].native.string).native)
     StringLengthNative ->
       nativeValue(params[0].native.string.length.toDouble().native)
   }
-
-val Boolean.switchIndex: Int get() = if (this) 0 else 1
