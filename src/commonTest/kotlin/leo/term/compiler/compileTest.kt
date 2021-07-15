@@ -16,8 +16,6 @@ import leo.line
 import leo.lineTo
 import leo.literal
 import leo.numberName
-import leo.numberType
-import leo.numberTypeLine
 import leo.pickName
 import leo.plusName
 import leo.quoteName
@@ -48,9 +46,11 @@ import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeCompiler
 import leo.term.compiler.native.nativeEnvironment
+import leo.term.compiler.native.nativeNumberType
+import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.term.variable
 import leo.textName
-import leo.textTypeLine
 import leo.type
 import leo.typeName
 import kotlin.test.Test
@@ -82,14 +82,14 @@ class CompileTest {
   fun number() {
     nativeEnvironment
       .compiled(script(literal(10)))
-      .assertEqualTo(compiled(compiled(nativeLine(10.0.native), numberTypeLine)))
+      .assertEqualTo(compiled(compiled(nativeLine(10.0.native), nativeNumberTypeLine)))
   }
 
   @Test
   fun text() {
     nativeEnvironment
       .compiled(script(literal("foo")))
-      .assertEqualTo(compiled(compiled(nativeLine("foo".native), textTypeLine)))
+      .assertEqualTo(compiled(compiled(nativeLine("foo".native), nativeTextTypeLine)))
   }
 
   @Test
@@ -143,7 +143,7 @@ class CompileTest {
       .compiled(nativeEnvironment)
       .assertEqualTo(
         nativeNumberCompiled(10.0.native)
-          .apply(fn(numberType, compiled("ok")))
+          .apply(fn(nativeNumberType, compiled("ok")))
       )
   }
 
@@ -157,7 +157,7 @@ class CompileTest {
       .assertEqualTo(
         nativeCompiler
           .plus(nativeNumberCompiledLine(10.0.native))
-          .do_(body(compiled(expression(variable(0)), numberType))))
+          .do_(body(compiled(expression(variable(0)), nativeNumberType))))
   }
 
   @Test
@@ -176,7 +176,7 @@ class CompileTest {
           .apply(
             nativeCompiled(
               DoublePlusDoubleNative,
-              type(type(numberTypeLine, "plus" lineTo numberType) functionLineTo numberType))))
+              type(type(nativeNumberTypeLine, "plus" lineTo nativeNumberType) functionLineTo nativeNumberType))))
   }
 
   @Test
@@ -230,8 +230,8 @@ class CompileTest {
       )
       .assertEqualTo(
         compiledSelect<Native>()
-          .pick(compiled(nativeLine(10.0.native), numberTypeLine))
-          .drop(textTypeLine)
+          .pick(compiled(nativeLine(10.0.native), nativeNumberTypeLine))
+          .drop(nativeTextTypeLine)
           .compiled)
   }
 
@@ -257,7 +257,7 @@ class CompileTest {
                 .drop("three" lineTo type())
                 .compiled)
           .switch(
-            numberType,
+            nativeNumberType,
             nativeNumberCompiled(1.0.native),
             nativeNumberCompiled(2.0.native),
             nativeNumberCompiled(3.0.native)))
@@ -284,14 +284,14 @@ class CompileTest {
           "id" lineTo
             compiledSelect<Native>()
               .pick("one" lineTo nativeNumberCompiled(10.0.native))
-              .drop("two" lineTo numberType)
-              .drop("three" lineTo numberType)
+              .drop("two" lineTo nativeNumberType)
+              .drop("three" lineTo nativeNumberType)
               .compiled)
           .switch(
-            numberType,
-            compiled(expression<Native>(variable(0)), type("one" lineTo numberType)).get(numberName),
-            compiled(expression<Native>(variable(0)), type("two" lineTo numberType)).get(numberName),
-            compiled(expression<Native>(variable(0)), type("three" lineTo numberType)).get(numberName)))
+            nativeNumberType,
+            compiled(expression<Native>(variable(0)), type("one" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("two" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("three" lineTo nativeNumberType)).get(numberName)))
   }
 
   @Test
@@ -308,12 +308,8 @@ class CompileTest {
         nativeEnvironment.resolveType(
           compiled(
             "point" lineTo compiled(
-              "x" lineTo compiled(compiled(nativeLine(10.0.native), numberTypeLine)),
-              "y" lineTo compiled(compiled(nativeLine(20.0.native), numberTypeLine))
-            )
-          )
-        )
-      )
+              "x" lineTo nativeNumberCompiled(10.0.native),
+              "y" lineTo nativeNumberCompiled(20.0.native)))))
   }
 
   @Test
@@ -330,7 +326,7 @@ class CompileTest {
           .do_(
             body(
               nativeEnvironment.context.module
-                .bind(type(numberTypeLine))
+                .bind(nativeNumberType)
                 .compiled(script("ok" lineTo script(numberName))))))
   }
 
@@ -442,14 +438,14 @@ class CompileTest {
             fn(
               type(
                 "point" lineTo type(
-                  "x" lineTo numberType,
-                  "y" lineTo numberType)),
+                  "x" lineTo nativeNumberType,
+                  "y" lineTo nativeNumberType)),
               compiled(
                 expression<Native>(variable(0)),
                 type(
                   "point" lineTo type(
-                    "x" lineTo numberType,
-                    "y" lineTo numberType)))
+                    "x" lineTo nativeNumberType,
+                    "y" lineTo nativeNumberType)))
                   .get(1)
                   .get(0))))
   }

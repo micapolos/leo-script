@@ -14,7 +14,6 @@ import leo.term.compiled.CompiledLine
 import leo.term.compiled.compiled
 import leo.term.compiled.lineTo
 import leo.term.compiled.plus
-import leo.typeLine
 
 fun <V> Environment<V>.resolveType(compiled: Compiled<V>): Compiled<V> =
   staticCompiled(compiled.type.script)
@@ -25,7 +24,7 @@ fun <V> Environment<V>.staticCompiled(script: Script): Compiled<V> =
 fun <V> Environment<V>.staticTypedLine(scriptLine: ScriptLine): CompiledLine<V> =
   when (scriptLine) {
     is FieldScriptLine -> staticTypedLine(scriptLine.field)
-    is LiteralScriptLine -> compiled(literalFn(scriptLine.literal), scriptLine.literal.typeLine)
+    is LiteralScriptLine -> literalFn(scriptLine.literal)
   }
 
 fun <V> Environment<V>.staticTypedLine(scriptField: ScriptField): CompiledLine<V> =

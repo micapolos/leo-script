@@ -1,11 +1,17 @@
 package leo.term.compiler.native
 
-import leo.anyName
+import leo.Type
+import leo.TypeLine
+import leo.any
+import leo.atom
+import leo.line
+import leo.lineTo
 import leo.numberName
+import leo.primitive
+import leo.script
 import leo.term.compiled.Compiled
-import leo.term.compiled.compiled
-import leo.term.compiled.lineTo
 import leo.term.compiler.Environment
+import leo.term.compiler.staticCompiled
 import leo.textName
 import leo.type
 
@@ -19,7 +25,13 @@ val typesNativeEnvironment: Environment<Native> get() =
 
 val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =
    when (type) {
-     type(numberName) -> compiled(anyName lineTo compiled(numberName))
-     type(textName) -> compiled(anyName lineTo compiled(textName))
+     type(numberName) -> nativeEnvironment.staticCompiled(nativeNumberType.script)
+     type(textName) -> nativeEnvironment.staticCompiled(nativeTextType.script)
      else -> null
    }
+
+val nativeNumberType: Type get() = type(nativeNumberTypeLine)
+val nativeTextType: Type get() = type(nativeTextTypeLine)
+
+val nativeNumberTypeLine: TypeLine get() = numberName lineTo type(line(atom(primitive(any("double", script())))))
+val nativeTextTypeLine: TypeLine get() = textName lineTo type(line(atom(primitive(any("string", script())))))

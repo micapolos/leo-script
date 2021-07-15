@@ -44,6 +44,8 @@ import leo.term.compiler.native.ObjectEqualsObjectNative
 import leo.term.compiler.native.StringLengthNative
 import leo.term.compiler.native.StringNative
 import leo.term.compiler.native.StringPlusStringNative
+import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.term.indexed.BooleanValue
 import leo.term.indexed.EmptyValue
 import leo.term.indexed.FunctionValue
@@ -97,7 +99,11 @@ fun ValueTuple<Native>.script(typeStructure: TypeStructure): Script =
   zip(stack(*valueList.toTypedArray()), typeStructure.lineStack).map { first!!.scriptLine(second!!) }.script
 
 fun Value<Native>.scriptLine(typeLine: TypeLine): ScriptLine =
-  scriptLine(typeLine.atom)
+  when (typeLine) {
+    nativeTextTypeLine -> native.scriptLine
+    nativeNumberTypeLine -> native.scriptLine
+    else -> scriptLine(typeLine.atom)
+  }
 
 fun Value<Native>.scriptLine(typeAtom: TypeAtom): ScriptLine =
   when (typeAtom) {

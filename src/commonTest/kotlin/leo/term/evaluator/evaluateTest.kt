@@ -1,7 +1,5 @@
 package leo.term.evaluator
 
-import leo.anyNumberScriptLine
-import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.doName
 import leo.doingName
@@ -16,6 +14,8 @@ import leo.pickName
 import leo.plusName
 import leo.script
 import leo.switchName
+import leo.term.compiler.native.nativeNumberType
+import leo.term.compiler.native.nativeTextType
 import leo.textName
 import leo.typeName
 import leo.typesName
@@ -29,17 +29,16 @@ class EvaluateTest {
       typeName lineTo script()
     )
       .evaluate
-      .assertEqualTo(script(anyNumberScriptLine))
+      .assertEqualTo(nativeNumberType.script)
   }
 
   @Test
   fun textType() {
     script(
       line(literal("foo")),
-      typeName lineTo script()
-    )
+      typeName lineTo script())
       .evaluate
-      .assertEqualTo(script(anyTextScriptLine))
+      .assertEqualTo(nativeTextType.script)
   }
 
   @Test
@@ -53,8 +52,8 @@ class EvaluateTest {
       .assertEqualTo(
         script(
           "id" lineTo script(
-            eitherName lineTo script(anyNumberScriptLine),
-            eitherName lineTo script(anyTextScriptLine))))
+            eitherName lineTo nativeNumberType.script,
+            eitherName lineTo nativeTextType.script)))
   }
 
   @Test
@@ -103,17 +102,13 @@ class EvaluateTest {
         "x" lineTo script(literal(10)),
         "y" lineTo script(literal(20))
       ),
-      typeName lineTo script()
-    )
+      typeName lineTo script())
       .evaluate
       .assertEqualTo(
         script(
           "point" lineTo script(
-            "x" lineTo script(anyNumberScriptLine),
-            "y" lineTo script(anyNumberScriptLine)
-          )
-        )
-      )
+            "x" lineTo nativeNumberType.script,
+            "y" lineTo nativeNumberType.script)))
   }
 
   @Test

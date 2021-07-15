@@ -15,7 +15,6 @@ import leo.isEmpty
 import leo.lineTo
 import leo.linkOrNull
 import leo.mapIt
-import leo.numberTypeLine
 import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.plus
@@ -26,7 +25,8 @@ import leo.stack
 import leo.structure
 import leo.structureOrNull
 import leo.term.compiler.compileError
-import leo.textTypeLine
+import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.type
 import leo.typeStructure
 import leo.zip
@@ -195,8 +195,8 @@ fun <V> Compiled<V>.line(index: Int): CompiledLine<V> =
 fun <V> Compiled<V>.make(name: String): Compiled<V> =
   compiled(name lineTo this)
 
-fun <V> nativeNumberCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), numberTypeLine)
-fun <V> nativeTextCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), textTypeLine)
+fun <V> nativeNumberCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), nativeNumberTypeLine)
+fun <V> nativeTextCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), nativeTextTypeLine)
 
 fun <V> nativeNumberCompiled(native: V): Compiled<V> = compiled(nativeNumberCompiledLine(native))
 fun <V> nativeTextCompiled(native: V): Compiled<V> = compiled(nativeTextCompiledLine(native))

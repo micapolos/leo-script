@@ -9,14 +9,11 @@ import leo.plus
 import leo.script
 import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledLine
-import leo.term.compiled.Line
-import leo.term.compiled.compiled
 import leo.term.compiled.infix
-import leo.typeLine
 import leo.typeName
 
 data class Environment<V>(
-  val literalFn: (Literal) -> Line<V>,
+  val literalFn: (Literal) -> CompiledLine<V>,
   val resolveOrNullFn: (Compiled<V>) -> Compiled<V>?,
   val scriptLineFn: (V) -> ScriptLine)
 
@@ -24,7 +21,7 @@ fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
   context.module.compiled(script)
 
 fun <V> Environment<V>.compiledLine(literal: Literal): CompiledLine<V> =
-  compiled(literalFn(literal), literal.typeLine)
+  literalFn(literal)
 
 fun <V> Environment<V>.resolveTypeOrNull(compiled: Compiled<V>): Compiled<V>? =
   compiled.infix(typeName) { lhs, rhs ->

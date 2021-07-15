@@ -1,16 +1,27 @@
 package leo.term.compiler.scheme
 
 import leo.Literal
+import leo.NumberLiteral
+import leo.StringLiteral
+import leo.TypeLine
+import leo.any
+import leo.atom
 import leo.functionLineTo
 import leo.isType
+import leo.line
 import leo.lineTo
+import leo.numberName
 import leo.numberType
 import leo.numberTypeLine
+import leo.primitive
+import leo.script
 import leo.term.compiled.Compiled
+import leo.term.compiled.compiled
 import leo.term.compiled.invoke
 import leo.term.compiled.nativeCompiled
 import leo.term.compiled.nativeLine
 import leo.term.compiler.Environment
+import leo.textName
 import leo.textType
 import leo.textTypeLine
 import leo.type
@@ -20,7 +31,7 @@ import scheme.scheme
 val schemeEnvironment: Environment<Scheme>
   get() =
     Environment(
-      { literal -> nativeLine(literal.scheme) },
+      { literal -> compiled(nativeLine(literal.scheme), literal.schemeTypeLine) },
       { compiled -> compiled.resolveOrNull?.invoke(compiled) },
       { it.toScriptLine })
 
@@ -47,3 +58,10 @@ val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
 
 val Literal.scheme: Scheme get() =
   scheme(toString())
+
+val Literal.schemeTypeLine: TypeLine
+  get() =
+    when (this) {
+      is NumberLiteral -> numberName lineTo type(line(atom(primitive(any("double", script())))))
+      is StringLiteral -> textName lineTo type(line(atom(primitive(any("string", script())))))
+    }
