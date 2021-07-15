@@ -45,6 +45,7 @@ import leo.term.compiled.plus
 import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.scheme.scheme
 import leo.typeName
+import leo.typesName
 
 data class Compiler<V>(
   val local: Local<V>,
@@ -88,6 +89,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     asName -> as_(field.rhs)
     compileName -> compile(field.rhs)
+    typesName -> types(field.rhs)
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     giveName -> give(field.rhs)
@@ -121,6 +123,9 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))
+
+fun <V> Compiler<V>.types(script: Script): Compiler<V> =
+  set(local.updateTypeLocal { it.compiler.plus(script).local })
 
 fun <V> Compiler<V>.debug(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("debug" lineTo script()))

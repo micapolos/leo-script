@@ -37,6 +37,7 @@ import leo.term.compiled.invoke
 import leo.term.compiled.line
 import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
+import leo.term.compiler.native.Native
 import leo.term.variable
 import leo.type
 
@@ -126,3 +127,6 @@ fun <V> Local<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Local
           .pick(compiled(expression<V>(variable(0)), type(rope.current)).onlyCompiledLine)
           .fold(rope.tail.reverse) { drop(it) }
           .compiled))
+
+fun <V> Local<V>.updateTypeLocal(fn: (Local<Native>) -> Local<Native>) =
+  copy(module = module.updateTypeLocal(fn))

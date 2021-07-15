@@ -1,7 +1,5 @@
 let type
-  ping
-  do pong
-
-let
-  ping
-  do jajeczko
+  any point
+  do point
+    x any number
+    y any number

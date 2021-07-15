@@ -16,6 +16,7 @@ import leo.plusName
 import leo.script
 import leo.switchName
 import leo.typeName
+import leo.typesName
 import kotlin.test.Test
 
 class EvaluateTest {
@@ -134,10 +135,10 @@ class EvaluateTest {
   }
 
   @Test
-  fun letType() {
+  fun types() {
     script(
-      letName lineTo script(
-        typeName lineTo script(
+      typesName lineTo script(
+        letName lineTo script(
           "ping" lineTo script(),
           doName lineTo script("pong"))),
       letName lineTo script(
