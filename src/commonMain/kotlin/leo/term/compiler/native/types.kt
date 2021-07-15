@@ -5,6 +5,7 @@ import leo.TypeLine
 import leo.atom
 import leo.line
 import leo.lineTo
+import leo.literal
 import leo.native
 import leo.numberName
 import leo.primitive
@@ -33,5 +34,7 @@ val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =
 val nativeNumberType: Type get() = type(nativeNumberTypeLine)
 val nativeTextType: Type get() = type(nativeTextTypeLine)
 
-val nativeNumberTypeLine: TypeLine get() = numberName lineTo type(line(atom(primitive(native(script("double"))))))
-val nativeTextTypeLine: TypeLine get() = textName lineTo type(line(atom(primitive(native(script("string"))))))
+val nativeNumberTypeLine: TypeLine get() =
+  numberName lineTo type(line(atom(primitive(native(script(literal(Double::class.toString())))))))
+val nativeTextTypeLine: TypeLine get() =
+  textName lineTo type(line(atom(primitive(native(script(String::class.toString()))))))
