@@ -59,7 +59,9 @@ fun AppendableIndented.append(literal: Literal): AppendableIndented =
   }
 
 fun AppendableIndented.appendText(string: String): AppendableIndented =
-  append(string.literalString)
+  if (string.contains('\n')) append("text").indented { append('\n').append(string) }
+  else if (string.contains('\"')) append("text $string")
+  else append(string.literalString)
 
 fun AppendableIndented.append(number: Number): AppendableIndented =
   appendNumber(number.double)

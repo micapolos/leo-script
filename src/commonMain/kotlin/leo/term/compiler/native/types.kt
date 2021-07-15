@@ -20,7 +20,8 @@ val typesNativeEnvironment: Environment<Native> get() =
     Environment(
       { literal -> nativeEnvironment.literalFn(literal) },
       { compiled -> nativeEnvironment.resolveOrNullFn(compiled) ?: compiled.typedResolveOrNull },
-      { native -> nativeEnvironment.scriptLineFn(native) })
+      { native -> nativeEnvironment.scriptLineFn(native) },
+      nativeEnvironment.typesNativeEnvironmentFn)
   }
 
 val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =

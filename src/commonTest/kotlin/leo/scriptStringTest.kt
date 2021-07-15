@@ -81,6 +81,20 @@ class ScriptStringTest {
   }
 
   @Test
+  fun textMultiline() {
+    script(literal("foo\nbar"))
+      .string
+      .assertEqualTo("text\n  foo\n  bar\n")
+  }
+
+  @Test
+  fun textDoubleQuotes() {
+    script(literal("\"foo\""))
+      .string
+      .assertEqualTo("text \"foo\"\n")
+  }
+
+  @Test
   fun number() {
     script(literal(123))
       .string

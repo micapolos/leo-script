@@ -22,7 +22,8 @@ val schemeEnvironment: Environment<Scheme>
     Environment(
       { literal -> compiled(nativeLine(literal.scheme), literal.schemeTypeLine) },
       { compiled -> compiled.resolveOrNull?.invoke(compiled) },
-      { it.toScriptLine })
+      { it.toScriptLine },
+      { typesNativeEnvironment })
 
 val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
   when (type) {

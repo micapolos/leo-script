@@ -1,3 +1,7 @@
 compile scheme
-  "Hello, "
-  plus "world!"
+  let
+    text.exclamate
+    do
+      exclamate.text
+      plus "!"
+  "Hello, world".exclamate

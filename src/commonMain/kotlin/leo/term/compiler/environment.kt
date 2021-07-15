@@ -10,12 +10,14 @@ import leo.script
 import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledLine
 import leo.term.compiled.infix
+import leo.term.compiler.native.Native
 import leo.typeName
 
 data class Environment<V>(
   val literalFn: (Literal) -> CompiledLine<V>,
   val resolveOrNullFn: (Compiled<V>) -> Compiled<V>?,
-  val scriptLineFn: (V) -> ScriptLine)
+  val scriptLineFn: (V) -> ScriptLine,
+  val typesNativeEnvironmentFn: () -> Environment<Native>)
 
 fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
   context.module.compiled(script)
