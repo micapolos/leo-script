@@ -29,7 +29,7 @@ val literalEnvironment: Environment<Literal> get() =
     { literal -> line(literal) })
 
 fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
-  context.compiled(script)
+  context.module.compiled(script)
 
 fun <V> Environment<V>.compiledLine(literal: Literal): CompiledLine<V> =
   compiled(literalFn(literal), literal.typeLine)

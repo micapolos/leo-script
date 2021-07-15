@@ -26,7 +26,7 @@ import leo.term.compiled.switch
 import leo.type
 
 data class SwitchCompiler<V>(
-  val context: Context<V>,
+  val module: Module<V>,
   val remainingCaseStack: Stack<TypeLine>,
   val isSimple: Boolean,
   val caseStack: Stack<Compiled<V>>,
@@ -65,7 +65,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
         .rhsOrNull(doingName)
         .orIfNull { compileError(script("doing")) }
         .let { rhs ->
-          context
+          module
             .runIf(!isSimple) { bind(type(remainingCaseStackLink.head)) }
             .compiled(rhs)
             .let { caseCompiled ->
@@ -81,7 +81,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
               }
                 .let { newType ->
                   SwitchCompiler(
-                    context,
+                    module,
                     remainingCaseStackLink.tail,
                     isSimple,
                     caseStack.push(caseCompiled),

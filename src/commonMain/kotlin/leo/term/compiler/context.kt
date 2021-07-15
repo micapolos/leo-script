@@ -1,30 +1,11 @@
 package leo.term.compiler
 
-import leo.Script
-import leo.ScriptLine
 import leo.Type
-import leo.base.notNullOrError
-import leo.base.nullOf
-import leo.fieldOrNull
 import leo.fold
-import leo.lineStack
-import leo.matchPrefix
 import leo.name
 import leo.named.compiler.compileStructure
-import leo.onlyLineOrNull
-import leo.recursiveName
 import leo.reverse
-import leo.term.compiled.Body
 import leo.term.compiled.Compiled
-import leo.term.compiled.CompiledSelect
-import leo.term.compiled.body
-import leo.term.compiled.compiled
-import leo.term.compiled.compiledSelect
-import leo.term.compiled.recursive
-import leo.term.compiled.tupleOnlyLineOrNull
-import leo.term.typed.TypedSelection
-import leo.term.typed.noSelection
-import leo.term.typed.yesSelection
 import leo.type
 
 data class Context<V>(
@@ -35,16 +16,6 @@ data class Context<V>(
 val <V> Environment<V>.context
   get() =
     Context(this, scope())
-
-fun <V> Context<V>.compiled(script: Script): Compiled<V> =
-  null
-    ?: compiledSelectOrNull(script)?.compiled
-    ?: local.compiler.plus(script).completeCompiled
-
-fun <V> Context<V>.body(script: Script): Body<V> =
-  script.matchPrefix(recursiveName) { recursiveScript ->
-    recursive(body(recursiveScript))
-  }?: body(compiled(script))
 
 fun <V> Context<V>.plus(binding: Binding): Context<V> =
   copy(scope = scope.plus(binding))
@@ -61,21 +32,3 @@ fun <V> Context<V>.resolve(compiled: Compiled<V>): Compiled<V> =
     ?: environment.resolveOrNullFn(compiled)
     ?: compiled.resolvedOrNull
     ?: compiled
-
-fun <V> Context<V>.type(script: Script): Type =
-  script.type // TODO: Resolve
-
-fun <V> Context<V>.typedSelection(scriptLine: ScriptLine): TypedSelection<V> =
-  scriptLine.fieldOrNull.notNullOrError("$scriptLine.conditional").let { field ->
-    field.name.selectBoolean.let { boolean ->
-      if (boolean) yesSelection(compiled(field.rhs).tupleOnlyLineOrNull.notNullOrError("dupa i już"))
-      else noSelection(type(field.rhs).onlyLineOrNull.notNullOrError("dupa kabana"))
-    }
-  }
-
-fun <V> Context<V>.compiledSelectOrNull(script: Script): CompiledSelect<V>? =
-  nullOf<SelectCompiler<V>>().fold(script.lineStack.reverse) { scriptLine ->
-    null
-      ?: this?.plus(scriptLine)
-      ?: SelectCompiler(this@compiledSelectOrNull, compiledSelect()).plusOrNull(scriptLine)
-  }?.compiledSelect

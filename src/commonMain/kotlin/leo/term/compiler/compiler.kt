@@ -81,7 +81,7 @@ fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
   if (field.rhs.isEmpty) set(compiled()).plus(field.name lineTo compiled)
-  else plus(field.name lineTo context.compiled(field.rhs))
+  else plus(field.name lineTo local.module.compiled(field.rhs))
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
@@ -98,7 +98,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   }
 
 fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
-  as_(context.type(script))
+  as_(local.module.type(script))
 
 fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
   set(compiled.as_(type))
@@ -128,8 +128,8 @@ fun <V> Compiler<V>.debug(script: Script): Compiler<V> =
 fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
-      doingName -> context.type(lhs).let { type ->
-        context.bind(type).compiled(rhs).let { compiled ->
+      doingName -> local.module.type(lhs).let { type ->
+        local.module.bind(type).compiled(rhs).let { compiled ->
           plus(fnLine(type, compiled))
         }
       }
@@ -144,19 +144,19 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
-  do_(body(context.bind(compiled.type).compiled(script)))
+  do_(body(local.module.bind(compiled.type).compiled(script)))
 
 fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
   set(compiled.do_(body))
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
-    context.type(lhs).let { type ->
+    local.module.type(lhs).let { type ->
       when (name) {
         doingName ->
           set(
             compiled
-              .do_(body(context.bind(compiled.type).compiled(rhs)))
+              .do_(body(local.module.bind(compiled.type).compiled(rhs)))
               .as_(type))
         repeatingName -> TODO()
 //          set(
@@ -179,7 +179,7 @@ fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->
     set(
       SwitchCompiler(
-        context,
+        local.module,
         choice.lineStack.reverse,
         choice.isSimple,
         stack(),

@@ -62,14 +62,14 @@ fun <V> Local<V>.seal(compiled: Compiled<V>): Compiled<V> =
 
 fun <V> Local<V>.plusLet(script: Script): Local<V> =
   script.matchInfix(doName) { lhs, rhs ->
-    context.type(lhs).let { type ->
-      context.bind(type).compiled(rhs).let { bodyCompiled ->
+    module.type(lhs).let { type ->
+      module.bind(type).compiled(rhs).let { bodyCompiled ->
         this
           .plus(binding(type functionTo bodyCompiled.type))
           .plus(fn(type, bodyCompiled))
           .run {
             lhs.matchPrefix(anyName) {
-              context.type(lhs).let { type ->
+              module.type(lhs).let { type ->
                 plusCast(type)
               }
             }?: this

@@ -17,7 +17,7 @@ import leo.term.compiled.onlyCompiledLineOrNull
 import leo.term.compiled.pick
 
 data class SelectCompiler<V>(
-  val context: Context<V>,
+  val module: Module<V>,
   val compiledSelect: CompiledSelect<V>)
 
 fun <V> SelectCompiler<V>.plus(scriptLine: ScriptLine): SelectCompiler<V> =
@@ -36,12 +36,12 @@ fun <V> SelectCompiler<V>.plusOrNull(scriptField: ScriptField): SelectCompiler<V
   }
 
 fun <V> SelectCompiler<V>.pick(script: Script): SelectCompiler<V> =
-  context.compiled(script).onlyCompiledLineOrNull
+  module.compiled(script).onlyCompiledLineOrNull
     ?.let { pick(it) }
     ?: compileError(script(pickName lineTo script))
 
 fun <V> SelectCompiler<V>.drop(script: Script): SelectCompiler<V> =
-  context.type(script).onlyLineOrNull
+  module.type(script).onlyLineOrNull
     ?.let { drop(it) }
     ?: compileError(script(dropName lineTo script))
 

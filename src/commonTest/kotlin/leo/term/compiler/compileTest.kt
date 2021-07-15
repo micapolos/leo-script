@@ -329,7 +329,7 @@ class CompileTest {
           .compiled(nativeEnvironment)
           .do_(
             body(
-              nativeEnvironment.context
+              nativeEnvironment.context.module
                 .bind(type(numberTypeLine))
                 .compiled(script("ok" lineTo script(numberName))))))
   }
