@@ -4,7 +4,6 @@ import leo.Literal
 import leo.Script
 import leo.ScriptLine
 import leo.isEmpty
-import leo.line
 import leo.lineTo
 import leo.plus
 import leo.script
@@ -13,7 +12,6 @@ import leo.term.compiled.CompiledLine
 import leo.term.compiled.Line
 import leo.term.compiled.compiled
 import leo.term.compiled.infix
-import leo.term.compiled.nativeLine
 import leo.typeLine
 import leo.typeName
 
@@ -21,12 +19,6 @@ data class Environment<V>(
   val literalFn: (Literal) -> Line<V>,
   val resolveOrNullFn: (Compiled<V>) -> Compiled<V>?,
   val scriptLineFn: (V) -> ScriptLine)
-
-val literalEnvironment: Environment<Literal> get() =
-  Environment(
-    { literal -> nativeLine(literal) },
-    { compiled -> null },
-    { literal -> line(literal) })
 
 fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
   context.module.compiled(script)

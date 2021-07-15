@@ -77,7 +77,7 @@ fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
 fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
 
-fun Int.scheme(scope: Scope): Scheme =
+fun Int.scheme(@Suppress("UNUSED_PARAMETER") scope: Scope): Scheme =
   scheme(this)
 
 fun ExpressionConditional<Scheme>.scheme(scope: Scope): Scheme =

@@ -251,7 +251,7 @@ fun Header.plusTokensPrefixOrNull(char: Char): TokensPrefix? =
   null
     ?: plusOrNull(char)?.let { prefix(tokens(), line(it)) }
     ?: char.atomPrefixOrNull?.let { atomPrefix ->
-      suffix.tokens.reverse.tokenStack.linkOrNull.let { tokenStackLinkOrNull ->
+      suffix.tokens.reverse.tokenStack.linkOrNull.let { /* unused??? */
         prefix(
           suffix.tokens,
           line(body(prefix.indent, spaceable(atomPrefix)))

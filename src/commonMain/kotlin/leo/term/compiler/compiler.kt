@@ -10,10 +10,12 @@ import leo.Type
 import leo.asName
 import leo.base.fold
 import leo.base.reverse
+import leo.commentName
 import leo.compileName
 import leo.debugName
 import leo.doName
 import leo.doingName
+import leo.exampleName
 import leo.functionName
 import leo.giveName
 import leo.isEmpty
@@ -87,15 +89,17 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     asName -> as_(field.rhs)
+    commentName -> comment(field.rhs)
     compileName -> compile(field.rhs)
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
+    exampleName -> example(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
+    quoteName -> quote(field.rhs)
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
-    quoteName -> quote(field.rhs)
     else -> null
   }
 
@@ -104,6 +108,9 @@ fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
   set(compiled.as_(type))
+
+fun <V> Compiler<V>.comment(@Suppress("UNUSED_PARAMETER") script: Script): Compiler<V> =
+  this
 
 fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(
@@ -126,7 +133,7 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
 fun <V> Compiler<V>.types(script: Script): Compiler<V> =
   set(local.updateTypeLocal { it.compiler.plus(script).local })
 
-fun <V> Compiler<V>.debug(script: Script): Compiler<V> =
+fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("debug" lineTo script()))
   else set(environment.staticCompiled(script("debug" lineTo script(toScriptLine))))
 
@@ -153,6 +160,9 @@ fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
   set(compiled.do_(body))
+
+fun <V> Compiler<V>.example(script: Script): Compiler<V> =
+  local.module.compiled(script).let { this }
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->

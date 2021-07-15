@@ -48,7 +48,7 @@ fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
 fun <V> Tuple<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("tuple" lineTo lineStack.map { toScriptLine(fn) }.script)
 
-fun <V> IndexVariable.toScript(fn: (V) -> ScriptLine): Script =
+fun <V> IndexVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
   script("variable" lineTo script(literal(index)))
 
 fun <V> Line<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
