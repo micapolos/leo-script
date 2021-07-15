@@ -62,6 +62,6 @@ val Literal.scheme: Scheme get() =
 val Literal.schemeTypeLine: TypeLine
   get() =
     when (this) {
-      is NumberLiteral -> numberName lineTo type(line(atom(primitive(native(script("flonum"))))))
+      is NumberLiteral -> numberName lineTo type(line(atom(primitive(native(script("number"))))))
       is StringLiteral -> textName lineTo type(line(atom(primitive(native(script("string"))))))
     }
