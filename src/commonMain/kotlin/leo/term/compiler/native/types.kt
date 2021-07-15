@@ -33,5 +33,5 @@ val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =
 val nativeNumberType: Type get() = type(nativeNumberTypeLine)
 val nativeTextType: Type get() = type(nativeTextTypeLine)
 
-val nativeNumberTypeLine: TypeLine get() = numberName lineTo type(line(atom(primitive(any("double", script())))))
-val nativeTextTypeLine: TypeLine get() = textName lineTo type(line(atom(primitive(any("string", script())))))
+val nativeNumberTypeLine: TypeLine get() = numberName lineTo type(line(atom(primitive(any(script("double"))))))
+val nativeTextTypeLine: TypeLine get() = textName lineTo type(line(atom(primitive(any(script("string"))))))

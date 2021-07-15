@@ -82,10 +82,8 @@ val ScriptLine.typePrimitive: TypePrimitive
 
 val ScriptLine.typeAnyOrNull: TypeAny?
   get() =
-    match(anyName) { nativeScript ->
-      nativeScript.matchPrefix { name, script ->
-        any(name, script)
-      }
+    match(anyName) { script ->
+      any(script)
     }
 
 val ScriptLine.typeField: TypeField

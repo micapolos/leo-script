@@ -84,4 +84,4 @@ val String.isTypeKeyword: Boolean
     }
 
 val TypeAny.scriptLine: ScriptLine get() =
-  anyName lineTo script(name lineTo script)
+  anyName lineTo script

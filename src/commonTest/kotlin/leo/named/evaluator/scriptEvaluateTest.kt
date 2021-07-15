@@ -8,18 +8,14 @@ import leo.beName
 import leo.bindName
 import leo.doName
 import leo.doingName
-import leo.eitherName
 import leo.functionName
 import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
-import leo.numberName
-import leo.ofName
 import leo.privateName
 import leo.quoteName
 import leo.script
-import leo.selectName
 import leo.takeName
 import leo.takingName
 import leo.typeName
@@ -221,49 +217,6 @@ class ScriptEvaluateTest {
           "y" lineTo script()
         )
       )
-  }
-
-  @Test
-  fun select() {
-    script(
-      "color" lineTo script(
-        "red" lineTo script(literal(10)),
-        ofName lineTo script(
-          eitherName lineTo script("red" lineTo script(anyNumberScriptLine)),
-          eitherName lineTo script("blue" lineTo script(anyNumberScriptLine)))),
-      selectName lineTo script(
-        "red" lineTo script(
-          "red" lineTo script(),
-          numberName lineTo script()
-        ),
-        "blue" lineTo script(
-          "blue" lineTo script(),
-          numberName lineTo script()
-        )
-      )
-    )
-      .evaluate
-      .assertEqualTo(script(literal(10)))
-
-    script(
-      "color" lineTo script(
-        "blue" lineTo script(literal(20)),
-        ofName lineTo script(
-          eitherName lineTo script("red" lineTo script(anyNumberScriptLine)),
-          eitherName lineTo script("blue" lineTo script(anyNumberScriptLine)))),
-      selectName lineTo script(
-        "red" lineTo script(
-          "red" lineTo script(),
-          numberName lineTo script()
-        ),
-        "blue" lineTo script(
-          "blue" lineTo script(),
-          numberName lineTo script()
-        )
-      )
-    )
-      .evaluate
-      .assertEqualTo(script(literal(20)))
   }
 
   @Test

@@ -59,8 +59,8 @@ val Typed<ValueLine, TypePrimitive>.primitiveScriptLine: ScriptLine
 val Typed<Any?, TypeAny>.anyScriptLine: ScriptLine
   get() =
     when (t) {
-      any(numberName) -> line(literal((v as Double)))
-      any(textName) -> line(literal((v as String)))
+      any(script(numberName)) -> line(literal((v as Double)))
+      any(script(textName)) -> line(literal((v as String)))
       else -> nativeName lineTo script(literal("$v"))
     }
 
