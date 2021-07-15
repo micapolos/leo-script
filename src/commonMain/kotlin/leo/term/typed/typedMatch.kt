@@ -2,7 +2,7 @@ package leo.term.typed
 
 import leo.base.ifOrNull
 import leo.isEmpty
-import leo.name
+import leo.nameOrNull
 
 fun <V, R : Any> TypedTerm<V>.empty(fn: () -> R?): R? =
   ifOrNull(t.isEmpty) { fn() }
@@ -10,7 +10,9 @@ fun <V, R : Any> TypedTerm<V>.empty(fn: () -> R?): R? =
 fun <V, R : Any> TypedTerm<V>.infix(fn: (TypedTerm<V>, String, TypedTerm<V>) -> R?): R? =
   pairOrNull?.let { (term, line) ->
     line.rhsOrNull?.let { rhs ->
-      fn(term, line.t.name, rhs)
+      line.t.nameOrNull?.let { name ->
+        fn(term, name, rhs)
+      }
     }
   }
 

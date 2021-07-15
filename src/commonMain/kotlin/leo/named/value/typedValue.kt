@@ -10,7 +10,7 @@ import leo.TypeLine
 import leo.TypeStructure
 import leo.first
 import leo.map
-import leo.name
+import leo.nameOrNull
 import leo.named.typed.Typed
 import leo.onlyOrNull
 import leo.onlyStack
@@ -26,7 +26,7 @@ val Typed<Value, Type>.lineStack: Stack<Typed<ValueLine, TypeLine>>
 val Typed<Value, TypeChoice>.choiceLineStack: Stack<Typed<ValueLine, TypeLine>>
   get() =
     v.lineStack.onlyOrNull!!.let { line ->
-      Typed(line, t.lineStack.first { it.name == line.name }!!).onlyStack
+      Typed(line, t.lineStack.first { it.nameOrNull == line.name }!!).onlyStack
     }
 
 val Typed<Value, TypeStructure>.structureLineStack: Stack<Typed<ValueLine, TypeLine>>

@@ -28,7 +28,7 @@ import leo.isEmpty
 import leo.isStatic
 import leo.lineTo
 import leo.linkOrNull
-import leo.name
+import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.plus
 import leo.script
@@ -202,7 +202,7 @@ fun <V> TypedTerm<V>.indirectLineSeq(name: String): Seq<TypedLine<V>> =
   lineSeq.filterMap { indirectOrNull(name)?.the }
 
 fun <V> TypedLine<V>.orNull(name: String): TypedLine<V>? =
-  notNullIf(t.name == name) { this }
+  notNullIf(t.nameOrNull == name) { this }
 
 fun <V> TypedTerm<V>.indirectLineOrNull(name: String): TypedLine<V>? =
   indirectLineSeq(name).onlyOrNull

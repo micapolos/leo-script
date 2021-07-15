@@ -1,21 +1,21 @@
 package leo
 
-val TypeLine.nameRecursion: TypeRecursion<String>
+val TypeLine.nameOrNullRecursion: TypeRecursion<String?>
   get() =
-    atomRecursion.map { it.name }
+    atomRecursion.map { it.nameOrNull }
 
-val TypeLine.name: String
+val TypeLine.nameOrNull: String?
   get() =
-    nameRecursion.get(null)
+    nameOrNullRecursion.get(null)
 
-val TypeAtom.name: String
+val TypeAtom.nameOrNull: String?
   get() =
     when (this) {
       is FunctionTypeAtom -> functionName
-      is PrimitiveTypeAtom -> primitive.name
+      is PrimitiveTypeAtom -> primitive.nameOrNull
     }
 
-val TypePrimitive.name: String
+val TypePrimitive.nameOrNull: String?
   get() =
     when (this) {
       is FieldTypePrimitive -> field.name

@@ -15,12 +15,13 @@ import leo.fold
 import leo.lineStack
 import leo.lineTo
 import leo.linkOrNull
-import leo.name
+import leo.nameOrNull
 import leo.plus
 import leo.push
 import leo.reverse
 import leo.rhsOrNull
 import leo.script
+import leo.scriptLine
 import leo.term.compiled.Compiled
 import leo.term.compiled.switch
 import leo.type
@@ -52,7 +53,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
               "case" lineTo script(
                 "not" lineTo script(
                   "expected" lineTo script(field))))))
-      else if (remainingCaseStackLink.head.name != field.name)
+      else if (remainingCaseStackLink.head.nameOrNull != field.name)
         compileError(
           script(
             "switch" lineTo script(
@@ -60,7 +61,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
                 field.name lineTo script(),
                 "is" lineTo script(
                   "not" lineTo script(
-                    remainingCaseStackLink.head.name))))))
+                    remainingCaseStackLink.head.nameOrNull!!))))))
       else field.rhs
         .rhsOrNull(doingName)
         .orIfNull { compileError(script("doing")) }
@@ -101,7 +102,7 @@ fun <V> SwitchCompiler<V>.compiled(inputTerm: Compiled<V>): Compiled<V> =
             "switch" lineTo script(
               "case" lineTo script(
                 "expected" lineTo script(
-                  link.head.name)))))
+                  link.head.scriptLine)))))
       else
         inputTerm.switch(caseStack, typeOrNull)
     }

@@ -11,12 +11,12 @@ import leo.base.the
 import leo.fieldOrNull
 import leo.getFromBottom
 import leo.lineSeq
-import leo.name
+import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.structureOrNull
 
 fun Type.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
-  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.name != name)?.the }?.onlyOrNull
+  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull
 
 val Type.contentOrNull: Type? get() =
   structureOrNull?.onlyLineOrNull?.atom?.fieldOrNull?.rhsType

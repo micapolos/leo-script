@@ -9,7 +9,7 @@ import leo.base.orNullIf
 import leo.givenName
 import leo.line
 import leo.lineTo
-import leo.name
+import leo.nameOrNull
 import leo.type
 
 data class Definition(val type: Type, val binding: Binding) {
@@ -21,7 +21,7 @@ fun definition(type: Type, binding: Binding) =
 
 val TypeLine.bindDefinition: Definition
   get() =
-    definition(type(name), constantBinding(type(this)))
+    definition(type(nameOrNull!!), constantBinding(type(this)))
 
 fun Definition.bindingOrNull(type: Type): Binding? =
   binding.orNullIf(this.type != type)

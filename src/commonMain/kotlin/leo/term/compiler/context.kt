@@ -1,8 +1,9 @@
 package leo.term.compiler
 
 import leo.Type
+import leo.base.ifNotNull
 import leo.fold
-import leo.name
+import leo.nameOrNull
 import leo.named.compiler.compileStructure
 import leo.reverse
 import leo.term.compiled.Compiled
@@ -22,7 +23,9 @@ fun <V> Context<V>.plus(binding: Binding): Context<V> =
 
 fun <V> Context<V>.bind(type: Type): Context<V> =
   fold(type.compileStructure.lineStack.reverse) { typeLine ->
-    plus(binding(constant(type(typeLine.name), type(typeLine))))
+    ifNotNull(typeLine.nameOrNull) { name ->
+      plus(binding(constant(type(name), type(typeLine))))
+    }
   }
 
 fun <V> Context<V>.resolve(compiled: Compiled<V>): Compiled<V> =

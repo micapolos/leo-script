@@ -15,7 +15,7 @@ import leo.functionLineTo
 import leo.line
 import leo.lineTo
 import leo.map
-import leo.name
+import leo.nameOrNull
 import leo.named.compiler.check
 import leo.named.compiler.checkType
 import leo.named.compiler.compileDoing
@@ -111,7 +111,7 @@ fun TypedExpression.select(casesStack: Stack<TypedCase>): TypedExpression =
       let { (first, second) ->
         if (first == null) error("exhausted")
         else if (second == null) error("not exhaustive")
-        else if (first.name != second.case.name) error("case mismatch")
+        else if (first.nameOrNull != second.case.name) error("case mismatch")
         else true
       }
     }
