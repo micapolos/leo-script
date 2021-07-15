@@ -424,4 +424,33 @@ class CompileTest {
         .compiled(nativeEnvironment)
     }
   }
+
+  @Test
+  fun do_() {
+    script(
+      "point" lineTo script(
+        "x" lineTo script(literal(10)),
+        "y" lineTo script(literal(20))),
+      doName lineTo script("point", "y", "number"))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled(
+          "point" lineTo compiled(
+            "x" lineTo nativeNumberCompiled(10.0.native),
+            "y" lineTo nativeNumberCompiled(20.0.native)))
+          .apply(
+            fn(
+              type(
+                "point" lineTo type(
+                  "x" lineTo numberType,
+                  "y" lineTo numberType)),
+              compiled(
+                expression<Native>(variable(0)),
+                type(
+                  "point" lineTo type(
+                    "x" lineTo numberType,
+                    "y" lineTo numberType)))
+                  .get(1)
+                  .get(0))))
+  }
 }

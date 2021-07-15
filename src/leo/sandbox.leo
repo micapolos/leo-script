@@ -1,5 +1,4 @@
-compile scheme
-  point
-    x 10
-    y 20
-  y.number
+point
+  x 10
+  y 20
+do point.y.number

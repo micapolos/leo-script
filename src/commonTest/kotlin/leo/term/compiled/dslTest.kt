@@ -158,7 +158,7 @@ class DslTest {
 
     compiled
       .compiledTupleOrNull
-      .assertEqualTo(compiledTuple(compiled("tuple" lineTo compiled).getLineOrNull(0)!!))
+      .assertEqualTo(compiledTuple(compiled("tuple" lineTo compiled).getLine(0)))
   }
 
   @Test

@@ -133,6 +133,12 @@ fun <V> Compiled<V>.getOrNull(name: String): Compiled<V>? =
 fun <V> Compiled<V>.get(name: String): Compiled<V> =
   getOrNull(name)?:compileError(script("get"))
 
+fun <V> Compiled<V>.get(index: Int): Compiled<V> =
+  compiled(getLine(index))
+
+fun <V> Compiled<V>.getLine(index: Int): CompiledLine<V> =
+  getLineOrNull(index) ?: compileError(script("get" lineTo script("line")))
+
 fun <V> Compiled<V>.getLineOrNull(index: Int): CompiledLine<V>? =
   type.getLineOrNull(index)?.let { compiled(line(get(this, index)), it) }
 

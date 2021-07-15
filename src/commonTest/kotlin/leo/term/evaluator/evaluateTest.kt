@@ -3,6 +3,7 @@ package leo.term.evaluator
 import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.base.assertEqualTo
+import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.eitherName
@@ -118,5 +119,16 @@ class EvaluateTest {
       plusName lineTo script(literal(20)))
       .evaluate
       .assertEqualTo(script(literal(30)))
+  }
+
+  @Test
+  fun do_() {
+    script(
+      "point" lineTo script(
+        "x" lineTo script(literal(10)),
+        "y" lineTo script(literal(20))),
+      doName lineTo script("point", "y", "number"))
+      .evaluate
+      .assertEqualTo(script(literal(20)))
   }
 }
