@@ -88,13 +88,13 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     asName -> as_(field.rhs)
     compileName -> compile(field.rhs)
-    typesName -> types(field.rhs)
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
     switchName -> switch(field.rhs)
+    typesName -> types(field.rhs)
     quoteName -> quote(field.rhs)
     else -> null
   }
