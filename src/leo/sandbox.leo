@@ -1,4 +1,7 @@
-point
-  x 10
-  y 20
+function
+  x number
+  y number
+  doing
+    x.number
+    plus y.number
 type
