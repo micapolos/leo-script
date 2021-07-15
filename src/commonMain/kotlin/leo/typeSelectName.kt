@@ -19,5 +19,5 @@ val TypePrimitive.nameOrNull: String?
   get() =
     when (this) {
       is FieldTypePrimitive -> field.name
-      is AnyTypePrimitive -> null
+      is NativeTypePrimitive -> null
     }

@@ -46,7 +46,7 @@ fun TypeFunction.updateLine(fn: (TypeLine) -> TypeLine): TypeFunction =
 fun TypePrimitive.updateLine(fn: (TypeLine) -> TypeLine): TypePrimitive =
   when (this) {
     is FieldTypePrimitive -> field.updateLine(fn).primitive
-    is AnyTypePrimitive -> this
+    is NativeTypePrimitive -> this
   }
 
 fun TypeField.updateLine(fn: (TypeLine) -> TypeLine): TypeField =

@@ -4,12 +4,12 @@ import leo.Literal
 import leo.NumberLiteral
 import leo.StringLiteral
 import leo.TypeLine
-import leo.any
 import leo.atom
 import leo.functionLineTo
 import leo.isType
 import leo.line
 import leo.lineTo
+import leo.native
 import leo.numberName
 import leo.numberType
 import leo.numberTypeLine
@@ -62,6 +62,6 @@ val Literal.scheme: Scheme get() =
 val Literal.schemeTypeLine: TypeLine
   get() =
     when (this) {
-      is NumberLiteral -> numberName lineTo type(line(atom(primitive(any(script("flonum"))))))
-      is StringLiteral -> textName lineTo type(line(atom(primitive(any(script("string"))))))
+      is NumberLiteral -> numberName lineTo type(line(atom(primitive(native(script("flonum"))))))
+      is StringLiteral -> textName lineTo type(line(atom(primitive(native(script("string"))))))
     }

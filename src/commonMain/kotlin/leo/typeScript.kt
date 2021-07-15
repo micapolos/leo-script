@@ -48,7 +48,7 @@ val TypePrimitive.scriptLine: ScriptLine
   get() =
     when (this) {
       is FieldTypePrimitive -> field.scriptLine
-      is AnyTypePrimitive -> any.scriptLine
+      is NativeTypePrimitive -> native_.scriptLine
     }
 
 val TypeField.scriptLine: ScriptLine
@@ -83,5 +83,5 @@ val String.isTypeKeyword: Boolean
       else -> false
     }
 
-val TypeAny.scriptLine: ScriptLine get() =
-  anyName lineTo script
+val TypeNative.scriptLine: ScriptLine get() =
+  nativeName lineTo script

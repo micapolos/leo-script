@@ -1,6 +1,5 @@
 package leo.term.indexed.native
 
-import leo.anyNumberScriptLine
 import leo.base.assertEqualTo
 import leo.choice
 import leo.doingName
@@ -11,12 +10,14 @@ import leo.lineTo
 import leo.literal
 import leo.nativeName
 import leo.numberType
-import leo.numberTypeLine
 import leo.script
+import leo.scriptLine
 import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.StringPlusStringNative
 import leo.term.compiler.native.native
+import leo.term.compiler.native.nativeNumberType
+import leo.term.compiler.native.nativeNumberTypeLine
 import leo.term.indexed.nativeValue
 import leo.term.indexed.value
 import leo.textType
@@ -92,14 +93,14 @@ class ValueScriptTest {
     nativeValue(DoublePlusDoubleNative)
       .script(
         functionType(
-          type(numberTypeLine, "plus" lineTo numberType),
-          numberType))
+          type(nativeNumberTypeLine, "plus" lineTo nativeNumberType),
+          nativeNumberType))
       .assertEqualTo(
         script(
           functionName lineTo script(
-            anyNumberScriptLine,
-            "plus" lineTo script(anyNumberScriptLine),
-            doingName lineTo script(anyNumberScriptLine))))
+            nativeNumberTypeLine.scriptLine,
+            "plus" lineTo nativeNumberType.script,
+            doingName lineTo nativeNumberType.script)))
   }
 
   @Test

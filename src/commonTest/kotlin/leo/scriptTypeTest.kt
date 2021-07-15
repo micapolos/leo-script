@@ -1,15 +1,16 @@
 package leo.type.compiler
 
-import leo.anyNumberScriptLine
-import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.choice
 import leo.eitherName
 import leo.lineTo
-import leo.numberTypeLine
 import leo.orName
 import leo.script
-import leo.textTypeLine
+import leo.scriptLine
+import leo.term.compiler.native.nativeNumberType
+import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextType
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.type
 import kotlin.test.Test
 import kotlin.test.assertFails
@@ -60,22 +61,21 @@ class ScriptTest {
   @Test
   fun literal() {
     script(
-      anyTextScriptLine,
-      anyNumberScriptLine
-    )
+      nativeNumberTypeLine.scriptLine,
+      nativeTextTypeLine.scriptLine)
       .type
-      .assertEqualTo(type(textTypeLine, numberTypeLine))
+      .assertEqualTo(type(nativeNumberTypeLine, nativeTextTypeLine))
   }
 
   @Test
   fun choice() {
     script(
-      eitherName lineTo script(anyTextScriptLine),
-      eitherName lineTo script(anyNumberScriptLine),
+      eitherName lineTo nativeTextType.script,
+      eitherName lineTo nativeNumberType.script,
       eitherName lineTo script("foo" lineTo script()))
       .type
       .assertEqualTo(
-        type(choice(textTypeLine, numberTypeLine, "foo" lineTo type()))
+        type(choice(nativeTextTypeLine, nativeNumberTypeLine, "foo" lineTo type()))
       )
   }
 

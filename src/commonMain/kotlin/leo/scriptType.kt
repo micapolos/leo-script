@@ -77,13 +77,13 @@ val ScriptLine.typeFunctionOrNull: TypeFunction?
 val ScriptLine.typePrimitive: TypePrimitive
   get() =
     null
-      ?: typeAnyOrNull?.primitive
+      ?: typeNativeOrNull?.primitive
       ?: typeField.primitive
 
-val ScriptLine.typeAnyOrNull: TypeAny?
+val ScriptLine.typeNativeOrNull: TypeNative?
   get() =
-    match(anyName) { script ->
-      any(script)
+    match(nativeName) { script ->
+      native(script)
     }
 
 val ScriptLine.typeField: TypeField

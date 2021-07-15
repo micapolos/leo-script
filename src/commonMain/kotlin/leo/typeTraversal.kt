@@ -40,7 +40,7 @@ val TypePrimitive.shiftRecursion: TypePrimitive
   get() =
     when (this) {
       is FieldTypePrimitive -> field.shiftRecursion.primitive
-      is AnyTypePrimitive -> this
+      is NativeTypePrimitive -> this
     }
 
 val TypeField.shiftRecursion: TypeField
@@ -106,7 +106,7 @@ val TypePrimitive.unshiftRecursion: TypePrimitive?
   get() =
     when (this) {
       is FieldTypePrimitive -> field.unshiftRecursion?.primitive
-      is AnyTypePrimitive -> null
+      is NativeTypePrimitive -> null
     }
 
 val TypeField.unshiftRecursion: TypeField?
@@ -195,7 +195,7 @@ fun TypeAtom.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeA
 fun TypePrimitive.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypePrimitive? =
   when (this) {
     is FieldTypePrimitive -> field.replaceNonRecursiveOrNull(line, newLine)?.primitive
-    is AnyTypePrimitive -> null
+    is NativeTypePrimitive -> null
   }
 
 fun TypeField.replaceNonRecursiveOrNull(line: TypeLine, newLine: TypeLine): TypeField? =

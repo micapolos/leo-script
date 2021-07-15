@@ -8,16 +8,16 @@ class TypeScriptTest {
   fun structure() {
     type(
       "point" lineTo type(
-        "x" lineTo type(numberTypeLine),
-        "y" lineTo type(numberTypeLine)
+        "x" lineTo numberType,
+        "y" lineTo numberType
       )
     )
       .script
       .assertEqualTo(
         script(
           "point" lineTo script(
-            "x" lineTo script(anyNumberScriptLine),
-            "y" lineTo script(anyNumberScriptLine)
+            "x" lineTo numberType.script,
+            "y" lineTo numberType.script
           )
         )
       )
@@ -66,6 +66,6 @@ class TypeScriptTest {
               eitherName lineTo script("empty"),
               eitherName lineTo script("link" lineTo script(
                 recurseName lineTo script(),
-                anyNumberScriptLine))))))
+                numberTypeLine.scriptLine))))))
   }
 }

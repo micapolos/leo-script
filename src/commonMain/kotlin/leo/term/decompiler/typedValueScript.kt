@@ -1,23 +1,22 @@
 package leo.term.decompiler
 
-import leo.AnyTypePrimitive
 import leo.ChoiceType
 import leo.FieldTypePrimitive
 import leo.FunctionTypeAtom
+import leo.NativeTypePrimitive
 import leo.PrimitiveTypeAtom
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.StructureType
-import leo.TypeAny
 import leo.TypeAtom
 import leo.TypeChoice
 import leo.TypeField
 import leo.TypeFunction
 import leo.TypeLine
+import leo.TypeNative
 import leo.TypePrimitive
 import leo.TypeStructure
-import leo.any
 import leo.atom
 import leo.base.Conditional
 import leo.base.stak.top
@@ -29,6 +28,7 @@ import leo.line
 import leo.lineTo
 import leo.linkOrNull
 import leo.literal
+import leo.native
 import leo.nativeName
 import leo.numberName
 import leo.plus
@@ -112,14 +112,14 @@ val Typed<Value<Native>, TypePrimitive>.primitiveScriptLine: ScriptLine
   get() =
     when (t) {
       is FieldTypePrimitive -> line(typed(v, t.field).scriptField)
-      is AnyTypePrimitive -> typed(v, t.any).literalScriptLine
+      is NativeTypePrimitive -> typed(v, t.native_).literalScriptLine
     }
 
-val Typed<Value<Native>, TypeAny>.literalScriptLine: ScriptLine
+val Typed<Value<Native>, TypeNative>.literalScriptLine: ScriptLine
   get() =
     when (t) {
-      any(script(numberName)) -> line(literal(v.native.double))
-      any(script(textName)) -> line(literal(v.native.string))
+      native(script(numberName)) -> line(literal(v.native.double))
+      native(script(textName)) -> line(literal(v.native.string))
       else -> nativeName lineTo script(literal("${v.native}"))
     }
 

@@ -1,7 +1,5 @@
 package leo.named.evaluator
 
-import leo.anyNumberScriptLine
-import leo.anyTextScriptLine
 import leo.base.assertEqualTo
 import leo.base.assertSameAfter
 import leo.beName
@@ -13,11 +11,13 @@ import leo.giveName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.numberType
 import leo.privateName
 import leo.quoteName
 import leo.script
 import leo.takeName
 import leo.takingName
+import leo.textType
 import leo.typeName
 import leo.withName
 import kotlin.test.Test
@@ -138,8 +138,8 @@ class ScriptEvaluateTest {
       .evaluate
       .assertEqualTo(
         script(
-          "name" lineTo script(anyTextScriptLine),
-          "age" lineTo script(anyNumberScriptLine)
+          "name" lineTo textType.script,
+          "age" lineTo numberType.script
         )
       )
   }

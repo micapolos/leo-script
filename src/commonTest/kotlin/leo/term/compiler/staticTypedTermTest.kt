@@ -1,16 +1,14 @@
 package leo.term.compiler
 
-import leo.anyName
 import leo.base.assertEqualTo
 import leo.lineTo
-import leo.numberName
-import leo.numberTypeLine
 import leo.script
 import leo.term.compiled.compiled
 import leo.term.compiled.lineTo
-import leo.term.compiled.nativeLine
+import leo.term.compiled.nativeNumberCompiled
 import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeEnvironment
+import leo.term.compiler.native.nativeNumberType
 import kotlin.test.Test
 
 class StaticTypedTermTest {
@@ -38,18 +36,12 @@ class StaticTypedTermTest {
       .resolveType(
         compiled(
           "point" lineTo compiled(
-            "x" lineTo compiled(compiled(nativeLine(10.0.native), numberTypeLine)),
-            "y" lineTo compiled(compiled(nativeLine(20.0.native), numberTypeLine))
-          )
-        )
-      )
+            "x" lineTo nativeNumberCompiled(10.0.native),
+            "y" lineTo nativeNumberCompiled(20.0.native))))
       .assertEqualTo(
         compiled(
           "point" lineTo compiled(
-            "x" lineTo compiled(anyName lineTo compiled(numberName)),
-            "y" lineTo compiled(anyName lineTo compiled(numberName))
-          )
-        )
-      )
+            "x" lineTo nativeEnvironment.staticCompiled(nativeNumberType.script),
+            "y" lineTo nativeEnvironment.staticCompiled(nativeNumberType.script))))
   }
 }

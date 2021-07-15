@@ -6,12 +6,12 @@ import leo.TypeChoice
 import leo.TypeFunction
 import leo.TypeLine
 import leo.TypeStructure
-import leo.any
 import leo.atom
 import leo.choice
 import leo.line
 import leo.lineTo
 import leo.named.value.anyScriptLine
+import leo.native
 import leo.primitive
 import leo.script
 import leo.stack
@@ -87,7 +87,7 @@ fun <V> nativeCompiled(native: V, typeLine: TypeLine): Compiled<V> = compiled(na
 fun <V> nativeCompiled(native: V): Compiled<V> = compiled(nativeCompiledLine(native))
 
 fun <V> nativeCompiledLine(native: V, typeLine: TypeLine): CompiledLine<V> = compiled(nativeLine(native), typeLine)
-fun <V> nativeCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), line(atom(primitive(any(script("native"))))))
+fun <V> nativeCompiledLine(native: V): CompiledLine<V> = compiled(nativeLine(native), line(atom(primitive(native(script("native"))))))
 
 fun <V> indexed(index: Int, line: Line<V>) = LineIndexed(index, line)
 fun <V> select(lineIndexedOrNull: LineIndexed<V>?, typeChoice: TypeChoice) = CompiledSelect(lineIndexedOrNull, typeChoice)

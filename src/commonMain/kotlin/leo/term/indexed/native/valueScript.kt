@@ -1,21 +1,21 @@
 package leo.term.indexed.native
 
-import leo.AnyTypePrimitive
 import leo.ChoiceType
 import leo.Empty
 import leo.FieldTypePrimitive
 import leo.FunctionTypeAtom
+import leo.NativeTypePrimitive
 import leo.PrimitiveTypeAtom
 import leo.Script
 import leo.ScriptLine
 import leo.StructureType
 import leo.Type
-import leo.TypeAny
 import leo.TypeAtom
 import leo.TypeChoice
 import leo.TypeField
 import leo.TypeFunction
 import leo.TypeLine
+import leo.TypeNative
 import leo.TypePrimitive
 import leo.TypeStructure
 import leo.atom
@@ -117,11 +117,11 @@ fun Value<Native>.scriptLine(typeFunction: TypeFunction): ScriptLine =
 
 fun Value<Native>.scriptLine(typePrimitive: TypePrimitive): ScriptLine =
   when (typePrimitive) {
-    is AnyTypePrimitive -> scriptLine(typePrimitive.any)
+    is NativeTypePrimitive -> scriptLine(typePrimitive.native_)
     is FieldTypePrimitive -> scriptLine(typePrimitive.field)
   }
 
-fun Value<Native>.scriptLine(@Suppress("UNUSED_PARAMETER") typeAny: TypeAny): ScriptLine =
+fun Value<Native>.scriptLine(@Suppress("UNUSED_PARAMETER") typeNative: TypeNative): ScriptLine =
   native.scriptLine
 
 fun Value<Native>.scriptLine(typeField: TypeField): ScriptLine =

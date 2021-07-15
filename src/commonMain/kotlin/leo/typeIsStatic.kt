@@ -36,7 +36,7 @@ val TypePrimitive.isStatic: Boolean
   get() =
     when (this) {
       is FieldTypePrimitive -> field.isStatic
-      is AnyTypePrimitive -> false
+      is NativeTypePrimitive -> false
     }
 
 val TypeField.isStatic: Boolean get() = rhsType.isStatic
