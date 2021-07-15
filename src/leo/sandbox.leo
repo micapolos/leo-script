@@ -1,1 +1,6 @@
-comment 123
+let
+  number
+  increment
+  do
+    number
+    plus 1

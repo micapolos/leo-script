@@ -11,10 +11,12 @@ import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.numberName
 import leo.pickName
 import leo.plusName
 import leo.script
 import leo.switchName
+import leo.textName
 import leo.typeName
 import leo.typesName
 import kotlin.test.Test
@@ -45,7 +47,7 @@ class EvaluateTest {
     script(
       "id" lineTo script(
         pickName lineTo script(literal(10)),
-        dropName lineTo script(anyTextScriptLine)),
+        dropName lineTo script(textName)),
       typeName lineTo script())
       .evaluate
       .assertEqualTo(
@@ -73,7 +75,7 @@ class EvaluateTest {
     script(
       "id" lineTo script(
         pickName lineTo script("one" lineTo script(literal(10))),
-        dropName lineTo script("two" lineTo script(anyNumberScriptLine))),
+        dropName lineTo script("two" lineTo script(numberName))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
         "two" lineTo script(doingName lineTo script("two", "number"))))
@@ -85,7 +87,7 @@ class EvaluateTest {
   fun switch_secondOfTwo() {
     script(
       "id" lineTo script(
-        dropName lineTo script("one" lineTo script(anyNumberScriptLine)),
+        dropName lineTo script("one" lineTo script(numberName)),
         pickName lineTo script("two" lineTo script(literal(20)))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),

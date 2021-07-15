@@ -1,6 +1,5 @@
 package leo.term.compiler
 
-import leo.anyNumberScriptLine
 import leo.anyTextScriptLine
 import leo.applyName
 import leo.asName
@@ -50,6 +49,7 @@ import leo.term.compiler.native.native
 import leo.term.compiler.native.nativeCompiler
 import leo.term.compiler.native.nativeEnvironment
 import leo.term.variable
+import leo.textName
 import leo.textTypeLine
 import leo.type
 import leo.typeName
@@ -225,7 +225,7 @@ class CompileTest {
       .compiled(
         script(
           pickName lineTo script(literal(10)),
-          dropName lineTo script(anyTextScriptLine)
+          dropName lineTo script(textName)
         )
       )
       .assertEqualTo(
@@ -270,8 +270,8 @@ class CompileTest {
         script(
           "id" lineTo script(
             pickName lineTo script("one" lineTo script(literal(10))),
-            dropName lineTo script("two" lineTo script(anyNumberScriptLine)),
-            dropName lineTo script("three" lineTo script(anyNumberScriptLine))),
+            dropName lineTo script("two" lineTo script(numberName)),
+            dropName lineTo script("three" lineTo script(numberName))),
           switchName lineTo script(
             "one" lineTo script(doingName lineTo script("one", "number")),
             "two" lineTo script(doingName lineTo script("two", "number")),
@@ -321,7 +321,7 @@ class CompileTest {
     script(
       line(literal(1)),
       giveName lineTo script(
-        "ok" lineTo script(anyNumberScriptLine),
+        "ok" lineTo script(numberName),
         doingName lineTo script("ok" lineTo script(numberName))))
       .compiled(nativeEnvironment)
       .assertEqualTo(
@@ -376,7 +376,7 @@ class CompileTest {
   fun as_matching() {
     script(
       line(literal(10)),
-      asName lineTo script(anyNumberScriptLine))
+      asName lineTo script(numberName))
       .compiled(nativeEnvironment)
       .assertEqualTo(nativeNumberCompiled(10.0.native))
   }

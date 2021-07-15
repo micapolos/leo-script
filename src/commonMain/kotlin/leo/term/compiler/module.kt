@@ -18,7 +18,7 @@ import leo.term.compiled.compiledSelect
 import leo.term.compiled.indexed.indexedExpression
 import leo.term.compiled.recursive
 import leo.term.compiler.native.Native
-import leo.term.compiler.native.nativeEnvironment
+import leo.term.compiler.native.typesNativeEnvironment
 import leo.term.indexed.native.nativeEvaluator
 import leo.term.indexed.native.script
 import leo.term.indexed.value
@@ -32,7 +32,7 @@ val <V> Context<V>.module: Module<V> get() =
   Module(this, null)
 
 fun <V, R> Module<V>.inTypeLocal(fn: (Local<Native>) -> R): R =
-  fn(typeLocalOrNull.orIfNull { nativeEnvironment.context.module.local })
+  fn(typeLocalOrNull.orIfNull { typesNativeEnvironment.context.module.local })
 
 fun <V> Module<V>.updateTypeLocal(fn: (Local<Native>) -> Local<Native>): Module<V> =
   copy(typeLocalOrNull = inTypeLocal { fn(it) })
