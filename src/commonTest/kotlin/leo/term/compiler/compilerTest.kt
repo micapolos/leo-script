@@ -6,7 +6,7 @@ import leo.letName
 import leo.lineTo
 import leo.script
 import leo.term.compiler.native.nativeCompiler
-import leo.typeName
+import leo.typesName
 import kotlin.test.Test
 
 class CompilerTest {
@@ -14,14 +14,14 @@ class CompilerTest {
   fun letType() {
     nativeCompiler
       .plus(
-        letName lineTo script(
-          typeName lineTo script(
+        typesName lineTo script(
+          letName lineTo script(
             "ping" lineTo script(),
             doName lineTo script("pong"))))
       .assertEqualTo(
-        nativeCompiler.letTypeOrNull(
+        nativeCompiler.types(
           script(
-            typeName lineTo script(
+            letName lineTo script(
               "ping" lineTo script(),
               doName lineTo script("pong")))))
   }
