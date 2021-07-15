@@ -12,7 +12,7 @@ import leo.named.value.numberValue
 import leo.type
 import kotlin.test.Test
 
-class ExpressionModuleTest {
+class ExpressionLocalTest {
 
   @Test
   fun private() {

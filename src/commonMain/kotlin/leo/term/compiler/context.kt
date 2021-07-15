@@ -39,7 +39,7 @@ val <V> Environment<V>.context
 fun <V> Context<V>.compiled(script: Script): Compiled<V> =
   null
     ?: compiledSelectOrNull(script)?.compiled
-    ?: module.compiler.plus(script).completeCompiled
+    ?: local.compiler.plus(script).completeCompiled
 
 fun <V> Context<V>.body(script: Script): Body<V> =
   script.matchPrefix(recursiveName) { recursiveScript ->

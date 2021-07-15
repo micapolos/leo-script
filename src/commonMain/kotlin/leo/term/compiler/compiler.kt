@@ -46,20 +46,20 @@ import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.scheme.scheme
 
 data class Compiler<V>(
-  val module: Module<V>,
+  val local: Local<V>,
   val compiled: Compiled<V>
 )
 
-fun <V> Module<V>.compiler(compiled: Compiled<V>): Compiler<V> = Compiler(this, compiled)
-val <V> Module<V>.compiler: Compiler<V> get() = compiler(compiled())
+fun <V> Local<V>.compiler(compiled: Compiled<V>): Compiler<V> = Compiler(this, compiled)
+val <V> Local<V>.compiler: Compiler<V> get() = compiler(compiled())
 
 fun <V> Compiler<V>.set(compiled: Compiled<V>): Compiler<V> =
   copy(compiled = compiled)
 
-fun <V> Compiler<V>.set(module: Module<V>): Compiler<V> =
-  copy(module = module)
+fun <V> Compiler<V>.set(local: Local<V>): Compiler<V> =
+  copy(local = local)
 
-val <V> Compiler<V>.context get() = module.context
+val <V> Compiler<V>.context get() = local.context
 val <V> Compiler<V>.environment get() = context.environment
 
 fun <V> Compiler<V>.plus(script: Script): Compiler<V> =
@@ -173,7 +173,7 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
-  else set(module.plusLet(script))
+  else set(local.plusLet(script))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->
@@ -197,4 +197,4 @@ fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
 
 val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =
-    module.seal(compiled)
+    local.seal(compiled)
