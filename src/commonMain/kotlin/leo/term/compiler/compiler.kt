@@ -44,6 +44,7 @@ import leo.term.compiled.lineTo
 import leo.term.compiled.plus
 import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.scheme.scheme
+import leo.typeName
 
 data class Compiler<V>(
   val local: Local<V>,
@@ -173,7 +174,18 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
-  else set(local.plusLet(script))
+  else null
+    ?: letTypeOrNull(script)
+    ?: set(local.plusLet(script))
+
+fun <V> Compiler<V>.letTypeOrNull(script: Script): Compiler<V>? =
+  script.matchPrefix(typeName) { letTypeScript ->
+    local.module.updateTypeLocal { typeLocal ->
+      typeLocal.plusLet(letTypeScript)
+    }.let { module ->
+      set(Local(module, local.compiledStack))
+    }
+  }
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->

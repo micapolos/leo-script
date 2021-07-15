@@ -7,6 +7,7 @@ import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.eitherName
+import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -130,5 +131,20 @@ class EvaluateTest {
       doName lineTo script("point", "y", "number"))
       .evaluate
       .assertEqualTo(script(literal(20)))
+  }
+
+  @Test
+  fun letType() {
+    script(
+      letName lineTo script(
+        typeName lineTo script(
+          "ping" lineTo script(),
+          doName lineTo script("pong"))),
+      letName lineTo script(
+        "ping" lineTo script(),
+        doName lineTo script(literal("OK"))),
+      "pong" lineTo script())
+      .evaluate
+      .assertEqualTo(script(literal("OK")))
   }
 }

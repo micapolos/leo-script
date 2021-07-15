@@ -4,6 +4,7 @@ import leo.ScriptLine
 import leo.beingName
 import leo.lineTo
 import leo.listScriptLine
+import leo.optionScriptLine
 import leo.plus
 import leo.script
 import leo.scriptLine
@@ -18,9 +19,16 @@ val <V> Compiler<V>.toScriptLine: ScriptLine get() =
     compiled.toScriptLine(environment.scriptLineFn))
 
 val <V> Local<V>.toScriptLine: ScriptLine get() =
+  "local" lineTo script(
+    module.toScriptLine,
+    "term" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
+
+val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(
     context.toScriptLine,
-    "term" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
+    "type" lineTo script(
+      "local" lineTo script(
+        typeLocalOrNull.optionScriptLine { toScriptLine })))
 
 val <V> Context<V>.toScriptLine: ScriptLine get() =
   "context" lineTo script(

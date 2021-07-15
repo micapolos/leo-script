@@ -1,11 +1,7 @@
-let
-  any point
-  do point
-    x any number
-    y any number
+let type
+  ping
+  do pong
 
 let
-  any point
-  do dupa
-
-debug
+  ping
+  do jajeczko

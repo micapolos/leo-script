@@ -26,16 +26,16 @@ import leo.type
 
 data class Module<V>(
   val context: Context<V>,
-  val typeModuleOrNull: Module<Native>?)
+  val typeLocalOrNull: Local<Native>?)
 
 val <V> Context<V>.module: Module<V> get() =
   Module(this, null)
 
-fun <V, R> Module<V>.runInTypeModule(fn: (Module<Native>) -> R): R =
-  fn(typeModuleOrNull.orIfNull { nativeEnvironment.context.module })
+fun <V, R> Module<V>.inTypeLocal(fn: (Local<Native>) -> R): R =
+  fn(typeLocalOrNull.orIfNull { nativeEnvironment.context.module.local })
 
-fun <V> Module<V>.updateTypeModule(fn: (Module<Native>) -> Module<Native>): Module<V> =
-  copy(typeModuleOrNull = fn(typeModuleOrNull.orIfNull { nativeEnvironment.context.module }))
+fun <V> Module<V>.updateTypeLocal(fn: (Local<Native>) -> Local<Native>): Module<V> =
+  copy(typeLocalOrNull = inTypeLocal { fn(it) })
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
   copy(context = context.plus(binding))
@@ -44,8 +44,8 @@ fun <V> Module<V>.bind(type: Type): Module<V> =
   copy(context = context.bind(type))
 
 fun <V> Module<V>.type(script: Script): Type =
-  runInTypeModule { typeModule ->
-    typeModule.compiled(script).let { compiled ->
+  inTypeLocal { typeLocal ->
+    typeLocal.compiler.plus(script).completeCompiled.let { compiled ->
       compiled.indexedExpression.value(nativeEvaluator).script(compiled.type).type
     }
   }
