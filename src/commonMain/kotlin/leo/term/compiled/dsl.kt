@@ -136,7 +136,9 @@ fun <V> Compiled<V>.getLineOrNull(name: String): CompiledLine<V>? =
   rhsOrNull?.lineOrNull(name)
 
 fun <V> Compiled<V>.getOrNull(name: String): Compiled<V>? =
-  getLineOrNull(name)?.let { compiled(it) }
+  null
+    ?: lineOrNull(name)?.let { compiled(it) }
+    ?: rhsOrNull?.getOrNull(name)
 
 fun <V> Compiled<V>.get(name: String): Compiled<V> =
   getOrNull(name)?:compileError(script("get"))
