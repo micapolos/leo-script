@@ -15,4 +15,3 @@ compile python
             fibonacci.number
             minus 1
             fibonacci
-            

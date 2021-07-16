@@ -39,7 +39,7 @@ val Expression<Python>.python: Python get() =
   python(
     string(
       "import operator;",
-      "Z=lambda f:(lambda x:(lambda m:f(x(x))(m)))(lambda x:(lambda m:f(x(x))(m)));",
+      "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));",
       python(scope()).string))
 
 fun Expression<Python>.python(scope: Scope): Python =
@@ -60,7 +60,7 @@ fun Expression<Python>.python(scope: Scope): Python =
 
 @Suppress("unused")
 val Empty.python: Python get() =
-  python("`()")
+  python("()")
 
 fun ExpressionInvoke<Python>.python(scope: Scope): Python =
   lhs.python(scope).invoke(*params.map { it.python(scope) }.toTypedArray())
@@ -70,21 +70,12 @@ fun ExpressionFunction<Python>.python(scope: Scope): Python =
     string(
       "(lambda ",
       0.until(arity).map { variable(scope.depth + it).python.string }.joinToString(", "),
-      ": ",
+      ":",
       expression.python(scope.iterate(arity) { push }).string,
       ")"))
 
-fun ExpressionFunction<Python>.recursivePython(scope: Scope): Python =
-  python(
-    string(
-      "(lambda ",
-      0.until(arity+1).map { variable(scope.depth + it).python.string }.joinToString(", "),
-      ": ",
-      expression.python(scope.push.iterate(arity) { push }).string,
-      ")"))
-
 fun ExpressionRecursive<Python>.python(scope: Scope): Python =
-  python("Z(lambda ${variable(scope.depth).python.string}: ${function.python(scope.push).string})")
+  python("Z(lambda ${variable(scope.depth).python.string}:${function.python(scope.push).string})")
 
 fun ExpressionTuple<Python>.python(scope: Scope): Python =
   tuplePython(*expressionList.map { it.python(scope) }.toTypedArray())

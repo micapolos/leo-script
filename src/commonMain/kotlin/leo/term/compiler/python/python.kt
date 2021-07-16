@@ -9,7 +9,7 @@ fun python(string: String) = Python(string)
 
 fun python(boolean: Boolean) = python(if (boolean) "True" else "False")
 fun python(int: Int) = python(int.toString())
-fun tuplePython(vararg pythons: Python) = python("(" + pythons.joinToString(", ") { it.string } + ")")
+fun tuplePython(vararg pythons: Python) = python("(" + pythons.joinToString(",") { it.string } + ")")
 fun Python.get(python: Python): Python = python("$string[${python.string}]")
 fun Python.invoke(vararg pythons: Python) = python("$string${tuplePython(*pythons).string}")
 fun Python.ifThenElse(then: Python, elze: Python) = python("${then.string} if $string else ${elze.string}")
