@@ -12,6 +12,7 @@ import leo.base.notNullIf
 import leo.functionLineTo
 import leo.functionOrNull
 import leo.getFromBottom
+import leo.indexOrNull
 import leo.isEmpty
 import leo.line
 import leo.lineTo
@@ -200,6 +201,9 @@ fun <V> Compiled<V>.line(index: Int): CompiledLine<V> =
   expression.tupleOrNull
     ?.let { tuple -> compiled(tuple.lineStack.getFromBottom(index)!!, type.structureOrNull!!.lineStack.getFromBottom(index)!!) }
     ?: compiled(line(get(this, index)), type.structureOrNull!!.lineStack.getFromBottom(index)!!)
+
+fun <V> Compiled<V>.lineOrNull(name: String): CompiledLine<V>? =
+  type.structureOrNull?.indexOrNull(name)?.let { line(it) }
 
 fun <V> Compiled<V>.make(name: String): Compiled<V> =
   compiled(name lineTo this)
