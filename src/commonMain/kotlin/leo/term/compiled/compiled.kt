@@ -25,6 +25,7 @@ data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
 data class CompiledFunction<out V>(val function: Function<V>, val typeFunction: TypeFunction)
 data class CompiledSelect<out V>(val lineIndexedOrNull: LineIndexed<V>?, val choice: TypeChoice)
+data class CompiledChoice<out V>(val expression: Expression<V>, val choice: TypeChoice)
 
 data class Fragment<out V>(val expression: Expression<V>, val tuple: Tuple<V>)
 
@@ -71,6 +72,7 @@ fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(
 fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
 fun <V> compiled(function: Function<V>, typeFunction: TypeFunction) = CompiledFunction(function, typeFunction)
+fun <V> compiled(expression: Expression<V>, choice: TypeChoice) = CompiledChoice(expression, choice)
 
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)

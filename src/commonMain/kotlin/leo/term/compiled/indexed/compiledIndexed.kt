@@ -11,9 +11,8 @@ import leo.isSimple
 import leo.lineCount
 import leo.map
 import leo.size
-import leo.switchChoice
 import leo.term.compiled.Compiled
-import leo.term.compiled.rhs
+import leo.term.compiled.compiledChoice
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
 import leo.term.indexed.function
@@ -28,13 +27,16 @@ import leo.term.indexed.tuple
 import leo.variable
 
 val <V> Compiled<V>.indexedExpression: Expression<V> get() =
-  when (expression) {
-    is leo.term.compiled.ApplyExpression -> expression.apply.indexedExpression
-    is leo.term.compiled.SelectExpression -> expression.select.indexedExpression
-    is leo.term.compiled.SwitchExpression -> expression.switch.indexedExpression
-    is leo.term.compiled.TupleExpression -> expression.tuple.indexedExpression
-    is leo.term.compiled.VariableExpression -> expression.variable.indexedExpression()
-    is leo.term.compiled.ContentExpression -> expression.content.indexedExpression
+  expression.indexedExpression
+
+val <V> leo.term.compiled.Expression<V>.indexedExpression: Expression<V> get() =
+  when (this) {
+    is leo.term.compiled.ApplyExpression -> apply.indexedExpression
+    is leo.term.compiled.SelectExpression -> select.indexedExpression
+    is leo.term.compiled.SwitchExpression -> switch.indexedExpression
+    is leo.term.compiled.TupleExpression -> tuple.indexedExpression
+    is leo.term.compiled.VariableExpression -> variable.indexedExpression()
+    is leo.term.compiled.ContentExpression -> content.indexedExpression
   }
 
 val <V> leo.term.compiled.Line<V>.indexedExpression: Expression<V> get() =
@@ -75,17 +77,17 @@ val <V> leo.term.compiled.Select<V>.indexExpression: Expression<V> get() =
   else expression(lineIndexed.index)
 
 val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =
-  lhs.type.switchChoice.let { choice ->
-    if (choice.isSimple)
-      if (choice.lineStack.size == 2)
-        lhs.rhs.indexedExpression.ifThenElse(
+  lhs.compiledChoice.let { compiledChoice ->
+    if (compiledChoice.choice.isSimple)
+      if (compiledChoice.choice.lineStack.size == 2)
+        compiledChoice.expression.indexedExpression.ifThenElse(
           caseStack.getFromBottom(0)!!.indexedExpression,
           caseStack.getFromBottom(1)!!.indexedExpression)
       else
-        lhs.rhs.indexedExpression.switch(*caseStack.map { indexedExpression }.array)
+        compiledChoice.expression.indexedExpression.switch(*caseStack.map { indexedExpression }.array)
     else
-      lhs.rhs.indexedExpression.indirect {
-        if (choice.lineStack.size == 2)
+      compiledChoice.expression.indexedExpression.indirect {
+        if (compiledChoice.choice.lineStack.size == 2)
           it.get(0).ifThenElse(
             expression(function(1, caseStack.getFromBottom(0)!!.indexedExpression)).invoke(it.get(1)),
             expression(function(1, caseStack.getFromBottom(1)!!.indexedExpression)).invoke(it.get(1)))

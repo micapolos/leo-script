@@ -42,6 +42,7 @@ import leo.term.compiled.nativeNumberCompiled
 import leo.term.compiled.nativeNumberCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.recursive
+import leo.term.compiled.rhs
 import leo.term.compiled.select
 import leo.term.compiled.switch
 import leo.term.compiler.native.DoublePlusDoubleNative
@@ -311,6 +312,7 @@ class CompileTest {
                 .drop("two" lineTo type())
                 .drop("three" lineTo type())
                 .compiled)
+          .rhs
           .switch(
             nativeNumberType,
             nativeNumberCompiled(1.0.native),
@@ -342,6 +344,7 @@ class CompileTest {
               .drop("two" lineTo nativeNumberType)
               .drop("three" lineTo nativeNumberType)
               .compiled)
+          .rhs
           .switch(
             nativeNumberType,
             compiled(expression<Native>(variable(0)), type("one" lineTo nativeNumberType)).get(numberName),

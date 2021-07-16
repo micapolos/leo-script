@@ -35,7 +35,6 @@ import leo.repeatingName
 import leo.reverse
 import leo.script
 import leo.stack
-import leo.switchChoice
 import leo.switchName
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
@@ -44,6 +43,7 @@ import leo.term.compiled.apply
 import leo.term.compiled.as_
 import leo.term.compiled.body
 import leo.term.compiled.compiled
+import leo.term.compiled.compiledChoice
 import leo.term.compiled.do_
 import leo.term.compiled.function
 import leo.term.compiled.indexed.indexedExpression
@@ -56,6 +56,7 @@ import leo.term.compiler.python.scriptLine
 import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.python.python
 import leo.term.indexed.scheme.scheme
+import leo.type
 import leo.typesName
 
 data class Compiler<V>(
@@ -241,16 +242,16 @@ fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   else set(block.plusLet(script))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
-  compiled.type.switchChoice.let { choice ->
+  compiled.compiledChoice.let { compiledChoice ->
     set(
       SwitchCompiler(
         block.module,
-        choice.lineStack.reverse,
-        choice.isSimple,
+        compiledChoice.choice.lineStack.reverse,
+        compiledChoice.choice.isSimple,
         stack(),
         null)
         .plus(script)
-        .compiled(compiled))
+        .compiled(compiled(compiledChoice.expression, type(compiledChoice.choice))))
   }
 
 fun <V> Compiler<V>.quote(script: Script): Compiler<V> =

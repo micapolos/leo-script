@@ -9,6 +9,7 @@ import leo.atom
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
+import leo.choiceOrNull
 import leo.functionLineTo
 import leo.functionOrNull
 import leo.getFromBottom
@@ -281,3 +282,11 @@ val <V> Compiled<V>.rhsOrNull: Compiled<V>? get() =
 
 val <V> Compiled<V>.rhs: Compiled<V> get() =
   rhsOrNull ?: compileError(script("rhs"))
+
+val <V> Compiled<V>.compiledChoice: CompiledChoice<V> get() =
+  compiledChoiceOrNull?: compileError(script("choice"))
+
+val <V> Compiled<V>.compiledChoiceOrNull: CompiledChoice<V>? get() =
+  type.choiceOrNull
+    ?.let { compiled(expression, it) }
+    ?:rhsOrNull?.compiledChoiceOrNull
