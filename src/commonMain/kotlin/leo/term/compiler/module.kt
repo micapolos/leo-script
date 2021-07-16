@@ -7,7 +7,7 @@ import leo.base.orIfNull
 import leo.fold
 import leo.lineStack
 import leo.matchPrefix
-import leo.recursiveName
+import leo.repeatingName
 import leo.reverse
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
@@ -62,7 +62,6 @@ fun <V> Module<V>.compiled(script: Script): Compiled<V> =
     ?: block.compiler.plus(script).completeCompiled
 
 fun <V> Module<V>.body(script: Script): Body<V> =
-  script.matchPrefix(recursiveName) { recursiveScript ->
+  script.matchPrefix(repeatingName) { recursiveScript ->
     recursive(body(recursiveScript))
   }?: body(this.compiled(script))
-

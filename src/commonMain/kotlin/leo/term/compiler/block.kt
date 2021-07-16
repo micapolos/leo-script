@@ -5,6 +5,7 @@ import leo.Script
 import leo.Stack
 import leo.Type
 import leo.TypeChoice
+import leo.TypeFunction
 import leo.TypeLine
 import leo.anyName
 import leo.atom
@@ -46,11 +47,16 @@ import leo.type
 data class Block<V>(
   val module: Module<V>,
   val paramStack: Stack<Compiled<V>>,
-  val expectedTypeOrNull: Type?) {
+  val expectedTypeOrNull: Type?,
+  val isRecursive: Boolean) {
   override fun toString() = toScriptLine.toString()
 }
 
-val <V> Module<V>.block get() = Block(this, stack(), null)
+val <V> Module<V>.block get() = Block(
+  this,
+  paramStack = stack(),
+  expectedTypeOrNull = null,
+  isRecursive = false)
 
 val <V> Block<V>.context get() = module.context
 
@@ -101,7 +107,8 @@ fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
     module.bind(compiled.type),
     paramStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) },
-    expectedTypeOrNull)
+    expectedTypeOrNull,
+    isRecursive)
 
 fun <V> Block<V>.plusCast(type: Type): Block<V> =
   plusCast(stack(), type)
@@ -137,6 +144,10 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
 fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =
   copy(module = module.updateTypesBlock(fn))
 
-fun <V> Block<V>.expect(type: Type): Block<V> =
-  if (expectedTypeOrNull != null) compileError(script("expect"))
+fun <V> Block<V>.expecting(type: Type): Block<V> =
+  if (expectedTypeOrNull != null) compileError(script("expecting"))
   else copy(expectedTypeOrNull = type)
+
+fun <V> Block<V>.recursivelyExpecting(typeFunction: TypeFunction): Block<V> =
+  if (expectedTypeOrNull != null) compileError(script("recursively" lineTo script("expecting")))
+  else copy(expectedTypeOrNull = typeFunction.rhsType, isRecursive = true).plus(binding(typeFunction))

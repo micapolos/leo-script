@@ -5,7 +5,7 @@ import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.eitherName
-import leo.expectName
+import leo.expectingName
 import leo.letName
 import leo.line
 import leo.lineTo
@@ -152,7 +152,7 @@ class EvaluateTest {
   @Test
   fun expect() {
     script(
-      expectName lineTo script(numberName),
+      expectingName lineTo script(numberName),
       line(literal("foo")))
       .evaluate
       .assertEqualTo(

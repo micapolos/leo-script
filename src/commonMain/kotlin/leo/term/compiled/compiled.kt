@@ -67,6 +67,7 @@ fun <V> line(get: Get<V>): Line<V> = GetLine(get)
 fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(expression, type)
 fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
+fun <V> compiled(function: Function<V>, typeFunction: TypeFunction) = CompiledFunction(function, typeFunction)
 
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)

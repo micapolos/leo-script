@@ -16,8 +16,9 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.exampleName
-import leo.expectName
+import leo.expectingName
 import leo.functionName
+import leo.functionTo
 import leo.giveName
 import leo.isEmpty
 import leo.isSimple
@@ -28,6 +29,7 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.plus
 import leo.quoteName
+import leo.recursivelyName
 import leo.repeatingName
 import leo.reverse
 import leo.script
@@ -95,11 +97,12 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
-    expectName -> expect(field.rhs)
+    expectingName -> expecting(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
     quoteName -> quote(field.rhs)
+    recursivelyName -> recursively(field.rhs)
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
     else -> null
@@ -166,12 +169,12 @@ fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
 fun <V> Compiler<V>.example(script: Script): Compiler<V> =
   block.module.compiled(script).let { this }
 
-fun <V> Compiler<V>.expect(script: Script): Compiler<V> =
-  expect(block.module.type(script))
+fun <V> Compiler<V>.expecting(script: Script): Compiler<V> =
+  expecting(block.module.type(script))
 
-fun <V> Compiler<V>.expect(type: Type): Compiler<V> =
+fun <V> Compiler<V>.expecting(type: Type): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("expect"))
-  else copy(block = block.expect(type))
+  else copy(block = block.expecting(type))
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
@@ -198,6 +201,15 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(block.plusLet(script))
+
+fun <V> Compiler<V>.recursively(script: Script): Compiler<V> =
+  script.matchPrefix(expectingName) { expectingScript ->
+    recursivelyExpecting(block.module.type(expectingScript))
+  }?: compileError(script("recursively"))
+
+fun <V> Compiler<V>.recursivelyExpecting(type: Type): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(script("recursively"))
+  else copy(block = block.recursivelyExpecting(compiled.type functionTo type))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->
