@@ -1,3 +1,5 @@
 compile scheme
   10
-  be 20
+  do
+    number
+    plus 1
