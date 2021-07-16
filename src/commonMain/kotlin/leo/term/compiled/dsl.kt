@@ -265,3 +265,9 @@ val <V> CompiledFunction<V>.compiled: Compiled<V> get() =
 
 val <V> CompiledFunction<V>.compiledLine: CompiledLine<V> get() =
   compiled(line(function), line(atom(typeFunction)))
+
+val <V> Compiled<V>.rhsOrNull: Compiled<V>? get() =
+  type.contentOrNull?.let { compiled(expression, it) }
+
+val <V> Compiled<V>.rhs: Compiled<V> get() =
+  rhsOrNull ?: compileError(script("rhs"))

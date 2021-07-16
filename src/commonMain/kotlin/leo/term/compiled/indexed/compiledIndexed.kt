@@ -13,7 +13,6 @@ import leo.map
 import leo.size
 import leo.switchChoice
 import leo.term.compiled.Compiled
-import leo.term.compiled.contentOrNull
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
 import leo.term.indexed.function
