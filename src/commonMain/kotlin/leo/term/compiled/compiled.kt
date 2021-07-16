@@ -34,6 +34,7 @@ data class ApplyExpression<V>(val apply: Apply<V>): Expression<V>()
 data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>()
 data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
+data class ContentExpression<V>(val content: Content<V>): Expression<V>()
 
 data class Tuple<out V>(val lineStack: Stack<Line<V>>)
 
@@ -51,6 +52,7 @@ data class Body<out V>(val compiled: Compiled<V>, val isRecursive: Boolean)
 data class Get<out V>(val lhs: Compiled<V>, val index: Int)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
 data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
+data class Content<out V>(val lhs: Compiled<V>)
 
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)

@@ -34,6 +34,7 @@ val <V> Compiled<V>.indexedExpression: Expression<V> get() =
     is leo.term.compiled.SwitchExpression -> expression.switch.indexedExpression
     is leo.term.compiled.TupleExpression -> expression.tuple.indexedExpression
     is leo.term.compiled.VariableExpression -> expression.variable.indexedExpression()
+    is leo.term.compiled.ContentExpression -> expression.content.indexedExpression
   }
 
 val <V> leo.term.compiled.Line<V>.indexedExpression: Expression<V> get() =
@@ -112,6 +113,9 @@ val <V> leo.term.compiled.Get<V>.indexedExpression: Expression<V> get() =
     1 -> lhs.indexedExpression
     else -> lhs.indexedExpression.get(index)
   }
+
+val <V> leo.term.compiled.Content<V>.indexedExpression: Expression<V> get() =
+  lhs.indexedExpression
 
 val <V> leo.term.compiled.Function<V>.indexedExpression: Expression<V> get() =
   function(paramType.lineCount, body.compiled.indexedExpression).let { function ->

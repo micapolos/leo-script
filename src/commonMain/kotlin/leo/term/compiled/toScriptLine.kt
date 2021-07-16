@@ -28,6 +28,7 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is SwitchExpression -> switch.toScript(fn)
     is TupleExpression -> tuple.toScript(fn)
     is VariableExpression -> variable.toScript(fn)
+    is ContentExpression -> content.toScript(fn)
   }
 
 fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
@@ -47,6 +48,9 @@ fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
 
 fun <V> Tuple<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("tuple" lineTo lineStack.map { toScriptLine(fn) }.script)
+
+fun <V> Content<V>.toScript(fn: (V) -> ScriptLine): Script =
+  script("content" lineTo script(lhs.toScriptLine(fn)))
 
 fun <V> IndexVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
   script("variable" lineTo script(literal(index)))
