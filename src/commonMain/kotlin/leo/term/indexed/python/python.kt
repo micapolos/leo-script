@@ -33,13 +33,14 @@ import leo.term.indexed.RecursiveExpression
 import leo.term.indexed.SwitchExpression
 import leo.term.indexed.TupleExpression
 import leo.term.indexed.VariableExpression
+import leo.term.indexed.containsRecursion
 import leo.variable
 
 val Expression<Python>.python: Python get() =
   python(
     string(
       "import operator;",
-      "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));",
+      if (containsRecursion) "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));" else "",
       python(scope()).string))
 
 fun Expression<Python>.python(scope: Scope): Python =
