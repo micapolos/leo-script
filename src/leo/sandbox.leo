@@ -1,5 +1,5 @@
-compile scheme
-  100.countdown
+let
+  number.countdown
   repeat
     giving text
     countdown.number
@@ -10,3 +10,4 @@ compile scheme
         countdown.number
         minus 1
         countdown
+100.countdown
