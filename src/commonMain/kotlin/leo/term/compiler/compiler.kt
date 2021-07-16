@@ -172,9 +172,9 @@ fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   }
 
 fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
-  lhs.matchInfix(givingName) { lhs, givingScript ->
-    block.module.type(lhs).let { lhsType ->
-      block.module.type(givingScript).let { rhsType ->
+  lhs.matchInfix(givingName) { givingLhs, givingRhs ->
+    block.module.type(givingLhs).let { lhsType ->
+      block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(lhsType functionTo rhsType))
           .bind(lhsType)
@@ -204,13 +204,13 @@ fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
     }
 
 fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
-  script.matchInfix(doingName) { lhs, doingScript ->
-    lhs.matchPrefix(givingName) { givingScript ->
-      block.module.type(givingScript).let { rhsType ->
+  script.matchInfix(doingName) { doingLhs, doingRhs ->
+    doingLhs.matchPrefix(givingName) { givingRhs ->
+      block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(compiled.type functionTo rhsType))
           .bind(compiled.type)
-          .compiled(doingScript)
+          .compiled(doingRhs)
           .as_(rhsType)
           .let { bodyCompiled ->
             apply(

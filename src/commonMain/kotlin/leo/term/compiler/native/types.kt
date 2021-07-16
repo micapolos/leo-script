@@ -5,6 +5,7 @@ import leo.TypeLine
 import leo.atom
 import leo.line
 import leo.lineTo
+import leo.literal
 import leo.native
 import leo.numberName
 import leo.primitive
@@ -35,6 +36,6 @@ val nativeNumberType: Type get() = type(nativeNumberTypeLine)
 val nativeTextType: Type get() = type(nativeTextTypeLine)
 
 val nativeNumberTypeLine: TypeLine get() =
-  numberName lineTo type(line(atom(primitive(native(script("double"))))))
+  numberName lineTo type(line(atom(primitive(native(script(literal("kotlin.Double")))))))
 val nativeTextTypeLine: TypeLine get() =
-  textName lineTo type(line(atom(primitive(native(script("string"))))))
+  textName lineTo type(line(atom(primitive(native(script(literal("kotlin.String")))))))

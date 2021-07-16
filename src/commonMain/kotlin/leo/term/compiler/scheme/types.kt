@@ -35,5 +35,5 @@ val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =
 val schemeTextType get() = type(schemeTextTypeLine)
 val schemeNumberType get() = type(schemeNumberTypeLine)
 
-val schemeTextTypeLine get() = textName lineTo type(line(atom(primitive(native(script("string"))))))
-val schemeNumberTypeLine get() = numberName lineTo type(line(atom(primitive(native(script("number"))))))
+val schemeTextTypeLine get() = textName lineTo type(line(atom(primitive(native(script("scheme" lineTo script("string")))))))
+val schemeNumberTypeLine get() = numberName lineTo type(line(atom(primitive(native(script("scheme" lineTo script("number")))))))
