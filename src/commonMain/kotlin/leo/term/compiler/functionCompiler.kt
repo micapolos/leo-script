@@ -30,6 +30,9 @@ data class FunctionCompiler<V>(
   val isEmpty: Boolean,
   val bodyCompiler: Compiler<V>)
 
+fun <V> Module<V>.functionCompiler(type: Type, isRepeat: Boolean): FunctionCompiler<V> =
+  FunctionCompiler(type, isRepeat, null, true, block.compiler)
+
 val <V> FunctionCompiler<V>.compiledFunction: CompiledFunction<V> get() =
   touch.run {
     bodyCompiler.completeCompiled.let { rhsCompiled ->

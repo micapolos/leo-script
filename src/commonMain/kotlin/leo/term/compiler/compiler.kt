@@ -240,4 +240,4 @@ val <V> Compiler<V>.begin: Compiler<V> get() =
   block.module.block.compiler
 
 fun <V> Compiler<V>.beginFunctionCompiler(isRepeat: Boolean): FunctionCompiler<V> =
-  FunctionCompiler(compiled.type, isRepeat, rhsTypeOrNull = null, isEmpty = true, begin)
+  block.module.functionCompiler(compiled.type, isRepeat)

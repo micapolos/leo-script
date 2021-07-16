@@ -10,7 +10,6 @@ import leo.anyName
 import leo.atom
 import leo.choice
 import leo.choiceOrNull
-import leo.doName
 import leo.fieldOrNull
 import leo.fold
 import leo.functionTo
@@ -63,19 +62,23 @@ fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
     .fold(paramStack.reverse) { invoke(it) }
 
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
-  script.matchInfix(doName) { lhs, rhs ->
-    module.type(lhs).let { type ->
-      module.bind(type).compiled(rhs).let { bodyCompiled ->
-        this
-          .plus(binding(type functionTo bodyCompiled.type))
-          .plus(fn(type, bodyCompiled))
-          .run {
-            lhs.matchPrefix(anyName) {
-              module.type(lhs).let { type ->
-                plusCast(type)
-              }
-            }?: this
-          }
+  script.matchInfix { lhs, name, rhs ->
+    module.type(lhs).let { lhsType ->
+      module
+        .functionCompiler(lhsType, isRepeat = name.nameBlockIsRepeat)
+        .plus(rhs)
+        .compiledFunction
+        .let { compiledFunction ->
+          this
+            .plus(binding(compiledFunction.typeFunction))
+            .plus(compiledFunction.compiled)
+            .run {
+              lhs.matchPrefix(anyName) {
+                module.type(lhs).let { type ->
+                  plusCast(type)
+                }
+              }?: this
+            }
       }
     }
   }?:compileError(
