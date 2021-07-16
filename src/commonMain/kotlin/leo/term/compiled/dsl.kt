@@ -255,4 +255,7 @@ val <V> CompiledSelect<V>.compiled: Compiled<V> get() =
   else compiled(expression(select(choice, lineIndexedOrNull)), type(choice))
 
 val <V> CompiledFunction<V>.compiled: Compiled<V> get() =
-  compiled(compiled(line(function), line(atom(typeFunction))))
+  compiled(compiledLine)
+
+val <V> CompiledFunction<V>.compiledLine: CompiledLine<V> get() =
+  compiled(line(function), line(atom(typeFunction)))

@@ -41,8 +41,8 @@ import leo.term.compiled.apply
 import leo.term.compiled.as_
 import leo.term.compiled.body
 import leo.term.compiled.compiled
+import leo.term.compiled.compiledLine
 import leo.term.compiled.do_
-import leo.term.compiled.fnLine
 import leo.term.compiled.indexed.indexedExpression
 import leo.term.compiled.lineTo
 import leo.term.compiled.plus
@@ -142,13 +142,12 @@ fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compile
 
 fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
-    when (name) {
-      doingName -> block.module.type(lhs).let { type ->
-        block.module.bind(type).compiled(rhs).let { compiled ->
-          plus(fnLine(type, compiled))
-        }
-      }
-      else -> null
+    block.module.type(lhs).let { lhsType ->
+      FunctionCompiler(lhsType, isRepeat = name.nameFunctionIsRepeat, rhsTypeOrNull = null, isEmpty = true, begin)
+        .plus(rhs)
+        .compiledFunction
+        .compiledLine
+        .let { plus(it) }
     }
   }?: compileError(
     script(
