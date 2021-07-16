@@ -244,7 +244,7 @@ val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
     null
       ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
-      ?: compiled(line(get(compiled("tuple" lineTo this), 0)), typeLine)
+      ?: compiled(line(get(this, 0)), typeLine)
   }
 
 val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
