@@ -10,6 +10,7 @@ import leo.Type
 import leo.asName
 import leo.base.fold
 import leo.base.reverse
+import leo.beName
 import leo.commentName
 import leo.compileName
 import leo.debugName
@@ -95,6 +96,7 @@ fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
     asName -> as_(field.rhs)
+    beName -> be(field.rhs)
     commentName -> comment(field.rhs)
     compileName -> compile(field.rhs)
     debugName -> debug(field.rhs)
@@ -111,6 +113,9 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
 
 fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
   as_(block.module.type(script))
+
+fun <V> Compiler<V>.be(script: Script): Compiler<V> =
+  set(block.module.compiled(script))
 
 fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
   set(compiled.as_(type))

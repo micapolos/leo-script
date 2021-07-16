@@ -7,6 +7,7 @@ import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
 import leo.atom
+import leo.beName
 import leo.choice
 import leo.choiceOrNull
 import leo.doName
@@ -69,15 +70,25 @@ fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
+      beName -> plusLetBe(lhs, rhs)
       doName -> plusLetDo(lhs, rhs)
       repeatName -> plusLetRepeat(lhs, rhs)
       else -> null
     }
   }?:compileError(script("let" lineTo script))
 
-fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
+fun <V> Block<V>.plusLetBe(lhs: Script, rhs: Script): Block<V> =
   module.type(lhs).let { lhsType ->
     module.compiled(rhs).let { rhsCompiled ->
+      this
+        .plus(binding(constant(lhsType, rhsCompiled.type)))
+        .plus(rhsCompiled)
+    }
+  }
+
+fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
+  module.type(lhs).let { lhsType ->
+    module.bind(lhsType).compiled(rhs).let { rhsCompiled ->
       this
         .plus(binding(lhsType functionTo rhsCompiled.type))
         .plus(fn(lhsType, rhsCompiled))
@@ -89,10 +100,14 @@ fun <V> Block<V>.plusLetRepeat(lhs: Script, rhs: Script): Block<V> =
     lhs.matchPrefix(givingName) { givingScript ->
       module.type(lhs).let { lhsType ->
         module.type(givingScript).let { rhsType ->
-          module.compiled(doingScript).let { rhsCompiled ->
-            this
-              .plus(binding(lhsType functionTo rhsCompiled.as_(rhsType).type))
-              .plus(fn(lhsType, rhsCompiled))
+          module
+            .plus(binding(lhsType functionTo rhsType))
+            .bind(lhsType)
+            .compiled(doingScript)
+            .let { rhsCompiled ->
+              this
+                .plus(binding(lhsType functionTo rhsCompiled.as_(rhsType).type))
+                .plus(fn(lhsType, rhsCompiled))
           }
         }
       }

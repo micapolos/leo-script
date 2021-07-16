@@ -1,6 +1,7 @@
 package leo.term.evaluator
 
 import leo.base.assertEqualTo
+import leo.beName
 import leo.doName
 import leo.doingName
 import leo.dropName
@@ -144,5 +145,36 @@ class EvaluateTest {
       "pong" lineTo script())
       .evaluate
       .assertEqualTo(script(literal("OK")))
+  }
+
+  @Test
+  fun be() {
+    script(
+      "ugly" lineTo script("bastard"),
+      beName lineTo script("ugly", "more"))
+      .evaluate
+      .assertEqualTo(script("more" lineTo script("ugly")))
+  }
+
+  @Test
+  fun letBe() {
+    script(
+      letName lineTo script(
+        "ugly" lineTo script("bastard"),
+        beName lineTo script("ugly", "more")),
+      "ugly" lineTo script("bastard"))
+      .evaluate
+      .assertEqualTo(script("more" lineTo script("ugly")))
+  }
+
+  @Test
+  fun letDo() {
+    script(
+      letName lineTo script(
+        "ugly" lineTo script("bastard"),
+        doName lineTo script("ugly", "more")),
+      "ugly" lineTo script("bastard"))
+      .evaluate
+      .assertEqualTo(script("more" lineTo script("ugly" lineTo script("bastard"))))
   }
 }
