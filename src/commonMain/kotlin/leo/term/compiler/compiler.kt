@@ -150,13 +150,7 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
       repeatingName -> functionRepeating(lhs, rhs)
       else -> null
     }
-  } ?: compileError(
-    script(
-      "function" lineTo script,
-      "is" lineTo script("not" lineTo script("matching" lineTo script(
-        "function" lineTo script(
-          "any" lineTo script("type"),
-          "doing" lineTo script("any" lineTo script("compiled"))))))))
+  } ?: compileError(script(functionName lineTo script))
 
 fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   block.module.type(lhs).let { lhsType ->
@@ -190,7 +184,7 @@ fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
         }
       }
     }
-  } ?: compileError(script("function" lineTo script("repeating")))
+  } ?: compileError(script(functionName lineTo script(repeatingName)))
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
   block.module
@@ -222,7 +216,7 @@ fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
           }
       }
     }
-  } ?: compileError(script("repeat"))
+  } ?: compileError(script(repeatName lineTo script))
 
 fun <V> Compiler<V>.apply(rhs: Compiled<V>): Compiler<V> =
   set(compiled.apply(rhs))
