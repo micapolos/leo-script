@@ -49,20 +49,20 @@ import leo.term.indexed.scheme.scheme
 import leo.typesName
 
 data class Compiler<V>(
-  val local: Local<V>,
+  val block: Block<V>,
   val compiled: Compiled<V>
 )
 
-fun <V> Local<V>.compiler(compiled: Compiled<V>): Compiler<V> = Compiler(this, compiled)
-val <V> Local<V>.compiler: Compiler<V> get() = compiler(compiled())
+fun <V> Block<V>.compiler(compiled: Compiled<V>): Compiler<V> = Compiler(this, compiled)
+val <V> Block<V>.compiler: Compiler<V> get() = compiler(compiled())
 
 fun <V> Compiler<V>.set(compiled: Compiled<V>): Compiler<V> =
   copy(compiled = compiled)
 
-fun <V> Compiler<V>.set(local: Local<V>): Compiler<V> =
-  copy(local = local)
+fun <V> Compiler<V>.set(block: Block<V>): Compiler<V> =
+  copy(block = block)
 
-val <V> Compiler<V>.context get() = local.context
+val <V> Compiler<V>.context get() = block.context
 val <V> Compiler<V>.environment get() = context.environment
 
 fun <V> Compiler<V>.plus(script: Script): Compiler<V> =
@@ -84,7 +84,7 @@ fun <V> Compiler<V>.plus(field: ScriptField): Compiler<V> =
 
 fun <V> Compiler<V>.plusNamed(field: ScriptField): Compiler<V> =
   if (field.rhs.isEmpty) set(compiled()).plus(field.name lineTo compiled)
-  else plus(field.name lineTo local.module.compiled(field.rhs))
+  else plus(field.name lineTo block.module.compiled(field.rhs))
 
 fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   when (field.name) {
@@ -104,7 +104,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
   }
 
 fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
-  as_(local.module.type(script))
+  as_(block.module.type(script))
 
 fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
   set(compiled.as_(type))
@@ -131,7 +131,7 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
   }?: compileError(script("compile" lineTo script))
 
 fun <V> Compiler<V>.types(script: Script): Compiler<V> =
-  set(local.updateTypeLocal { it.compiler.plus(script).local })
+  set(block.updateTypesBlock { it.compiler.plus(script).block })
 
 fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("debug" lineTo script()))
@@ -140,8 +140,8 @@ fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compile
 fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
     when (name) {
-      doingName -> local.module.type(lhs).let { type ->
-        local.module.bind(type).compiled(rhs).let { compiled ->
+      doingName -> block.module.type(lhs).let { type ->
+        block.module.bind(type).compiled(rhs).let { compiled ->
           plus(fnLine(type, compiled))
         }
       }
@@ -156,22 +156,22 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
-  do_(body(local.module.bind(compiled.type).compiled(script)))
+  do_(body(block.module.bind(compiled.type).compiled(script)))
 
 fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
   set(compiled.do_(body))
 
 fun <V> Compiler<V>.example(script: Script): Compiler<V> =
-  local.module.compiled(script).let { this }
+  block.module.compiled(script).let { this }
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
-    local.module.type(lhs).let { type ->
+    block.module.type(lhs).let { type ->
       when (name) {
         doingName ->
           set(
             compiled
-              .do_(body(local.module.bind(compiled.type).compiled(rhs)))
+              .do_(body(block.module.bind(compiled.type).compiled(rhs)))
               .as_(type))
         repeatingName -> TODO()
 //          set(
@@ -188,13 +188,13 @@ fun <V> Compiler<V>.give(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
-  else set(local.plusLet(script))
+  else set(block.plusLet(script))
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->
     set(
       SwitchCompiler(
-        local.module,
+        block.module,
         choice.lineStack.reverse,
         choice.isSimple,
         stack(),
@@ -212,4 +212,4 @@ fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
 
 val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =
-    local.seal(compiled)
+    block.seal(compiled)

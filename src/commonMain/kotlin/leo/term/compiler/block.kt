@@ -41,27 +41,26 @@ import leo.term.compiler.native.Native
 import leo.term.variable
 import leo.type
 
-data class Local<V>(
+data class Block<V>(
   val module: Module<V>,
   val compiledStack: Stack<Compiled<V>>) { override fun toString() = toScriptLine.toString() }
 
-val <V> Module<V>.local get() = Local(this, stack())
+val <V> Module<V>.block get() = Block(this, stack())
 
-val <V> Context<V>.local get() = module.local
-val <V> Local<V>.context get() = module.context
+val <V> Block<V>.context get() = module.context
 
-fun <V> Local<V>.plus(binding: Binding): Local<V> =
+fun <V> Block<V>.plus(binding: Binding): Block<V> =
   copy(module = module.plus(binding))
 
-fun <V> Local<V>.plus(compiled: Compiled<V>): Local<V> =
+fun <V> Block<V>.plus(compiled: Compiled<V>): Block<V> =
   copy(compiledStack = compiledStack.push(compiled))
 
-fun <V> Local<V>.seal(compiled: Compiled<V>): Compiled<V> =
+fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
   compiled
     .fold(compiledStack) { fn(it.type, this) } // Is it correct?
     .fold(compiledStack.reverse) { invoke(it) }
 
-fun <V> Local<V>.plusLet(script: Script): Local<V> =
+fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix(doName) { lhs, rhs ->
     module.type(lhs).let { type ->
       module.bind(type).compiled(rhs).let { bodyCompiled ->
@@ -87,20 +86,20 @@ fun <V> Local<V>.plusLet(script: Script): Local<V> =
               "any" lineTo script("type"),
               "do" lineTo script("any" lineTo script("compiled"))))))))
 
-fun <V> Local<V>.let(compiledFunction: CompiledFunction<V>): Local<V> =
+fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
   this
     .plus(binding(compiledFunction.typeFunction))
     .plus(compiled(compiled(line(compiledFunction.function), line(atom(compiledFunction.typeFunction)))))
 
-fun <V> Local<V>.bind(compiled: Compiled<V>): Local<V> =
-  Local(
+fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
+  Block(
     module.bind(compiled.type),
     compiledStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) })
 
-fun <V> Local<V>.plusCast(type: Type): Local<V> =
+fun <V> Block<V>.plusCast(type: Type): Block<V> =
   plusCast(stack(), type)
 
-fun <V> Local<V>.plusCast(nameStack: Stack<String>, type: Type): Local<V> =
+fun <V> Block<V>.plusCast(nameStack: Stack<String>, type: Type): Block<V> =
   type.choiceOrNull
     ?.let { choice -> plusCast(nameStack, choice) }
     ?: type.onlyLineOrNull?.atom?.fieldOrNull?.let { typeField ->
@@ -108,12 +107,12 @@ fun <V> Local<V>.plusCast(nameStack: Stack<String>, type: Type): Local<V> =
     }
     ?:this
 
-fun <V> Local<V>.plusCast(nameStack: Stack<String>, choice: TypeChoice): Local<V> =
+fun <V> Block<V>.plusCast(nameStack: Stack<String>, choice: TypeChoice): Block<V> =
   choice.lineStack.reverse.ropeOrNull
     ?.let { caseRope -> fold(caseRope) { plusCast(nameStack, it) } }
     ?:this
 
-fun <V> Local<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Local<V> =
+fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block<V> =
   this
     .plus(
       binding(
@@ -128,5 +127,5 @@ fun <V> Local<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Local
           .fold(rope.tail.reverse) { drop(it) }
           .compiled))
 
-fun <V> Local<V>.updateTypeLocal(fn: (Local<Native>) -> Local<Native>) =
-  copy(module = module.updateTypeLocal(fn))
+fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =
+  copy(module = module.updateTypesBlock(fn))

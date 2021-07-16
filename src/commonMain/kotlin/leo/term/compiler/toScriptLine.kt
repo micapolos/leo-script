@@ -15,10 +15,10 @@ val <V> Environment<V>.toScriptLine: ScriptLine get() =
 
 val <V> Compiler<V>.toScriptLine: ScriptLine get() =
   "compiler" lineTo script(
-    local.toScriptLine,
+    block.toScriptLine,
     compiled.toScriptLine(environment.scriptLineFn))
 
-val <V> Local<V>.toScriptLine: ScriptLine get() =
+val <V> Block<V>.toScriptLine: ScriptLine get() =
   "local" lineTo script(
     module.toScriptLine,
     "term" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
@@ -28,7 +28,7 @@ val <V> Module<V>.toScriptLine: ScriptLine get() =
     context.toScriptLine,
     "type" lineTo script(
       "local" lineTo script(
-        typeLocalOrNull.optionScriptLine { toScriptLine })))
+        typesBlockOrNull.optionScriptLine { toScriptLine })))
 
 val <V> Context<V>.toScriptLine: ScriptLine get() =
   "context" lineTo script(

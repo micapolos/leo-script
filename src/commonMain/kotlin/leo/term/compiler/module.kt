@@ -25,16 +25,16 @@ import leo.type
 
 data class Module<V>(
   val context: Context<V>,
-  val typeLocalOrNull: Local<Native>?)
+  val typesBlockOrNull: Block<Native>?)
 
 val <V> Context<V>.module: Module<V> get() =
   Module(this, null)
 
-fun <V, R> Module<V>.inTypeLocal(fn: (Local<Native>) -> R): R =
-  fn(typeLocalOrNull.orIfNull { context.environment.typesNativeEnvironmentFn().context.module.local })
+fun <V, R> Module<V>.inTypesBlock(fn: (Block<Native>) -> R): R =
+  fn(typesBlockOrNull.orIfNull { context.environment.typesNativeEnvironmentFn().context.module.block })
 
-fun <V> Module<V>.updateTypeLocal(fn: (Local<Native>) -> Local<Native>): Module<V> =
-  copy(typeLocalOrNull = inTypeLocal { fn(it) })
+fun <V> Module<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>): Module<V> =
+  copy(typesBlockOrNull = inTypesBlock { fn(it) })
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
   copy(context = context.plus(binding))
@@ -43,7 +43,7 @@ fun <V> Module<V>.bind(type: Type): Module<V> =
   copy(context = context.bind(type))
 
 fun <V> Module<V>.type(script: Script): Type =
-  inTypeLocal { typeLocal ->
+  inTypesBlock { typeLocal ->
     typeLocal.compiler.plus(script).completeCompiled.let { compiled ->
       compiled.indexedExpression.value(nativeEvaluator).script(compiled.type).type
     }
@@ -59,7 +59,7 @@ fun <V> Module<V>.compiledSelectOrNull(script: Script): CompiledSelect<V>? =
 fun <V> Module<V>.compiled(script: Script): Compiled<V> =
   null
     ?: compiledSelectOrNull(script)?.compiled
-    ?: local.compiler.plus(script).completeCompiled
+    ?: block.compiler.plus(script).completeCompiled
 
 fun <V> Module<V>.body(script: Script): Body<V> =
   script.matchPrefix(recursiveName) { recursiveScript ->
