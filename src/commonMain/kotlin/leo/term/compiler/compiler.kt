@@ -19,7 +19,6 @@ import leo.exampleName
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
-import leo.giveName
 import leo.givingName
 import leo.isEmpty
 import leo.isSimple
@@ -101,7 +100,6 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
-    giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
     quoteName -> quote(field.rhs)
@@ -234,28 +232,6 @@ fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
 
 fun <V> Compiler<V>.example(script: Script): Compiler<V> =
   block.module.compiled(script).let { this }
-
-fun <V> Compiler<V>.give(script: Script): Compiler<V> =
-  script.matchInfix { lhs, name, rhs ->
-    block.module.type(lhs).let { type ->
-      when (name) {
-        doingName ->
-          set(
-            compiled
-              .do_(body(block.module.bind(compiled.type).compiled(rhs)))
-              .as_(type))
-        repeatingName -> TODO()
-//          set(
-//            compiled
-//              .repeat(
-//                context
-//                  .plus(binding(definition(compiled.type.functionTo(type))))
-//                  .plus(binding(given(compiled.type))).compiled(rhs))
-//            .as_(type))
-        else -> null
-      }
-    }
-  }?: compileError(script("give" lineTo script))
 
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))

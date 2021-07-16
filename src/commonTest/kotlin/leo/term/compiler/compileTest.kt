@@ -13,7 +13,6 @@ import leo.function
 import leo.functionLineTo
 import leo.functionName
 import leo.getName
-import leo.giveName
 import leo.givingName
 import leo.line
 import leo.lineTo
@@ -29,7 +28,6 @@ import leo.term.compiled.apply
 import leo.term.compiled.body
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledSelect
-import leo.term.compiled.do_
 import leo.term.compiled.drop
 import leo.term.compiled.expression
 import leo.term.compiled.field
@@ -368,62 +366,6 @@ class CompileTest {
               "x" lineTo nativeNumberCompiled(10.0.native),
               "y" lineTo nativeNumberCompiled(20.0.native)))))
   }
-
-  @Test
-  fun giveDoing() {
-    script(
-      line(literal(1)),
-      giveName lineTo script(
-        "ok" lineTo script(numberName),
-        doingName lineTo script("ok" lineTo script(numberName))))
-      .compiled(nativeEnvironment)
-      .assertEqualTo(
-        script(line(literal(1)))
-          .compiled(nativeEnvironment)
-          .do_(
-            body(
-              nativeEnvironment.context.module
-                .bind(nativeNumberType)
-                .compiled(script("ok" lineTo script(numberName))))))
-  }
-
-//  @Test
-//  fun giveRepeating() {
-//    val inputScript = script(
-//      line(literal(10)),
-//      "countdown" lineTo script())
-//
-//    val doingScript =
-//      script(
-//        numberName lineTo script(),
-//        equalsName lineTo script(literal(0)),
-//        switchName lineTo script(
-//          yesName lineTo script(doingName lineTo script(literal("OK"))),
-//          noName lineTo script(
-//            doingName lineTo script(
-//              numberName lineTo script(),
-//              minusName lineTo script(literal(1)),
-//              "countdown" lineTo script()))))
-//
-//    inputScript
-//      .plus(
-//        giveName lineTo script(
-//          anyTextScriptLine,
-//          repeatingName lineTo doingScript))
-//      .compiled(nativeEnvironment)
-//      .assertEqualTo(
-//        inputScript
-//          .compiled(nativeEnvironment)
-//          .let { typedTerm -> TODO()
-////            typedTerm
-////              .repeat(
-////                nativeEnvironment
-////                  .context
-////                  .plus(binding(definition(typedTerm.t functionTo type(textTypeLine))))
-////                  .plus(binding(given(typedTerm.t)))
-////                  .compiled(doingScript))
-//          })
-//  }
 
   @Test
   fun as_matching() {
