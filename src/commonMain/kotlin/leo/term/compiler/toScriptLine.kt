@@ -21,7 +21,7 @@ val <V> Compiler<V>.toScriptLine: ScriptLine get() =
 val <V> Block<V>.toScriptLine: ScriptLine get() =
   "local" lineTo script(
     module.toScriptLine,
-    "term" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
+    "term" lineTo paramStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
 
 val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(

@@ -43,7 +43,7 @@ import leo.type
 
 data class Block<V>(
   val module: Module<V>,
-  val compiledStack: Stack<Compiled<V>>) { override fun toString() = toScriptLine.toString() }
+  val paramStack: Stack<Compiled<V>>) { override fun toString() = toScriptLine.toString() }
 
 val <V> Module<V>.block get() = Block(this, stack())
 
@@ -53,12 +53,12 @@ fun <V> Block<V>.plus(binding: Binding): Block<V> =
   copy(module = module.plus(binding))
 
 fun <V> Block<V>.plus(compiled: Compiled<V>): Block<V> =
-  copy(compiledStack = compiledStack.push(compiled))
+  copy(paramStack = paramStack.push(compiled))
 
 fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
   compiled
-    .fold(compiledStack) { fn(it.type, this) } // Is it correct?
-    .fold(compiledStack.reverse) { invoke(it) }
+    .fold(paramStack) { fn(it.type, this) } // Is it correct?
+    .fold(paramStack.reverse) { invoke(it) }
 
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix(doName) { lhs, rhs ->
@@ -94,7 +94,7 @@ fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
 fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
     module.bind(compiled.type),
-    compiledStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) })
+    paramStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) })
 
 fun <V> Block<V>.plusCast(type: Type): Block<V> =
   plusCast(stack(), type)
