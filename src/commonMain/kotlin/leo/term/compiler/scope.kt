@@ -1,11 +1,11 @@
 package leo.term.compiler
 
+import leo.EmptyStack
+import leo.LinkStack
 import leo.Stack
-import leo.base.mapFirstOrNull
-import leo.base.mapIndexed
 import leo.push
-import leo.seq
 import leo.stack
+import leo.term.IndexVariable
 import leo.term.compiled.Compiled
 import leo.term.variable
 
@@ -17,8 +17,15 @@ fun Scope.plus(binding: Binding): Scope =
   bindingStack.push(binding).let(::Scope)
 
 fun <V> Scope.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
-  bindingStack.seq.mapIndexed.mapFirstOrNull {
-    value.resolveOrNull(variable(index), compiled)
+  resolveOrNull(variable(0), compiled)
+
+tailrec fun <V> Scope.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
+  when (bindingStack) {
+    is EmptyStack -> null
+    is LinkStack ->
+      null
+        ?: bindingStack.link.head.resolveOrNull(variable, compiled)
+        ?: Scope(bindingStack.link.tail).resolveOrNull(variable(variable.index.plus(bindingStack.link.head.indexCount)), compiled)
   }
 
 fun <V> Scope.resolve(compiled: Compiled<V>): Compiled<V> =

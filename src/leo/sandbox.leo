@@ -1,4 +1,5 @@
-favourite point
-  x 10
-  y 20
-y.number
+pick 10
+drop text
+switch
+  number doing "OK"
+  text doing "not OK"

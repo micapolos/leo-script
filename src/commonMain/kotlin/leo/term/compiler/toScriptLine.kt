@@ -44,7 +44,11 @@ val Binding.toScriptLine: ScriptLine get() =
     when (this) {
       is FunctionBinding -> function.scriptLine
       is ConstantBinding -> constant.scriptLine
+      is GivenBinding -> given.scriptLine
     })
 
 val Constant.scriptLine: ScriptLine get() =
   "constant" lineTo lhsType.script.plus(beingName lineTo rhsType.script)
+
+val TypeGiven.scriptLine: ScriptLine get() =
+  "given" lineTo type.script
