@@ -159,6 +159,9 @@ class EvaluateTest {
         script(
           "error" lineTo script(
             nativeTextTypeLine.scriptLine,
-            "is" lineTo script("not" lineTo script("equal" lineTo nativeNumberType.script)))))
+            "is" lineTo script(
+              "not" lineTo script(
+                "equal" lineTo script(
+                  "to" lineTo nativeNumberType.script))))))
   }
 }

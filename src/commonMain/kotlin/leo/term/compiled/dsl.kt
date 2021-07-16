@@ -78,7 +78,8 @@ fun <V> Compiled<V>.as_(type: Type): Compiled<V> =
       this.type.script.plus(
         "is" lineTo script(
           "not" lineTo script(
-            "equal" lineTo type.script))))
+            "equal" lineTo script(
+              "to" lineTo type.script)))))
   }
 
 fun <V> Compiled<V>.switch(caseStack: Stack<Compiled<V>>, type: Type): Compiled<V> =

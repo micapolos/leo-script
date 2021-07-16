@@ -1,7 +1,4 @@
-compile scheme
-  let
-    text.exclamate
-    do
-      exclamate.text
-      plus "!"
-  "Hello, world".exclamate
+expect number
+10
+plus 30
+minus 12
