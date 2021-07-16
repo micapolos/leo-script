@@ -6,26 +6,31 @@ import leo.Stack
 import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
-import leo.anyName
 import leo.atom
 import leo.choice
 import leo.choiceOrNull
+import leo.doName
+import leo.doingName
 import leo.fieldOrNull
 import leo.fold
 import leo.functionTo
+import leo.givingName
 import leo.line
 import leo.lineTo
 import leo.make
 import leo.matchInfix
 import leo.matchPrefix
 import leo.onlyLineOrNull
+import leo.plus
 import leo.push
+import leo.repeatName
 import leo.reverse
 import leo.ropeOrNull
 import leo.script
 import leo.stack
 import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledFunction
+import leo.term.compiled.as_
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledLineStack
 import leo.term.compiled.compiledSelect
@@ -63,33 +68,36 @@ fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
 
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix { lhs, name, rhs ->
-    module.type(lhs).let { lhsType ->
-      module
-        .functionCompiler(lhsType, isRepeat = name.nameBlockIsRepeat)
-        .plus(rhs)
-        .compiledFunction
-        .let { compiledFunction ->
-          this
-            .plus(binding(compiledFunction.typeFunction))
-            .plus(compiledFunction.compiled)
-            .run {
-              lhs.matchPrefix(anyName) {
-                module.type(lhs).let { type ->
-                  plusCast(type)
-                }
-              }?: this
-            }
+    when (name) {
+      doName -> plusLetDo(lhs, rhs)
+      repeatName -> plusLetRepeat(lhs, rhs)
+      else -> null
+    }
+  }?:compileError(script("let" lineTo script))
+
+fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
+  module.type(lhs).let { lhsType ->
+    module.compiled(rhs).let { rhsCompiled ->
+      this
+        .plus(binding(lhsType functionTo rhsCompiled.type))
+        .plus(fn(lhsType, rhsCompiled))
+    }
+  }
+
+fun <V> Block<V>.plusLetRepeat(lhs: Script, rhs: Script): Block<V> =
+  rhs.matchInfix(doingName) { lhs, doingScript ->
+    lhs.matchPrefix(givingName) { givingScript ->
+      module.type(lhs).let { lhsType ->
+        module.type(givingScript).let { rhsType ->
+          module.compiled(doingScript).let { rhsCompiled ->
+            this
+              .plus(binding(lhsType functionTo rhsCompiled.as_(rhsType).type))
+              .plus(fn(lhsType, rhsCompiled))
+          }
+        }
       }
     }
-  }?:compileError(
-    script(
-      "let" lineTo script,
-      "is" lineTo script(
-        "not" lineTo script(
-          "matching" lineTo script(
-            "let" lineTo script(
-              "any" lineTo script("type"),
-              "do" lineTo script("any" lineTo script("compiled"))))))))
+  } ?: compileError(script("let" lineTo lhs.plus("repeat" lineTo rhs)))
 
 fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
   this

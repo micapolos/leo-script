@@ -16,8 +16,11 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.exampleName
+import leo.functionLineTo
 import leo.functionName
+import leo.functionTo
 import leo.giveName
+import leo.givingName
 import leo.isEmpty
 import leo.isSimple
 import leo.letName
@@ -41,11 +44,13 @@ import leo.term.compiled.apply
 import leo.term.compiled.as_
 import leo.term.compiled.body
 import leo.term.compiled.compiled
-import leo.term.compiled.compiledLine
 import leo.term.compiled.do_
+import leo.term.compiled.function
 import leo.term.compiled.indexed.indexedExpression
+import leo.term.compiled.line
 import leo.term.compiled.lineTo
 import leo.term.compiled.plus
+import leo.term.compiled.recursive
 import leo.term.compiler.scheme.schemeEnvironment
 import leo.term.indexed.scheme.scheme
 import leo.typesName
@@ -142,14 +147,12 @@ fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compile
 
 fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
-    block.module.type(lhs).let { lhsType ->
-      FunctionCompiler(lhsType, isRepeat = name.nameFunctionIsRepeat, rhsTypeOrNull = null, isEmpty = true, begin)
-        .plus(rhs)
-        .compiledFunction
-        .compiledLine
-        .let { plus(it) }
+    when (name) {
+      doingName -> functionDoing(lhs, rhs)
+      repeatingName -> functionRepeating(lhs, rhs)
+      else -> null
     }
-  }?: compileError(
+  } ?: compileError(
     script(
       "function" lineTo script,
       "is" lineTo script("not" lineTo script("matching" lineTo script(
@@ -157,19 +160,71 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
           "any" lineTo script("type"),
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
+fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
+  block.module.type(lhs).let { lhsType ->
+    block.module
+      .bind(lhsType)
+      .compiled(rhs)
+      .let { bodyCompiled ->
+        set(
+          compiled(
+            compiled(
+              line(function(lhsType, body(bodyCompiled))),
+              lhsType functionLineTo bodyCompiled.type)))
+      }
+  }
+
+fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
+  lhs.matchInfix(givingName) { lhs, givingScript ->
+    block.module.type(lhs).let { lhsType ->
+      block.module.type(givingScript).let { rhsType ->
+        block.module
+          .plus(binding(lhsType functionTo rhsType))
+          .bind(lhsType)
+          .compiled(rhs)
+          .as_(rhsType)
+          .let { bodyCompiled ->
+            set(
+              compiled(
+                compiled(
+                  line(function(compiled.type, recursive(body(bodyCompiled)))),
+                  compiled.type functionLineTo rhsType)))
+        }
+      }
+    }
+  } ?: compileError(script("function" lineTo script("repeating")))
+
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
-  beginFunctionCompiler(isRepeat = false)
-    .plus(script)
-    .compiledFunction
-    .compiled
-    .let { apply(it) }
+  block.module
+    .bind(compiled.type)
+    .compiled(script)
+    .let { bodyCompiled ->
+      apply(
+        compiled(
+          compiled(
+            line(function(compiled.type, body(bodyCompiled))),
+            compiled.type functionLineTo bodyCompiled.type)))
+    }
 
 fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
-  beginFunctionCompiler(isRepeat = true)
-    .plus(script)
-    .compiledFunction
-    .compiled
-    .let { apply(it) }
+  script.matchInfix(doingName) { lhs, doingScript ->
+    lhs.matchPrefix(givingName) { givingScript ->
+      block.module.type(givingScript).let { rhsType ->
+        block.module
+          .plus(binding(compiled.type functionTo rhsType))
+          .bind(compiled.type)
+          .compiled(doingScript)
+          .as_(rhsType)
+          .let { bodyCompiled ->
+            apply(
+              compiled(
+                compiled(
+                  line(function(compiled.type, recursive(body(bodyCompiled)))),
+                  compiled.type functionLineTo rhsType)))
+          }
+      }
+    }
+  } ?: compileError(script("repeat"))
 
 fun <V> Compiler<V>.apply(rhs: Compiled<V>): Compiler<V> =
   set(compiled.apply(rhs))
@@ -238,6 +293,3 @@ fun <V> Compiler<V>.bind(type: Type): Compiler<V> =
 
 val <V> Compiler<V>.begin: Compiler<V> get() =
   block.module.block.compiler
-
-fun <V> Compiler<V>.beginFunctionCompiler(isRepeat: Boolean): FunctionCompiler<V> =
-  block.module.functionCompiler(compiled.type, isRepeat)

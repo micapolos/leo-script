@@ -158,7 +158,7 @@ class CompileTest {
       line(literal(10)),
       repeatName lineTo script(
         givingName lineTo script("ok"),
-        "ok" lineTo script()))
+        doingName lineTo script("ok")))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         nativeNumberCompiled(10.0.native)
@@ -172,7 +172,7 @@ class CompileTest {
       line(literal(10)),
       repeatName lineTo script(
         givingName lineTo nativeNumberType.script,
-        "number" lineTo script()))
+        doingName lineTo script("number")))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         nativeNumberCompiled(10.0.native)
@@ -185,7 +185,7 @@ class CompileTest {
       "ping" lineTo script("pong"),
       repeatName lineTo script(
         givingName lineTo script("ping" lineTo script("pong")),
-        "ping" lineTo script("pong")))
+        doingName lineTo script("ping" lineTo script("pong"))))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         compiled<Native>("ping" lineTo compiled("pong"))
