@@ -5,6 +5,7 @@ import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.eitherName
+import leo.expectName
 import leo.letName
 import leo.line
 import leo.lineTo
@@ -13,9 +14,11 @@ import leo.numberName
 import leo.pickName
 import leo.plusName
 import leo.script
+import leo.scriptLine
 import leo.switchName
 import leo.term.compiler.native.nativeNumberType
 import leo.term.compiler.native.nativeTextType
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.textName
 import leo.typeName
 import leo.typesName
@@ -144,5 +147,18 @@ class EvaluateTest {
       "pong" lineTo script())
       .evaluate
       .assertEqualTo(script(literal("OK")))
+  }
+
+  @Test
+  fun expect() {
+    script(
+      expectName lineTo script(numberName),
+      line(literal("foo")))
+      .evaluate
+      .assertEqualTo(
+        script(
+          "error" lineTo script(
+            nativeTextTypeLine.scriptLine,
+            "is" lineTo script("not" lineTo script("equal" lineTo nativeNumberType.script)))))
   }
 }

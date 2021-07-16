@@ -16,6 +16,7 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.exampleName
+import leo.expectName
 import leo.functionName
 import leo.giveName
 import leo.isEmpty
@@ -94,6 +95,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
+    expectName -> expect(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
@@ -163,6 +165,13 @@ fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
 
 fun <V> Compiler<V>.example(script: Script): Compiler<V> =
   block.module.compiled(script).let { this }
+
+fun <V> Compiler<V>.expect(script: Script): Compiler<V> =
+  expect(block.module.type(script))
+
+fun <V> Compiler<V>.expect(type: Type): Compiler<V> =
+  if (!compiled.type.isEmpty) compileError(script("expect"))
+  else copy(block = block.expect(type))
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->

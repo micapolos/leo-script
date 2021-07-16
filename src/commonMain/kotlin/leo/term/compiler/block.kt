@@ -8,6 +8,7 @@ import leo.TypeChoice
 import leo.TypeLine
 import leo.anyName
 import leo.atom
+import leo.base.ifNotNull
 import leo.choice
 import leo.choiceOrNull
 import leo.doName
@@ -27,6 +28,7 @@ import leo.script
 import leo.stack
 import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledFunction
+import leo.term.compiled.as_
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledLineStack
 import leo.term.compiled.compiledSelect
@@ -62,6 +64,7 @@ fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
   compiled
     .fold(paramStack) { fn(it.type, this) } // Is it correct?
     .fold(paramStack.reverse) { invoke(it) }
+    .ifNotNull(expectedTypeOrNull) { as_(it) }
 
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix(doName) { lhs, rhs ->
@@ -133,3 +136,7 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
 
 fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =
   copy(module = module.updateTypesBlock(fn))
+
+fun <V> Block<V>.expect(type: Type): Block<V> =
+  if (expectedTypeOrNull != null) compileError(script("expect"))
+  else copy(expectedTypeOrNull = type)
