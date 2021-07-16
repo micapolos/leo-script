@@ -1,0 +1,1 @@
+import operator;Z = lambda f: (lambda x: (lambda m: f(x(x))(m)))(lambda x: (lambda m: f(x(x))(m)));Z(lambda v0: (lambda v1: v1 if operator.lt(v1, 2) else operator.add(v0(operator.sub(v1, 2)), v0(operator.sub(v1, 1)))))(10)

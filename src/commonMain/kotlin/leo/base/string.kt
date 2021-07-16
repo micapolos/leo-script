@@ -56,3 +56,4 @@ val String.titleCase: String
     else substring(0..0).uppercase() + substring(1 until length)
 
 fun lines(vararg strings: String): String = strings.joinToString("\n")
+fun string(vararg strings: String): String = strings.joinToString("")

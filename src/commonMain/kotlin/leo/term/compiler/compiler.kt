@@ -51,7 +51,10 @@ import leo.term.compiled.line
 import leo.term.compiled.lineTo
 import leo.term.compiled.plus
 import leo.term.compiled.recursive
+import leo.term.compiler.python.pythonEnvironment
+import leo.term.compiler.python.scriptLine
 import leo.term.compiler.scheme.schemeEnvironment
+import leo.term.indexed.python.python
 import leo.term.indexed.scheme.scheme
 import leo.typesName
 
@@ -137,6 +140,7 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
   else script.matchPrefix { name, rhs ->
     when (name) {
       "scheme" -> set(environment.staticCompiled(script(rhs.compiled(schemeEnvironment).indexedExpression.scheme.toScriptLine)))
+      "python" -> set(environment.staticCompiled(script(rhs.compiled(pythonEnvironment).indexedExpression.python.scriptLine)))
       else -> compileError(script("compile" lineTo script(name)))
     }
   }?: compileError(script("compile" lineTo script))
