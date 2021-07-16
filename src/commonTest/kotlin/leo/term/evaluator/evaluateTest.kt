@@ -6,20 +6,28 @@ import leo.doName
 import leo.doingName
 import leo.dropName
 import leo.eitherName
+import leo.equalName
+import leo.givingName
+import leo.isName
 import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.natives.minusName
+import leo.noName
 import leo.numberName
 import leo.pickName
 import leo.plusName
+import leo.repeatName
 import leo.script
 import leo.switchName
 import leo.term.compiler.native.nativeNumberType
 import leo.term.compiler.native.nativeTextType
 import leo.textName
+import leo.toName
 import leo.typeName
 import leo.typesName
+import leo.yesName
 import kotlin.test.Test
 
 class EvaluateTest {
@@ -133,6 +141,29 @@ class EvaluateTest {
   }
 
   @Test
+  fun repeat() {
+    script(
+      line(literal(10)),
+      "countdown" lineTo script(),
+      repeatName lineTo script(
+        givingName lineTo script(textName),
+        doingName lineTo script(
+          "countdown" lineTo script(),
+          "number" lineTo script(),
+          isName lineTo script(equalName lineTo script(toName lineTo script(literal(0)))),
+          switchName lineTo script(
+            yesName lineTo script(doingName lineTo script(literal("OK"))),
+            noName lineTo script(
+              doingName lineTo script(
+                "countdown" lineTo script(),
+                "number" lineTo script(),
+                minusName lineTo script(literal(1)),
+                "countdown" lineTo script()))))))
+      .evaluate
+      .assertEqualTo(script(literal("OK")))
+  }
+
+  @Test
   fun types() {
     script(
       typesName lineTo script(
@@ -176,5 +207,31 @@ class EvaluateTest {
       "ugly" lineTo script("bastard"))
       .evaluate
       .assertEqualTo(script("more" lineTo script("ugly" lineTo script("bastard"))))
+  }
+
+  @Test
+  fun letRepeat() {
+    script(
+      letName lineTo script(
+        numberName lineTo script(),
+        "countdown" lineTo script(),
+        repeatName lineTo script(
+          givingName lineTo script(textName),
+          doingName lineTo script(
+            "countdown" lineTo script(),
+            "number" lineTo script(),
+            isName lineTo script(equalName lineTo script(toName lineTo script(literal(0)))),
+            switchName lineTo script(
+              yesName lineTo script(doingName lineTo script(literal("OK"))),
+              noName lineTo script(
+                doingName lineTo script(
+                  "countdown" lineTo script(),
+                  "number" lineTo script(),
+                  minusName lineTo script(literal(1)),
+                  "countdown" lineTo script())))))),
+      line(literal(10)),
+      "countdown" lineTo script())
+      .evaluate
+      .assertEqualTo(script(literal("OK")))
   }
 }

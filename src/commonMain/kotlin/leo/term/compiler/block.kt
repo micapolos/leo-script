@@ -42,6 +42,7 @@ import leo.term.compiled.invoke
 import leo.term.compiled.line
 import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
+import leo.term.compiled.recFn
 import leo.term.compiler.native.Native
 import leo.term.variable
 import leo.type
@@ -95,24 +96,24 @@ fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
     }
   }
 
-fun <V> Block<V>.plusLetRepeat(lhs: Script, rhs: Script): Block<V> =
-  rhs.matchInfix(doingName) { lhs, doingScript ->
-    lhs.matchPrefix(givingName) { givingScript ->
-      module.type(lhs).let { lhsType ->
-        module.type(givingScript).let { rhsType ->
+fun <V> Block<V>.plusLetRepeat(repeatLhs: Script, repeatRhs: Script): Block<V> =
+  repeatRhs.matchInfix(doingName) { doingLhs, doingRhs ->
+    doingLhs.matchPrefix(givingName) { givingRhs ->
+      module.type(repeatLhs).let { lhsType ->
+        module.type(givingRhs).let { rhsType ->
           module
             .plus(binding(lhsType functionTo rhsType))
             .bind(lhsType)
-            .compiled(doingScript)
+            .compiled(doingRhs)
             .let { rhsCompiled ->
               this
                 .plus(binding(lhsType functionTo rhsCompiled.as_(rhsType).type))
-                .plus(fn(lhsType, rhsCompiled))
+                .plus(recFn(lhsType, rhsCompiled))
           }
         }
       }
     }
-  } ?: compileError(script("let" lineTo lhs.plus("repeat" lineTo rhs)))
+  } ?: compileError(script("let" lineTo repeatLhs.plus("repeat" lineTo repeatRhs)))
 
 fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
   this

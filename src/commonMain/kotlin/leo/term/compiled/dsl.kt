@@ -93,6 +93,12 @@ fun <V> Compiled<V>.switch(type: Type, vararg cases: Compiled<V>): Compiled<V> =
 fun <V> fn(type: Type, body: Body<V>): Compiled<V> =
   compiled(fnLine(type, body))
 
+fun <V> recFn(type: Type, body: Compiled<V>): Compiled<V> =
+  compiled(recFnLine(type, body))
+
+fun <V> recFnLine(type: Type, body: Compiled<V>): CompiledLine<V> =
+  compiled(line(function(type, recursive(body(body)))), type functionLineTo body.type)
+
 fun <V> fn(type: Type, body: Compiled<V>): Compiled<V> =
   compiled(fnLine(type, body))
 
