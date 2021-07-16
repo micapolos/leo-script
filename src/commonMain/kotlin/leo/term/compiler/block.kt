@@ -43,9 +43,12 @@ import leo.type
 
 data class Block<V>(
   val module: Module<V>,
-  val paramStack: Stack<Compiled<V>>) { override fun toString() = toScriptLine.toString() }
+  val paramStack: Stack<Compiled<V>>,
+  val expectedTypeOrNull: Type?) {
+  override fun toString() = toScriptLine.toString()
+}
 
-val <V> Module<V>.block get() = Block(this, stack())
+val <V> Module<V>.block get() = Block(this, stack(), null)
 
 val <V> Block<V>.context get() = module.context
 
@@ -94,7 +97,8 @@ fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
 fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
     module.bind(compiled.type),
-    paramStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) })
+    paramStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) },
+    expectedTypeOrNull)
 
 fun <V> Block<V>.plusCast(type: Type): Block<V> =
   plusCast(stack(), type)
