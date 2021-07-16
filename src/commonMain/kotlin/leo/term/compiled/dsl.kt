@@ -202,6 +202,9 @@ fun <V> Compiled<V>.lineOrNull(index: Int): CompiledLine<V>? =
     compiled(line(get(this, index)), typeLine)
   }
 
+fun <V> Compiled<V>.lineCompiled(index: Int): Compiled<V> =
+  compiled(line(index))
+
 fun <V> Compiled<V>.line(index: Int): CompiledLine<V> =
   lineOrNull(index)?: compileError(script("line"))
 

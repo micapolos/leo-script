@@ -118,7 +118,28 @@ class DslTest {
   }
 
   @Test
-  fun getOrNull_expression() {
+  fun getOrNull_lines() {
+    val compiled = compiled(
+      expression<Unit>(leo.term.variable(0)),
+      type(
+        "x" lineTo type("zero"),
+        "y" lineTo type("one")))
+
+    compiled
+      .getOrNull("x")
+      .assertEqualTo(compiled.lineCompiled(0))
+
+    compiled
+      .getOrNull("y")
+      .assertEqualTo(compiled.lineCompiled(1))
+
+    compiled
+      .getOrNull("z")
+      .assertNull
+  }
+
+  @Test
+  fun getOrNull_inner() {
     val compiled = compiled(
       expression<Unit>(leo.term.variable(0)),
       type(
@@ -127,12 +148,35 @@ class DslTest {
           "y" lineTo type("one"))))
 
     compiled
+      .getOrNull("x")
+      .assertEqualTo(compiled.rhs.lineCompiled(0))
+
+    compiled
       .getOrNull("y")
-      .assertEqualTo(compiled.getOrNull(1))
+      .assertEqualTo(compiled.rhs.lineCompiled(1))
+
+    compiled
+      .getOrNull("z")
+      .assertNull
+  }
+
+  @Test
+  fun getOrNull_twoLevelsInner() {
+    val compiled = compiled(
+      expression<Unit>(leo.term.variable(0)),
+      type(
+        "my" lineTo type(
+          "point" lineTo type(
+            "x" lineTo type("zero"),
+            "y" lineTo type("one")))))
 
     compiled
       .getOrNull("x")
-      .assertEqualTo(compiled.getOrNull(0))
+      .assertEqualTo(compiled.rhs.rhs.lineCompiled(0))
+
+    compiled
+      .getOrNull("y")
+      .assertEqualTo(compiled.rhs.rhs.lineCompiled(1))
 
     compiled
       .getOrNull("z")
