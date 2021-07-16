@@ -16,9 +16,7 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.exampleName
-import leo.expectingName
 import leo.functionName
-import leo.functionTo
 import leo.giveName
 import leo.isEmpty
 import leo.isSimple
@@ -29,7 +27,7 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.plus
 import leo.quoteName
-import leo.recursivelyName
+import leo.repeatName
 import leo.repeatingName
 import leo.reverse
 import leo.script
@@ -39,6 +37,7 @@ import leo.switchName
 import leo.term.compiled.Body
 import leo.term.compiled.Compiled
 import leo.term.compiled.CompiledLine
+import leo.term.compiled.apply
 import leo.term.compiled.as_
 import leo.term.compiled.body
 import leo.term.compiled.compiled
@@ -97,12 +96,11 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
-    expectingName -> expecting(field.rhs)
     giveName -> give(field.rhs)
     functionName -> function(field.rhs)
     letName -> let(field.rhs)
     quoteName -> quote(field.rhs)
-    recursivelyName -> recursively(field.rhs)
+    repeatName -> repeat(field.rhs)
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
     else -> null
@@ -161,20 +159,27 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
           "doing" lineTo script("any" lineTo script("compiled"))))))))
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
-  do_(body(block.module.bind(compiled.type).compiled(script)))
+  beginFunctionCompiler(isRepeat = false)
+    .plus(script)
+    .compiledFunction
+    .compiled
+    .let { apply(it) }
+
+fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
+  beginFunctionCompiler(isRepeat = true)
+    .plus(script)
+    .compiledFunction
+    .compiled
+    .let { apply(it) }
+
+fun <V> Compiler<V>.apply(rhs: Compiled<V>): Compiler<V> =
+  set(compiled.apply(rhs))
 
 fun <V> Compiler<V>.do_(body: Body<V>): Compiler<V> =
   set(compiled.do_(body))
 
 fun <V> Compiler<V>.example(script: Script): Compiler<V> =
   block.module.compiled(script).let { this }
-
-fun <V> Compiler<V>.expecting(script: Script): Compiler<V> =
-  expecting(block.module.type(script))
-
-fun <V> Compiler<V>.expecting(type: Type): Compiler<V> =
-  if (!compiled.type.isEmpty) compileError(script("expect"))
-  else copy(block = block.expecting(type))
 
 fun <V> Compiler<V>.give(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->
@@ -202,15 +207,6 @@ fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(block.plusLet(script))
 
-fun <V> Compiler<V>.recursively(script: Script): Compiler<V> =
-  script.matchPrefix(expectingName) { expectingScript ->
-    recursivelyExpecting(block.module.type(expectingScript))
-  }?: compileError(script("recursively"))
-
-fun <V> Compiler<V>.recursivelyExpecting(type: Type): Compiler<V> =
-  if (!compiled.type.isEmpty) compileError(script("recursively"))
-  else copy(block = block.recursivelyExpecting(compiled.type functionTo type))
-
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.type.switchChoice.let { choice ->
     set(
@@ -234,3 +230,15 @@ fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
 val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =
     block.seal(compiled)
+
+fun <V> Compiler<V>.plus(binding: Binding): Compiler<V> =
+  set(block.plus(binding))
+
+fun <V> Compiler<V>.bind(type: Type): Compiler<V> =
+  set(block.bind(type))
+
+val <V> Compiler<V>.begin: Compiler<V> get() =
+  block.module.block.compiler
+
+fun <V> Compiler<V>.beginFunctionCompiler(isRepeat: Boolean): FunctionCompiler<V> =
+  FunctionCompiler(compiled.type, isRepeat, rhsTypeOrNull = null, isEmpty = true, begin)

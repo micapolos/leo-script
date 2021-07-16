@@ -5,6 +5,7 @@ import leo.Type
 import leo.TypeLine
 import leo.applyName
 import leo.array
+import leo.atom
 import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
@@ -12,6 +13,7 @@ import leo.functionLineTo
 import leo.functionOrNull
 import leo.getFromBottom
 import leo.isEmpty
+import leo.line
 import leo.lineTo
 import leo.linkOrNull
 import leo.mapIt
@@ -251,3 +253,6 @@ fun <V> CompiledSelect<V>.drop(typeLine: TypeLine): CompiledSelect<V> =
 val <V> CompiledSelect<V>.compiled: Compiled<V> get() =
   if (lineIndexedOrNull == null) compileError(script("not" lineTo script("selected")))
   else compiled(expression(select(choice, lineIndexedOrNull)), type(choice))
+
+val <V> CompiledFunction<V>.compiled: Compiled<V> get() =
+  compiled(compiled(line(function), line(atom(typeFunction))))

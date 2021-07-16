@@ -3,15 +3,18 @@ package leo.term.compiler
 import leo.anyTextScriptLine
 import leo.applyName
 import leo.asName
+import leo.atom
 import leo.base.assertEqualTo
 import leo.choice
 import leo.doName
 import leo.doingName
 import leo.dropName
+import leo.function
 import leo.functionLineTo
 import leo.functionName
 import leo.getName
 import leo.giveName
+import leo.givingName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -19,6 +22,7 @@ import leo.numberName
 import leo.pickName
 import leo.plusName
 import leo.quoteName
+import leo.repeatName
 import leo.script
 import leo.switchName
 import leo.term.compiled.apply
@@ -39,6 +43,7 @@ import leo.term.compiled.nativeLine
 import leo.term.compiled.nativeNumberCompiled
 import leo.term.compiled.nativeNumberCompiledLine
 import leo.term.compiled.pick
+import leo.term.compiled.recursive
 import leo.term.compiled.select
 import leo.term.compiled.switch
 import leo.term.compiler.native.DoublePlusDoubleNative
@@ -145,6 +150,58 @@ class CompileTest {
         nativeNumberCompiled(10.0.native)
           .apply(fn(nativeNumberType, compiled("ok")))
       )
+  }
+
+  @Test
+  fun repeat_constant() {
+    script(
+      line(literal(10)),
+      repeatName lineTo script(
+        givingName lineTo script("ok"),
+        "ok" lineTo script()))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        nativeNumberCompiled(10.0.native)
+          .apply(fn(nativeNumberType, recursive(body(compiled("ok")))))
+      )
+  }
+
+  @Test
+  fun repeat_variable() {
+    script(
+      line(literal(10)),
+      repeatName lineTo script(
+        givingName lineTo nativeNumberType.script,
+        "number" lineTo script()))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        nativeNumberCompiled(10.0.native)
+          .apply(fn(nativeNumberType, recursive(body(compiled(expression(variable(0)), nativeNumberType))))))
+  }
+
+  @Test
+  fun repeat_recursion() {
+    script(
+      "ping" lineTo script("pong"),
+      repeatName lineTo script(
+        givingName lineTo script("ping" lineTo script("pong")),
+        "ping" lineTo script("pong")))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled<Native>("ping" lineTo compiled("pong"))
+          .apply(
+            fn(
+              type("ping" lineTo type("pong")),
+              recursive(
+                body(
+                  compiled<Native>("ping" lineTo compiled("pong"))
+                    .apply(
+                      compiled(
+                        expression(variable(1)),
+                        type(line(atom(
+                          function(
+                            type("ping" lineTo type("pong")),
+                            type("ping" lineTo type("pong")))))))))))))
   }
 
   @Test
