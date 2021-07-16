@@ -13,6 +13,7 @@ import leo.map
 import leo.size
 import leo.switchChoice
 import leo.term.compiled.Compiled
+import leo.term.compiled.rhs
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
 import leo.term.indexed.function
@@ -77,13 +78,13 @@ val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =
   lhs.type.switchChoice.let { choice ->
     if (choice.isSimple)
       if (choice.lineStack.size == 2)
-        lhs.indexedExpression.ifThenElse(
+        lhs.rhs.indexedExpression.ifThenElse(
           caseStack.getFromBottom(0)!!.indexedExpression,
           caseStack.getFromBottom(1)!!.indexedExpression)
       else
-        lhs.indexedExpression.switch(*caseStack.map { indexedExpression }.array)
+        lhs.rhs.indexedExpression.switch(*caseStack.map { indexedExpression }.array)
     else
-      lhs.indexedExpression.indirect {
+      lhs.rhs.indexedExpression.indirect {
         if (choice.lineStack.size == 2)
           it.get(0).ifThenElse(
             expression(function(1, caseStack.getFromBottom(0)!!.indexedExpression)).invoke(it.get(1)),
