@@ -6,10 +6,12 @@ import leo.atom
 import leo.base.notNullIf
 import leo.line
 import leo.lineCount
+import leo.nameOrNull
 import leo.term.IndexVariable
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiled
 import leo.term.compiled.expression
+import leo.term.compiled.getOrNull
 import leo.term.compiled.invoke
 import leo.type
 
@@ -36,7 +38,9 @@ fun <V> TypeFunction.resolveOrNull(variable: IndexVariable, compiled: Compiled<V
   }
 
 fun <V> TypeGiven.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
-  TODO()
+  compiled.type.nameOrNull?.let { name ->
+    compiled(expression<V>(variable), type).getOrNull(name)
+  }
 
 val Binding.indexCount: Int get() =
   when (this) {
