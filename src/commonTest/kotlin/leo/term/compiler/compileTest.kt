@@ -133,9 +133,9 @@ class CompileTest {
       )
       .assertEqualTo(
         compiled(
-          "x" lineTo compiled("zero" lineTo compiled())
-        )
-      )
+          "point" lineTo compiled(
+            "x" lineTo compiled<Native>("zero"),
+            "y" lineTo compiled("one"))).get(0))
   }
 
   @Test

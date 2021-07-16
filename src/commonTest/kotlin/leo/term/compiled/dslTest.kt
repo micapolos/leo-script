@@ -7,6 +7,7 @@ import leo.base.assertNull
 import leo.functionType
 import leo.lineTo
 import leo.numberTypeLine
+import leo.structure
 import leo.textTypeLine
 import leo.type
 import kotlin.test.Test
@@ -64,11 +65,11 @@ class DslTest {
 
     compiled
       .line(0)
-      .assertEqualTo("x" lineTo compiled("zero"))
+      .assertEqualTo(compiled(line(get(compiled, 0)), "x" lineTo type("zero")))
 
     compiled
       .line(1)
-      .assertEqualTo("y" lineTo compiled("one"))
+      .assertEqualTo(compiled(line(get(compiled, 1)), "y" lineTo type("one")))
 
     assertFails {
       compiled.line(2)
@@ -107,11 +108,11 @@ class DslTest {
 
     compiled
       .getOrNull("x")
-      .assertEqualTo(compiled("x" lineTo compiled("zero")))
+      .assertEqualTo(compiled(compiled.rhs.line(0)))
 
     compiled
       .getOrNull("y")
-      .assertEqualTo(compiled("y" lineTo compiled("one")))
+      .assertEqualTo(compiled(compiled.rhs.line(1)))
 
     compiled.getOrNull("z").assertNull
   }
@@ -158,7 +159,7 @@ class DslTest {
 
     compiled
       .compiledTupleOrNull
-      .assertEqualTo(compiledTuple(compiled("tuple" lineTo compiled).getLine(0)))
+      .assertEqualTo(compiled(tuple(line(get(compiled, 0))), structure("x" lineTo type("zero"))))
   }
 
   @Test

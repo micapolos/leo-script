@@ -133,9 +133,7 @@ fun <V> Compiled<V>.resolvedGetLineOrNull(name: String): CompiledLine<V>? =
   }
 
 fun <V> Compiled<V>.getLineOrNull(name: String): CompiledLine<V>? =
-  null
-    ?: tupleGetLineOrNull(name)
-    ?: resolvedGetLineOrNull(name)
+  rhsOrNull?.lineOrNull(name)
 
 fun <V> Compiled<V>.getOrNull(name: String): Compiled<V>? =
   getLineOrNull(name)?.let { compiled(it) }
@@ -150,7 +148,7 @@ fun <V> Compiled<V>.getLine(index: Int): CompiledLine<V> =
   getLineOrNull(index) ?: compileError(script("get" lineTo script("line")))
 
 fun <V> Compiled<V>.getLineOrNull(index: Int): CompiledLine<V>? =
-  type.getLineOrNull(index)?.let { compiled(line(get(this, index)), it) }
+  rhsOrNull?.line(index)
 
 fun <V> Compiled<V>.getOrNull(index: Int): Compiled<V>? =
   getLineOrNull(index)?.let { compiled(it) }
@@ -197,10 +195,13 @@ fun <V, R> Compiled<V>.prefix(name: String, fn: (Compiled<V>) -> R?): R? =
     }
   }
 
+fun <V> Compiled<V>.lineOrNull(index: Int): CompiledLine<V>? =
+  type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
+    compiled(line(get(this, index)), typeLine)
+  }
+
 fun <V> Compiled<V>.line(index: Int): CompiledLine<V> =
-  expression.tupleOrNull
-    ?.let { tuple -> compiled(tuple.lineStack.getFromBottom(index)!!, type.structureOrNull!!.lineStack.getFromBottom(index)!!) }
-    ?: compiled(line(get(this, index)), type.structureOrNull!!.lineStack.getFromBottom(index)!!)
+  lineOrNull(index)?: compileError(script("line"))
 
 fun <V> Compiled<V>.lineOrNull(name: String): CompiledLine<V>? =
   type.structureOrNull?.indexOrNull(name)?.let { line(it) }
@@ -219,7 +220,7 @@ val <V> Compiled<V>.tupleCompiledTupleOrNull: CompiledTuple<V>? get() =
 
 val <V> Compiled<V>.resolvedCompiledTupleOrNull: CompiledTuple<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    compiled(tuple(line(get(compiled("tuple" lineTo this), 0))), typeStructure(typeLine))
+    compiled(tuple(line(get(this, 0))), typeStructure(typeLine))
   }
 
 val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
@@ -271,7 +272,7 @@ val <V> CompiledFunction<V>.compiledLine: CompiledLine<V> get() =
   compiled(line(function), line(atom(typeFunction)))
 
 val <V> Compiled<V>.rhsOrNull: Compiled<V>? get() =
-  type.contentOrNull?.let { compiled(expression, it) }
+  type.contentOrNull?.let { compiled(expression(content(this)), it) }
 
 val <V> Compiled<V>.rhs: Compiled<V> get() =
   rhsOrNull ?: compileError(script("rhs"))
