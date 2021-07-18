@@ -16,11 +16,11 @@ import leo.fieldOrNull
 import leo.fold
 import leo.functionTo
 import leo.givingName
-import leo.line
 import leo.lineTo
 import leo.make
 import leo.matchInfix
 import leo.matchPrefix
+import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.plus
 import leo.push
@@ -30,16 +30,15 @@ import leo.ropeOrNull
 import leo.script
 import leo.stack
 import leo.term.compiled.Compiled
-import leo.term.compiled.CompiledFunction
 import leo.term.compiled.as_
+import leo.term.compiled.bind
+import leo.term.compiled.binding
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledLineStack
 import leo.term.compiled.compiledSelect
 import leo.term.compiled.drop
 import leo.term.compiled.expression
 import leo.term.compiled.fn
-import leo.term.compiled.invoke
-import leo.term.compiled.line
 import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.recFn
@@ -49,24 +48,25 @@ import leo.type
 
 data class Block<V>(
   val module: Module<V>,
-  val paramStack: Stack<Compiled<V>>) {
+  val bindingStack: Stack<leo.term.compiled.Binding<V>>) {
   override fun toString() = toScriptLine.toString()
 }
 
-val <V> Module<V>.block get() = Block(this, paramStack = stack())
+val <V> Module<V>.block get() = Block(this, bindingStack = stack())
 
 val <V> Block<V>.context get() = module.context
 
 fun <V> Block<V>.plus(binding: Binding): Block<V> =
   copy(module = module.plus(binding))
 
-fun <V> Block<V>.plus(compiled: Compiled<V>): Block<V> =
-  copy(paramStack = paramStack.push(compiled))
+fun <V> Block<V>.plus(binding: leo.term.compiled.Binding<V>): Block<V> =
+  copy(bindingStack = bindingStack.push(binding))
 
 fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
-  compiled
-    .fold(paramStack) { fn(it.type, this) } // Is it correct?
-    .fold(paramStack.reverse) { invoke(it) }
+  // TODO: Correct order?
+  compiled.fold(bindingStack.reverse) {
+    compiled(expression(bind(it, this)), type)
+  }
 
 fun <V> Block<V>.plusLet(script: Script): Block<V> =
   script.matchInfix { lhs, name, rhs ->
@@ -83,7 +83,7 @@ fun <V> Block<V>.plusLetBe(lhs: Script, rhs: Script): Block<V> =
     module.compiled(rhs).let { rhsCompiled ->
       this
         .plus(binding(constant(lhsType, rhsCompiled.type)))
-        .plus(rhsCompiled)
+        .plus(binding(lhsType, rhsCompiled))
     }
   }
 
@@ -92,7 +92,7 @@ fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
     module.bind(lhsType).compiled(rhs).let { rhsCompiled ->
       this
         .plus(binding(lhsType functionTo rhsCompiled.type))
-        .plus(fn(lhsType, rhsCompiled))
+        .plus(binding(lhsType, fn(lhsType, rhsCompiled)))
     }
   }
 
@@ -108,22 +108,19 @@ fun <V> Block<V>.plusLetRepeat(repeatLhs: Script, repeatRhs: Script): Block<V> =
             .let { rhsCompiled ->
               this
                 .plus(binding(lhsType functionTo rhsCompiled.as_(rhsType).type))
-                .plus(recFn(lhsType, rhsCompiled))
+                .plus(binding(lhsType, recFn(lhsType, rhsCompiled)))
           }
         }
       }
     }
   } ?: compileError(script("let" lineTo repeatLhs.plus("repeat" lineTo repeatRhs)))
 
-fun <V> Block<V>.let(compiledFunction: CompiledFunction<V>): Block<V> =
-  this
-    .plus(binding(compiledFunction.typeFunction))
-    .plus(compiled(compiled(line(compiledFunction.function), line(atom(compiledFunction.typeFunction)))))
-
 fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
     module.bind(compiled.type),
-    paramStack.fold(compiled.compiledLineStack.reverse) { push(compiled(it)) })
+    bindingStack.fold(compiled.compiledLineStack.reverse) {
+      push(binding(type(it.typeLine.nameOrNull!!), compiled(it)))
+    })
 
 fun <V> Block<V>.bind(type: Type): Block<V> =
   copy(module = module.bind(type))
@@ -151,13 +148,15 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
         type(rope.current).fold(nameStack) { make(it) } functionTo
             rope.stack.reverse.choice.type.fold(nameStack) { make(it) }))
     .plus(
-      fn(
+      binding(
         type(rope.current),
-        compiledSelect<V>()
-          .fold(rope.head) { drop(it) }
-          .pick(compiled(expression<V>(variable(0)), type(rope.current)).onlyCompiledLine)
-          .fold(rope.tail.reverse) { drop(it) }
-          .compiled))
+        fn(
+          type(rope.current),
+          compiledSelect<V>()
+            .fold(rope.head) { drop(it) }
+            .pick(compiled(expression<V>(variable(0)), type(rope.current)).onlyCompiledLine)
+            .fold(rope.tail.reverse) { drop(it) }
+            .compiled)))
 
 fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =
   copy(module = module.updateTypesBlock(fn))
