@@ -78,6 +78,21 @@ class IndexedTest {
   }
 
   @Test
+  fun function_typeVariable() {
+    fn(
+      type("x" lineTo type("one"), "y" lineTo type("two")),
+      compiled(expression<Nothing>(variable(type("x"))), type("x" lineTo type("one"))))
+      .indexedExpression
+      .assertEqualTo(expression(function(2, expression(variable(1)))))
+
+    fn(
+      type("x" lineTo type("one"), "y" lineTo type("two")),
+      compiled(expression<Nothing>(variable(type("y"))), type("y" lineTo type("two"))))
+      .indexedExpression
+      .assertEqualTo(expression(function(2, expression(variable(0)))))
+  }
+
+  @Test
   fun function_variables() {
     fn(
       type(nativeNumberTypeLine, nativeTextTypeLine),
@@ -251,23 +266,4 @@ class IndexedTest {
       .indexedExpression(scope(type("one"), type("two")))
       .assertEqualTo(expression(variable(0)))
   }
-
-//  @Test
-//  fun switchComplex() {
-//    compiled(
-//      "is" lineTo compiledSelect<String>()
-//        .pick("yes" lineTo nativeCompiled("foo", textType))
-//        .drop("no" lineTo textType)
-//        .compiled)
-//      .switch(
-//        textType,
-//        compiled<String>(expression(leo.term.variable(0)), type("yes" lineTo textType)).getOrNull(textName)!!,
-//        compiled<String>(expression(leo.term.variable(0)), type("no" lineTo textType)).getOrNull(textName)!!)
-//      .indexedExpression
-//      .assertEqualTo(
-//        expression<String>(true)
-//          .switch(
-//            nativeExpression("OK"),
-//            nativeExpression("fail")))
-//  }
 }
