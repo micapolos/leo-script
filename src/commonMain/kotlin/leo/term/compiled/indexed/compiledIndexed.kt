@@ -13,6 +13,7 @@ import leo.map
 import leo.size
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiledChoice
+import leo.term.compiled.lineIndex
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
 import leo.term.indexed.function
@@ -114,7 +115,7 @@ val <V> leo.term.compiled.Get<V>.indexedExpression: Expression<V> get() =
   when (lhs.type.lineCount) {
     0 -> lhs.indexedExpression
     1 -> lhs.indexedExpression
-    else -> lhs.indexedExpression.get(index)
+    else -> lhs.indexedExpression.get(lhs.type.lineIndex(name))
   }
 
 val <V> leo.term.compiled.Content<V>.indexedExpression: Expression<V> get() =

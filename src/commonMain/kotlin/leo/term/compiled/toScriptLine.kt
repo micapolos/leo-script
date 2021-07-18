@@ -73,10 +73,8 @@ fun <V> Function<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     "parameter" lineTo script(paramType.scriptLine),
     body.toScriptLine(fn))
 
-fun <V> Get<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
-  "get" lineTo script(
-    lhs.toScriptLine(fn),
-    "index" lineTo script(literal(index)))
+fun <V> Get<V>.toScriptLine(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): ScriptLine =
+  "get" lineTo script(name)
 
 fun <V> Body<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   "body" lineTo script(

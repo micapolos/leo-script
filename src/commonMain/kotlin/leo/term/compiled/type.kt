@@ -11,9 +11,18 @@ import leo.base.the
 import leo.fieldOrNull
 import leo.getFromBottom
 import leo.lineSeq
+import leo.lineTo
 import leo.nameOrNull
 import leo.onlyLineOrNull
+import leo.script
 import leo.structureOrNull
+import leo.term.compiler.compileError
+
+fun Type.lineIndex(name: String): Int =
+  lineIndexOrNull(name) ?: compileError(script("line" lineTo script(name)))
+
+fun Type.lineIndexOrNull(name: String): Int? =
+  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull?.index
 
 fun Type.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
   structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull

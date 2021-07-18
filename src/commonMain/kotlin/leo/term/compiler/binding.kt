@@ -24,6 +24,9 @@ data class TypeGiven(val type: Type)
 
 fun binding(constant: Constant): Binding = ConstantBinding(constant)
 fun binding(function: TypeFunction): Binding = FunctionBinding(function)
+fun binding(given: TypeGiven): Binding = GivenBinding(given)
+
+fun given(type: Type) = TypeGiven(type)
 
 fun <V> Binding.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   when (this) {

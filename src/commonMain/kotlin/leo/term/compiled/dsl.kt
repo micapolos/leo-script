@@ -19,6 +19,7 @@ import leo.line
 import leo.lineTo
 import leo.linkOrNull
 import leo.mapIt
+import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.plus
@@ -130,7 +131,7 @@ fun <V> Compiled<V>.tupleGetLineOrNull(name: String): CompiledLine<V>? =
 
 fun <V> Compiled<V>.resolvedGetLineOrNull(name: String): CompiledLine<V>? =
   type.contentOrNull?.indexedLineOrNull(name)?.let { indexedLine ->
-    compiled(line(get(this, indexedLine.index)), indexedLine.value)
+    compiled(line(get(this, name)), indexedLine.value)
   }
 
 fun <V> Compiled<V>.getLineOrNull(name: String): CompiledLine<V>? =
@@ -200,7 +201,9 @@ fun <V, R> Compiled<V>.prefix(name: String, fn: (Compiled<V>) -> R?): R? =
 
 fun <V> Compiled<V>.lineOrNull(index: Int): CompiledLine<V>? =
   type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
-    compiled(line(get(this, index)), typeLine)
+    typeLine.nameOrNull?.let { name ->
+      compiled(line(get(this, name)), typeLine)
+    }
   }
 
 fun <V> Compiled<V>.lineCompiled(index: Int): Compiled<V> =
@@ -226,7 +229,9 @@ val <V> Compiled<V>.tupleCompiledTupleOrNull: CompiledTuple<V>? get() =
 
 val <V> Compiled<V>.resolvedCompiledTupleOrNull: CompiledTuple<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    compiled(tuple(line(get(this, 0))), typeStructure(typeLine))
+    typeLine.nameOrNull?.let { name ->
+      compiled(tuple(line(get(this, name))), typeStructure(typeLine))
+    }
   }
 
 val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
@@ -248,9 +253,11 @@ fun <V> Fragment<V>.plus(line: Line<V>): Fragment<V> =
 
 val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    null
-      ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
-      ?: compiled(line(get(this, 0)), typeLine)
+    typeLine.nameOrNull?.let { name ->
+      null
+        ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
+        ?: compiled(line(get(this, name)), typeLine)
+    }
   }
 
 val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
