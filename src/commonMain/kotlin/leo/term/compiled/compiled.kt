@@ -33,9 +33,11 @@ sealed class Expression<out V>
 data class TupleExpression<out V>(val tuple: Tuple<V>): Expression<V>()
 data class ApplyExpression<V>(val apply: Apply<V>): Expression<V>()
 data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>()
+data class TypeVariableExpression<out V>(val variable: TypeVariable): Expression<V>()
 data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
 data class ContentExpression<V>(val content: Content<V>): Expression<V>()
+data class BindExpression<V>(val bind: Bind<V>): Expression<V>()
 
 data class Tuple<out V>(val lineStack: Stack<Line<V>>)
 
@@ -54,6 +56,9 @@ data class Get<out V>(val lhs: Compiled<V>, val name: String)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
 data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
 data class Content<out V>(val lhs: Compiled<V>)
+data class Binding<out V>(val type: Type, val compiled: Compiled<V>)
+data class Bind<out V>(val binding: Binding<V>, val compiled: Compiled<V>)
+data class TypeVariable(val type: Type)
 
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)
@@ -62,6 +67,8 @@ fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(
 fun <V> expression(select: Select<V>): Expression<V> = SelectExpression(select)
 fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
 fun <V> expression(content: Content<V>): Expression<V> = ContentExpression(content)
+fun <V> expression(bind: Bind<V>): Expression<V> = BindExpression(bind)
+fun <V> expression(variable: TypeVariable): Expression<V> = TypeVariableExpression(variable)
 
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)
@@ -83,6 +90,9 @@ fun <V> get(lhs: Compiled<V>, name: String) = Get(lhs, name)
 fun <V> select(choice: TypeChoice, caseOrNull: Case<V>) = Select(choice, caseOrNull)
 fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(*cases))
 fun <V> content(lhs: Compiled<V>) = Content(lhs)
+fun <V> binding(type: Type, compiled: Compiled<V>) = Binding(type, compiled)
+fun <V> bind(binding: Binding<V>, compiled: Compiled<V>) = Bind(binding, compiled)
+fun variable(type: Type) = TypeVariable(type)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)

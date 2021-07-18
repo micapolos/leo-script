@@ -4,12 +4,13 @@ import leo.base.assertEqualTo
 import leo.empty
 import leo.functionLineTo
 import leo.lineTo
-import leo.numberType
-import leo.numberTypeLine
+import leo.term.compiled.bind
+import leo.term.compiled.binding
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledSelect
 import leo.term.compiled.compiledVariable
 import leo.term.compiled.drop
+import leo.term.compiled.expression
 import leo.term.compiled.fn
 import leo.term.compiled.invoke
 import leo.term.compiled.lineTo
@@ -17,7 +18,10 @@ import leo.term.compiled.nativeCompiled
 import leo.term.compiled.nativeCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.switch
+import leo.term.compiled.variable
+import leo.term.compiler.native.nativeNumberType
 import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextType
 import leo.term.compiler.native.nativeTextTypeLine
 import leo.term.indexed.expression
 import leo.term.indexed.function
@@ -26,7 +30,6 @@ import leo.term.indexed.invoke
 import leo.term.indexed.nativeExpression
 import leo.term.indexed.switch
 import leo.textType
-import leo.textTypeLine
 import leo.type
 import leo.variable
 import kotlin.test.Test
@@ -62,14 +65,14 @@ class IndexedTest {
 
   @Test
   fun function_constant() {
-    fn(numberType, nativeCompiled("foo", textTypeLine))
+    fn(nativeNumberType, nativeCompiled("foo", nativeTextTypeLine))
       .indexedExpression
       .assertEqualTo(expression(function(1, nativeExpression("foo"))))
   }
 
   @Test
   fun function_variable() {
-    fn(numberType, compiledVariable<Nothing>(0, numberType))
+    fn(nativeNumberType, compiledVariable<Nothing>(0, nativeNumberType))
       .indexedExpression
       .assertEqualTo(expression(function(1, expression(variable(0)))))
   }
@@ -77,22 +80,22 @@ class IndexedTest {
   @Test
   fun function_variables() {
     fn(
-      type(numberTypeLine, textTypeLine),
-      compiledVariable<String>(0, numberType))
+      type(nativeNumberTypeLine, nativeTextTypeLine),
+      compiledVariable<String>(0, nativeNumberType))
       .indexedExpression
       .assertEqualTo(expression(function(2, expression(variable(0)))))
 
     fn(
-      type(numberTypeLine, textTypeLine),
-      compiledVariable<String>(1, numberType))
+      type(nativeNumberTypeLine, nativeTextTypeLine),
+      compiledVariable<String>(1, nativeNumberType))
       .indexedExpression
       .assertEqualTo(expression(function(2, expression(variable(1)))))
   }
 
   @Test
   fun functionInvoke() {
-    fn(textType, compiledVariable<Nothing>(0, numberType))
-      .invoke(nativeCompiled("foo", textTypeLine))
+    fn(nativeTextType, compiledVariable<Nothing>(0, nativeNumberType))
+      .invoke(nativeCompiled("foo", nativeTextTypeLine))
       .indexedExpression
       .assertEqualTo(expression(function(1, expression<String>(variable(0)))).invoke(nativeExpression("foo")))
   }
@@ -224,6 +227,18 @@ class IndexedTest {
             nativeExpression("OK"),
             nativeExpression("fail"),
             nativeExpression("maybe")))
+  }
+
+  @Test
+  fun bind() {
+    compiled(
+      expression(
+        bind(
+          binding(type("foo"), nativeCompiled("bar")),
+          compiled(expression(variable(type("foo"))), type("bar")))),
+      type("bar"))
+      .indexedExpression(scope())
+      .assertEqualTo(expression(function(1, expression<String>(variable(0)))).invoke(nativeExpression("bar")))
   }
 
 //  @Test

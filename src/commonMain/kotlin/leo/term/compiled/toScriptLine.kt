@@ -2,6 +2,8 @@ package leo.term.compiled
 
 import leo.Script
 import leo.ScriptLine
+import leo.bindName
+import leo.bindingName
 import leo.functionName
 import leo.lineTo
 import leo.literal
@@ -29,6 +31,8 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is TupleExpression -> tuple.toScript(fn)
     is VariableExpression -> variable.toScript(fn)
     is ContentExpression -> content.toScript(fn)
+    is BindExpression -> bind.toScript(fn)
+    is TypeVariableExpression -> variable.toScript(fn)
   }
 
 fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
@@ -71,6 +75,15 @@ fun <V> Function<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     "parameter" lineTo script(paramType.scriptLine),
     body.toScriptLine(fn))
 
+fun <V> Bind<V>.toScript(fn: (V) -> ScriptLine): Script =
+  script(binding.toScriptLine(fn))
+    .plus(bindName lineTo script(compiled.toScriptLine(fn)))
+
+fun <V> Binding<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
+  bindingName lineTo script(
+    type.scriptLine,
+    compiled.toScriptLine(fn))
+
 fun <V> Get<V>.toScriptLine(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): ScriptLine =
   "get" lineTo script(name)
 
@@ -78,3 +91,9 @@ fun <V> Body<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   "body" lineTo script(
     compiled.toScriptLine(fn),
     "recursive" lineTo script(isRecursive.yesNoName))
+
+fun <V> TypeVariable.toScript(fn: (V) -> ScriptLine): Script =
+  script(toScriptLine)
+
+val TypeVariable.toScriptLine: ScriptLine get() =
+  "variable" lineTo script(type.scriptLine)
