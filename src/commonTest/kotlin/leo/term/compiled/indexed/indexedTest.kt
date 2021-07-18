@@ -241,6 +241,17 @@ class IndexedTest {
       .assertEqualTo(expression(function(1, expression<String>(variable(0)))).invoke(nativeExpression("bar")))
   }
 
+  @Test
+  fun variable() {
+    expression<Unit>(variable(type("one")))
+      .indexedExpression(scope(type("one"), type("two")))
+      .assertEqualTo(expression(variable(1)))
+
+    expression<Unit>(variable(type("two")))
+      .indexedExpression(scope(type("one"), type("two")))
+      .assertEqualTo(expression(variable(0)))
+  }
+
 //  @Test
 //  fun switchComplex() {
 //    compiled(
