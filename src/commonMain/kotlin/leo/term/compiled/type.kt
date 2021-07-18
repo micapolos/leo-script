@@ -1,6 +1,7 @@
 package leo.term.compiled
 
 import leo.Type
+import leo.TypeChoice
 import leo.TypeLine
 import leo.atom
 import leo.base.filterMap
@@ -14,7 +15,9 @@ import leo.lineSeq
 import leo.lineTo
 import leo.nameOrNull
 import leo.onlyLineOrNull
+import leo.reverse
 import leo.script
+import leo.seq
 import leo.structureOrNull
 import leo.term.compiler.compileError
 
@@ -32,3 +35,6 @@ val Type.contentOrNull: Type? get() =
 
 fun Type.getLineOrNull(index: Int): TypeLine? =
   contentOrNull?.structureOrNull?.lineStack?.getFromBottom(index)
+
+fun TypeChoice.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
+  lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull

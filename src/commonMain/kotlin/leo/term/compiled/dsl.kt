@@ -25,7 +25,6 @@ import leo.onlyOrNull
 import leo.plus
 import leo.push
 import leo.script
-import leo.size
 import leo.stack
 import leo.structure
 import leo.structureOrNull
@@ -268,15 +267,20 @@ val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
     .mapIt { compiled(it.first!!, it.second!!) }
 
 fun <V> CompiledSelect<V>.pick(compiledLine: CompiledLine<V>): CompiledSelect<V> =
-  if (lineIndexedOrNull != null) compileError(script("selected"))
-  else CompiledSelect(indexed(choice.lineStack.size, compiledLine.line), choice.plus(compiledLine.typeLine))
+  ifOrNull(caseOrNull == null) {
+    compiledLine.typeLine.nameOrNull?.let { name ->
+      CompiledSelect(case(name, compiledLine.line), choice.plus(compiledLine.typeLine))
+    }
+  }?: compileError(script("pick"))
 
 fun <V> CompiledSelect<V>.drop(typeLine: TypeLine): CompiledSelect<V> =
-  CompiledSelect(lineIndexedOrNull, choice.plus(typeLine))
+  typeLine.nameOrNull?.let { name ->
+    CompiledSelect(caseOrNull, choice.plus(typeLine))
+  } ?:compileError(script("drop"))
 
 val <V> CompiledSelect<V>.compiled: Compiled<V> get() =
-  if (lineIndexedOrNull == null) compileError(script("not" lineTo script("selected")))
-  else compiled(expression(select(choice, lineIndexedOrNull)), type(choice))
+  if (caseOrNull == null) compileError(script("not" lineTo script("selected")))
+  else compiled(expression(select(choice, caseOrNull)), type(choice))
 
 val <V> CompiledFunction<V>.compiled: Compiled<V> get() =
   compiled(compiledLine)

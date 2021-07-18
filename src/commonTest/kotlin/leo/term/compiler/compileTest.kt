@@ -26,6 +26,7 @@ import leo.script
 import leo.switchName
 import leo.term.compiled.apply
 import leo.term.compiled.body
+import leo.term.compiled.case
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledSelect
 import leo.term.compiled.drop
@@ -33,7 +34,6 @@ import leo.term.compiled.expression
 import leo.term.compiled.field
 import leo.term.compiled.fn
 import leo.term.compiled.get
-import leo.term.compiled.indexed
 import leo.term.compiled.line
 import leo.term.compiled.lineTo
 import leo.term.compiled.nativeCompiled
@@ -400,7 +400,7 @@ class CompileTest {
           expression(
             select(
               choice("foo" lineTo type(), "bar" lineTo type()),
-              indexed(0, line(field("foo", compiled()))))),
+              case("foo", line(field("foo", compiled()))))),
           type(choice("foo" lineTo type(), "bar" lineTo type()))))
   }
 

@@ -13,6 +13,7 @@ import leo.map
 import leo.size
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiledChoice
+import leo.term.compiled.indexedLineOrNull
 import leo.term.compiled.lineIndex
 import leo.term.indexed.Expression
 import leo.term.indexed.expression
@@ -71,11 +72,13 @@ val <V> leo.term.compiled.Apply<V>.indexedExpression: Expression<V> get() =
 
 val <V> leo.term.compiled.Select<V>.indexedExpression: Expression<V> get() =
   if (choice.isSimple) indexExpression
-  else expression(indexExpression, lineIndexed.line.indexedExpression)
+  else expression(indexExpression, case.line.indexedExpression)
 
 val <V> leo.term.compiled.Select<V>.indexExpression: Expression<V> get() =
-  if (choice.lineStack.size == 2) expression(lineIndexed.index == 0)
-  else expression(lineIndexed.index)
+  choice.indexedLineOrNull(case.name)!!.let {
+    if (choice.lineStack.size == 2) expression(it.index == 0)
+    else expression(it.index)
+  }
 
 val <V> leo.term.compiled.Switch<V>.indexedExpression: Expression<V> get() =
   lhs.compiledChoice.let { compiledChoice ->

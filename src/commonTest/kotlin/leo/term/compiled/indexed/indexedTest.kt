@@ -17,6 +17,8 @@ import leo.term.compiled.nativeCompiled
 import leo.term.compiled.nativeCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.switch
+import leo.term.compiler.native.nativeNumberTypeLine
+import leo.term.compiler.native.nativeTextTypeLine
 import leo.term.indexed.expression
 import leo.term.indexed.function
 import leo.term.indexed.ifThenElse
@@ -142,15 +144,15 @@ class IndexedTest {
   @Test
   fun booleanIndexed() {
     compiledSelect<String>()
-      .pick(nativeCompiledLine(10, numberTypeLine))
-      .drop(textTypeLine)
+      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
+      .drop(nativeTextTypeLine)
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(true), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(textTypeLine)
-      .pick(nativeCompiledLine(10, numberTypeLine))
+      .drop(nativeTextTypeLine)
+      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(false), nativeExpression(10)))
@@ -159,25 +161,25 @@ class IndexedTest {
   @Test
   fun indexed() {
     compiledSelect<String>()
-      .pick(nativeCompiledLine(10, numberTypeLine))
-      .drop(textTypeLine)
+      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
+      .drop(nativeTextTypeLine)
       .drop(type() functionLineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(0), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(textTypeLine)
-      .pick(nativeCompiledLine(10, numberTypeLine))
+      .drop(nativeTextTypeLine)
+      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
       .drop(type() functionLineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(1), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(textTypeLine)
+      .drop(nativeTextTypeLine)
       .drop(type() functionLineTo type())
-      .pick(nativeCompiledLine(10, numberTypeLine))
+      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(2), nativeExpression(10)))
