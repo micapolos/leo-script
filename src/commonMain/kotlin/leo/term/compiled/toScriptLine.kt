@@ -29,7 +29,6 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is SelectExpression -> select.toScript(fn)
     is SwitchExpression -> switch.toScript(fn)
     is TupleExpression -> tuple.toScript(fn)
-    is VariableExpression -> variable.toScript(fn)
     is ContentExpression -> content.toScript(fn)
     is BindExpression -> bind.toScript(fn)
     is VariableExpression -> variable.toScript(fn)
@@ -92,7 +91,7 @@ fun <V> Body<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     compiled.toScriptLine(fn),
     "recursive" lineTo script(isRecursive.yesNoName))
 
-fun <V> TypeVariable.toScript(fn: (V) -> ScriptLine): Script =
+fun <V> TypeVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
   script(toScriptLine)
 
 val TypeVariable.toScriptLine: ScriptLine get() =

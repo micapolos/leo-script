@@ -29,7 +29,7 @@ fun <V> Expression<V>.script(fn: Fn<V>): Script =
     is VariableExpression -> variable.script(fn)
   }
 
-fun <V> Boolean.script(fn: Fn<V>): Script =
+fun <V> Boolean.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script =
   script("boolean" lineTo script(if (this) "true" else "false"))
 
 fun <V> ExpressionConditional<V>.script(fn: Fn<V>): Script =
@@ -39,7 +39,7 @@ fun <V> ExpressionConditional<V>.script(fn: Fn<V>): Script =
         "true" lineTo trueCase.script(fn),
         "false" lineTo falseCase.script(fn)))
 
-fun <V> Empty.script(fn: Fn<V>): Script = script()
+fun <V> Empty.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script = script()
 
 fun <V> ExpressionFunction<V>.script(fn: Fn<V>): Script =
   script(
@@ -50,7 +50,7 @@ fun <V> ExpressionFunction<V>.script(fn: Fn<V>): Script =
 fun <V> ExpressionGet<V>.script(fn: Fn<V>): Script =
   lhs.script(fn).plus("get" lineTo script(literal(index)))
 
-fun <V> Int.script(fn: Fn<V>): Script =
+fun <V> Int.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script =
   script("index" lineTo script(literal(this)))
 
 fun <V> ExpressionInvoke<V>.script(fn: Fn<V>): Script =
@@ -75,5 +75,5 @@ fun <V> ExpressionTuple<V>.script(fn: Fn<V>): Script =
     "tuple" lineTo script(
       stack(*expressionList.toTypedArray()).listScriptLine { "item" lineTo script(fn) }))
 
-fun <V> IndexVariable.script(fn: Fn<V>): Script =
+fun <V> IndexVariable.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script =
   script("variable" lineTo script(literal(index)))

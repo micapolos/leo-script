@@ -274,7 +274,7 @@ fun <V> CompiledSelect<V>.pick(compiledLine: CompiledLine<V>): CompiledSelect<V>
   }?: compileError(script("pick"))
 
 fun <V> CompiledSelect<V>.drop(typeLine: TypeLine): CompiledSelect<V> =
-  typeLine.nameOrNull?.let { name ->
+  typeLine.nameOrNull?.let {
     CompiledSelect(caseOrNull, choice.plus(typeLine))
   } ?:compileError(script("drop"))
 

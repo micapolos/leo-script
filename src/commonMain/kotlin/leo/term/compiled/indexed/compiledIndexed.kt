@@ -86,7 +86,7 @@ fun <V> leo.term.compiled.Select<V>.indexedExpression(scope: Scope): Expression<
   if (choice.isSimple) indexExpression(scope)
   else expression(indexExpression(scope), case.line.indexedExpression(scope))
 
-fun <V> leo.term.compiled.Select<V>.indexExpression(scope: Scope): Expression<V> =
+fun <V> leo.term.compiled.Select<V>.indexExpression(@Suppress("UNUSED_PARAMETER") scope: Scope): Expression<V> =
   choice.indexedLineOrNull(case.name)!!.let {
     if (choice.lineStack.size == 2) expression(it.index == 0)
     else expression(it.index)

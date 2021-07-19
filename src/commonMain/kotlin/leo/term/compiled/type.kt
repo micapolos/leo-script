@@ -37,4 +37,4 @@ fun Type.getLineOrNull(index: Int): TypeLine? =
   contentOrNull?.structureOrNull?.lineStack?.getFromBottom(index)
 
 fun TypeChoice.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
-  lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull
+  lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.nameOrNull != name)?.the }.onlyOrNull
