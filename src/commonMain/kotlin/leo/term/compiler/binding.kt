@@ -5,8 +5,10 @@ import leo.TypeFunction
 import leo.atom
 import leo.base.notNullIf
 import leo.line
-import leo.lineCount
+import leo.lineOrNull
 import leo.nameOrNull
+import leo.onlyLineOrNull
+import leo.structureOrNull
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiled
 import leo.term.compiled.expression
@@ -42,12 +44,19 @@ fun <V> TypeFunction.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
 
 fun <V> TypeGiven.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
   compiled.type.nameOrNull?.let { name ->
-    compiled(expression<V>(variable(type(name))), type).getOrNull(name)
-  }
-
-val Binding.indexCount: Int get() =
-  when (this) {
-    is ConstantBinding -> 1
-    is FunctionBinding -> 1
-    is GivenBinding -> given.type.lineCount
+    type.onlyLineOrNull.let { onlyLineOrNull ->
+      if (onlyLineOrNull != null)
+        onlyLineOrNull.nameOrNull?.let { lineName ->
+          compiled(expression<V>(variable(type(lineName))), type).let { compiled ->
+            if (name != lineName) compiled.getOrNull(name)
+            else compiled
+          }
+        }
+      else
+        type.structureOrNull?.lineOrNull(name)?.let { typeLine ->
+          typeLine.nameOrNull?.let { lineName ->
+            compiled(expression(variable(type(lineName))), type(typeLine))
+          }
+        }
+    }
   }

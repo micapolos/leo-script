@@ -136,7 +136,8 @@ class CompileTest {
         compiled(
           "point" lineTo compiled(
             "x" lineTo compiled<Native>("zero"),
-            "y" lineTo compiled("one"))).get(0))
+            "y" lineTo compiled("one")))
+          .get("x"))
   }
 
   @Test
@@ -213,7 +214,7 @@ class CompileTest {
       .assertEqualTo(
         nativeCompiler
           .plus(nativeNumberCompiledLine(10.0.native))
-          .do_(body(compiled(expression(variable(type(numberName))), nativeNumberType))))
+          .do_(body(compiled<Native>(expression(variable(type(numberName))), nativeNumberType))))
   }
 
   @Test
@@ -448,7 +449,7 @@ class CompileTest {
                   "point" lineTo type(
                     "x" lineTo nativeNumberType,
                     "y" lineTo nativeNumberType)))
-                  .get(1)
-                  .get(0))))
+                  .get("y")
+                  .get("number"))))
   }
 }

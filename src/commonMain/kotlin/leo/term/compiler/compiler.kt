@@ -198,7 +198,7 @@ fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
   block.module
-    .bind(compiled.type)
+    .plus(binding(given(compiled.type)))
     .compiled(script)
     .let { bodyCompiled ->
       apply(

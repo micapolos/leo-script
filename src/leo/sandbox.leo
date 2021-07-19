@@ -1,5 +1,4 @@
-pick 10
-drop text
-switch
-  number doing "OK"
-  text doing "not OK"
+point
+  x 10
+  y 20
+do x

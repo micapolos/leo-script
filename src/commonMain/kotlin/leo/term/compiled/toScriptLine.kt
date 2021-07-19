@@ -84,7 +84,9 @@ fun <V> Binding<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     compiled.toScriptLine(fn))
 
 fun <V> Get<V>.toScriptLine(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): ScriptLine =
-  "get" lineTo script(name)
+  "get" lineTo script(
+    lhs.toScriptLine(fn),
+    "name" lineTo script(name))
 
 fun <V> Body<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   "body" lineTo script(
