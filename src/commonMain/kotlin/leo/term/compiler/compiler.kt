@@ -165,7 +165,7 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
 fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   block.module.type(lhs).let { lhsType ->
     block.module
-      .bind(lhsType)
+      .plus(binding(given(lhsType)))
       .compiled(rhs)
       .let { bodyCompiled ->
         set(
@@ -182,7 +182,7 @@ fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
       block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(lhsType functionTo rhsType))
-          .bind(lhsType)
+          .plus(binding(given(lhsType)))
           .compiled(rhs)
           .as_(rhsType)
           .let { bodyCompiled ->
@@ -214,7 +214,7 @@ fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
       block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(compiled.type functionTo rhsType))
-          .bind(compiled.type)
+          .plus(binding(given(compiled.type)))
           .compiled(doingRhs)
           .as_(rhsType)
           .let { bodyCompiled ->
@@ -267,9 +267,6 @@ val <V> Compiler<V>.completeCompiled: Compiled<V>
 
 fun <V> Compiler<V>.plus(binding: Binding): Compiler<V> =
   set(block.plus(binding))
-
-fun <V> Compiler<V>.bind(type: Type): Compiler<V> =
-  set(block.bind(type))
 
 val <V> Compiler<V>.begin: Compiler<V> get() =
   block.module.block.compiler

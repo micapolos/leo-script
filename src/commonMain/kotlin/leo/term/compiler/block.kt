@@ -89,7 +89,7 @@ fun <V> Block<V>.plusLetBe(lhs: Script, rhs: Script): Block<V> =
 
 fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
   module.type(lhs).let { lhsType ->
-    module.bind(lhsType).compiled(rhs).let { rhsCompiled ->
+    module.plus(binding(given(lhsType))).compiled(rhs).let { rhsCompiled ->
       this
         .plus(binding(lhsType functionTo rhsCompiled.type))
         .plus(binding(lhsType, fn(lhsType, rhsCompiled)))
@@ -103,7 +103,7 @@ fun <V> Block<V>.plusLetRepeat(repeatLhs: Script, repeatRhs: Script): Block<V> =
         module.type(givingRhs).let { rhsType ->
           module
             .plus(binding(lhsType functionTo rhsType))
-            .bind(lhsType)
+            .plus(binding(given(lhsType)))
             .compiled(doingRhs)
             .let { rhsCompiled ->
               this
@@ -117,13 +117,10 @@ fun <V> Block<V>.plusLetRepeat(repeatLhs: Script, repeatRhs: Script): Block<V> =
 
 fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
-    module.bind(compiled.type),
+    module.plus(binding(given(compiled.type))),
     bindingStack.fold(compiled.compiledLineStack.reverse) {
       push(binding(type(it.typeLine.nameOrNull!!), compiled(it)))
     })
-
-fun <V> Block<V>.bind(type: Type): Block<V> =
-  copy(module = module.bind(type))
 
 fun <V> Block<V>.plusCast(type: Type): Block<V> =
   plusCast(stack(), type)

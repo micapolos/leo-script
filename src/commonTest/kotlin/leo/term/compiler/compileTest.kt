@@ -182,26 +182,26 @@ class CompileTest {
   @Test
   fun repeat_recursion() {
     script(
-      "ping" lineTo script("pong"),
+      "loop" lineTo script(literal(0)),
       repeatName lineTo script(
-        givingName lineTo script("ping" lineTo script("pong")),
-        doingName lineTo script("ping" lineTo script("pong"))))
+        givingName lineTo script("nothing"),
+        doingName lineTo script("loop" lineTo script(literal(0)))))
       .compiled(nativeEnvironment)
       .assertEqualTo(
-        compiled<Native>("ping" lineTo compiled("pong"))
+        compiled("loop" lineTo nativeNumberCompiled(0.0.native))
           .apply(
             fn(
-              type("ping" lineTo type("pong")),
+              type("loop" lineTo nativeNumberType),
               recursive(
                 body(
-                  compiled<Native>("ping" lineTo compiled("pong"))
+                  compiled("loop" lineTo nativeNumberCompiled(0.0.native))
                     .apply(
                       compiled(
-                        expression(variable(type("ping" lineTo type("pong")))),
+                        expression(variable(type("loop" lineTo nativeNumberType))),
                         type(line(atom(
                           function(
-                            type("ping" lineTo type("pong")),
-                            type("ping" lineTo type("pong")))))))))))))
+                            type("loop" lineTo nativeNumberType),
+                            type("nothing"))))))))))))
   }
 
   @Test
@@ -214,7 +214,7 @@ class CompileTest {
       .assertEqualTo(
         nativeCompiler
           .plus(nativeNumberCompiledLine(10.0.native))
-          .do_(body(compiled<Native>(expression(variable(type(numberName))), nativeNumberType))))
+          .do_(body(compiled(expression(variable(type(numberName))), nativeNumberType))))
   }
 
   @Test

@@ -39,9 +39,6 @@ fun <V> Module<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>): Module
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
   copy(context = context.plus(binding))
 
-fun <V> Module<V>.bind(type: Type): Module<V> =
-  copy(context = context.bind(type))
-
 fun <V> Module<V>.type(script: Script): Type =
   inTypesBlock { typeLocal ->
     typeLocal.compiler.plus(script).completeCompiled.let { compiled ->

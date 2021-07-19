@@ -1,4 +1,6 @@
 point
   x 10
   y 20
-do x
+do
+  x.number
+  plus y.number
