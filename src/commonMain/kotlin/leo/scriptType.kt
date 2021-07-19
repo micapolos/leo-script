@@ -1,8 +1,8 @@
 package leo
 
+import leo.base.notNullIf
 import leo.base.orIfNull
 import leo.term.compiler.compileError
-import leo.term.typed.pickDropChoiceOrNull
 
 val anyTextScriptLine get() = anyName lineTo script(textName)
 val anyNumberScriptLine get() = anyName lineTo script(numberName)
@@ -21,8 +21,14 @@ fun Type.plus(scriptField: ScriptField): Type =
   if (scriptField.name == eitherName) plusEither(scriptField.rhs)
   else plusLine(line(scriptField))
 
+val Type.eitherChoiceOrNull: TypeChoice? get() =
+  when (this) {
+    is ChoiceType -> choice
+    is StructureType -> notNullIf(structure.lineStack.isEmpty) { choice() }
+  }
+
 fun Type.plusEither(script: Script): Type =
-  pickDropChoiceOrNull
+  eitherChoiceOrNull
     .orIfNull { compileError(script("either")) }
     .plus(script.type.onlyLineOrNull.orIfNull { compileError(script("either")) })
     .type
