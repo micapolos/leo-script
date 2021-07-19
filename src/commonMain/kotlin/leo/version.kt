@@ -1,3 +1,3 @@
 package leo
 
-val version = "0.25.18"
+val version = "0.25.19"
