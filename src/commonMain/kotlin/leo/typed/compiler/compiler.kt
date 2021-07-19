@@ -50,6 +50,7 @@ import leo.typed.compiled.function
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.line
 import leo.typed.compiled.lineTo
+import leo.typed.compiled.onlyCompiledLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
 import leo.typed.compiler.python.pythonEnvironment
@@ -58,6 +59,7 @@ import leo.typed.compiler.scheme.schemeEnvironment
 import leo.typed.indexed.python.python
 import leo.typed.indexed.scheme.scheme
 import leo.typesName
+import leo.withName
 
 data class Compiler<V>(
   val block: Block<V>,
@@ -112,6 +114,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     repeatName -> repeat(field.rhs)
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
+    withName -> with(field.rhs)
     else -> null
   }
 
@@ -257,6 +260,10 @@ fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
 fun <V> Compiler<V>.quote(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("quote" lineTo script("after" lineTo compiled.type.script)))
   else set(environment.staticCompiled(script))
+
+fun <V> Compiler<V>.with(script: Script): Compiler<V> =
+  block.module.compiled(script).onlyCompiledLineOrNull?.let { plus(it) }
+    ?: compileError(script("with" lineTo script))
 
 fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
   set(context.resolve(compiled.plus(compiledLine)))

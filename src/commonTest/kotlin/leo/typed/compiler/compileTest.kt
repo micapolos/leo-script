@@ -57,6 +57,7 @@ import leo.typed.compiler.native.nativeEnvironment
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextTypeLine
+import leo.withName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -451,5 +452,20 @@ class CompileTest {
                     "y" lineTo nativeNumberType)))
                   .get("y")
                   .get("number"))))
+  }
+
+  @Test
+  fun with() {
+    script(
+      "red" lineTo script(),
+      "color" lineTo script(),
+      withName lineTo script(
+        "blue" lineTo script(),
+        "color" lineTo script()))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled(
+          "color" lineTo compiled("red"),
+          "color" lineTo compiled("blue")))
   }
 }
