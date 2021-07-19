@@ -36,6 +36,7 @@ import leo.term.compiled.binding
 import leo.term.compiled.compiled
 import leo.term.compiled.compiledLineStack
 import leo.term.compiled.compiledSelect
+import leo.term.compiled.compiledVariable
 import leo.term.compiled.drop
 import leo.term.compiled.expression
 import leo.term.compiled.fn
@@ -43,7 +44,6 @@ import leo.term.compiled.onlyCompiledLine
 import leo.term.compiled.pick
 import leo.term.compiled.recFn
 import leo.term.compiler.native.Native
-import leo.term.variable
 import leo.type
 
 data class Block<V>(
@@ -154,7 +154,7 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
           type(rope.current),
           compiledSelect<V>()
             .fold(rope.head) { drop(it) }
-            .pick(compiled(expression<V>(variable(0)), type(rope.current)).onlyCompiledLine)
+            .pick(compiledVariable<V>(type(rope.current.nameOrNull!!), type(rope.current)).onlyCompiledLine)
             .fold(rope.tail.reverse) { drop(it) }
             .compiled)))
 

@@ -15,7 +15,6 @@ import leo.native
 import leo.primitive
 import leo.script
 import leo.stack
-import leo.term.IndexVariable
 
 data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
   override fun toString() = toScriptLine { it.anyScriptLine }.toString()
@@ -32,8 +31,7 @@ data class Fragment<out V>(val expression: Expression<V>, val tuple: Tuple<V>)
 sealed class Expression<out V>
 data class TupleExpression<out V>(val tuple: Tuple<V>): Expression<V>()
 data class ApplyExpression<V>(val apply: Apply<V>): Expression<V>()
-data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>()
-data class TypeVariableExpression<out V>(val variable: TypeVariable): Expression<V>()
+data class VariableExpression<out V>(val variable: TypeVariable): Expression<V>()
 data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
 data class ContentExpression<V>(val content: Content<V>): Expression<V>()
@@ -63,12 +61,11 @@ data class TypeVariable(val type: Type)
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)
 fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
-fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 fun <V> expression(select: Select<V>): Expression<V> = SelectExpression(select)
 fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
 fun <V> expression(content: Content<V>): Expression<V> = ContentExpression(content)
 fun <V> expression(bind: Bind<V>): Expression<V> = BindExpression(bind)
-fun <V> expression(variable: TypeVariable): Expression<V> = TypeVariableExpression(variable)
+fun <V> expression(variable: TypeVariable): Expression<V> = VariableExpression(variable)
 
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)

@@ -79,7 +79,7 @@ class DslTest {
   @Test
   fun lineAtIndex_notTuple() {
     val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
+      expression<Unit>(variable(type("foo"))),
       type(
         "x" lineTo type("zero"),
         "y" lineTo type("one")))
@@ -120,7 +120,7 @@ class DslTest {
   @Test
   fun getOrNull_lines() {
     val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
+      expression<Unit>(variable(type("foo"))),
       type(
         "x" lineTo type("zero"),
         "y" lineTo type("one")))
@@ -141,7 +141,7 @@ class DslTest {
   @Test
   fun getOrNull_inner() {
     val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
+      expression<Unit>(variable(type("foo"))),
       type(
         "point" lineTo type(
           "x" lineTo type("zero"),
@@ -163,7 +163,7 @@ class DslTest {
   @Test
   fun getOrNull_twoLevelsInner() {
     val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
+      expression<Unit>(variable(type("foo"))),
       type(
         "my" lineTo type(
           "point" lineTo type(
@@ -198,7 +198,7 @@ class DslTest {
   @Test
   fun compiledTupleOrNull_expression_singleLine() {
     val compiled = compiled(
-      expression<Unit>(leo.term.variable(0)),
+      expression<Unit>(variable(type("foo"))),
       type("x" lineTo type("zero")))
 
     compiled
@@ -213,7 +213,7 @@ class DslTest {
       .assertEqualTo(
         fn(
           type("foo"),
-          compiled("bar" lineTo compiledVariable<Unit>(0, type("foo"))))
+          compiled("bar" lineTo compiledVariable<Unit>(type("foo"), type("foo"))))
           .invoke(compiled("foo")))
   }
 }

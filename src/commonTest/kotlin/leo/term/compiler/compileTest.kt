@@ -45,6 +45,7 @@ import leo.term.compiled.recursive
 import leo.term.compiled.rhs
 import leo.term.compiled.select
 import leo.term.compiled.switch
+import leo.term.compiled.variable
 import leo.term.compiler.native.DoublePlusDoubleNative
 import leo.term.compiler.native.Native
 import leo.term.compiler.native.native
@@ -53,7 +54,6 @@ import leo.term.compiler.native.nativeEnvironment
 import leo.term.compiler.native.nativeNumberType
 import leo.term.compiler.native.nativeNumberTypeLine
 import leo.term.compiler.native.nativeTextTypeLine
-import leo.term.variable
 import leo.textName
 import leo.type
 import leo.typeName
@@ -175,7 +175,7 @@ class CompileTest {
       .compiled(nativeEnvironment)
       .assertEqualTo(
         nativeNumberCompiled(10.0.native)
-          .apply(fn(nativeNumberType, recursive(body(compiled(expression(variable(0)), nativeNumberType))))))
+          .apply(fn(nativeNumberType, recursive(body(compiled(expression(variable(type("number"))), nativeNumberType))))))
   }
 
   @Test
@@ -196,7 +196,7 @@ class CompileTest {
                   compiled<Native>("ping" lineTo compiled("pong"))
                     .apply(
                       compiled(
-                        expression(variable(1)),
+                        expression(variable(type("ping" lineTo type("pong")))),
                         type(line(atom(
                           function(
                             type("ping" lineTo type("pong")),
@@ -213,7 +213,7 @@ class CompileTest {
       .assertEqualTo(
         nativeCompiler
           .plus(nativeNumberCompiledLine(10.0.native))
-          .do_(body(compiled(expression(variable(0)), nativeNumberType))))
+          .do_(body(compiled(expression(variable(type(numberName))), nativeNumberType))))
   }
 
   @Test
@@ -347,9 +347,9 @@ class CompileTest {
           .rhs
           .switch(
             nativeNumberType,
-            compiled(expression<Native>(variable(0)), type("one" lineTo nativeNumberType)).get(numberName),
-            compiled(expression<Native>(variable(0)), type("two" lineTo nativeNumberType)).get(numberName),
-            compiled(expression<Native>(variable(0)), type("three" lineTo nativeNumberType)).get(numberName)))
+            compiled(expression<Native>(variable(type("one"))), type("one" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(type("two"))), type("two" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(type("three"))), type("three" lineTo nativeNumberType)).get(numberName)))
   }
 
   @Test
@@ -443,7 +443,7 @@ class CompileTest {
                   "x" lineTo nativeNumberType,
                   "y" lineTo nativeNumberType)),
               compiled(
-                expression<Native>(variable(0)),
+                expression<Native>(variable(type("point"))),
                 type(
                   "point" lineTo type(
                     "x" lineTo nativeNumberType,

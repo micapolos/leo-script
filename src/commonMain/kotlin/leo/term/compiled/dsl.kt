@@ -239,10 +239,10 @@ val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
     ?: resolvedCompiledTupleOrNull
 
 fun <V> Compiled<V>.indirect(fn: (Compiled<V>) -> Compiled<V>): Compiled<V> =
-  fn(type, fn(compiledVariable(0, type))).invoke(this)
+  fn(type, fn(compiledVariable(type, type))).invoke(this)
 
-fun <V> compiledVariable(index: Int, type: Type): Compiled<V> =
-  compiled(expression(leo.term.variable(index)), type)
+fun <V> compiledVariable(lhsType: Type, rhsType: Type): Compiled<V> =
+  compiled(expression(variable(lhsType)), rhsType)
 
 fun <V> Tuple<V>.plus(line: Line<V>): Tuple<V> =
   lineStack.push(line).let(::Tuple)
@@ -301,3 +301,6 @@ val <V> Compiled<V>.compiledChoiceOrNull: CompiledChoice<V>? get() =
   type.choiceOrNull
     ?.let { compiled(expression, it) }
     ?:rhsOrNull?.compiledChoiceOrNull
+
+fun <V> Compiled<V>.with(binding: Binding<V>): Compiled<V> =
+  compiled(expression(bind(binding, this)), type)

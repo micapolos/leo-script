@@ -2,22 +2,23 @@ package leo.term.indexed
 
 import leo.Empty
 import leo.IndexVariable
+import leo.named.value.anyScriptLine
 import leo.variable
 
-sealed class Expression<out V>
+sealed class Expression<out V> { override fun toString() = script { it.anyScriptLine }.toString() }
 
-data class NativeExpression<out V>(val native: V): Expression<V>()
-data class EmptyExpression<out V>(val empty: Empty): Expression<V>()
-data class BooleanExpression<out V>(val boolean: Boolean): Expression<V>()
-data class ConditionalExpression<out V>(val conditional: ExpressionConditional<V>): Expression<V>()
-data class TupleExpression<out V>(val tuple: ExpressionTuple<V>): Expression<V>()
-data class GetExpression<out V>(val get: ExpressionGet<V>): Expression<V>()
-data class IndexExpression<out V>(val index: Int): Expression<V>()
-data class SwitchExpression<out V>(val switch: ExpressionSwitch<V>): Expression<V>()
-data class FunctionExpression<out V>(val function: ExpressionFunction<V>): Expression<V>()
-data class RecursiveExpression<out V>(val recursive: ExpressionRecursive<V>): Expression<V>()
-data class InvokeExpression<out V>(val invoke: ExpressionInvoke<V>): Expression<V>()
-data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>()
+data class NativeExpression<out V>(val native: V): Expression<V>() { override fun toString() = super.toString() }
+data class EmptyExpression<out V>(val empty: Empty): Expression<V>() { override fun toString() = super.toString() }
+data class BooleanExpression<out V>(val boolean: Boolean): Expression<V>() { override fun toString() = super.toString() }
+data class ConditionalExpression<out V>(val conditional: ExpressionConditional<V>): Expression<V>() { override fun toString() = super.toString() }
+data class TupleExpression<out V>(val tuple: ExpressionTuple<V>): Expression<V>() { override fun toString() = super.toString() }
+data class GetExpression<out V>(val get: ExpressionGet<V>): Expression<V>() { override fun toString() = super.toString() }
+data class IndexExpression<out V>(val index: Int): Expression<V>() { override fun toString() = super.toString() }
+data class SwitchExpression<out V>(val switch: ExpressionSwitch<V>): Expression<V>() { override fun toString() = super.toString() }
+data class FunctionExpression<out V>(val function: ExpressionFunction<V>): Expression<V>() { override fun toString() = super.toString() }
+data class RecursiveExpression<out V>(val recursive: ExpressionRecursive<V>): Expression<V>() { override fun toString() = super.toString() }
+data class InvokeExpression<out V>(val invoke: ExpressionInvoke<V>): Expression<V>() { override fun toString() = super.toString() }
+data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>() { override fun toString() = super.toString() }
 
 data class ExpressionTuple<out V>(val expressionList: List<Expression<V>>)
 data class ExpressionGet<out V>(val lhs: Expression<V>, val index: Int)

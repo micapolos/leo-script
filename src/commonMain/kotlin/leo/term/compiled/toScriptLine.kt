@@ -32,7 +32,7 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is VariableExpression -> variable.toScript(fn)
     is ContentExpression -> content.toScript(fn)
     is BindExpression -> bind.toScript(fn)
-    is TypeVariableExpression -> variable.toScript(fn)
+    is VariableExpression -> variable.toScript(fn)
   }
 
 fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =

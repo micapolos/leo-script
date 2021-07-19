@@ -5,11 +5,18 @@ import leo.EmptyStack
 import leo.LinkStack
 import leo.StructureType
 import leo.array
+import leo.base.map
+import leo.base.mapIndexed
+import leo.base.runIf
+import leo.base.stack
 import leo.empty
+import leo.get
 import leo.getFromBottom
 import leo.isSimple
 import leo.lineCount
 import leo.map
+import leo.nameOrNull
+import leo.seq
 import leo.size
 import leo.term.compiled.Compiled
 import leo.term.compiled.compiledChoice
@@ -26,6 +33,7 @@ import leo.term.indexed.nativeExpression
 import leo.term.indexed.recursive
 import leo.term.indexed.switch
 import leo.term.indexed.tuple
+import leo.type
 import leo.variable
 
 val <V> Compiled<V>.indexedExpression: Expression<V> get() =
@@ -40,10 +48,9 @@ fun <V> leo.term.compiled.Expression<V>.indexedExpression(scope: Scope): Express
     is leo.term.compiled.SelectExpression -> select.indexedExpression(scope)
     is leo.term.compiled.SwitchExpression -> switch.indexedExpression(scope)
     is leo.term.compiled.TupleExpression -> tuple.indexedExpression(scope)
-    is leo.term.compiled.VariableExpression -> variable.indexedExpression()
     is leo.term.compiled.ContentExpression -> content.indexedExpression(scope)
     is leo.term.compiled.BindExpression -> bind.indexedExpression(scope)
-    is leo.term.compiled.TypeVariableExpression -> variable.indexedExpression(scope)
+    is leo.term.compiled.VariableExpression -> variable.indexedExpression(scope)
   }
 
 fun <V> leo.term.compiled.Line<V>.indexedExpression(scope: Scope): Expression<V> =
@@ -93,16 +100,41 @@ fun <V> leo.term.compiled.Switch<V>.indexedExpression(scope: Scope): Expression<
           caseStack.getFromBottom(0)!!.indexedExpression(scope),
           caseStack.getFromBottom(1)!!.indexedExpression(scope))
       else
-        compiledChoice.expression.indexedExpression(scope).switch(*caseStack.map { indexedExpression(scope) }.array)
+        compiledChoice.expression.indexedExpression(scope)
+          .switch(*caseStack.map { indexedExpression(scope) }.array)
     else
       compiledChoice.expression.indexedExpression(scope).indirect {
         if (compiledChoice.choice.lineStack.size == 2)
-          it.get(0).ifThenElse(
-            expression(function(1, caseStack.getFromBottom(0)!!.indexedExpression(scope))).invoke(it.get(1)),
-            expression(function(1, caseStack.getFromBottom(1)!!.indexedExpression(scope))).invoke(it.get(1)))
+          it.get(0)
+            .ifThenElse(
+              expression(
+                function(
+                  1,
+                  caseStack
+                    .getFromBottom(0)!!
+                    .indexedExpression(
+                      scope.plus(type(compiledChoice.choice.lineStack.getFromBottom(0)!!.nameOrNull!!))))),
+              expression(
+                function(
+                  1,
+                  caseStack
+                    .getFromBottom(1)!!
+                    .indexedExpression(
+                      scope.plus(
+                        type(compiledChoice.choice.lineStack.getFromBottom(1)!!.nameOrNull!!))))))
+            .invoke(it.get(1))
         else
           it.get(0)
-            .switch(*caseStack.map { expression(function(1, indexedExpression(scope))).invoke(it.get(1)) }.array)
+            .switch(
+              *caseStack
+                .seq
+                .mapIndexed
+                .map {
+                  expression(function(1, value.indexedExpression(scope.plus(type(compiledChoice.choice.lineStack.get(index)!!.nameOrNull!!)))))
+                }
+                .stack
+                .array)
+            .invoke(it.get(1))
       }
   }
 
@@ -130,7 +162,13 @@ fun <V> leo.term.compiled.Content<V>.indexedExpression(scope: Scope): Expression
   lhs.indexedExpression(scope)
 
 fun <V> leo.term.compiled.Function<V>.indexedExpression(scope: Scope): Expression<V> =
-  function(paramType.lineCount, body.compiled.indexedExpression(scope.plusNames(paramType))).let { function ->
+  function(
+    paramType.lineCount,
+    body.compiled.indexedExpression(
+      scope
+        .runIf(body.isRecursive) { plus(paramType) }
+        .plusNames(paramType)))
+    .let { function ->
     if (body.isRecursive) expression(recursive(function))
     else expression(function)
   }
@@ -141,6 +179,3 @@ fun <V> leo.term.compiled.Bind<V>.indexedExpression(scope: Scope): Expression<V>
 
 fun <V> leo.term.compiled.TypeVariable.indexedExpression(scope: Scope): Expression<V> =
   expression(scope.indexVariable(this))
-
-fun <V> leo.term.IndexVariable.indexedExpression(): Expression<V> =
-  expression(variable(index))
