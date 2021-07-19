@@ -468,4 +468,17 @@ class CompileTest {
           "color" lineTo compiled("red"),
           "color" lineTo compiled("blue")))
   }
+
+  @Test
+  fun with_multiline() {
+    assertFails {
+      script(
+        "red" lineTo script(),
+        "color" lineTo script(),
+        withName lineTo script(
+          "x" lineTo script("zero"),
+          "y" lineTo script("one")))
+        .compiled(nativeEnvironment)
+    }
+  }
 }
