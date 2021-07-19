@@ -7,11 +7,11 @@ import leo.lineTo
 import leo.orName
 import leo.script
 import leo.scriptLine
-import leo.term.compiler.native.nativeNumberType
-import leo.term.compiler.native.nativeNumberTypeLine
-import leo.term.compiler.native.nativeTextType
-import leo.term.compiler.native.nativeTextTypeLine
 import leo.type
+import leo.typed.compiler.native.nativeNumberType
+import leo.typed.compiler.native.nativeNumberTypeLine
+import leo.typed.compiler.native.nativeTextType
+import leo.typed.compiler.native.nativeTextTypeLine
 import kotlin.test.Test
 import kotlin.test.assertFails
 

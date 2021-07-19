@@ -2,7 +2,7 @@ package leo
 
 import leo.base.Seq
 import leo.base.orNullIf
-import leo.term.compiler.compileError
+import leo.typed.compiler.compileError
 
 sealed class Type {
   override fun toString() = script.toString()

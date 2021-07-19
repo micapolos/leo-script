@@ -2,7 +2,7 @@ package leo
 
 import leo.base.notNullIf
 import leo.base.orIfNull
-import leo.term.compiler.compileError
+import leo.typed.compiler.compileError
 
 val anyTextScriptLine get() = anyName lineTo script(textName)
 val anyNumberScriptLine get() = anyName lineTo script(numberName)
