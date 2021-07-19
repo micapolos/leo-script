@@ -27,6 +27,7 @@ import leo.typeName
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeTextType
 import leo.typesName
+import leo.withName
 import leo.yesName
 import kotlin.test.Test
 
@@ -233,5 +234,20 @@ class EvaluateTest {
       "countdown" lineTo script())
       .evaluate
       .assertEqualTo(script(literal("OK")))
+  }
+
+  @Test
+  fun with() {
+    script(
+      "red" lineTo script(),
+      "color" lineTo script(),
+      withName lineTo script(
+        "blue" lineTo script(),
+        "color" lineTo script()))
+      .evaluate
+      .assertEqualTo(
+        script(
+          "color" lineTo script("red"),
+          "color" lineTo script("blue")))
   }
 }
