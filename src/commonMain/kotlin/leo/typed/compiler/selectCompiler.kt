@@ -4,8 +4,11 @@ import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
 import leo.TypeLine
+import leo.base.fold
+import leo.base.reverse
 import leo.dropName
 import leo.fieldOrNull
+import leo.lineSeq
 import leo.lineTo
 import leo.onlyLineOrNull
 import leo.pickName
@@ -19,6 +22,9 @@ import leo.typed.compiled.pick
 data class SelectCompiler<V>(
   val module: Module<V>,
   val compiledSelect: CompiledSelect<V>)
+
+fun <V> SelectCompiler<V>.plus(script: Script): SelectCompiler<V> =
+  fold(script.lineSeq.reverse) { plus(it) }
 
 fun <V> SelectCompiler<V>.plus(scriptLine: ScriptLine): SelectCompiler<V> =
   null

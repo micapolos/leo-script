@@ -34,6 +34,7 @@ import leo.repeatName
 import leo.repeatingName
 import leo.reverse
 import leo.script
+import leo.selectName
 import leo.stack
 import leo.switchName
 import leo.type
@@ -45,6 +46,7 @@ import leo.typed.compiled.as_
 import leo.typed.compiled.body
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledChoice
+import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.do_
 import leo.typed.compiled.function
 import leo.typed.compiled.indexed.indexedExpression
@@ -112,6 +114,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     letName -> let(field.rhs)
     quoteName -> quote(field.rhs)
     repeatName -> repeat(field.rhs)
+    selectName -> select(field.rhs)
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
     withName -> with(field.rhs)
@@ -243,6 +246,13 @@ fun <V> Compiler<V>.example(script: Script): Compiler<V> =
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(block.plusLet(script))
+
+fun <V> Compiler<V>.select(script: Script): Compiler<V> =
+  set(
+    SelectCompiler(block.module, compiledSelect())
+      .plus(script)
+      .compiledSelect
+      .compiled)
 
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
   compiled.compiledChoice.let { compiledChoice ->

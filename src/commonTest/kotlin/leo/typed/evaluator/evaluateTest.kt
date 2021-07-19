@@ -20,6 +20,7 @@ import leo.pickName
 import leo.plusName
 import leo.repeatName
 import leo.script
+import leo.selectName
 import leo.switchName
 import leo.textName
 import leo.toName
@@ -54,22 +55,21 @@ class EvaluateTest {
   @Test
   fun selectType() {
     script(
-      "id" lineTo script(
+      selectName lineTo script(
         pickName lineTo script(literal(10)),
         dropName lineTo script(textName)),
       typeName lineTo script())
       .evaluate
       .assertEqualTo(
         script(
-          "id" lineTo script(
-            eitherName lineTo nativeNumberType.script,
-            eitherName lineTo nativeTextType.script)))
+          eitherName lineTo nativeNumberType.script,
+          eitherName lineTo nativeTextType.script))
   }
 
   @Test
   fun switch_simple() {
     script(
-      "is" lineTo script(
+      selectName lineTo script(
         pickName lineTo script("yes"),
         dropName lineTo script("no")),
       switchName lineTo script(
@@ -80,9 +80,9 @@ class EvaluateTest {
   }
 
   @Test
-  fun switch() {
+  fun switch_first() {
     script(
-      "id" lineTo script(
+      selectName lineTo script(
         pickName lineTo script("one" lineTo script(literal(10))),
         dropName lineTo script("two" lineTo script(numberName))),
       switchName lineTo script(
@@ -93,11 +93,25 @@ class EvaluateTest {
   }
 
   @Test
-  fun switch_secondOfTwo() {
+  fun switch_second() {
     script(
-      "id" lineTo script(
+      selectName lineTo script(
         dropName lineTo script("one" lineTo script(numberName)),
         pickName lineTo script("two" lineTo script(literal(20)))),
+      switchName lineTo script(
+        "one" lineTo script(doingName lineTo script("one", "number")),
+        "two" lineTo script(doingName lineTo script("two", "number"))))
+      .evaluate
+      .assertEqualTo(script(literal(20)))
+  }
+
+  @Test
+  fun switch_deep() {
+    script(
+      "deep" lineTo script(
+        selectName lineTo script(
+          dropName lineTo script("one" lineTo script(numberName)),
+          pickName lineTo script("two" lineTo script(literal(20))))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
         "two" lineTo script(doingName lineTo script("two", "number"))))

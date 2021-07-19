@@ -2,20 +2,13 @@ package leo.typed.compiler
 
 import leo.Script
 import leo.Type
-import leo.base.nullOf
 import leo.base.orIfNull
-import leo.fold
-import leo.lineStack
 import leo.matchPrefix
 import leo.repeatingName
-import leo.reverse
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
-import leo.typed.compiled.CompiledSelect
 import leo.typed.compiled.body
-import leo.typed.compiled.compiled
-import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.recursive
 import leo.typed.compiler.native.Native
@@ -46,17 +39,8 @@ fun <V> Module<V>.type(script: Script): Type =
     }
   }
 
-fun <V> Module<V>.compiledSelectOrNull(script: Script): CompiledSelect<V>? =
-  nullOf<SelectCompiler<V>>().fold(script.lineStack.reverse) { scriptLine ->
-    null
-      ?: this?.plus(scriptLine)
-      ?: SelectCompiler(this@compiledSelectOrNull, compiledSelect()).plusOrNull(scriptLine)
-  }?.compiledSelect
-
 fun <V> Module<V>.compiled(script: Script): Compiled<V> =
-  null
-    ?: compiledSelectOrNull(script)?.compiled
-    ?: block.compiler.plus(script).completeCompiled
+  block.compiler.plus(script).completeCompiled
 
 fun <V> Module<V>.body(script: Script): Body<V> =
   script.matchPrefix(repeatingName) { recursiveScript ->

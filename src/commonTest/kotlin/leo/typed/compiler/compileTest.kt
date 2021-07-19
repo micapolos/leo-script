@@ -23,6 +23,7 @@ import leo.plusName
 import leo.quoteName
 import leo.repeatName
 import leo.script
+import leo.selectName
 import leo.switchName
 import leo.textName
 import leo.type
@@ -278,14 +279,12 @@ class CompileTest {
   }
 
   @Test
-  fun pickDrop() {
-    nativeEnvironment
-      .compiled(
-        script(
-          pickName lineTo script(literal(10)),
-          dropName lineTo script(textName)
-        )
-      )
+  fun select() {
+    script(
+      selectName lineTo script(
+        pickName lineTo script(literal(10)),
+        dropName lineTo script(textName)))
+      .compiled(nativeEnvironment)
       .assertEqualTo(
         compiledSelect<Native>()
           .pick(compiled(nativeLine(10.0.native), nativeNumberTypeLine))
@@ -294,21 +293,30 @@ class CompileTest {
   }
 
   @Test
+  fun select_empty() {
+    assertFails {
+      script(selectName lineTo script())
+        .compiled(nativeEnvironment)
+    }
+  }
+
+  @Test
   fun switch_simple() {
     nativeEnvironment
       .compiled(
         script(
-          "id" lineTo script(
-            pickName lineTo script("one"),
-            dropName lineTo script("two"),
-            dropName lineTo script("three")),
+          "deep" lineTo script(
+            selectName lineTo script(
+              pickName lineTo script("one"),
+              dropName lineTo script("two"),
+              dropName lineTo script("three"))),
           switchName lineTo script(
             "one" lineTo script(doingName lineTo script(literal(1))),
             "two" lineTo script(doingName lineTo script(literal(2))),
             "three" lineTo script(doingName lineTo script(literal(3))))))
       .assertEqualTo(
         compiled(
-          "id" lineTo
+          "deep" lineTo
               compiledSelect<Native>()
                 .pick("one" lineTo compiled())
                 .drop("two" lineTo type())
@@ -327,10 +335,11 @@ class CompileTest {
     nativeEnvironment
       .compiled(
         script(
-          "id" lineTo script(
-            pickName lineTo script("one" lineTo script(literal(10))),
-            dropName lineTo script("two" lineTo script(numberName)),
-            dropName lineTo script("three" lineTo script(numberName))),
+          "deep" lineTo script(
+            selectName lineTo script(
+              pickName lineTo script("one" lineTo script(literal(10))),
+              dropName lineTo script("two" lineTo script(numberName)),
+              dropName lineTo script("three" lineTo script(numberName)))),
           switchName lineTo script(
             "one" lineTo script(doingName lineTo script("one", "number")),
             "two" lineTo script(doingName lineTo script("two", "number")),
@@ -340,7 +349,7 @@ class CompileTest {
       )
       .assertEqualTo(
         compiled(
-          "id" lineTo
+          "deep" lineTo
             compiledSelect<Native>()
               .pick("one" lineTo nativeNumberCompiled(10.0.native))
               .drop("two" lineTo nativeNumberType)
@@ -394,8 +403,9 @@ class CompileTest {
   @Test
   fun selectIndex() {
     script(
-      pickName lineTo script("foo"),
-      dropName lineTo script("bar"))
+      selectName lineTo script(
+        pickName lineTo script("foo"),
+        dropName lineTo script("bar")))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         compiled(
@@ -407,20 +417,20 @@ class CompileTest {
   }
 
   @Test
-  fun select_syntaxError() {
+  fun select_notPickDrop() {
     assertFails {
       script(
-        pickName lineTo script("foo"),
-        "drup" lineTo script("bar"))
+        selectName lineTo script(
+          pickName lineTo script("foo"),
+          "drup" lineTo script("bar")))
         .compiled(nativeEnvironment)
     }
   }
 
   @Test
-  fun select_noSelection() {
+  fun select_noPick() {
     assertFails {
-      script(
-        dropName lineTo script("foo"))
+      script(selectName lineTo script(dropName lineTo script("foo")))
         .compiled(nativeEnvironment)
     }
   }
