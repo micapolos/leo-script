@@ -465,3 +465,6 @@ fun <T> Stack<T>.listScriptLine(scriptLineFn: T.() -> ScriptLine): ScriptLine =
 val Script.onlyNameOrNull: String?
   get() =
     onlyLineOrNull?.fieldOrNull?.onlyNameOrNull
+
+val Any?.anyScriptLine: ScriptLine get() =
+  "any" lineTo script(literal(toString()))

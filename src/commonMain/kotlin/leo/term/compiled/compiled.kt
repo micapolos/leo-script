@@ -6,11 +6,11 @@ import leo.TypeChoice
 import leo.TypeFunction
 import leo.TypeLine
 import leo.TypeStructure
+import leo.anyScriptLine
 import leo.atom
 import leo.choice
 import leo.line
 import leo.lineTo
-import leo.named.value.anyScriptLine
 import leo.native
 import leo.primitive
 import leo.script

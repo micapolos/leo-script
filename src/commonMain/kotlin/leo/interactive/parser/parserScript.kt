@@ -11,8 +11,8 @@ import leo.line
 import leo.lineTo
 import leo.listScriptLine
 import leo.literal
-import leo.named.expression.scriptLine
 import leo.optionScriptLine
+import leo.reflectScriptLine
 import leo.script
 import leo.stack
 
@@ -105,7 +105,7 @@ val TextPrefix.scriptLine: ScriptLine
       "text" lineTo script(
         when (this) {
           is OpeningTextPrefix -> opening.scriptLine
-          is StringTextPrefix -> string.literal.scriptLine
+          is StringTextPrefix -> string.literal.reflectScriptLine
         }
       )
     )

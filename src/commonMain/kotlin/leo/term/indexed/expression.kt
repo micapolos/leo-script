@@ -2,7 +2,7 @@ package leo.term.indexed
 
 import leo.Empty
 import leo.IndexVariable
-import leo.named.value.anyScriptLine
+import leo.anyScriptLine
 import leo.variable
 
 sealed class Expression<out V> { override fun toString() = script { it.anyScriptLine }.toString() }
