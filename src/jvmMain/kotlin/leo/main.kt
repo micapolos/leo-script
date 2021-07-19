@@ -3,7 +3,6 @@ package leo
 import leo.term.evaluator.evaluate as typedEvaluate
 import leo.base.print
 import leo.java.io.inString
-import leo.named.compiler.CompileError
 import leo.natives.fileText
 import leo.parser.scriptOrThrow
 import java.io.File

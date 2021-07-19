@@ -1,9 +1,9 @@
 package leo.term.evaluator
 
+import leo.CompileError
 import leo.Script
 import leo.errorName
 import leo.lineTo
-import leo.named.compiler.CompileError
 import leo.script
 import leo.term.compiled.indexed.indexedExpression
 import leo.term.compiler.compiled

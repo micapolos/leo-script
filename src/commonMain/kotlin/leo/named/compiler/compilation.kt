@@ -16,6 +16,7 @@ import leo.base.notNullOrError
 import leo.beName
 import leo.bind
 import leo.bindName
+import leo.compileError
 import leo.debugName
 import leo.defineName
 import leo.doName

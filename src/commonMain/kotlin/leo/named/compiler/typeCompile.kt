@@ -11,6 +11,7 @@ import leo.atom
 import leo.base.orNullIf
 import leo.choiceName
 import leo.choiceOrNull
+import leo.compileError
 import leo.equalName
 import leo.fieldOrNull
 import leo.first

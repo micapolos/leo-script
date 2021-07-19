@@ -1,9 +1,4 @@
-package leo.named.compiler
-
-import leo.Script
-import leo.errorName
-import leo.lineTo
-import leo.script
+package leo
 
 data class CompileError(val scriptFn: () -> Script) : Error() {
   override fun toString() = script(errorName lineTo scriptFn()).toString()
