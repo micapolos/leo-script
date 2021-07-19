@@ -1,5 +1,6 @@
 package leo.term.compiled
 
+import leo.IndexVariable
 import leo.Script
 import leo.ScriptLine
 import leo.bindName
@@ -12,7 +13,6 @@ import leo.natives.fieldName
 import leo.plus
 import leo.script
 import leo.scriptLine
-import leo.term.IndexVariable
 import leo.yesNoName
 
 fun <V> Compiled<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
