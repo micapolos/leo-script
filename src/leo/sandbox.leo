@@ -1,5 +1,7 @@
-with 10
-with 20
-with
-  10
-  plus 20
+types
+  let
+    is
+    do is
+      either yes
+      either no
+is yes

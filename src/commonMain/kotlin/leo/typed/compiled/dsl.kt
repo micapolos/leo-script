@@ -10,6 +10,7 @@ import leo.base.fold
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.choiceOrNull
+import leo.fieldOrNull
 import leo.functionLineTo
 import leo.functionOrNull
 import leo.getFromBottom
@@ -256,6 +257,9 @@ val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
     }
   }
 
+val <V> Compiled<V>.onlyCompiledFieldOrNull: CompiledField<V>? get() =
+  onlyCompiledLineOrNull?.compiledFieldOrNull
+
 val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
   onlyCompiledLineOrNull ?: compileError(script("line"))
 
@@ -301,3 +305,12 @@ val <V> Compiled<V>.compiledChoiceOrNull: CompiledChoice<V>? get() =
 
 fun <V> Compiled<V>.with(binding: Binding<V>): Compiled<V> =
   compiled(expression(bind(binding, this)), type)
+
+val <V> CompiledLine<V>.compiledFieldOrNull: CompiledField<V>? get() =
+  typeLine.atom.fieldOrNull?.let { typeField ->
+    line.fieldOrNull?.let { field ->
+      compiled(field, typeField)
+    }
+  }
+
+val <V> CompiledField<V>.rhs: Compiled<V> get() = field.rhs

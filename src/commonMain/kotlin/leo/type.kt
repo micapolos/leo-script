@@ -188,6 +188,7 @@ val Type.structureOrNull: TypeStructure? get() = (this as? StructureType)?.struc
 val Type.choiceOrNull: TypeChoice? get() = (this as? ChoiceType)?.choice
 val Type.functionOrNull: TypeFunction? get() = structureOrNull?.onlyLineOrNull?.atom?.functionOrNull
 val Type.onlyLineOrNull: TypeLine? get() = structureOrNull?.onlyLineOrNull
+val Type.onlyFieldOrNull: TypeField? get() = onlyLineOrNull?.atomOrNull?.fieldOrNull
 val TypeLine.recursibleOrNull: TypeRecursible? get() = (this as? RecursibleTypeLine)?.recursible
 val TypeLine.recursiveOrNull: TypeRecursive? get() = (this as? RecursiveTypeLine)?.recursive
 val TypeLine.atomOrNull: TypeAtom? get() = recursibleOrNull?.atomOrNull

@@ -3,6 +3,7 @@ package leo.typed.compiled
 import leo.Stack
 import leo.Type
 import leo.TypeChoice
+import leo.TypeField
 import leo.TypeFunction
 import leo.TypeLine
 import leo.TypeStructure
@@ -21,6 +22,7 @@ data class Compiled<out V>(val expression: Expression<V>, val type: Type) {
 }
 
 data class CompiledLine<out V>(val line: Line<V>, val typeLine: TypeLine)
+data class CompiledField<out V>(val field: Field<V>, val typeField: TypeField)
 data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStructure)
 data class CompiledFunction<out V>(val function: Function<V>, val typeFunction: TypeFunction)
 data class CompiledSelect<out V>(val caseOrNull: Case<V>?, val choice: TypeChoice)
@@ -75,6 +77,7 @@ fun <V> line(get: Get<V>): Line<V> = GetLine(get)
 fun <V> compiled(expression: Expression<V>, type: Type): Compiled<V> = Compiled(expression, type)
 fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tuple, structure)
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
+fun <V> compiled(field: Field<V>, typeField: TypeField) = CompiledField(field, typeField)
 fun <V> compiled(function: Function<V>, typeFunction: TypeFunction) = CompiledFunction(function, typeFunction)
 fun <V> compiled(expression: Expression<V>, choice: TypeChoice) = CompiledChoice(expression, choice)
 
