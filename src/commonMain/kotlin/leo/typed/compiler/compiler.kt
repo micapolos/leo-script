@@ -149,7 +149,7 @@ fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
                   "any" lineTo script("script")))))))))
   else script.matchPrefix { name, rhs ->
     when (name) {
-      "scheme" -> set(environment.staticCompiled(script(rhs.compiled(schemeEnvironment).indexedExpression.scheme.toScriptLine)))
+      "scheme" -> set(environment.staticCompiled(script(rhs.compiled(schemeEnvironment).indexedExpression.scheme.leoScriptLine)))
       "python" -> set(environment.staticCompiled(script(rhs.compiled(pythonEnvironment).indexedExpression.python.scriptLine)))
       else -> compileError(script("compile" lineTo script(name)))
     }

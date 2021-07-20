@@ -12,7 +12,7 @@ import leo.script
 import leo.string
 
 data class Scheme(val string: String): LeoObject() {
-  override val toScriptLine get() = "scheme" lineTo script(literal(string))
+  override val leoScriptLine get() = "scheme" lineTo script(literal(string))
 }
 
 fun scheme(string: String): Scheme = Scheme(string)
