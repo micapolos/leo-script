@@ -61,13 +61,27 @@ import leo.typed.indexed.native
 import leo.typed.indexed.value
 import leo.zip
 
-fun Value<Native>.script(type: Type): Script =
-  script(type) { it.scriptLine }
+data class Context<in V>(
+  val nativeScriptLineFn: (V) -> ScriptLine,
+  val customScriptLineOrNullFn: (Value<V>, TypeLine) -> ScriptLine?)
 
-fun <V> Value<V>.script(type: Type, fn: (V) -> ScriptLine): Script =
+val nativeContext: Context<Native> get() = Context(
+  { native -> native.scriptLine },
+  { value, typeLine ->
+    when (typeLine) {
+      nativeTextTypeLine -> value.native.scriptLine
+      nativeNumberTypeLine -> value.native.scriptLine
+      else -> null
+    }
+  })
+
+fun Value<Native>.script(type: Type): Script =
+  script(type, nativeContext)
+
+fun <V> Value<V>.script(type: Type, context: Context<V>): Script =
   when (type) {
-    is ChoiceType -> script(type.choice, fn)
-    is StructureType -> script(type.structure, fn)
+    is ChoiceType -> script(type.choice, context)
+    is StructureType -> script(type.structure, context)
   }
 
 val Value<*>.choiceIndex: Int get() =
@@ -87,26 +101,26 @@ fun <V> Value<V>.index(typeChoice: TypeChoice): Int =
   if (typeChoice.lineStack.size == 2) (this as BooleanValue).boolean.choiceIndex
   else (this as IndexValue).index
 
-fun <V> Value<V>.script(typeChoice: TypeChoice, fn: (V) -> ScriptLine): Script =
-  if (typeChoice.isSimple) simpleScript(typeChoice, fn)
-  else complexScript(typeChoice, fn)
+fun <V> Value<V>.script(typeChoice: TypeChoice, context: Context<V>): Script =
+  if (typeChoice.isSimple) simpleScript(typeChoice, context)
+  else complexScript(typeChoice, context)
 
-fun <V> Value<V>.simpleScript(typeChoice: TypeChoice, fn: (V) -> ScriptLine): Script =
-  script(value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(index(typeChoice))!!, fn))
+fun <V> Value<V>.simpleScript(typeChoice: TypeChoice, context: Context<V>): Script =
+  script(value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(index(typeChoice))!!, context))
 
-fun <V> Value<V>.complexScript(typeChoice: TypeChoice, fn: (V) -> ScriptLine): Script =
-  (this as TupleValue).tuple.script(typeChoice, fn)
+fun <V> Value<V>.complexScript(typeChoice: TypeChoice, context: Context<V>): Script =
+  (this as TupleValue).tuple.script(typeChoice, context)
 
-fun <V> ValueTuple<V>.script(typeChoice: TypeChoice, fn: (V) -> ScriptLine): Script =
+fun <V> ValueTuple<V>.script(typeChoice: TypeChoice, context: Context<V>): Script =
   valueList[0].let { indexValue ->
     valueList[1].let { bodyValue ->
-      script(bodyValue.scriptLine(typeChoice.lineStack.getFromBottom(indexValue.index(typeChoice))!!, fn))
+      script(bodyValue.scriptLine(typeChoice.lineStack.getFromBottom(indexValue.index(typeChoice))!!, context))
     }
   }
 
-fun <V> Value<V>.script(typeStructure: TypeStructure, fn: (V) -> ScriptLine): Script =
+fun <V> Value<V>.script(typeStructure: TypeStructure, context: Context<V>): Script =
   typeStructure.onlyLineOrNull
-    ?.let { script(scriptLine(it, fn)) }
+    ?.let { script(scriptLine(it, context)) }
     ?: when (this) {
       is BooleanValue -> null
       is EmptyValue -> empty.script(typeStructure)
@@ -114,46 +128,44 @@ fun <V> Value<V>.script(typeStructure: TypeStructure, fn: (V) -> ScriptLine): Sc
       is IndexValue -> null
       is NativeValue -> null
       is RecursiveValue -> null
-      is TupleValue -> tuple.script(typeStructure, fn)
+      is TupleValue -> tuple.script(typeStructure, context)
     }!!
 
-fun <V> Boolean.scriptLine(typeChoice: TypeChoice, fn: (V) -> ScriptLine): ScriptLine =
-  value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(if (this) 0 else 1)!!, fn)
+fun <V> Boolean.scriptLine(typeChoice: TypeChoice, context: Context<V>): ScriptLine =
+  value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(if (this) 0 else 1)!!, context)
 
-fun <V> Int.scriptLine(typeChoice: TypeChoice, fn: (V) -> ScriptLine): ScriptLine =
-  value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(this)!!, fn)
+fun <V> Int.scriptLine(typeChoice: TypeChoice, context: Context<V>): ScriptLine =
+  value<V>(empty).scriptLine(typeChoice.lineStack.getFromBottom(this)!!, context)
 
-fun <V> ValueTuple<V>.script(typeStructure: TypeStructure, fn: (V) -> ScriptLine): Script =
-  zip(stack(*valueList.toTypedArray()), typeStructure.lineStack).map { first!!.scriptLine(second!!, fn) }.script
+fun <V> ValueTuple<V>.script(typeStructure: TypeStructure, context: Context<V>): Script =
+  zip(stack(*valueList.toTypedArray()), typeStructure.lineStack).map { first!!.scriptLine(second!!, context) }.script
 
-fun <V> Value<V>.scriptLine(typeLine: TypeLine, fn: (V) -> ScriptLine): ScriptLine =
-  when (typeLine) {
-    nativeTextTypeLine -> fn(native) // TODO: This should be configurable
-    nativeNumberTypeLine -> fn(native) // TODO: This should be configurable
-    else -> scriptLine(typeLine.atom, fn)
-  }
+fun <V> Value<V>.scriptLine(typeLine: TypeLine, context: Context<V>): ScriptLine =
+  null
+    ?: context.customScriptLineOrNullFn(this, typeLine)
+    ?: scriptLine(typeLine.atom, context)
 
-fun <V> Value<V>.scriptLine(typeAtom: TypeAtom, fn: (V) -> ScriptLine): ScriptLine =
+fun <V> Value<V>.scriptLine(typeAtom: TypeAtom, context: Context<V>): ScriptLine =
   when (typeAtom) {
-    is FunctionTypeAtom -> scriptLine(typeAtom.function, fn)
-    is PrimitiveTypeAtom -> scriptLine(typeAtom.primitive, fn)
+    is FunctionTypeAtom -> scriptLine(typeAtom.function, context)
+    is PrimitiveTypeAtom -> scriptLine(typeAtom.primitive, context)
   }
 
 @Suppress("unused")
-fun <V> Value<V>.scriptLine(typeFunction: TypeFunction, @Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): ScriptLine =
+fun <V> Value<V>.scriptLine(typeFunction: TypeFunction, @Suppress("UNUSED_PARAMETER") context: Context<V>): ScriptLine =
   typeFunction.scriptLine
 
-fun <V> Value<V>.scriptLine(typePrimitive: TypePrimitive, fn: (V) -> ScriptLine): ScriptLine =
+fun <V> Value<V>.scriptLine(typePrimitive: TypePrimitive, context: Context<V>): ScriptLine =
   when (typePrimitive) {
-    is NativeTypePrimitive -> scriptLine(typePrimitive.native_, fn)
-    is FieldTypePrimitive -> scriptLine(typePrimitive.field, fn)
+    is NativeTypePrimitive -> scriptLine(typePrimitive.native_, context)
+    is FieldTypePrimitive -> scriptLine(typePrimitive.field, context)
   }
 
-fun <V> Value<V>.scriptLine(@Suppress("UNUSED_PARAMETER") typeNative: TypeNative, fn: (V) -> ScriptLine): ScriptLine =
-  fn(native)
+fun <V> Value<V>.scriptLine(@Suppress("UNUSED_PARAMETER") typeNative: TypeNative, context: Context<V>): ScriptLine =
+  context.nativeScriptLineFn(native)
 
-fun <V> Value<V>.scriptLine(typeField: TypeField, fn: (V) -> ScriptLine): ScriptLine =
-  typeField.name lineTo script(typeField.rhsType, fn)
+fun <V> Value<V>.scriptLine(typeField: TypeField, context: Context<V>): ScriptLine =
+  typeField.name lineTo script(typeField.rhsType, context)
 
 fun Empty.script(type: Type): Script =
   script(type.structureOrNull!!)
