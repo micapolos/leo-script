@@ -1,7 +1,6 @@
-types
-  let
-    is
-    do is
-      either yes
-      either no
-is yes
+is select
+  the yes
+  not no
+as is choice
+  with yes
+  with not

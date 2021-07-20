@@ -29,16 +29,14 @@ class TypeScriptTest {
       isName lineTo type(
         choice(
           yesName lineTo type(),
-          noName lineTo type()
-        )
-      )
-    )
+          noName lineTo type())))
       .script
       .assertEqualTo(
         script(
           isName lineTo script(
-            eitherName lineTo script(yesName lineTo script()),
-            eitherName lineTo script(noName lineTo script()))))
+            choiceName lineTo script(
+              yesName lineTo script(),
+              noName lineTo script()))))
   }
 
   @Test
@@ -63,9 +61,10 @@ class TypeScriptTest {
         script(
           recursiveName lineTo script(
             "stack" lineTo script(
-              eitherName lineTo script("empty"),
-              eitherName lineTo script("link" lineTo script(
-                recurseName lineTo script(),
-                numberTypeLine.scriptLine))))))
+              choiceName lineTo script(
+                "empty" lineTo script(),
+                "link" lineTo script(
+                  recurseName lineTo script(),
+                  numberTypeLine.scriptLine))))))
   }
 }

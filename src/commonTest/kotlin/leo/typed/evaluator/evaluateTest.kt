@@ -2,9 +2,9 @@ package leo.typed.evaluator
 
 import leo.base.assertEqualTo
 import leo.beName
+import leo.choiceName
 import leo.doName
 import leo.doingName
-import leo.eitherName
 import leo.equalName
 import leo.givingName
 import leo.isName
@@ -19,6 +19,7 @@ import leo.numberName
 import leo.plusName
 import leo.repeatName
 import leo.script
+import leo.scriptLine
 import leo.selectName
 import leo.switchName
 import leo.textName
@@ -26,7 +27,9 @@ import leo.theName
 import leo.toName
 import leo.typeName
 import leo.typed.compiler.native.nativeNumberType
+import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextType
+import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typesName
 import leo.withName
 import leo.yesName
@@ -62,8 +65,9 @@ class EvaluateTest {
       .evaluate
       .assertEqualTo(
         script(
-          eitherName lineTo nativeNumberType.script,
-          eitherName lineTo nativeTextType.script))
+          choiceName lineTo script(
+            nativeNumberTypeLine.scriptLine,
+            nativeTextTypeLine.scriptLine)))
   }
 
   @Test

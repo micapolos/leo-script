@@ -19,7 +19,7 @@ val TypeStructure.script: Script
 
 val TypeChoice.script: Script
   get() =
-    lineStack.map { eitherName lineTo script(scriptLine) }.script
+    script(choiceName lineTo lineStack.map { scriptLine }.script)
 
 val TypeLine.scriptLine: ScriptLine
   get() =
