@@ -4,15 +4,22 @@ import leo.Literal
 import leo.NumberLiteral
 import leo.StringLiteral
 import leo.TypeLine
+import leo.equalName
 import leo.functionLineTo
+import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.toName
 import leo.type
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.as_
 import leo.typed.compiled.compiled
+import leo.typed.compiled.infix
 import leo.typed.compiled.invoke
 import leo.typed.compiled.nativeCompiled
 import leo.typed.compiled.nativeLine
+import leo.typed.compiled.onlyCompiledLine
+import leo.typed.compiled.prefix
 import leo.typed.compiler.Environment
 
 val nativeEnvironment: Environment<Native>
@@ -37,11 +44,15 @@ val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
       nativeCompiled(StringPlusStringNative, type(type functionLineTo nativeTextType))
     type("length" lineTo nativeTextType) ->
       nativeCompiled(StringLengthNative, type(type functionLineTo type("length" lineTo nativeNumberType)))
-    type(nativeNumberTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo nativeNumberType))) ->
-      nativeCompiled(ObjectEqualsObjectNative, type(type functionLineTo isType))
-    type(nativeTextTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo nativeTextType))) ->
-      nativeCompiled(ObjectEqualsObjectNative, type(type functionLineTo isType))
-    else -> null
+    else -> infix(isName) { isLhs, isRhs ->
+      isRhs.prefix(equalName) { isEqualRhs ->
+        isEqualRhs.prefix(toName) { isEqualToRhs ->
+          compiled(isLhs.onlyCompiledLine).as_(compiled(isEqualToRhs.onlyCompiledLine).type).let {
+            nativeCompiled(ObjectEqualsObjectNative, type(type functionLineTo isType))
+          }
+        }
+      }
+    }
   }
 
 val Literal.nativeTypeLine: TypeLine get() =

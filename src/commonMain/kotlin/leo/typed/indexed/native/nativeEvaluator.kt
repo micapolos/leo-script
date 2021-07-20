@@ -37,7 +37,7 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
     DoubleIsLessThanDoubleNative ->
       value(params[0].native.double < params[1].native.double)
     ObjectEqualsObjectNative ->
-      value(params[0].native == params[1].native)
+      value(params[0] == params[1])
     StringPlusStringNative ->
       nativeValue(params[0].native.string.plus(params[1].native.string).native)
     StringLengthNative ->
