@@ -9,6 +9,7 @@ import leo.functionLineTo
 import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.textName
 import leo.toName
 import leo.type
 import leo.typed.compiled.Compiled
@@ -42,6 +43,8 @@ val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
       nativeCompiled(scheme("*"), type(type functionLineTo schemeNumberType))
     type(schemeNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (schemeNumberType)))) ->
       nativeCompiled(scheme("<"), type(type functionLineTo isType))
+    type(textName lineTo schemeNumberType) ->
+      nativeCompiled(scheme("number->string"), type(type functionLineTo schemeTextType))
     type(schemeTextTypeLine, "plus" lineTo schemeTextType) ->
       nativeCompiled(scheme("string-append"), type(type functionLineTo schemeTextType))
     type("length" lineTo schemeTextType) ->
