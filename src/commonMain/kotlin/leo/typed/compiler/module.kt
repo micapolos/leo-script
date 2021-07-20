@@ -3,6 +3,7 @@ package leo.typed.compiler
 import leo.Script
 import leo.Type
 import leo.base.orIfNull
+import leo.base.printing
 import leo.mapFirst
 import leo.matchPrefix
 import leo.repeatingName
@@ -57,7 +58,7 @@ fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
   inTypesBlock { typesBlock ->
     typesBlock.bindingStack.mapFirst {
       let { binding ->
-        compiled.castOrNull(binding.compiled.valueScript.type)
+        compiled.castOrNull(binding.compiled.printing.valueScript.type)
       }
     } ?: compiled
   }
