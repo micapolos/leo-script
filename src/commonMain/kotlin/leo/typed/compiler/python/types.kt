@@ -14,15 +14,10 @@ import leo.typed.compiled.Compiled
 import leo.typed.compiler.Environment
 import leo.typed.compiler.native.resolveOrNull
 import leo.typed.compiler.staticCompiled
-import leo.typed.compiler.types.typesTypesEnvironment
+import leo.typed.compiler.types.typesEnvironment
 
 val pythonTypesEnvironment: Environment<Types>
-  get() =
-    Environment(
-      { literal -> error("") },
-      { compiled -> compiled.resolveOrNull },
-      { native -> error("") },
-      { typesTypesEnvironment })
+  get() = typesEnvironment { compiled -> compiled.resolveOrNull }
 
 val Compiled<Types>.resolveOrNull: Compiled<Types>? get() =
   when (type) {

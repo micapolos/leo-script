@@ -14,16 +14,11 @@ import leo.textName
 import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiler.Environment
-import leo.typed.compiler.compileError
 import leo.typed.compiler.staticCompiled
-import leo.typed.compiler.types.typesTypesEnvironment
+import leo.typed.compiler.types.typesEnvironment
 
 val nativeTypesEnvironment: Environment<Types> get() =
-  Environment(
-    { literal -> compileError(script("literal")) },
-    { compiled -> compiled.resolveOrNull },
-    { native -> compileError(script("literal")) },
-    { typesTypesEnvironment })
+  typesEnvironment { compiled -> compiled.resolveOrNull }
 
 val Compiled<Types>.resolveOrNull: Compiled<Types>? get() =
    when (type) {

@@ -7,6 +7,7 @@ import leo.typed.indexed.Value
 import leo.typed.indexed.ValueScriptContext
 import leo.typed.indexed.script
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 val typesValueScriptContext: ValueScriptContext<Types>
   get() = ValueScriptContext(
     { native -> error("") },
