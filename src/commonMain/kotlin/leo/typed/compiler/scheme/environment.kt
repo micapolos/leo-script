@@ -21,6 +21,7 @@ import leo.typed.compiled.nativeLine
 import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.prefix
 import leo.typed.compiler.Environment
+import leo.typed.compiler.native.nativeTypesEnvironment
 import scheme.Scheme
 import scheme.scheme
 
@@ -30,7 +31,7 @@ val schemeEnvironment: Environment<Scheme>
       { literal -> compiled(nativeLine(literal.scheme), literal.schemeTypeLine) },
       { compiled -> compiled.resolveOrNull?.invoke(compiled) },
       { it.leoScriptLine },
-      { typesNativeEnvironment })
+      { nativeTypesEnvironment })
 
 val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
   when (type) {

@@ -2,8 +2,8 @@ package leo.typed.compiler
 
 import leo.Script
 import leo.Type
+import leo.Types
 import leo.base.orIfNull
-import leo.base.printing
 import leo.mapFirst
 import leo.matchPrefix
 import leo.repeatingName
@@ -14,23 +14,22 @@ import leo.typed.compiled.body
 import leo.typed.compiled.castOrNull
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.recursive
-import leo.typed.compiler.native.Native
-import leo.typed.indexed.native.nativeEvaluator
-import leo.typed.indexed.native.script
-import leo.typed.indexed.native.valueScript
+import leo.typed.indexed.script
+import leo.typed.indexed.types.typesEvaluator
+import leo.typed.indexed.types.typesValueScriptContext
 import leo.typed.indexed.value
 
 data class Module<V>(
   val context: Context<V>,
-  val typesBlockOrNull: Block<Native>?)
+  val typesBlockOrNull: Block<Types>?)
 
 val <V> Context<V>.module: Module<V> get() =
   Module(this, null)
 
-fun <V, R> Module<V>.inTypesBlock(fn: (Block<Native>) -> R): R =
+fun <V, R> Module<V>.inTypesBlock(fn: (Block<Types>) -> R): R =
   fn(typesBlockOrNull.orIfNull { context.environment.typesNativeEnvironmentFn().context.module.block })
 
-fun <V> Module<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>): Module<V> =
+fun <V> Module<V>.updateTypesBlock(fn: (Block<Types>) -> Block<Types>): Module<V> =
   copy(typesBlockOrNull = inTypesBlock { fn(it) })
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
@@ -39,7 +38,7 @@ fun <V> Module<V>.plus(binding: Binding): Module<V> =
 fun <V> Module<V>.type(script: Script): Type =
   inTypesBlock { typeLocal ->
     typeLocal.compiler.plus(script).completeCompiled.let { compiled ->
-      compiled.indexedExpression.value(nativeEvaluator).script(compiled.type).type
+      compiled.indexedExpression.value(typesEvaluator).script(compiled.type, typesValueScriptContext).type
     }
   }
 
@@ -58,7 +57,13 @@ fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
   inTypesBlock { typesBlock ->
     typesBlock.bindingStack.mapFirst {
       let { binding ->
-        compiled.castOrNull(binding.compiled.printing.valueScript.type)
+        compiled.castOrNull(
+          binding
+            .compiled
+            .indexedExpression
+            .value(typesEvaluator)
+            .script(binding.compiled.type, typesValueScriptContext)
+            .type)
       }
     } ?: compiled
   }

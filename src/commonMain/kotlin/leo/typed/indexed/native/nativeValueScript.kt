@@ -39,7 +39,6 @@ val nativeValueScriptContext: ValueScriptContext<Native>
 fun Value<Native>.script(type: Type): Script =
   script(type, nativeValueScriptContext)
 
-
 val Native.scriptLine: ScriptLine
   get() =
   when (this) {

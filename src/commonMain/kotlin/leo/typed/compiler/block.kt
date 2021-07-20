@@ -6,6 +6,7 @@ import leo.Stack
 import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
+import leo.Types
 import leo.atom
 import leo.beName
 import leo.choice
@@ -46,7 +47,6 @@ import leo.typed.compiled.not
 import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.recFn
 import leo.typed.compiled.the
-import leo.typed.compiler.native.Native
 
 data class Block<V>(
   val module: Module<V>,
@@ -168,5 +168,5 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
             .fold(rope.tail.reverse) { not(it) }
             .compiled)))
 
-fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =
+fun <V> Block<V>.updateTypesBlock(fn: (Block<Types>) -> Block<Types>) =
   copy(module = module.updateTypesBlock(fn))

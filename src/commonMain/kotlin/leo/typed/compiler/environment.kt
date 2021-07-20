@@ -3,6 +3,7 @@ package leo.typed.compiler
 import leo.Literal
 import leo.Script
 import leo.ScriptLine
+import leo.Types
 import leo.isEmpty
 import leo.lineTo
 import leo.plus
@@ -11,13 +12,12 @@ import leo.typeName
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledLine
 import leo.typed.compiled.infix
-import leo.typed.compiler.native.Native
 
 data class Environment<V>(
   val literalFn: (Literal) -> CompiledLine<V>,
   val resolveOrNullFn: (Compiled<V>) -> Compiled<V>?,
   val scriptLineFn: (V) -> ScriptLine,
-  val typesNativeEnvironmentFn: () -> Environment<Native>)
+  val typesNativeEnvironmentFn: () -> Environment<Types>)
 
 fun <V> Environment<V>.compiled(script: Script): Compiled<V> =
   context.module.compiled(script)

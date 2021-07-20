@@ -2,6 +2,7 @@ package leo.typed.compiler.native
 
 import leo.Type
 import leo.TypeLine
+import leo.Types
 import leo.atom
 import leo.line
 import leo.lineTo
@@ -13,21 +14,21 @@ import leo.textName
 import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiler.Environment
+import leo.typed.compiler.compileError
 import leo.typed.compiler.staticCompiled
+import leo.typed.compiler.types.typesTypesEnvironment
 
-val typesNativeEnvironment: Environment<Native> get() =
-  nativeEnvironment.let {
-    Environment(
-      { literal -> nativeEnvironment.literalFn(literal) },
-      { compiled -> nativeEnvironment.resolveOrNullFn(compiled) ?: compiled.typedResolveOrNull },
-      { native -> nativeEnvironment.scriptLineFn(native) },
-      nativeEnvironment.typesNativeEnvironmentFn)
-  }
+val nativeTypesEnvironment: Environment<Types> get() =
+  Environment(
+    { literal -> compileError(script("literal")) },
+    { compiled -> compiled.resolveOrNull },
+    { native -> compileError(script("literal")) },
+    { typesTypesEnvironment })
 
-val Compiled<Native>.typedResolveOrNull: Compiled<Native>? get() =
+val Compiled<Types>.resolveOrNull: Compiled<Types>? get() =
    when (type) {
-     type(numberName) -> nativeEnvironment.staticCompiled(nativeNumberType.script)
-     type(textName) -> nativeEnvironment.staticCompiled(nativeTextType.script)
+     type(numberName) -> nativeTypesEnvironment.staticCompiled(nativeNumberType.script)
+     type(textName) -> nativeTypesEnvironment.staticCompiled(nativeTextType.script)
      else -> null
    }
 
