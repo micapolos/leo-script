@@ -22,6 +22,7 @@ import leo.atom
 import leo.empty
 import leo.fieldOrNull
 import leo.getFromBottom
+import leo.isSimple
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -32,6 +33,7 @@ import leo.onlyLineOrNull
 import leo.primitiveOrNull
 import leo.script
 import leo.scriptLine
+import leo.size
 import leo.stack
 import leo.structureOrNull
 import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
@@ -65,16 +67,39 @@ fun Value<Native>.script(type: Type): Script =
     is StructureType -> script(type.structure)
   }
 
-fun Value<Native>.script(typeChoice: TypeChoice): Script =
+val Value<Native>.choiceIndex: Int get() =
   when (this) {
-    is BooleanValue -> script(boolean.scriptLine(typeChoice))
+    is BooleanValue -> if (boolean) 0 else 1
     is EmptyValue -> null
     is FunctionValue -> null
-    is IndexValue -> script(index.scriptLine(typeChoice))
+    is IndexValue -> index
     is NativeValue -> null
     is RecursiveValue -> null
     is TupleValue -> null
   }!!
+
+val Boolean.choiceIndex: Int get() = if (this) 0 else 1
+
+fun Value<Native>.index(typeChoice: TypeChoice): Int =
+  if (typeChoice.lineStack.size == 2) (this as BooleanValue).boolean.choiceIndex
+  else (this as IndexValue).index
+
+fun Value<Native>.script(typeChoice: TypeChoice): Script =
+  if (typeChoice.isSimple) simpleScript(typeChoice)
+  else complexScript(typeChoice)
+
+fun Value<Native>.simpleScript(typeChoice: TypeChoice): Script =
+  script(value<Native>(empty).scriptLine(typeChoice.lineStack.getFromBottom(index(typeChoice))!!))
+
+fun Value<Native>.complexScript(typeChoice: TypeChoice): Script =
+  (this as TupleValue).tuple.script(typeChoice)
+
+fun ValueTuple<Native>.script(typeChoice: TypeChoice): Script =
+  valueList[0].let { indexValue ->
+    valueList[1].let { bodyValue ->
+      script(bodyValue.scriptLine(typeChoice.lineStack.getFromBottom(indexValue.index(typeChoice))!!))
+    }
+  }
 
 fun Value<Native>.script(typeStructure: TypeStructure): Script =
   typeStructure.onlyLineOrNull

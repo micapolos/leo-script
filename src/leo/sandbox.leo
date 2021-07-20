@@ -1,4 +1,4 @@
-point
-  x 10
-  y 20
+select
+  the 10
+  not text
 type

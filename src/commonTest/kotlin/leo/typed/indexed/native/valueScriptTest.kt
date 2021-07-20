@@ -20,6 +20,7 @@ import leo.typed.compiler.native.StringPlusStringNative
 import leo.typed.compiler.native.native
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
+import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typed.indexed.nativeValue
 import leo.typed.indexed.value
 import kotlin.test.Test
@@ -127,5 +128,31 @@ class ValueScriptTest {
     value<Native>(2)
       .script(type(choice("yes" lineTo type(), "no" lineTo type(), "maybe" lineTo type())))
       .assertEqualTo(script("maybe"))
+  }
+
+  @Test
+  fun booleanComplexChoice() {
+    value(value(true), nativeValue(10.0.native))
+      .script(type(choice(nativeNumberTypeLine, nativeTextTypeLine)))
+      .assertEqualTo(script(literal(10.0)))
+
+    value(value(false), nativeValue("foo".native))
+      .script(type(choice(nativeNumberTypeLine, nativeTextTypeLine)))
+      .assertEqualTo(script(literal("foo")))
+  }
+
+  @Test
+  fun indexComplexChoice() {
+    value(value(0), nativeValue(10.0.native))
+      .script(type(choice(nativeNumberTypeLine, nativeTextTypeLine, "foo" lineTo type())))
+      .assertEqualTo(script(literal(10.0)))
+
+    value(value(1), nativeValue("foo".native))
+      .script(type(choice(nativeNumberTypeLine, nativeTextTypeLine, "foo" lineTo type())))
+      .assertEqualTo(script(literal("foo")))
+
+    value(value(2), value<Native>(empty))
+      .script(type(choice(nativeNumberTypeLine, nativeTextTypeLine, "foo" lineTo type())))
+      .assertEqualTo(script("foo"))
   }
 }

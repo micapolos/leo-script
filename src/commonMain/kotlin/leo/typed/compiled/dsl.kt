@@ -280,6 +280,12 @@ fun <V> CompiledSelect<V>.not(typeLine: TypeLine): CompiledSelect<V> =
     CompiledSelect(caseOrNull, choice.plus(typeLine))
   } ?:compileError(script("drop"))
 
+fun <V> CompiledSelect<V>.plus(line: CompiledSelectLine<V>): CompiledSelect<V> =
+  when (line) {
+    is NotCompiledSelectLine -> not(line.not.typeLine)
+    is TheCompiledSelectLine -> the(line.the.compiledLine)
+  }
+
 val <V> CompiledSelect<V>.compiled: Compiled<V> get() =
   if (caseOrNull == null) compileError(script("not" lineTo script("selected")))
   else compiled(expression(select(choice, caseOrNull)), type(choice))
@@ -332,3 +338,6 @@ fun <V> Type.haveOrNull(compiled: Compiled<V>): Compiled<V>? =
       compiled(typeField.name lineTo have)
     }
   }
+
+fun <V> selectCompiled(vararg lines: CompiledSelectLine<V>): Compiled<V> =
+  compiledSelect<V>().fold(lines) { plus(it) }.compiled

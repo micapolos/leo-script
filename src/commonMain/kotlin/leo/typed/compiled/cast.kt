@@ -38,8 +38,8 @@ fun <V> Compiled<V>.lineCastOrNull(type: Type): Compiled<V>? =
 fun <V> Compiled<V>.castOrNull(choice: TypeChoice): Compiled<V>? =
   choice.lineStack.ropeOrNull?.let { rope ->
     stack<Compiled<V>>()
-      .fold(rope) { rope ->
-        ifNotNull(castOrNull(rope)) { push(it) }
+      .fold(rope) { caseRope ->
+        ifNotNull(castOrNull(caseRope)) { push(it) }
       }
       .onlyOrNull
   }

@@ -60,6 +60,19 @@ data class Binding<out V>(val type: Type, val compiled: Compiled<V>)
 data class Bind<out V>(val binding: Binding<V>, val compiled: Compiled<V>)
 data class TypeVariable(val type: Type)
 
+sealed class CompiledSelectLine<out V>
+data class TheCompiledSelectLine<V>(val the: CompiledLineThe<V>): CompiledSelectLine<V>()
+data class NotCompiledSelectLine<V>(val not: TypeLineNot): CompiledSelectLine<V>()
+
+data class CompiledLineThe<out V>(val compiledLine: CompiledLine<V>)
+data class TypeLineNot(val typeLine: TypeLine)
+
+fun <V> line(the: CompiledLineThe<V>): CompiledSelectLine<V> = TheCompiledSelectLine(the)
+fun <V> line(not: TypeLineNot): CompiledSelectLine<V> = NotCompiledSelectLine(not)
+
+fun <V> the(compiledLine: CompiledLine<V>) = CompiledLineThe(compiledLine)
+fun not(typeLine: TypeLine) = TypeLineNot(typeLine)
+
 fun <V> tuple(vararg lines: Line<V>) = Tuple(stack(*lines))
 fun <V> expression(tuple: Tuple<V>): Expression<V> = TupleExpression(tuple)
 fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
