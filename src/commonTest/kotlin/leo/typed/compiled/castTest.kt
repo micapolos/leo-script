@@ -5,7 +5,9 @@ import leo.base.assertNull
 import leo.choice
 import leo.line
 import leo.lineTo
+import leo.recurseTypeLine
 import leo.recursive
+import leo.recursiveLine
 import leo.type
 import kotlin.test.Test
 
@@ -114,5 +116,29 @@ class CastTest {
         compiled(
           expression(tuple(line(field("empty", compiled())))),
           type(line(recursive("empty" lineTo type())))))
+  }
+
+
+  @Test
+  fun recursiveChoice() {
+    compiled<Nothing>(
+      expression(variable(type("foo"))),
+      type("nat" lineTo type("zero")))
+      .castOrNull(
+        type(
+          recursiveLine(
+            "nat" lineTo type(
+              choice(
+                "zero" lineTo type(),
+                "previous" lineTo type(recurseTypeLine))))))
+      .assertEqualTo(
+        compiled(
+          expression(variable(type("foo"))),
+          type(
+            recursiveLine(
+              "nat" lineTo type(
+                choice(
+                  "zero" lineTo type(),
+                  "previous" lineTo type(recurseTypeLine)))))))
   }
 }

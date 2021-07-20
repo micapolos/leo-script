@@ -21,6 +21,7 @@ import leo.push
 import leo.reverse
 import leo.ropeOrNull
 import leo.stack
+import leo.type
 
 fun <V> Compiled<V>.castOrNull(type: Type): Compiled<V>? =
   null
@@ -41,8 +42,8 @@ fun <V> CompiledLine<V>.castCompiledOrNull(typeLine: TypeLine): Compiled<V>? =
   when (typeLine) {
     is RecursibleTypeLine -> typeLine.atomOrNull?.primitiveOrNull?.fieldOrNull?.let { castCompiledOrNull(it) }
     is RecursiveTypeLine ->
-      if (this.typeLine == typeLine.recursive.line) compiled(compiled(line, typeLine))
-      else null
+      if (this.typeLine == typeLine.recursive.line) compiled(expression(tuple(line)), type(typeLine))
+      else compiled(this).castOrNull(type(typeLine.recursive.line))?.let { compiled(it.expression, type(typeLine)) }
   }
 
 fun <V> CompiledLine<V>.castCompiledOrNull(typeField: TypeField): Compiled<V>? =
