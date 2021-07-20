@@ -3,10 +3,15 @@ package leo.typed.compiler
 import leo.Script
 import leo.Type
 import leo.Types
+import leo.base.Seq
+import leo.base.filterMap
+import leo.base.mapFirstOrNull
 import leo.base.orIfNull
-import leo.mapFirst
+import leo.base.the
 import leo.matchPrefix
 import leo.repeatingName
+import leo.seq
+import leo.staticScriptOrNull
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
@@ -54,17 +59,13 @@ fun <V> Module<V>.resolve(compiled: Compiled<V>): Compiled<V> =
   context.resolve(cast(compiled))
 
 fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
-  inTypesBlock { typesBlock ->
-    typesBlock.bindingStack.mapFirst {
-      let { binding ->
-        compiled.castOrNull(
-          binding
-            .compiled
-            .indexedExpression
-            .value(typesEvaluator)
-            .script(binding.compiled.type, typesValueScriptContext)
-            .type)
-      }
-    } ?: compiled
-  }
+  typeSeq.mapFirstOrNull {
+    compiled.castOrNull(this)
+  } ?: compiled
 
+val <V> Module<V>.typeSeq: Seq<Type> get() =
+  inTypesBlock { typesBlock ->
+    typesBlock.module.context.scope.bindingStack.seq.filterMap {
+      rhsType.staticScriptOrNull?.type?.the
+    }
+  }
