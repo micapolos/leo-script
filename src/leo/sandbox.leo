@@ -1,3 +1,4 @@
-word nat word previous word nat previous nat zero
-previous.nat
-previous.nat
+nat zero
+make nat previous
+make nat previous
+type

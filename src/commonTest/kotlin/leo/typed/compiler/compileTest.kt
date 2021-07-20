@@ -19,6 +19,7 @@ import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.makeName
 import leo.notName
 import leo.numberName
 import leo.pickName
@@ -504,6 +505,15 @@ class CompileTest {
       haveName lineTo script("red"))
       .compiled(nativeEnvironment)
       .assertEqualTo(compiled("my" lineTo compiled("color" lineTo compiled("red"))))
+  }
+
+  @Test
+  fun make() {
+    script(
+      "red" lineTo script(),
+      makeName lineTo script("favourite" lineTo script("color")))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(compiled("favourite" lineTo compiled("color" lineTo compiled("red"))))
   }
 
   @Test

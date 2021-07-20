@@ -18,6 +18,7 @@ import leo.doName
 import leo.doingName
 import leo.exampleName
 import leo.fieldOrNull
+import leo.fold
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -28,8 +29,10 @@ import leo.isSimple
 import leo.letName
 import leo.lineSeq
 import leo.lineTo
+import leo.makeName
 import leo.matchInfix
 import leo.matchPrefix
+import leo.nameStackOrNull
 import leo.onlyLineOrNull
 import leo.plus
 import leo.quoteName
@@ -57,6 +60,7 @@ import leo.typed.compiled.have
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.line
 import leo.typed.compiled.lineTo
+import leo.typed.compiled.make
 import leo.typed.compiled.onlyCompiledLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
@@ -118,6 +122,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     functionName -> function(field.rhs)
     haveName -> have(field.rhs)
     letName -> let(field.rhs)
+    makeName -> make(field.rhs)
     quoteName -> quote(field.rhs)
     repeatName -> repeat(field.rhs)
     selectName -> select(field.rhs)
@@ -259,6 +264,14 @@ fun <V> Compiler<V>.example(script: Script): Compiler<V> =
 fun <V> Compiler<V>.let(script: Script): Compiler<V> =
   if (!compiled.type.isEmpty) compileError(script("let" lineTo script("after" lineTo compiled.type.script)))
   else set(block.plusLet(script))
+
+fun <V> Compiler<V>.make(script: Script): Compiler<V> =
+  script.nameStackOrNull?.let { nameStack ->
+    fold(nameStack.reverse) { make(it) }
+  } ?: compileError(script("make" lineTo script))
+
+fun <V> Compiler<V>.make(name: String): Compiler<V> =
+  set(compiled.make(name))
 
 fun <V> Compiler<V>.select(script: Script): Compiler<V> =
   set(
