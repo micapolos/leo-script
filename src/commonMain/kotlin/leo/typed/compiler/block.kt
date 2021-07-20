@@ -38,12 +38,12 @@ import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledLineStack
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.compiledVariable
-import leo.typed.compiled.drop
 import leo.typed.compiled.expression
 import leo.typed.compiled.fn
+import leo.typed.compiled.not
 import leo.typed.compiled.onlyCompiledLine
-import leo.typed.compiled.pick
 import leo.typed.compiled.recFn
+import leo.typed.compiled.the
 import leo.typed.compiler.native.Native
 
 data class Block<V>(
@@ -150,9 +150,9 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
         fn(
           type(rope.current),
           compiledSelect<V>()
-            .fold(rope.head) { drop(it) }
-            .pick(compiledVariable<V>(type(rope.current.nameOrNull!!), type(rope.current)).onlyCompiledLine)
-            .fold(rope.tail.reverse) { drop(it) }
+            .fold(rope.head) { not(it) }
+            .the(compiledVariable<V>(type(rope.current.nameOrNull!!), type(rope.current)).onlyCompiledLine)
+            .fold(rope.tail.reverse) { not(it) }
             .compiled)))
 
 fun <V> Block<V>.updateTypesBlock(fn: (Block<Native>) -> Block<Native>) =

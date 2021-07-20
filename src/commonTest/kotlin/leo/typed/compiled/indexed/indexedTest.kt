@@ -13,7 +13,6 @@ import leo.typed.compiled.binding
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.compiledVariable
-import leo.typed.compiled.drop
 import leo.typed.compiled.expression
 import leo.typed.compiled.fn
 import leo.typed.compiled.invoke
@@ -21,8 +20,9 @@ import leo.typed.compiled.lineTo
 import leo.typed.compiled.nativeCompiled
 import leo.typed.compiled.nativeCompiledLine
 import leo.typed.compiled.nativeNumberCompiled
-import leo.typed.compiled.pick
+import leo.typed.compiled.not
 import leo.typed.compiled.switch
+import leo.typed.compiled.the
 import leo.typed.compiled.variable
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.native
@@ -118,15 +118,15 @@ class IndexedTest {
   @Test
   fun boolean() {
     compiledSelect<String>()
-      .pick("yes" lineTo compiled())
-      .drop("no" lineTo type())
+      .the("yes" lineTo compiled())
+      .not("no" lineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(true))
 
     compiledSelect<String>()
-      .drop("yes" lineTo type())
-      .pick("no" lineTo compiled())
+      .not("yes" lineTo type())
+      .the("no" lineTo compiled())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(false))
@@ -135,25 +135,25 @@ class IndexedTest {
   @Test
   fun index() {
     compiledSelect<String>()
-      .pick("yes" lineTo compiled())
-      .drop("no" lineTo type())
-      .drop("maybe" lineTo type())
+      .the("yes" lineTo compiled())
+      .not("no" lineTo type())
+      .not("maybe" lineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(0))
 
     compiledSelect<String>()
-      .drop("yes" lineTo type())
-      .pick("no" lineTo compiled())
-      .drop("maybe" lineTo type())
+      .not("yes" lineTo type())
+      .the("no" lineTo compiled())
+      .not("maybe" lineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(1))
 
     compiledSelect<String>()
-      .drop("yes" lineTo type())
-      .drop("no" lineTo type())
-      .pick("maybe" lineTo compiled())
+      .not("yes" lineTo type())
+      .not("no" lineTo type())
+      .the("maybe" lineTo compiled())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(2))
@@ -162,15 +162,15 @@ class IndexedTest {
   @Test
   fun booleanIndexed() {
     compiledSelect<String>()
-      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
-      .drop(nativeTextTypeLine)
+      .the(nativeCompiledLine(10, nativeNumberTypeLine))
+      .not(nativeTextTypeLine)
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(true), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(nativeTextTypeLine)
-      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
+      .not(nativeTextTypeLine)
+      .the(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(false), nativeExpression(10)))
@@ -179,25 +179,25 @@ class IndexedTest {
   @Test
   fun indexed() {
     compiledSelect<String>()
-      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
-      .drop(nativeTextTypeLine)
-      .drop(type() functionLineTo type())
+      .the(nativeCompiledLine(10, nativeNumberTypeLine))
+      .not(nativeTextTypeLine)
+      .not(type() functionLineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(0), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(nativeTextTypeLine)
-      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
-      .drop(type() functionLineTo type())
+      .not(nativeTextTypeLine)
+      .the(nativeCompiledLine(10, nativeNumberTypeLine))
+      .not(type() functionLineTo type())
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(1), nativeExpression(10)))
 
     compiledSelect<String>()
-      .drop(nativeTextTypeLine)
-      .drop(type() functionLineTo type())
-      .pick(nativeCompiledLine(10, nativeNumberTypeLine))
+      .not(nativeTextTypeLine)
+      .not(type() functionLineTo type())
+      .the(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
       .assertEqualTo(expression(expression(2), nativeExpression(10)))
@@ -207,8 +207,8 @@ class IndexedTest {
   fun switchSimpleBoolean() {
     compiled(
       "is" lineTo compiledSelect<String>()
-        .pick("yes" lineTo compiled())
-        .drop("no" lineTo type())
+        .the("yes" lineTo compiled())
+        .not("no" lineTo type())
         .compiled)
       .switch(
         textType,
@@ -226,9 +226,9 @@ class IndexedTest {
   fun switchSimpleIndex() {
     compiled(
       "is" lineTo compiledSelect<String>()
-        .pick("yes" lineTo compiled())
-        .drop("no" lineTo type())
-        .drop("maybe" lineTo type())
+        .the("yes" lineTo compiled())
+        .not("no" lineTo type())
+        .not("maybe" lineTo type())
         .compiled)
       .switch(
         textType,
@@ -248,8 +248,8 @@ class IndexedTest {
   fun switchComplexBoolean() {
     compiled(
       "is" lineTo compiledSelect<Native>()
-        .pick("yes" lineTo nativeNumberCompiled(10.0.native))
-        .drop("no" lineTo nativeNumberType)
+        .the("yes" lineTo nativeNumberCompiled(10.0.native))
+        .not("no" lineTo nativeNumberType)
         .compiled)
       .switch(
         textType,
@@ -272,9 +272,9 @@ class IndexedTest {
   fun switchComplexIndexed() {
     compiled(
       "is" lineTo compiledSelect<Native>()
-        .pick("yes" lineTo nativeNumberCompiled(10.0.native))
-        .drop("maybe" lineTo nativeNumberType)
-        .drop("no" lineTo nativeNumberType)
+        .the("yes" lineTo nativeNumberCompiled(10.0.native))
+        .not("maybe" lineTo nativeNumberType)
+        .not("no" lineTo nativeNumberType)
         .compiled)
       .switch(
         textType,

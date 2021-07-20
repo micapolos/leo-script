@@ -4,7 +4,6 @@ import leo.base.assertEqualTo
 import leo.beName
 import leo.doName
 import leo.doingName
-import leo.dropName
 import leo.eitherName
 import leo.equalName
 import leo.givingName
@@ -15,14 +14,15 @@ import leo.lineTo
 import leo.literal
 import leo.natives.minusName
 import leo.noName
+import leo.notName
 import leo.numberName
-import leo.pickName
 import leo.plusName
 import leo.repeatName
 import leo.script
 import leo.selectName
 import leo.switchName
 import leo.textName
+import leo.theName
 import leo.toName
 import leo.typeName
 import leo.typed.compiler.native.nativeNumberType
@@ -56,8 +56,8 @@ class EvaluateTest {
   fun selectType() {
     script(
       selectName lineTo script(
-        pickName lineTo script(literal(10)),
-        dropName lineTo script(textName)),
+        theName lineTo script(literal(10)),
+        notName lineTo script(textName)),
       typeName lineTo script())
       .evaluate
       .assertEqualTo(
@@ -70,8 +70,8 @@ class EvaluateTest {
   fun switch_simple() {
     script(
       selectName lineTo script(
-        pickName lineTo script("yes"),
-        dropName lineTo script("no")),
+        theName lineTo script("yes"),
+        notName lineTo script("no")),
       switchName lineTo script(
         "yes" lineTo script(doingName lineTo script(literal("OK"))),
         "no" lineTo script(doingName lineTo script(literal("not OK")))))
@@ -83,8 +83,8 @@ class EvaluateTest {
   fun switch_first() {
     script(
       selectName lineTo script(
-        pickName lineTo script("one" lineTo script(literal(10))),
-        dropName lineTo script("two" lineTo script(numberName))),
+        theName lineTo script("one" lineTo script(literal(10))),
+        notName lineTo script("two" lineTo script(numberName))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
         "two" lineTo script(doingName lineTo script("two", "number"))))
@@ -96,8 +96,8 @@ class EvaluateTest {
   fun switch_second() {
     script(
       selectName lineTo script(
-        dropName lineTo script("one" lineTo script(numberName)),
-        pickName lineTo script("two" lineTo script(literal(20)))),
+        notName lineTo script("one" lineTo script(numberName)),
+        theName lineTo script("two" lineTo script(literal(20)))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
         "two" lineTo script(doingName lineTo script("two", "number"))))
@@ -110,8 +110,8 @@ class EvaluateTest {
     script(
       "deep" lineTo script(
         selectName lineTo script(
-          dropName lineTo script("one" lineTo script(numberName)),
-          pickName lineTo script("two" lineTo script(literal(20))))),
+          notName lineTo script("one" lineTo script(numberName)),
+          theName lineTo script("two" lineTo script(literal(20))))),
       switchName lineTo script(
         "one" lineTo script(doingName lineTo script("one", "number")),
         "two" lineTo script(doingName lineTo script("two", "number"))))

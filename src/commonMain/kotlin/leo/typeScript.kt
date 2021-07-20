@@ -24,8 +24,6 @@ val TypeChoice.script: Script
 val TypeLine.scriptLine: ScriptLine
   get() =
     when (this) {
-      numberName lineTo type() -> theName lineTo script(anyNumberScriptLine)
-      textName lineTo type() -> theName lineTo script(anyTextScriptLine)
       is RecursiveTypeLine -> recursive.scriptLine
       is RecursibleTypeLine -> recursible.scriptLine
     }

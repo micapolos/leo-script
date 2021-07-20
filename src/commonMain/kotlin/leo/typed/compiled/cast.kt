@@ -48,11 +48,10 @@ fun <V> Compiled<V>.castOrNull(caseRope: Rope<TypeLine>): Compiled<V>? =
   onlyCompiledLineOrNull?.let { compiledLine ->
     notNullIf(compiledLine.typeLine == caseRope.current) {
       compiledSelect<V>()
-        .fold(caseRope.tail.reverse) { drop(it) }
-        .pick(compiledLine)
-        .fold(caseRope.head) { drop(it) }
+        .fold(caseRope.tail.reverse) { not(it) }
+        .the(compiledLine)
+        .fold(caseRope.head) { not(it) }
         .compiled
     }
   }
-
 

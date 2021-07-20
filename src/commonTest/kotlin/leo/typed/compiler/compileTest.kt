@@ -1,6 +1,5 @@
 package leo.typed.compiler
 
-import leo.anyTextScriptLine
 import leo.applyName
 import leo.asName
 import leo.atom
@@ -17,6 +16,7 @@ import leo.givingName
 import leo.line
 import leo.lineTo
 import leo.literal
+import leo.notName
 import leo.numberName
 import leo.pickName
 import leo.plusName
@@ -26,6 +26,7 @@ import leo.script
 import leo.selectName
 import leo.switchName
 import leo.textName
+import leo.theName
 import leo.type
 import leo.typeName
 import leo.typed.compiled.apply
@@ -33,7 +34,6 @@ import leo.typed.compiled.body
 import leo.typed.compiled.case
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledSelect
-import leo.typed.compiled.drop
 import leo.typed.compiled.expression
 import leo.typed.compiled.field
 import leo.typed.compiled.fn
@@ -44,11 +44,12 @@ import leo.typed.compiled.nativeCompiled
 import leo.typed.compiled.nativeLine
 import leo.typed.compiled.nativeNumberCompiled
 import leo.typed.compiled.nativeNumberCompiledLine
-import leo.typed.compiled.pick
+import leo.typed.compiled.not
 import leo.typed.compiled.recursive
 import leo.typed.compiled.rhs
 import leo.typed.compiled.select
 import leo.typed.compiled.switch
+import leo.typed.compiled.the
 import leo.typed.compiled.variable
 import leo.typed.compiler.native.DoublePlusDoubleNative
 import leo.typed.compiler.native.Native
@@ -282,13 +283,13 @@ class CompileTest {
   fun select() {
     script(
       selectName lineTo script(
-        pickName lineTo script(literal(10)),
-        dropName lineTo script(textName)))
+        theName lineTo script(literal(10)),
+        notName lineTo script(textName)))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         compiledSelect<Native>()
-          .pick(compiled(nativeLine(10.0.native), nativeNumberTypeLine))
-          .drop(nativeTextTypeLine)
+          .the(compiled(nativeLine(10.0.native), nativeNumberTypeLine))
+          .not(nativeTextTypeLine)
           .compiled)
   }
 
@@ -307,9 +308,9 @@ class CompileTest {
         script(
           "deep" lineTo script(
             selectName lineTo script(
-              pickName lineTo script("one"),
-              dropName lineTo script("two"),
-              dropName lineTo script("three"))),
+              theName lineTo script("one"),
+              notName lineTo script("two"),
+              notName lineTo script("three"))),
           switchName lineTo script(
             "one" lineTo script(doingName lineTo script(literal(1))),
             "two" lineTo script(doingName lineTo script(literal(2))),
@@ -318,9 +319,9 @@ class CompileTest {
         compiled(
           "deep" lineTo
               compiledSelect<Native>()
-                .pick("one" lineTo compiled())
-                .drop("two" lineTo type())
-                .drop("three" lineTo type())
+                .the("one" lineTo compiled())
+                .not("two" lineTo type())
+                .not("three" lineTo type())
                 .compiled)
           .rhs
           .switch(
@@ -337,9 +338,9 @@ class CompileTest {
         script(
           "deep" lineTo script(
             selectName lineTo script(
-              pickName lineTo script("one" lineTo script(literal(10))),
-              dropName lineTo script("two" lineTo script(numberName)),
-              dropName lineTo script("three" lineTo script(numberName)))),
+              theName lineTo script("one" lineTo script(literal(10))),
+              notName lineTo script("two" lineTo script(numberName)),
+              notName lineTo script("three" lineTo script(numberName)))),
           switchName lineTo script(
             "one" lineTo script(doingName lineTo script("one", "number")),
             "two" lineTo script(doingName lineTo script("two", "number")),
@@ -351,9 +352,9 @@ class CompileTest {
         compiled(
           "deep" lineTo
             compiledSelect<Native>()
-              .pick("one" lineTo nativeNumberCompiled(10.0.native))
-              .drop("two" lineTo nativeNumberType)
-              .drop("three" lineTo nativeNumberType)
+              .the("one" lineTo nativeNumberCompiled(10.0.native))
+              .not("two" lineTo nativeNumberType)
+              .not("three" lineTo nativeNumberType)
               .compiled)
           .rhs
           .switch(
@@ -395,7 +396,7 @@ class CompileTest {
     assertFails {
       script(
         line(literal(10)),
-        asName lineTo script(anyTextScriptLine))
+        asName lineTo script(textName))
         .compiled(nativeEnvironment)
     }
   }
@@ -404,8 +405,8 @@ class CompileTest {
   fun selectIndex() {
     script(
       selectName lineTo script(
-        pickName lineTo script("foo"),
-        dropName lineTo script("bar")))
+        theName lineTo script("foo"),
+        notName lineTo script("bar")))
       .compiled(nativeEnvironment)
       .assertEqualTo(
         compiled(

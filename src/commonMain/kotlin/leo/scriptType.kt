@@ -1,15 +1,12 @@
 package leo
 
-import leo.base.notNullIf
-import leo.base.orIfNull
-import leo.typed.compiler.compileError
-
-val anyTextScriptLine get() = anyName lineTo script(textName)
-val anyNumberScriptLine get() = anyName lineTo script(numberName)
-
 val Script.type: Type
   get() =
     type().fold(lineStack.reverse) { plus(it) }
+
+val Script.typeChoice: TypeChoice
+  get() =
+    choice().fold(lineStack.reverse) { plus(it) }
 
 fun Type.plus(scriptLine: ScriptLine): Type =
   when (scriptLine) {
@@ -18,20 +15,13 @@ fun Type.plus(scriptLine: ScriptLine): Type =
   }
 
 fun Type.plus(scriptField: ScriptField): Type =
-  if (scriptField.name == eitherName) plusEither(scriptField.rhs)
-  else plusLine(line(scriptField))
-
-val Type.eitherChoiceOrNull: TypeChoice? get() =
-  when (this) {
-    is ChoiceType -> choice
-    is StructureType -> notNullIf(structure.lineStack.isEmpty) { choice() }
+  when (scriptField.name) {
+    choiceName -> type(scriptField.rhs.typeChoice)
+    else -> plusLine(line(scriptField))
   }
 
-fun Type.plusEither(script: Script): Type =
-  eitherChoiceOrNull
-    .orIfNull { compileError(script("either")) }
-    .plus(script.type.onlyLineOrNull.orIfNull { compileError(script("either")) })
-    .type
+fun TypeChoice.plus(scriptLine: ScriptLine): TypeChoice =
+  plus(scriptLine.typeLine)
 
 fun Type.plusLine(scriptLine: ScriptLine): Type =
   plus(scriptLine.typeLine)

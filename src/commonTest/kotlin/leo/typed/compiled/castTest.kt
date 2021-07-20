@@ -19,9 +19,9 @@ class CastTest {
             "three" lineTo type("zoo"))))
       .assertEqualTo(
         compiledSelect<Nothing>()
-          .pick("one" lineTo compiled("foo"))
-          .drop("two" lineTo type("bar"))
-          .drop("three" lineTo type("zoo"))
+          .the("one" lineTo compiled("foo"))
+          .not("two" lineTo type("bar"))
+          .not("three" lineTo type("zoo"))
           .compiled)
   }
 
@@ -36,9 +36,9 @@ class CastTest {
             "three" lineTo type("zoo"))))
       .assertEqualTo(
         compiledSelect<Nothing>()
-          .drop("one" lineTo type("foo"))
-          .pick("two" lineTo compiled("bar"))
-          .drop("three" lineTo type("zoo"))
+          .not("one" lineTo type("foo"))
+          .the("two" lineTo compiled("bar"))
+          .not("three" lineTo type("zoo"))
           .compiled)
   }
 
@@ -53,9 +53,9 @@ class CastTest {
             "three" lineTo type("zoo"))))
       .assertEqualTo(
         compiledSelect<Nothing>()
-          .drop("one" lineTo type("foo"))
-          .drop("two" lineTo type("bar"))
-          .pick("three" lineTo compiled("zoo"))
+          .not("one" lineTo type("foo"))
+          .not("two" lineTo type("bar"))
+          .the("three" lineTo compiled("zoo"))
           .compiled)
   }
 
@@ -74,9 +74,9 @@ class CastTest {
       .assertEqualTo(
         compiled(
           "deep" lineTo compiledSelect<Nothing>()
-            .pick("one" lineTo compiled("foo"))
-            .drop("two" lineTo type("bar"))
-            .drop("three" lineTo type("zoo"))
+            .the("one" lineTo compiled("foo"))
+            .not("two" lineTo type("bar"))
+            .not("three" lineTo type("zoo"))
             .compiled))
   }
 

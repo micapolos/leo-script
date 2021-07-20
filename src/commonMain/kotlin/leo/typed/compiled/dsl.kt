@@ -267,14 +267,14 @@ val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
   zip(compiledTuple.tuple.lineStack, compiledTuple.typeStructure.lineStack)
     .mapIt { compiled(it.first!!, it.second!!) }
 
-fun <V> CompiledSelect<V>.pick(compiledLine: CompiledLine<V>): CompiledSelect<V> =
+fun <V> CompiledSelect<V>.the(compiledLine: CompiledLine<V>): CompiledSelect<V> =
   ifOrNull(caseOrNull == null) {
     compiledLine.typeLine.nameOrNull?.let { name ->
       CompiledSelect(case(name, compiledLine.line), choice.plus(compiledLine.typeLine))
     }
   }?: compileError(script("pick"))
 
-fun <V> CompiledSelect<V>.drop(typeLine: TypeLine): CompiledSelect<V> =
+fun <V> CompiledSelect<V>.not(typeLine: TypeLine): CompiledSelect<V> =
   typeLine.nameOrNull?.let {
     CompiledSelect(caseOrNull, choice.plus(typeLine))
   } ?:compileError(script("drop"))

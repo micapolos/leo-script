@@ -10,14 +10,16 @@ import leo.dropName
 import leo.fieldOrNull
 import leo.lineSeq
 import leo.lineTo
+import leo.notName
 import leo.onlyLineOrNull
 import leo.pickName
 import leo.script
+import leo.theName
 import leo.typed.compiled.CompiledLine
 import leo.typed.compiled.CompiledSelect
-import leo.typed.compiled.drop
+import leo.typed.compiled.not
 import leo.typed.compiled.onlyCompiledLineOrNull
-import leo.typed.compiled.pick
+import leo.typed.compiled.the
 
 data class SelectCompiler<V>(
   val module: Module<V>,
@@ -36,24 +38,24 @@ fun <V> SelectCompiler<V>.plusOrNull(scriptLine: ScriptLine): SelectCompiler<V>?
 
 fun <V> SelectCompiler<V>.plusOrNull(scriptField: ScriptField): SelectCompiler<V>? =
   when (scriptField.name) {
-    pickName -> pick(scriptField.rhs)
-    dropName -> drop(scriptField.rhs)
+    theName -> the(scriptField.rhs)
+    notName -> not(scriptField.rhs)
     else -> null
   }
 
-fun <V> SelectCompiler<V>.pick(script: Script): SelectCompiler<V> =
+fun <V> SelectCompiler<V>.the(script: Script): SelectCompiler<V> =
   module.compiled(script).onlyCompiledLineOrNull
-    ?.let { pick(it) }
+    ?.let { the(it) }
     ?: compileError(script(pickName lineTo script))
 
-fun <V> SelectCompiler<V>.drop(script: Script): SelectCompiler<V> =
+fun <V> SelectCompiler<V>.not(script: Script): SelectCompiler<V> =
   module.type(script).onlyLineOrNull
-    ?.let { drop(it) }
+    ?.let { not(it) }
     ?: compileError(script(dropName lineTo script))
 
-fun <V> SelectCompiler<V>.pick(compiledLine: CompiledLine<V>): SelectCompiler<V> =
-  copy(compiledSelect = compiledSelect.pick(compiledLine))
+fun <V> SelectCompiler<V>.the(compiledLine: CompiledLine<V>): SelectCompiler<V> =
+  copy(compiledSelect = compiledSelect.the(compiledLine))
 
-fun <V> SelectCompiler<V>.drop(typeLine: TypeLine): SelectCompiler<V> =
-  copy(compiledSelect = compiledSelect.drop(typeLine))
+fun <V> SelectCompiler<V>.not(typeLine: TypeLine): SelectCompiler<V> =
+  copy(compiledSelect = compiledSelect.not(typeLine))
 
