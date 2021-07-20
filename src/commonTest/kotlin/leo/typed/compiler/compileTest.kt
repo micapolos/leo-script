@@ -4,6 +4,7 @@ import leo.applyName
 import leo.asName
 import leo.atom
 import leo.base.assertEqualTo
+import leo.beName
 import leo.choice
 import leo.doName
 import leo.doingName
@@ -14,6 +15,7 @@ import leo.functionName
 import leo.getName
 import leo.givingName
 import leo.haveName
+import leo.letName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -31,6 +33,8 @@ import leo.theName
 import leo.type
 import leo.typeName
 import leo.typed.compiled.apply
+import leo.typed.compiled.bind
+import leo.typed.compiled.binding
 import leo.typed.compiled.body
 import leo.typed.compiled.case
 import leo.typed.compiled.compiled
@@ -500,5 +504,34 @@ class CompileTest {
       haveName lineTo script("red"))
       .compiled(nativeEnvironment)
       .assertEqualTo(compiled("my" lineTo compiled("color" lineTo compiled("red"))))
+  }
+
+  @Test
+  fun doubleLet() {
+    script(
+      letName lineTo script(
+        "chicken" lineTo script(),
+        beName lineTo script("egg")),
+      letName lineTo script(
+        "human" lineTo script(),
+        beName lineTo script("chicken")),
+      "human" lineTo script())
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled(
+          expression(
+            bind(
+              binding(
+                type("chicken"),
+                compiled("egg")),
+              compiled(
+                expression(
+                  bind(
+                    binding(
+                      type("human"),
+                      compiled(expression(variable(type("chicken"))), type("egg"))),
+                    compiled(expression(variable(type("human"))), type("egg")))),
+                type("egg")))),
+          type("egg")))
   }
 }

@@ -65,7 +65,7 @@ fun <V> Block<V>.plus(binding: leo.typed.compiled.Binding<V>): Block<V> =
   copy(bindingStack = bindingStack.push(binding))
 
 fun <V> Block<V>.seal(compiled: Compiled<V>): Compiled<V> =
-  compiled.fold(bindingStack.reverse) {
+  compiled.fold(bindingStack) {
     compiled(expression(bind(it, this)), type)
   }
 

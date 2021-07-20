@@ -1,12 +1,9 @@
 let
-  circle
-  have radius number
+  chicken
+  be egg
 
 let
-  shape
-  do
-    the circle
-    the rectangle
-    the triangle
+  human
+  be chicken
 
-shape
+human

@@ -75,8 +75,9 @@ fun <V> Function<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     body.toScriptLine(fn))
 
 fun <V> Bind<V>.toScript(fn: (V) -> ScriptLine): Script =
-  script(binding.toScriptLine(fn))
-    .plus(bindName lineTo script(compiled.toScriptLine(fn)))
+  script(
+    binding.toScriptLine(fn),
+    bindName lineTo script(compiled.toScriptLine(fn)))
 
 fun <V> Binding<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   bindingName lineTo script(
