@@ -16,6 +16,7 @@ import leo.fieldOrNull
 import leo.fold
 import leo.functionTo
 import leo.givingName
+import leo.haveName
 import leo.lineTo
 import leo.make
 import leo.matchInfix
@@ -40,6 +41,7 @@ import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.compiledVariable
 import leo.typed.compiled.expression
 import leo.typed.compiled.fn
+import leo.typed.compiled.have
 import leo.typed.compiled.not
 import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.recFn
@@ -73,6 +75,7 @@ fun <V> Block<V>.plusLet(script: Script): Block<V> =
     when (name) {
       beName -> plusLetBe(lhs, rhs)
       doName -> plusLetDo(lhs, rhs)
+      haveName -> plusLetHave(lhs, rhs)
       repeatName -> plusLetRepeat(lhs, rhs)
       else -> null
     }
@@ -93,6 +96,17 @@ fun <V> Block<V>.plusLetDo(lhs: Script, rhs: Script): Block<V> =
       this
         .plus(binding(lhsType functionTo rhsCompiled.type))
         .plus(binding(lhsType, fn(lhsType, rhsCompiled)))
+    }
+  }
+
+fun <V> Block<V>.plusLetHave(lhs: Script, rhs: Script): Block<V> =
+  module.type(lhs).let { lhsType ->
+    module.compiled(rhs).let { rhsCompiled ->
+      lhsType.have(rhsCompiled).let { haveCompiled ->
+        this
+          .plus(binding(constant(lhsType, haveCompiled.type)))
+          .plus(binding(lhsType, haveCompiled))
+      }
     }
   }
 

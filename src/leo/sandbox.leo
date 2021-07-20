@@ -1,4 +1,4 @@
-is select
-  the yes
-  not no
-type
+let
+  color
+  have red
+color

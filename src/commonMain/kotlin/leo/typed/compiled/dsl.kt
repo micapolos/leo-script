@@ -21,6 +21,7 @@ import leo.lineTo
 import leo.linkOrNull
 import leo.mapIt
 import leo.nameOrNull
+import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.plus
@@ -316,12 +317,18 @@ val <V> CompiledLine<V>.compiledFieldOrNull: CompiledField<V>? get() =
 val <V> CompiledField<V>.rhs: Compiled<V> get() = field.rhs
 
 fun <V> Compiled<V>.have(compiled: Compiled<V>): Compiled<V> =
-  haveOrNull(compiled) ?: compileError(script("have"))
+  type.have(compiled)
 
 fun <V> Compiled<V>.haveOrNull(compiled: Compiled<V>): Compiled<V>? =
-  if (type.isEmpty) compiled
-  else onlyCompiledFieldOrNull?.let { field ->
-    field.rhs.haveOrNull(compiled)?.let { have ->
-      compiled(field.typeField.name lineTo have)
+  type.haveOrNull(compiled)
+
+fun <V> Type.have(compiled: Compiled<V>): Compiled<V> =
+  haveOrNull(compiled) ?: compileError(script("have"))
+
+fun <V> Type.haveOrNull(compiled: Compiled<V>): Compiled<V>? =
+  if (isEmpty) compiled
+  else onlyFieldOrNull?.let { typeField ->
+    typeField.rhsType.haveOrNull(compiled)?.let { have ->
+      compiled(typeField.name lineTo have)
     }
   }
