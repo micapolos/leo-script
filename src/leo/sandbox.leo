@@ -1,25 +1,20 @@
-let
-  num
-  have native kotlin double
-
-let
-  txt
-  have native kotlin string
-
-let
-  circle
-  have radius num
-
-let
-  rectangle
-  have
-    width num
-    height num
-
-let
-  shape
-  have choice
-    the circle
-    the rectangle
-
-shape
+types
+  let
+    circle
+    have radius number
+  let
+    rectangle
+    have
+      width number
+      height number
+  let
+    triangle
+    have
+      base number
+      height number
+  let
+    shape
+    have choice
+      the circle
+      the rectangle
+      the triangle
