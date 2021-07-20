@@ -13,6 +13,7 @@ import leo.functionLineTo
 import leo.functionName
 import leo.getName
 import leo.givingName
+import leo.haveName
 import leo.line
 import leo.lineTo
 import leo.literal
@@ -491,5 +492,14 @@ class CompileTest {
           "y" lineTo script("one")))
         .compiled(nativeEnvironment)
     }
+  }
+
+  @Test
+  fun have() {
+    script(
+      "my" lineTo script("color"),
+      haveName lineTo script("red"))
+      .compiled(nativeEnvironment)
+      .assertEqualTo(compiled("my" lineTo compiled("color" lineTo compiled("red"))))
   }
 }

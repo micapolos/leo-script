@@ -314,3 +314,14 @@ val <V> CompiledLine<V>.compiledFieldOrNull: CompiledField<V>? get() =
   }
 
 val <V> CompiledField<V>.rhs: Compiled<V> get() = field.rhs
+
+fun <V> Compiled<V>.have(compiled: Compiled<V>): Compiled<V> =
+  haveOrNull(compiled) ?: compileError(script("have"))
+
+fun <V> Compiled<V>.haveOrNull(compiled: Compiled<V>): Compiled<V>? =
+  if (type.isEmpty) compiled
+  else onlyCompiledFieldOrNull?.let { field ->
+    field.rhs.haveOrNull(compiled)?.let { have ->
+      compiled(field.typeField.name lineTo have)
+    }
+  }

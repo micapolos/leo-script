@@ -216,4 +216,20 @@ class DslTest {
           compiled("bar" lineTo compiledVariable<Unit>(type("foo"), type("foo"))))
           .invoke(compiled("foo")))
   }
+
+  @Test
+  fun have() {
+    compiled<Unit>().have(compiled()).assertEqualTo(compiled())
+    compiled<Unit>().have(compiled("foo")).assertEqualTo(compiled("foo"))
+    compiled<Unit>("foo").have(compiled()).assertEqualTo(compiled("foo"))
+    compiled<Unit>("foo").have(compiled("bar")).assertEqualTo(compiled("foo" lineTo compiled("bar")))
+    compiled<Unit>("foo" lineTo compiled("zoo")).have(compiled("bar"))
+      .assertEqualTo(compiled("foo" lineTo compiled("zoo" lineTo compiled("bar"))))
+
+    compiled<Unit>("foo" lineTo compiled(), "bar" lineTo compiled())
+      .haveOrNull(compiled("zoo"))
+      .assertNull
+
+    nativeCompiled("foo").haveOrNull(compiled("zoo")).assertNull
+  }
 }

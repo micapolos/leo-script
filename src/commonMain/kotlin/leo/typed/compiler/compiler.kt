@@ -21,6 +21,7 @@ import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
 import leo.givingName
+import leo.haveName
 import leo.isEmpty
 import leo.isSimple
 import leo.letName
@@ -49,6 +50,7 @@ import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.do_
 import leo.typed.compiled.function
+import leo.typed.compiled.have
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.line
 import leo.typed.compiled.lineTo
@@ -111,6 +113,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
     functionName -> function(field.rhs)
+    haveName -> have(field.rhs)
     letName -> let(field.rhs)
     quoteName -> quote(field.rhs)
     repeatName -> repeat(field.rhs)
@@ -167,6 +170,12 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
       else -> null
     }
   } ?: compileError(script(functionName lineTo script))
+
+fun <V> Compiler<V>.have(script: Script): Compiler<V> =
+  have(block.module.compiled(script))
+
+fun <V> Compiler<V>.have(rhs: Compiled<V>): Compiler<V> =
+  set(compiled.have(rhs))
 
 fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   block.module.type(lhs).let { lhsType ->
