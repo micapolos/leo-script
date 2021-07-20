@@ -23,12 +23,9 @@ import leo.empty
 import leo.fieldOrNull
 import leo.getFromBottom
 import leo.isSimple
-import leo.line
 import leo.lineTo
-import leo.literal
 import leo.map
 import leo.mapIt
-import leo.nativeName
 import leo.onlyLineOrNull
 import leo.primitiveOrNull
 import leo.script
@@ -36,16 +33,6 @@ import leo.scriptLine
 import leo.size
 import leo.stack
 import leo.structureOrNull
-import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
-import leo.typed.compiler.native.DoubleMinusDoubleNative
-import leo.typed.compiler.native.DoubleNative
-import leo.typed.compiler.native.DoublePlusDoubleNative
-import leo.typed.compiler.native.DoubleTimesDoubleNative
-import leo.typed.compiler.native.Native
-import leo.typed.compiler.native.ObjectEqualsObjectNative
-import leo.typed.compiler.native.StringLengthNative
-import leo.typed.compiler.native.StringNative
-import leo.typed.compiler.native.StringPlusStringNative
 import leo.zip
 
 data class ValueScriptContext<in V>(
@@ -152,38 +139,3 @@ fun Empty.scriptLine(typeLine: TypeLine): ScriptLine =
 
 fun Empty.scriptLine(typeField: TypeField): ScriptLine =
   typeField.name lineTo script(typeField.rhsType)
-
-val Native.scriptLine: ScriptLine get() =
-  when (this) {
-    is DoubleNative ->
-      line(literal(double))
-    is StringNative ->
-      line(literal(string))
-    DoubleIsLessThanDoubleNative ->
-      nativeName lineTo script(
-        "double" lineTo script(),
-        "is" lineTo script("less" lineTo script("than" lineTo script("double"))))
-    DoubleMinusDoubleNative ->
-      nativeName lineTo script(
-        "double" lineTo script(),
-        "minus" lineTo script("double"))
-    DoublePlusDoubleNative ->
-      nativeName lineTo script(
-        "double" lineTo script(),
-        "plus" lineTo script("double"))
-    DoubleTimesDoubleNative ->
-      nativeName lineTo script(
-        "double" lineTo script(),
-        "times" lineTo script("double"))
-    ObjectEqualsObjectNative ->
-      nativeName lineTo script(
-        "object" lineTo script(),
-        "equals" lineTo script("object"))
-    StringLengthNative ->
-      nativeName lineTo script(
-        "length" lineTo script("string"))
-    StringPlusStringNative ->
-      nativeName lineTo script(
-        "string" lineTo script(),
-        "plus" lineTo script("string"))
-  }
