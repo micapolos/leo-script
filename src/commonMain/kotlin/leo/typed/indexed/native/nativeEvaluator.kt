@@ -4,6 +4,7 @@ import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
 import leo.typed.compiler.native.DoubleMinusDoubleNative
 import leo.typed.compiler.native.DoubleNative
 import leo.typed.compiler.native.DoublePlusDoubleNative
+import leo.typed.compiler.native.DoubleStringNative
 import leo.typed.compiler.native.DoubleTimesDoubleNative
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.ObjectEqualsObjectNative
@@ -36,6 +37,8 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       nativeValue(params[0].native.double.times(params[1].native.double).native)
     DoubleIsLessThanDoubleNative ->
       value(params[0].native.double < params[1].native.double)
+    DoubleStringNative ->
+      nativeValue(params[0].native.double.toString().native)
     ObjectEqualsObjectNative ->
       value(params[0] == params[1])
     StringPlusStringNative ->

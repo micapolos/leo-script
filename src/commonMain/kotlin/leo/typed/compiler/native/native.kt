@@ -14,6 +14,7 @@ object DoublePlusDoubleNative : Native()
 object DoubleMinusDoubleNative : Native()
 object DoubleTimesDoubleNative : Native()
 object DoubleIsLessThanDoubleNative : Native()
+object DoubleStringNative : Native()
 object ObjectEqualsObjectNative : Native()
 object StringPlusStringNative : Native()
 object StringLengthNative : Native()
@@ -54,6 +55,8 @@ val Native.scriptLine get() =
         script(
           "double" lineTo script(),
           "times" lineTo script("double"))
+      DoubleStringNative ->
+        script("string" lineTo script("double"))
       ObjectEqualsObjectNative ->
         script(
           "object" lineTo script(),

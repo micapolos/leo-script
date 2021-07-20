@@ -9,6 +9,7 @@ import leo.functionLineTo
 import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.textName
 import leo.toName
 import leo.type
 import leo.typed.compiled.Compiled
@@ -44,6 +45,8 @@ val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
       nativeCompiled(StringPlusStringNative, type(type functionLineTo nativeTextType))
     type("length" lineTo nativeTextType) ->
       nativeCompiled(StringLengthNative, type(type functionLineTo type("length" lineTo nativeNumberType)))
+    type(textName lineTo nativeNumberType) ->
+      nativeCompiled(DoubleStringNative, type(type functionLineTo nativeTextType))
     else -> infix(isName) { isLhs, isRhs ->
       isRhs.prefix(equalName) { isEqualRhs ->
         isEqualRhs.prefix(toName) { isEqualToRhs ->

@@ -12,6 +12,7 @@ import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
 import leo.typed.compiler.native.DoubleMinusDoubleNative
 import leo.typed.compiler.native.DoubleNative
 import leo.typed.compiler.native.DoublePlusDoubleNative
+import leo.typed.compiler.native.DoubleStringNative
 import leo.typed.compiler.native.DoubleTimesDoubleNative
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.ObjectEqualsObjectNative
@@ -62,6 +63,9 @@ val Native.scriptLine: ScriptLine
       nativeName lineTo script(
         "double" lineTo script(),
         "times" lineTo script("double"))
+    DoubleStringNative ->
+      nativeName lineTo script(
+        "string" lineTo script("double"))
     ObjectEqualsObjectNative ->
       nativeName lineTo script(
         "object" lineTo script(),
