@@ -1,4 +1,9 @@
-select
-  the 10
-  not text
+types
+  let
+    boolean
+    have choice
+      the true
+      the false
+
+boolean true
 type

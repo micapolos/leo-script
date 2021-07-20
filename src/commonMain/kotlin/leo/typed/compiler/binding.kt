@@ -60,3 +60,10 @@ fun <V> TypeGiven.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
         }
     }
   }
+
+val Binding.rhsType: Type get() =
+  when (this) {
+    is ConstantBinding -> constant.rhsType
+    is FunctionBinding -> function.rhsType
+    is GivenBinding -> given.type
+  }

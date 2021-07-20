@@ -18,4 +18,3 @@ fun <V> Scope.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
 
 fun <V> Scope.resolve(compiled: Compiled<V>): Compiled<V> =
   resolveOrNull(compiled) ?: compiled
-

@@ -285,7 +285,7 @@ fun <V> Compiler<V>.the(script: Script): Compiler<V> =
     ?: compileError(script(theName lineTo script))
 
 fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
-  set(context.resolve(compiled.plus(compiledLine)))
+  set(block.module.resolve(compiled.plus(compiledLine)))
 
 val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =

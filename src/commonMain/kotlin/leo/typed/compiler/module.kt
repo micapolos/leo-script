@@ -3,12 +3,15 @@ package leo.typed.compiler
 import leo.Script
 import leo.Type
 import leo.base.orIfNull
+import leo.mapFirst
 import leo.matchPrefix
 import leo.repeatingName
+import leo.staticScriptOrNull
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.body
+import leo.typed.compiled.castOrNull
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.recursive
 import leo.typed.compiler.native.Native
@@ -46,3 +49,16 @@ fun <V> Module<V>.body(script: Script): Body<V> =
   script.matchPrefix(repeatingName) { recursiveScript ->
     recursive(body(recursiveScript))
   }?: body(this.compiled(script))
+
+fun <V> Module<V>.resolve(compiled: Compiled<V>): Compiled<V> =
+  context.resolve(cast(compiled))
+
+fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
+  inTypesBlock { typesBlock ->
+    typesBlock.module.context.scope.bindingStack.mapFirst {
+      rhsType.staticScriptOrNull?.let { typeScript ->
+        compiled.castOrNull(typeScript.type)
+      }
+    } ?: compiled
+  }
+
