@@ -31,7 +31,6 @@ import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextType
 import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typesName
-import leo.withName
 import leo.yesName
 import kotlin.test.Test
 
@@ -255,11 +254,11 @@ class EvaluateTest {
   }
 
   @Test
-  fun with() {
+  fun the() {
     script(
       "red" lineTo script(),
       "color" lineTo script(),
-      withName lineTo script(
+      theName lineTo script(
         "blue" lineTo script(),
         "color" lineTo script()))
       .evaluate

@@ -60,7 +60,6 @@ import leo.typed.compiler.native.nativeEnvironment
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextTypeLine
-import leo.withName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -467,11 +466,11 @@ class CompileTest {
   }
 
   @Test
-  fun with() {
+  fun the() {
     script(
       "red" lineTo script(),
       "color" lineTo script(),
-      withName lineTo script(
+      theName lineTo script(
         "blue" lineTo script(),
         "color" lineTo script()))
       .compiled(nativeEnvironment)
@@ -482,12 +481,12 @@ class CompileTest {
   }
 
   @Test
-  fun with_multiline() {
+  fun the_multiline() {
     assertFails {
       script(
         "red" lineTo script(),
         "color" lineTo script(),
-        withName lineTo script(
+        theName lineTo script(
           "x" lineTo script("zero"),
           "y" lineTo script("one")))
         .compiled(nativeEnvironment)

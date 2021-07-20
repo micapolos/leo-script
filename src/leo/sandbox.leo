@@ -1,4 +1,4 @@
-let
-  color
-  have red
-color
+point
+  x 10
+  y 20
+type
