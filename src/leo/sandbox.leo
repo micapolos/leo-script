@@ -1,9 +1,12 @@
-types
-  let
-    boolean
-    have choice
-      the true number
-      the false text
+let
+  circle
+  have radius number
 
-boolean true 10
-type
+let
+  shape
+  do
+    the circle
+    the rectangle
+    the triangle
+
+shape

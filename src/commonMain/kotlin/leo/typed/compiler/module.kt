@@ -16,6 +16,7 @@ import leo.typed.compiled.recursive
 import leo.typed.compiler.native.Native
 import leo.typed.indexed.native.nativeEvaluator
 import leo.typed.indexed.native.script
+import leo.typed.indexed.native.valueScript
 import leo.typed.indexed.value
 
 data class Module<V>(
@@ -55,7 +56,9 @@ fun <V> Module<V>.resolve(compiled: Compiled<V>): Compiled<V> =
 fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
   inTypesBlock { typesBlock ->
     typesBlock.bindingStack.mapFirst {
-      compiled.castOrNull(this.compiled.indexedExpression.value(nativeEvaluator).script(this.compiled.type).type)
+      let { binding ->
+        compiled.castOrNull(binding.compiled.valueScript.type)
+      }
     } ?: compiled
   }
 
