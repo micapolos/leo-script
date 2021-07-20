@@ -1,6 +1,7 @@
 package leo
 
 import leo.base.fold
+import leo.base.notNullIf
 import leo.base.runIfNotNull
 
 sealed class Notation
@@ -50,8 +51,10 @@ fun NotationLink.plus(name: String): NotationLink =
     ?: runIfNotNull(line.plusOrNull(name)) { lhs linkTo it }
     ?: notation(this) linkTo line(chain(atom(name)))
 
+val useDottedNotation = false
+
 fun NotationLine.plusOrNull(name: String): NotationLine? =
   when (this) {
-    is ChainNotationLine -> line(chain.plus(name))
+    is ChainNotationLine -> notNullIf(useDottedNotation) { line(chain.plus(name)) }
     is FieldNotationLine -> null
   }

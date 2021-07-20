@@ -29,7 +29,7 @@ class ScriptStringTest {
     script("foo" lineTo script("bar" lineTo script(), "zoo" lineTo script()))
       .notation
       .string
-      .assertEqualTo("foo bar.zoo\n")
+      .assertEqualTo(if (useDottedNotation) "foo bar.zoo\n" else "foo\n  bar\n  zoo\n")
   }
 
   @Test
@@ -37,7 +37,7 @@ class ScriptStringTest {
     script("foo" lineTo script(), "bar" lineTo script())
       .notation
       .string
-      .assertEqualTo("foo.bar\n")
+      .assertEqualTo(if (useDottedNotation) "foo.bar\n" else "foo\nbar\n")
   }
 
   @Test
@@ -45,7 +45,7 @@ class ScriptStringTest {
     script("foo" lineTo script(), "bar" lineTo script(), "zoo" lineTo script())
       .notation
       .string
-      .assertEqualTo("foo.bar.zoo\n")
+      .assertEqualTo(if (useDottedNotation) "foo.bar.zoo\n" else "foo\nbar\nzoo\n")
   }
 
   @Test
