@@ -19,15 +19,15 @@ val <V> Compiler<V>.toScriptLine: ScriptLine get() =
     compiled.toScriptLine(environment.scriptLineFn))
 
 val <V> Block<V>.toScriptLine: ScriptLine get() =
-  "local" lineTo script(
+  "block" lineTo script(
     module.toScriptLine,
     "typed" lineTo bindingStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
 
 val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(
     context.toScriptLine,
-    "type" lineTo script(
-      "local" lineTo script(
+    "types" lineTo script(
+      "block" lineTo script(
         typesBlockOrNull.optionScriptLine { toScriptLine })))
 
 val <V> Context<V>.toScriptLine: ScriptLine get() =

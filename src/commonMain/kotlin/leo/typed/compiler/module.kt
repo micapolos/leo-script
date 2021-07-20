@@ -6,7 +6,6 @@ import leo.base.orIfNull
 import leo.mapFirst
 import leo.matchPrefix
 import leo.repeatingName
-import leo.staticScriptOrNull
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
@@ -55,10 +54,8 @@ fun <V> Module<V>.resolve(compiled: Compiled<V>): Compiled<V> =
 
 fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
   inTypesBlock { typesBlock ->
-    typesBlock.module.context.scope.bindingStack.mapFirst {
-      rhsType.staticScriptOrNull?.let { typeScript ->
-        compiled.castOrNull(typeScript.type)
-      }
+    typesBlock.bindingStack.mapFirst {
+      compiled.castOrNull(this.compiled.indexedExpression.value(nativeEvaluator).script(this.compiled.type).type)
     } ?: compiled
   }
 
