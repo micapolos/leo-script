@@ -4,16 +4,24 @@ import leo.Literal
 import leo.NumberLiteral
 import leo.StringLiteral
 import leo.TypeLine
+import leo.equalName
 import leo.functionLineTo
+import leo.isName
 import leo.isType
 import leo.lineTo
 import leo.script
+import leo.textName
+import leo.toName
 import leo.type
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.as_
 import leo.typed.compiled.compiled
+import leo.typed.compiled.infix
 import leo.typed.compiled.invoke
 import leo.typed.compiled.nativeCompiled
 import leo.typed.compiled.nativeLine
+import leo.typed.compiled.onlyCompiledLine
+import leo.typed.compiled.prefix
 import leo.typed.compiler.Environment
 import leo.typed.compiler.compileError
 
@@ -37,13 +45,20 @@ val Compiled<Python>.resolveOrNull: Compiled<Python>? get() =
       nativeCompiled(python("operator.lt"), type(type functionLineTo isType))
     type(pythonTextTypeLine, "plus" lineTo pythonTextType) ->
       nativeCompiled(python("operator.add"), type(type functionLineTo pythonTextType))
+    type(textName lineTo pythonNumberType) ->
+      nativeCompiled(python("str"), type(type functionLineTo pythonTextType))
     type("length" lineTo pythonTextType) ->
       nativeCompiled(python("len"), type(type functionLineTo type("length" lineTo pythonNumberType)))
-    type(pythonNumberTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo pythonNumberType))) ->
-      nativeCompiled(python("operator.eq"), type(type functionLineTo isType))
-    type(pythonTextTypeLine, "is" lineTo type("equal" lineTo type("to" lineTo pythonTextType))) ->
-      nativeCompiled(python("operator.eq"), type(type functionLineTo isType))
-    else -> null
+    else ->
+      infix(isName) { isLhs, isRhs ->
+        isRhs.prefix(equalName) { isEqualRhs ->
+          isEqualRhs.prefix(toName) { isEqualToRhs ->
+            compiled(isLhs.onlyCompiledLine).as_(compiled(isEqualToRhs.onlyCompiledLine).type).let {
+              nativeCompiled(python("operator.eq"), type(type functionLineTo isType))
+            }
+          }
+        }
+      }
   }
 
 val Literal.python: Python

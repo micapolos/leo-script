@@ -17,6 +17,7 @@ import leo.debugName
 import leo.doName
 import leo.doingName
 import leo.exampleName
+import leo.fieldOrNull
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
@@ -29,6 +30,7 @@ import leo.lineSeq
 import leo.lineTo
 import leo.matchInfix
 import leo.matchPrefix
+import leo.onlyLineOrNull
 import leo.plus
 import leo.quoteName
 import leo.repeatName
@@ -64,6 +66,7 @@ import leo.typed.compiler.scheme.schemeEnvironment
 import leo.typed.indexed.python.python
 import leo.typed.indexed.scheme.scheme
 import leo.typesName
+import leo.wordName
 
 data class Compiler<V>(
   val block: Block<V>,
@@ -121,6 +124,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     switchName -> switch(field.rhs)
     typesName -> types(field.rhs)
     theName -> the(field.rhs)
+    wordName -> word(field.rhs)
     else -> null
   }
 
@@ -283,6 +287,16 @@ fun <V> Compiler<V>.quote(script: Script): Compiler<V> =
 fun <V> Compiler<V>.the(script: Script): Compiler<V> =
   block.module.compiled(script).onlyCompiledLineOrNull?.let { plus(it) }
     ?: compileError(script(theName lineTo script))
+
+fun <V> Compiler<V>.word(script: Script): Compiler<V> =
+  script.onlyLineOrNull?.fieldOrNull?.let { scriptField ->
+    block.module.compiled(scriptField.rhs)?.let { rhsCompiled ->
+      word(scriptField.name lineTo rhsCompiled)
+    }
+  }?: compileError(script(wordName lineTo script))
+
+fun <V> Compiler<V>.word(compiledLine: CompiledLine<V>): Compiler<V> =
+  set(compiled.plus(compiledLine))
 
 fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
   set(block.module.resolve(compiled.plus(compiledLine)))

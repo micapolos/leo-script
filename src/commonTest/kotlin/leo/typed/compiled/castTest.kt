@@ -3,7 +3,9 @@ package leo.typed.compiled
 import leo.base.assertEqualTo
 import leo.base.assertNull
 import leo.choice
+import leo.line
 import leo.lineTo
+import leo.recursive
 import leo.type
 import kotlin.test.Test
 
@@ -102,5 +104,15 @@ class CastTest {
             "two" lineTo type("bar"),
             "three" lineTo type("zoo"))))
       .assertNull
+  }
+
+  @Test
+  fun recursive() {
+    compiled<Nothing>("empty")
+      .castOrNull(type(line(recursive("empty" lineTo type()))))
+      .assertEqualTo(
+        compiled(
+          expression(tuple(line(field("empty", compiled())))),
+          type(line(recursive("empty" lineTo type())))))
   }
 }
