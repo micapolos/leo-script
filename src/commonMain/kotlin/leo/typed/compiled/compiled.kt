@@ -27,6 +27,7 @@ data class CompiledTuple<out V>(val tuple: Tuple<V>, val typeStructure: TypeStru
 data class CompiledFunction<out V>(val function: Function<V>, val typeFunction: TypeFunction)
 data class CompiledSelect<out V>(val caseOrNull: Case<V>?, val choice: TypeChoice)
 data class CompiledChoice<out V>(val expression: Expression<V>, val choice: TypeChoice)
+data class CompiledStructure<out V>(val expression: Expression<V>, val typeStructure: TypeStructure)
 
 data class Fragment<out V>(val expression: Expression<V>, val tuple: Tuple<V>)
 
@@ -92,7 +93,8 @@ fun <V> compiled(tuple: Tuple<V>, structure: TypeStructure) = CompiledTuple(tupl
 fun <V> compiled(line: Line<V>, typeLine: TypeLine) = CompiledLine(line, typeLine)
 fun <V> compiled(field: Field<V>, typeField: TypeField) = CompiledField(field, typeField)
 fun <V> compiled(function: Function<V>, typeFunction: TypeFunction) = CompiledFunction(function, typeFunction)
-fun <V> compiled(expression: Expression<V>, choice: TypeChoice) = CompiledChoice(expression, choice)
+fun <V> compiled(expression: Expression<V>, typeChoice: TypeChoice) = CompiledChoice(expression, typeChoice)
+fun <V> compiled(expression: Expression<V>, typeStructure: TypeStructure) = CompiledStructure(expression, typeStructure)
 
 fun <V> function(paramType: Type, body: Body<V>) = Function(paramType, body)
 fun <V> body(compiled: Compiled<V>) = Body(compiled, isRecursive = false)
@@ -100,7 +102,7 @@ fun <V> recursive(body: Body<V>) = body.copy(isRecursive = true)
 fun <V> apply(lhs: Compiled<V>, rhs: Compiled<V>) = Apply(lhs, rhs)
 fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, name: String) = Get(lhs, name)
-fun <V> select(choice: TypeChoice, caseOrNull: Case<V>) = Select(choice, caseOrNull)
+fun <V> select(choice: TypeChoice, case: Case<V>) = Select(choice, case)
 fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(*cases))
 fun <V> content(lhs: Compiled<V>) = Content(lhs)
 fun <V> binding(type: Type, compiled: Compiled<V>) = Binding(type, compiled)

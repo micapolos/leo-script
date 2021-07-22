@@ -111,19 +111,16 @@ class CastTest {
   @Test
   fun recursive() {
     compiled<Nothing>("empty")
-      .castOrNull(type(line(recursive("empty" lineTo type()))))
+      .castOrNull(type(recursiveLine("empty" lineTo type())))
       .assertEqualTo(
         compiled(
           expression(tuple(line(field("empty", compiled())))),
           type(line(recursive("empty" lineTo type())))))
   }
 
-
   @Test
   fun recursiveChoice() {
-    compiled<Nothing>(
-      expression(variable(type("foo"))),
-      type("nat" lineTo type("zero")))
+    compiled<Nothing>("nat" lineTo compiled("zero"))
       .castOrNull(
         type(
           recursiveLine(
@@ -133,7 +130,14 @@ class CastTest {
                 "previous" lineTo type(recurseTypeLine))))))
       .assertEqualTo(
         compiled(
-          expression(variable(type("foo"))),
+          expression(
+            tuple(
+              line(
+                field(
+                  "nat",
+                  selectCompiled(
+                    line(the("zero" lineTo compiled())),
+                    line(not("previous" lineTo type(recurseTypeLine)))))))),
           type(
             recursiveLine(
               "nat" lineTo type(

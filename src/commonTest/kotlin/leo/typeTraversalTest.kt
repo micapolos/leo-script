@@ -65,20 +65,11 @@ class TypeTraversalTest {
           atom(
             "chain" fieldTo type(
               "data" lineTo type("foo"),
-              line(
-                recursive(
-                  "next" lineTo type(
-                    "chain" lineTo type(
-                      "data" lineTo type("foo"),
-                      recurseTypeLine
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
+              "next" lineTo type(
+                recursiveLine(
+                  "chain" lineTo type(
+                    "data" lineTo type("foo"),
+                    "next" lineTo type(recurseTypeLine))))))))
   }
 
   @Test

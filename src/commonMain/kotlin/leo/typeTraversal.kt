@@ -6,12 +6,17 @@ val TypeLine.recursible: TypeRecursible
   get() =
     when (this) {
       is RecursibleTypeLine -> recursible
-      is RecursiveTypeLine -> recursive.line.shiftRecursion.recursible
+      is RecursiveTypeLine ->
+        recursive.line.replaceNonRecursiveOrNull(recurseTypeLine, this)?.recursibleOrNull ?: recursible
+        //recursive.line.shiftRecursion.recursible
     }
 
 val TypeLine.atom: TypeAtom
   get() =
     recursible.atomOrNull!! // TODO: Incorporate into recursible, so there's no unsafety
+
+val TypeRecursive.shiftTypeLine: TypeLine get() =
+  line.replaceNonRecursiveOrNull(recurseTypeLine, recursiveLine(line)) ?: line
 
 // ========================================
 
