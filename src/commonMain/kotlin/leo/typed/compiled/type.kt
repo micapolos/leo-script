@@ -30,11 +30,11 @@ fun Type.lineIndexOrNull(name: String): Int? =
 fun Type.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
   structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull
 
-val Type.contentOrNull: Type? get() =
+val Type.rhsOrNull: Type? get() =
   structureOrNull?.onlyLineOrNull?.atom?.fieldOrNull?.rhsType
 
 fun Type.getLineOrNull(index: Int): TypeLine? =
-  contentOrNull?.structureOrNull?.lineStack?.getFromBottom(index)
+  rhsOrNull?.structureOrNull?.lineStack?.getFromBottom(index)
 
 fun TypeChoice.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
   lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.nameOrNull != name)?.the }.onlyOrNull

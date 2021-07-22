@@ -199,6 +199,7 @@ val TypeLine.structureOrNull: TypeStructure? get() = atomOrNull?.fieldOrNull?.rh
 val TypeLine.choiceOrNull: TypeChoice? get() = atomOrNull?.fieldOrNull?.rhsType?.choiceOrNull
 fun TypeStructure.lineOrNull(name: String): TypeLine? = lineStack.first { it.nameOrNull == name }
 val TypeRecursible.atomOrNull: TypeAtom? get() = (this as? AtomTypeRecursible)?.atom
+val TypeRecursible.recurseOrNull: TypeRecurse? get() = (this as? RecurseTypeRecursible)?.recurse
 
 val String.typeStructure: TypeStructure
   get() =

@@ -26,6 +26,7 @@ import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.plus
 import leo.push
+import leo.recursiveLine
 import leo.script
 import leo.stack
 import leo.structure
@@ -131,7 +132,7 @@ fun <V> Compiled<V>.tupleGetLineOrNull(name: String): CompiledLine<V>? =
   tupleContentOrNull?.tupleLineOrNull(name)
 
 fun <V> Compiled<V>.resolvedGetLineOrNull(name: String): CompiledLine<V>? =
-  type.contentOrNull?.indexedLineOrNull(name)?.let { indexedLine ->
+  type.rhsOrNull?.indexedLineOrNull(name)?.let { indexedLine ->
     compiled(line(get(this, name)), indexedLine.value)
   }
 
@@ -198,6 +199,19 @@ fun <V, R> Compiled<V>.prefix(name: String, fn: (Compiled<V>) -> R?): R? =
   }
 
 fun <V> Compiled<V>.lineOrNull(index: Int): CompiledLine<V>? =
+  null
+    ?: tupleLineOrNull(index)
+    ?: nonTupleLineOrNull(index)
+
+fun <V> Compiled<V>.tupleLineOrNull(index: Int): CompiledLine<V>? =
+  compiledTupleOrNull?.lineOrNull(index)
+
+fun <V> CompiledTuple<V>.lineOrNull(index: Int): CompiledLine<V>? =
+  compiled(
+    tuple.lineStack.getFromBottom(index)!!,
+    typeStructure.lineStack.getFromBottom(index)!!)
+
+fun <V> Compiled<V>.nonTupleLineOrNull(index: Int): CompiledLine<V>? =
   type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
     typeLine.nameOrNull?.let { name ->
       compiled(line(get(this, name)), typeLine)
@@ -211,7 +225,9 @@ fun <V> Compiled<V>.line(index: Int): CompiledLine<V> =
   lineOrNull(index)?: compileError(script("line"))
 
 fun <V> Compiled<V>.lineOrNull(name: String): CompiledLine<V>? =
-  type.structureOrNull?.indexOrNull(name)?.let { line(it) }
+  type.structureOrNull?.indexOrNull(name)?.let {
+    line(it)
+  }
 
 fun <V> Compiled<V>.make(name: String): Compiled<V> =
   compiled(name lineTo this)
@@ -297,7 +313,11 @@ val <V> CompiledFunction<V>.compiledLine: CompiledLine<V> get() =
   compiled(line(function), line(atom(typeFunction)))
 
 val <V> Compiled<V>.rhsOrNull: Compiled<V>? get() =
-  type.contentOrNull?.let { compiled(expression(content(this)), it) }
+  type.rhsOrNull?.let { rhsType ->
+    null
+      ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.fieldOrNull?.rhs
+      ?: compiled(expression(content(this)), rhsType)
+  }
 
 val <V> Compiled<V>.rhs: Compiled<V> get() =
   rhsOrNull ?: compileError(script("rhs"))
@@ -308,7 +328,7 @@ val <V> Compiled<V>.compiledChoice: CompiledChoice<V> get() =
 val <V> Compiled<V>.compiledChoiceOrNull: CompiledChoice<V>? get() =
   type.choiceOrNull
     ?.let { compiled(expression, it) }
-    ?:rhsOrNull?.compiledChoiceOrNull
+    ?: rhsOrNull?.compiledChoiceOrNull
 
 fun <V> Compiled<V>.with(binding: Binding<V>): Compiled<V> =
   compiled(expression(bind(binding, this)), type)
@@ -341,3 +361,6 @@ fun <V> Type.haveOrNull(compiled: Compiled<V>): Compiled<V>? =
 
 fun <V> selectCompiled(vararg lines: CompiledSelectLine<V>): Compiled<V> =
   compiledSelect<V>().fold(lines) { plus(it) }.compiled
+
+fun <V> recursive(compiledLine: CompiledLine<V>): CompiledLine<V> =
+  compiled(compiledLine.line, recursiveLine(compiledLine.typeLine))

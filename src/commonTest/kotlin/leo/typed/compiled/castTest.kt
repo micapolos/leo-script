@@ -1,6 +1,7 @@
 package leo.typed.compiled
 
 import leo.base.assertEqualTo
+import leo.base.assertNotNull
 import leo.base.assertNull
 import leo.choice
 import leo.line
@@ -120,14 +121,15 @@ class CastTest {
 
   @Test
   fun recursiveChoice() {
+    val natTypeLine =
+      recursiveLine(
+        "nat" lineTo type(
+          choice(
+            "zero" lineTo type(),
+            "previous" lineTo type(recurseTypeLine))))
+
     compiled<Nothing>("nat" lineTo compiled("zero"))
-      .castOrNull(
-        type(
-          recursiveLine(
-            "nat" lineTo type(
-              choice(
-                "zero" lineTo type(),
-                "previous" lineTo type(recurseTypeLine))))))
+      .castOrNull(type(natTypeLine))
       .assertEqualTo(
         compiled(
           expression(
@@ -137,12 +139,26 @@ class CastTest {
                   "nat",
                   selectCompiled(
                     line(the("zero" lineTo compiled())),
-                    line(not("previous" lineTo type(recurseTypeLine)))))))),
-          type(
-            recursiveLine(
-              "nat" lineTo type(
-                choice(
-                  "zero" lineTo type(),
-                  "previous" lineTo type(recurseTypeLine)))))))
+                    line(not("previous" lineTo type(natTypeLine)))))))),
+          type(natTypeLine)))
+  }
+
+  @Test
+  fun recursiveChoiceDeep() {
+    compiled<Nothing>(
+      "nat" lineTo compiled(
+        "previous" lineTo compiled(
+          recursive(
+            "nat" lineTo selectCompiled(
+              line(the("zero" lineTo compiled())),
+              line(not("previous" lineTo type(recurseTypeLine))))))))
+      .castOrNull(
+        type(
+          recursiveLine(
+            "nat" lineTo type(
+              choice(
+                "zero" lineTo type(),
+                "previous" lineTo type(recurseTypeLine))))))
+      .assertNotNull
   }
 }

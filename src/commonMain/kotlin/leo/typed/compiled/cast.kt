@@ -2,7 +2,6 @@ package leo.typed.compiled
 
 import leo.AtomTypeRecursible
 import leo.ChoiceType
-import leo.Empty
 import leo.FieldTypePrimitive
 import leo.FunctionTypeAtom
 import leo.NativeTypePrimitive
@@ -17,27 +16,38 @@ import leo.TypeChoice
 import leo.TypeField
 import leo.TypeLine
 import leo.TypePrimitive
+import leo.TypeRecurse
 import leo.TypeRecursible
 import leo.TypeRecursive
 import leo.atomOrNull
 import leo.base.firstOrNull
 import leo.base.ifOrNull
 import leo.base.notNullIf
-import leo.empty
 import leo.fieldOrNull
-import leo.line
 import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.primitiveOrNull
+import leo.recurseOrNull
 import leo.recursibleOrNull
 import leo.seq
+import leo.shiftTypeLine
+
+object Identity
 
 sealed class Cast<out V>
-data class EmptyCast<V>(val empty: Empty): Cast<V>()
+data class IdentityCast<V>(val identity: Identity): Cast<V>()
 data class ValueCast<V>(val value: V): Cast<V>()
 
-fun <V> cast(empty: Empty): Cast<V> = EmptyCast(empty)
+val identity get() = Identity
+
+fun <V> cast(identity: Identity): Cast<V> = IdentityCast(identity)
 fun <V> cast(value: V): Cast<V> = ValueCast(value)
+
+fun <V, R> Cast<V>.map(fn: (V) -> R): Cast<R> =
+  when (this) {
+    is IdentityCast -> cast(identity)
+    is ValueCast -> cast(fn(value))
+  }
 
 val <V> ValueCast<Expression<V>>.expression: Expression<V> get() = value
 val <V> ValueCast<Line<V>>.line: Line<V> get() = value
@@ -47,7 +57,7 @@ fun <V> Compiled<V>.castOrNull(toType: Type): Compiled<V>? =
     .castOrNull(type, toType, null)
     ?.let { cast ->
       when (cast) {
-        is EmptyCast -> compiled(expression, toType)
+        is IdentityCast -> compiled(expression, toType)
         is ValueCast -> compiled(cast.expression, toType)
       }
     }
@@ -57,19 +67,14 @@ fun <V> Expression<V>.castOrNull(fromType: Type, toType: Type, recursiveOrNull: 
     ?: compiled(this, fromType).onlyCompiledLineOrNull?.let { compiledLine ->
       compiledLine.line.castOrNull(compiledLine.typeLine, toType, recursiveOrNull)
     }
-    ?: notNullIf(fromType == toType) { cast(empty) }
+    ?: notNullIf(fromType == toType) { cast(identity) }
 
 fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toType: Type, recursiveOrNull: TypeRecursive?): Cast<Expression<V>>? =
   when (toType) {
     is StructureType -> toType.structure.onlyLineOrNull
       ?.let { toTypeLine ->
         castOrNull(fromTypeLine, toTypeLine, recursiveOrNull)
-          ?.let { cast ->
-            when (cast) {
-              is EmptyCast -> cast(empty)
-              is ValueCast -> cast(expression(tuple(cast.line)))
-            }
-          }
+          ?.map { expression(tuple(it)) }
       }
     is ChoiceType -> castOrNull(fromTypeLine, toType.choice)
   }
@@ -81,11 +86,9 @@ fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toTypeLine: TypeLine, recursi
         castOrNull(it, toTypeLine.recursible, recursiveOrNull)
       }
     is RecursiveTypeLine ->
-      castOrNull(fromTypeLine, toTypeLine.recursive.line, toTypeLine.recursive)?.let { cast ->
-        when (cast) {
-          is EmptyCast -> cast(empty)
-          is ValueCast -> cast
-        }
+      when (fromTypeLine) {
+        is RecursibleTypeLine -> castOrNull(fromTypeLine, toTypeLine.recursive.shiftTypeLine, toTypeLine.recursive)
+        is RecursiveTypeLine -> notNullIf(fromTypeLine.recursive == toTypeLine.recursive) { cast(identity) }
       }
   }
 
@@ -94,17 +97,18 @@ fun <V> Line<V>.castOrNull(fromTypeRecursible: TypeRecursible, toTypeRecursible:
     is AtomTypeRecursible -> fromTypeRecursible.atomOrNull?.let {
       castOrNull(it, toTypeRecursible.atom, recursiveOrNull)
     }
-    is RecurseTypeRecursible ->
-      recursiveOrNull?.let { recursive ->
-        notNullIf(line(fromTypeRecursible) == recursive.line) {
-          cast(empty)
-        }
-      }
+    is RecurseTypeRecursible -> fromTypeRecursible.recurseOrNull?.let {
+      castOrNull(it, toTypeRecursible.recurse, recursiveOrNull)
+    }
   }
+
+@Suppress("unused")
+fun <V> Line<V>.castOrNull(fromTypeRecurse: TypeRecurse, toTypeRecurse: TypeRecurse, @Suppress("UNUSED_PARAMETER") recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
+  notNullIf(fromTypeRecurse == toTypeRecurse) { cast(identity) }
 
 fun <V> Line<V>.castOrNull(fromTypeAtom: TypeAtom, toTypeAtom: TypeAtom, recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
   when (toTypeAtom) {
-    is FunctionTypeAtom -> notNullIf(fromTypeAtom == toTypeAtom) { cast(empty) }
+    is FunctionTypeAtom -> notNullIf(fromTypeAtom == toTypeAtom) { cast(identity) }
     is PrimitiveTypeAtom -> fromTypeAtom.primitiveOrNull?.let {
       castOrNull(it, toTypeAtom.primitive, recursiveOrNull)
     }
@@ -115,7 +119,7 @@ fun <V> Line<V>.castOrNull(fromTypePrimitive: TypePrimitive, toTypePrimitive: Ty
     is FieldTypePrimitive -> fromTypePrimitive.fieldOrNull?.let {
       castOrNull(it, toTypePrimitive.field, recursiveOrNull)
     }
-    is NativeTypePrimitive -> notNullIf(fromTypePrimitive == toTypePrimitive) { cast(empty) }
+    is NativeTypePrimitive -> notNullIf(fromTypePrimitive == toTypePrimitive) { cast(identity) }
   }
 
 fun <V> Line<V>.castOrNull(fromTypeField: TypeField, toTypeField: TypeField, recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
@@ -123,7 +127,7 @@ fun <V> Line<V>.castOrNull(fromTypeField: TypeField, toTypeField: TypeField, rec
     fieldOrNull?.let { field ->
       field.rhs.expression.castOrNull(fromTypeField.rhsType, toTypeField.rhsType, recursiveOrNull)?.let { cast ->
         when (cast) {
-          is EmptyCast -> cast(line(field(fromTypeField.name, compiled(field.rhs.expression, toTypeField.rhsType))))
+          is IdentityCast -> cast(line(field(fromTypeField.name, compiled(field.rhs.expression, toTypeField.rhsType))))
           is ValueCast -> cast(line(field(fromTypeField.name, compiled(cast.value, toTypeField.rhsType))))
         }
       }

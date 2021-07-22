@@ -65,11 +65,11 @@ class DslTest {
 
     compiled
       .line(0)
-      .assertEqualTo(compiled(line(get(compiled, "x")), "x" lineTo type("zero")))
+      .assertEqualTo("x" lineTo compiled("zero"))
 
     compiled
       .line(1)
-      .assertEqualTo(compiled(line(get(compiled, "y")), "y" lineTo type("one")))
+      .assertEqualTo("y" lineTo compiled("one"))
 
     assertFails {
       compiled.line(2)
@@ -231,5 +231,19 @@ class DslTest {
       .assertNull
 
     nativeCompiled("foo").haveOrNull(compiled("zoo")).assertNull
+  }
+
+  @Test
+  fun recursiveRhs() {
+    compiled(recursive("foo" lineTo compiled<Nothing>("bar")))
+      .rhs
+      .assertEqualTo(compiled("bar"))
+  }
+
+  @Test
+  fun recursiveGet() {
+    compiled(recursive("foo" lineTo compiled<Nothing>("bar")))
+      .get("bar")
+      .assertEqualTo(compiled("bar"))
   }
 }
