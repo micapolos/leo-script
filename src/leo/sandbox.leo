@@ -1,1 +1,6 @@
-number pi
+point
+  x 10
+  y 20
+do
+  x.number
+  plus y.number

@@ -49,6 +49,9 @@ fun tupleScheme(vararg schemes: Scheme): Scheme =
 fun Scheme.vectorRef(index: Scheme): Scheme =
   scheme(scheme("vector-ref"), this, index)
 
+fun Scheme.listRef(index: Scheme): Scheme =
+  scheme(scheme("list-ref"), this, index)
+
 fun Scheme.case(vararg schemes: Scheme): Scheme =
   scheme(scheme("case"), this, *schemes)
 
