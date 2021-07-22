@@ -1,5 +1,6 @@
 package leo.typed.compiler
 
+import leo.DebugError
 import leo.FieldScriptLine
 import leo.Literal
 import leo.LiteralScriptLine
@@ -172,8 +173,7 @@ fun <V> Compiler<V>.types(script: Script): Compiler<V> =
   set(block.updateTypesBlock { it.compiler.plus(script).block })
 
 fun <V> Compiler<V>.debug(@Suppress("UNUSED_PARAMETER") script: Script): Compiler<V> =
-  if (!compiled.type.isEmpty) compileError(script("debug" lineTo script()))
-  else set(environment.staticCompiled(script("debug" lineTo script(toScriptLine))))
+  throw DebugError(script(toScriptLine))
 
 fun <V> Compiler<V>.function(script: Script): Compiler<V> =
   script.matchInfix { lhs, name, rhs ->

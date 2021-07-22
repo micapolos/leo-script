@@ -1,7 +1,9 @@
 package leo.typed.evaluator
 
 import leo.CompileError
+import leo.DebugError
 import leo.Script
+import leo.debugName
 import leo.errorName
 import leo.lineTo
 import leo.script
@@ -20,4 +22,6 @@ val Script.evaluate: Script
       }
     } catch (compileError: CompileError) {
       script(errorName lineTo compileError.scriptFn())
+    } catch (debugError: DebugError) {
+      script(debugName lineTo debugError.script)
     }

@@ -22,8 +22,6 @@ class ScriptStringTest {
   @Test
   fun literalField() {
     script("foo" lineTo script(literal(" bar "))).string.assertEqualTo("foo \" bar \"\n")
-    script("foo" lineTo script(literal("zoo\nzar"))).string.assertEqualTo("foo text\n  zoo\n  zar\n")
-    script("foo" lineTo script(literal("bar"))).string.assertEqualTo("foo text bar\n")
   }
 
   @Test
@@ -77,15 +75,9 @@ class ScriptStringTest {
 
   @Test
   fun text() {
-    script(literal(" foo "))
-      .string
-      .assertEqualTo("\" foo \"\n")
     script(literal("foo"))
       .string
-      .assertEqualTo("text foo\n")
-    script(literal("foo\nbar"))
-      .string
-      .assertEqualTo("text\n  foo\n  bar\n")
+      .assertEqualTo("\"foo\"\n")
   }
 
   @Test
