@@ -1,5 +1,6 @@
 package leo.typed.indexed.native
 
+import leo.typed.compiler.native.DoubleDividedByDoubleNative
 import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
 import leo.typed.compiler.native.DoubleMinusDoubleNative
 import leo.typed.compiler.native.DoubleNative
@@ -37,6 +38,8 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       nativeValue(params[0].native.double.minus(params[1].native.double).native)
     DoubleTimesDoubleNative ->
       nativeValue(params[0].native.double.times(params[1].native.double).native)
+    DoubleDividedByDoubleNative ->
+      nativeValue(params[0].native.double.div(params[1].native.double).native)
     DoubleIsLessThanDoubleNative ->
       value(params[0].native.double < params[1].native.double)
     DoubleStringNative ->

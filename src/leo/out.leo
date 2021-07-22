@@ -1,1 +1,1 @@
-python text import operator;operator.add("Hello, ","world!")
+pi 3.141592653589793

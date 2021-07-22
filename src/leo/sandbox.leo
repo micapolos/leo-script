@@ -1,3 +1,1 @@
-compile python
-  "Hello, "
-  plus "world!"
+pi

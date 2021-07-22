@@ -13,6 +13,7 @@ data class StringNative(val string: String) : Native()
 object DoublePlusDoubleNative : Native()
 object DoubleMinusDoubleNative : Native()
 object DoubleTimesDoubleNative : Native()
+object DoubleDividedByDoubleNative : Native()
 object PiDoubleNative : Native()
 object DoubleIsLessThanDoubleNative : Native()
 object DoubleStringNative : Native()
@@ -56,6 +57,11 @@ val Native.scriptLine get() =
         script(
           "double" lineTo script(),
           "times" lineTo script("double"))
+      DoubleDividedByDoubleNative ->
+        script(
+          "double" lineTo script(),
+          "divided" lineTo script(
+            "by" lineTo script("double")))
       DoubleStringNative ->
         script("string" lineTo script("double"))
       PiDoubleNative ->

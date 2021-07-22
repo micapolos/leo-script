@@ -8,6 +8,7 @@ import leo.lineTo
 import leo.literal
 import leo.nativeName
 import leo.script
+import leo.typed.compiler.native.DoubleDividedByDoubleNative
 import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
 import leo.typed.compiler.native.DoubleMinusDoubleNative
 import leo.typed.compiler.native.DoubleNative
@@ -64,6 +65,11 @@ val Native.scriptLine: ScriptLine
       nativeName lineTo script(
         "double" lineTo script(),
         "times" lineTo script("double"))
+    DoubleDividedByDoubleNative ->
+      nativeName lineTo script(
+        "double" lineTo script(),
+        "divided" lineTo script(
+          "by" lineTo script("double")))
     DoubleStringNative ->
       nativeName lineTo script(
         "string" lineTo script("double"))
