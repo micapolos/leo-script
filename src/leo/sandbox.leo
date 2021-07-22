@@ -1,2 +1,1 @@
-compile python
-  color red
+number pi

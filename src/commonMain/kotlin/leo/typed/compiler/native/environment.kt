@@ -9,6 +9,7 @@ import leo.functionLineTo
 import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.numberName
 import leo.textName
 import leo.toName
 import leo.type
@@ -39,6 +40,8 @@ val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
       nativeCompiled(DoubleMinusDoubleNative, type(type functionLineTo nativeNumberType))
     type(nativeNumberTypeLine, "times" lineTo nativeNumberType) ->
       nativeCompiled(DoubleTimesDoubleNative, type(type functionLineTo nativeNumberType))
+    type(numberName lineTo type("pi")) ->
+      nativeCompiled(PiDoubleNative, type(type functionLineTo nativeNumberType))
     type(nativeNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (nativeNumberType)))) ->
       nativeCompiled(DoubleIsLessThanDoubleNative, type(type functionLineTo isType))
     type(nativeTextTypeLine, "plus" lineTo nativeTextType) ->
