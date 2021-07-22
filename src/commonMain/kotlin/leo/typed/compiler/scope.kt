@@ -5,6 +5,7 @@ import leo.mapFirst
 import leo.push
 import leo.stack
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 
 data class Scope(val bindingStack: Stack<Binding>)
 
@@ -18,3 +19,6 @@ fun <V> Scope.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
 
 fun <V> Scope.resolve(compiled: Compiled<V>): Compiled<V> =
   resolveOrNull(compiled) ?: compiled
+
+fun <V> Scope.compiledChoice(): CompiledChoice<V> =
+  bindingStack.mapFirst { compiledChoiceOrNull() }!!

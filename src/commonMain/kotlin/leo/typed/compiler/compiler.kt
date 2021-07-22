@@ -47,6 +47,7 @@ import leo.theName
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.CompiledLine
 import leo.typed.compiled.apply
 import leo.typed.compiled.as_
@@ -283,8 +284,12 @@ fun <V> Compiler<V>.select(script: Script): Compiler<V> =
       .compiledSelect
       .compiled)
 
+val <V> Compiler<V>.compiledChoice: CompiledChoice<V> get() =
+  if (compiled.type.isEmpty) block.compiledChoice()
+  else compiled.compiledChoice
+
 fun <V> Compiler<V>.switch(script: Script): Compiler<V> =
-  compiled.compiledChoice.let { compiledChoice ->
+  compiledChoice.let { compiledChoice ->
     set(
       SwitchCompiler(
         block.module,

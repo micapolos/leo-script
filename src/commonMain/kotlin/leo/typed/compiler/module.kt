@@ -15,6 +15,7 @@ import leo.staticScriptOrNull
 import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.body
 import leo.typed.compiled.castOrNull
 import leo.typed.compiled.indexed.indexedExpression
@@ -69,3 +70,6 @@ val <V> Module<V>.typeSeq: Seq<Type> get() =
       rhsType.staticScriptOrNull?.type?.the
     }
   }
+
+fun <V> Module<V>.compiledChoice(): CompiledChoice<V> =
+  context.compiledChoice()

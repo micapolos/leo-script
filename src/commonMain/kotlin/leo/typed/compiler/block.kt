@@ -33,6 +33,7 @@ import leo.script
 import leo.stack
 import leo.type
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.as_
 import leo.typed.compiled.bind
 import leo.typed.compiled.binding
@@ -170,3 +171,6 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
 
 fun <V> Block<V>.updateTypesBlock(fn: (Block<Types>) -> Block<Types>) =
   copy(module = module.updateTypesBlock(fn))
+
+fun <V> Block<V>.compiledChoice(): CompiledChoice<V> =
+  context.compiledChoice()

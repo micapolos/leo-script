@@ -7,11 +7,14 @@ import leo.base.notNullIf
 import leo.line
 import leo.lineOrNull
 import leo.nameOrNull
+import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
 import leo.structureOrNull
 import leo.type
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.compiled
+import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.expression
 import leo.typed.compiled.getOrNull
 import leo.typed.compiled.invoke
@@ -66,4 +69,16 @@ val Binding.rhsType: Type get() =
     is ConstantBinding -> constant.rhsType
     is FunctionBinding -> function.rhsType
     is GivenBinding -> given.type
+  }
+
+fun <V> Binding.compiledChoiceOrNull(): CompiledChoice<V>? =
+  when (this) {
+    is ConstantBinding -> null
+    is FunctionBinding -> null
+    is GivenBinding -> given.compiledChoice()
+  }
+
+fun <V> TypeGiven.compiledChoice(): CompiledChoice<V> =
+  type.onlyFieldOrNull!!.let { typeField ->
+    compiled(expression<V>(variable(type(typeField.name))), type).compiledChoice
   }

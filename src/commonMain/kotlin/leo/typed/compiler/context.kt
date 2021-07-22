@@ -1,6 +1,7 @@
 package leo.typed.compiler
 
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.CompiledChoice
 
 data class Context<V>(
   val environment: Environment<V>,
@@ -21,3 +22,6 @@ fun <V> Context<V>.resolve(compiled: Compiled<V>): Compiled<V> =
     ?: environment.resolveOrNullFn(compiled)
     ?: compiled.resolvedOrNull
     ?: compiled
+
+fun <V> Context<V>.compiledChoice(): CompiledChoice<V> =
+  scope.compiledChoice()
