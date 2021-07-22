@@ -39,7 +39,7 @@ import leo.variable
 val Expression<Python>.python: Python get() =
   python(
     string(
-      "import operator;",
+      if (containsOperator) "import operator;" else "",
       if (containsRecursion) "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));" else "",
       python(scope()).string))
 

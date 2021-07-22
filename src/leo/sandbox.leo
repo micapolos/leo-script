@@ -1,7 +1,10 @@
-compile scheme
-  boolean select
-    not true
+types let
+  boolean
+  have choice
+    the true
     the false
-  switch
-    true doing "true"
-    false doing "false"
+
+boolean false
+switch
+  true doing "true"
+  false doing "false"
