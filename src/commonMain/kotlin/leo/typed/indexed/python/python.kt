@@ -45,7 +45,7 @@ val Expression<Python>.python: Python get() =
 
 fun Expression<Python>.python(scope: Scope): Python =
   when (this) {
-    is EmptyExpression -> python("`()")
+    is EmptyExpression -> empty.python
     is InvokeExpression -> invoke.python(scope)
     is FunctionExpression -> function.python(scope)
     is RecursiveExpression -> recursive.python(scope)
@@ -61,7 +61,7 @@ fun Expression<Python>.python(scope: Scope): Python =
 
 @Suppress("unused")
 val Empty.python: Python get() =
-  python("()")
+  python("None")
 
 fun ExpressionInvoke<Python>.python(scope: Scope): Python =
   lhs.python(scope).invoke(*params.map { it.python(scope) }.toTypedArray())
