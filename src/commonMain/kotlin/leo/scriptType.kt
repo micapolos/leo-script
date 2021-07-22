@@ -33,7 +33,7 @@ val Script.typeStructure: TypeStructure
 val ScriptLine.typeLine: TypeLine
   get() =
     null
-      ?: typeRecursiveOrNull?.line
+      ?: typeRecursiveOrNull?.let { line(it) }
       ?: typeRecursible.line
 
 val ScriptLine.typeRecursiveOrNull: TypeRecursive?

@@ -5,6 +5,8 @@ import leo.choice
 import leo.choiceName
 import leo.lineTo
 import leo.orName
+import leo.recursiveLine
+import leo.recursiveName
 import leo.script
 import leo.scriptLine
 import leo.type
@@ -76,6 +78,13 @@ class ScriptTest {
       .assertEqualTo(
         type(choice(nativeTextTypeLine, nativeNumberTypeLine, "foo" lineTo type()))
       )
+  }
+
+  @Test
+  fun recursive() {
+    script(recursiveName lineTo script("foo"))
+      .type
+      .assertEqualTo(type(recursiveLine("foo" lineTo type())))
   }
 
   @Test

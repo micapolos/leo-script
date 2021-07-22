@@ -7,7 +7,7 @@ val TypeLine.recursible: TypeRecursible
     when (this) {
       is RecursibleTypeLine -> recursible
       is RecursiveTypeLine ->
-        recursive.line.replaceNonRecursiveOrNull(recurseTypeLine, this)?.recursibleOrNull ?: recursible
+        recursive.line.replaceNonRecursiveOrNull(recurseTypeLine, this)?.recursibleOrNull ?: recursive.line.recursible
         //recursive.line.shiftRecursion.recursible
     }
 

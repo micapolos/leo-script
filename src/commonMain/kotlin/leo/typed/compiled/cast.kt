@@ -17,7 +17,6 @@ import leo.TypeChoice
 import leo.TypeField
 import leo.TypeLine
 import leo.TypePrimitive
-import leo.TypeRecurse
 import leo.TypeRecursible
 import leo.TypeRecursive
 import leo.atomOrNull
@@ -26,6 +25,7 @@ import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.empty
 import leo.fieldOrNull
+import leo.line
 import leo.nameOrNull
 import leo.onlyLineOrNull
 import leo.primitiveOrNull
@@ -77,17 +77,15 @@ fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toType: Type, recursiveOrNull
 fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toTypeLine: TypeLine, recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
   when (toTypeLine) {
     is RecursibleTypeLine ->
-      fromTypeLine.recursibleOrNull?.let { castOrNull(it, toTypeLine.recursible, recursiveOrNull) }
+      fromTypeLine.recursibleOrNull?.let {
+        castOrNull(it, toTypeLine.recursible, recursiveOrNull)
+      }
     is RecursiveTypeLine ->
-      when (fromTypeLine) {
-        is RecursibleTypeLine ->
-          castOrNull(fromTypeLine, toTypeLine.recursive.line, toTypeLine.recursive)?.let { cast ->
-            when (cast) {
-              is EmptyCast -> cast(empty)
-              is ValueCast -> cast
-            }
-          }
-        is RecursiveTypeLine -> notNullIf(fromTypeLine == toTypeLine) { cast(empty) }
+      castOrNull(fromTypeLine, toTypeLine.recursive.line, toTypeLine.recursive)?.let { cast ->
+        when (cast) {
+          is EmptyCast -> cast(empty)
+          is ValueCast -> cast
+        }
       }
   }
 
@@ -96,14 +94,12 @@ fun <V> Line<V>.castOrNull(fromTypeRecursible: TypeRecursible, toTypeRecursible:
     is AtomTypeRecursible -> fromTypeRecursible.atomOrNull?.let {
       castOrNull(it, toTypeRecursible.atom, recursiveOrNull)
     }
-    is RecurseTypeRecursible -> null
-  }
-
-fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toTypeRecurse: TypeRecurse, recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
-  recursiveOrNull?.let { recursive ->
-    notNullIf(fromTypeLine == recursive.line) {
-      cast(empty)
-    }
+    is RecurseTypeRecursible ->
+      recursiveOrNull?.let { recursive ->
+        notNullIf(line(fromTypeRecursible) == recursive.line) {
+          cast(empty)
+        }
+      }
   }
 
 fun <V> Line<V>.castOrNull(fromTypeAtom: TypeAtom, toTypeAtom: TypeAtom, recursiveOrNull: TypeRecursive?): Cast<Line<V>>? =
@@ -127,7 +123,7 @@ fun <V> Line<V>.castOrNull(fromTypeField: TypeField, toTypeField: TypeField, rec
     fieldOrNull?.let { field ->
       field.rhs.expression.castOrNull(fromTypeField.rhsType, toTypeField.rhsType, recursiveOrNull)?.let { cast ->
         when (cast) {
-          is EmptyCast -> cast(empty)
+          is EmptyCast -> cast(line(field(fromTypeField.name, compiled(field.rhs.expression, toTypeField.rhsType))))
           is ValueCast -> cast(line(field(fromTypeField.name, compiled(cast.value, toTypeField.rhsType))))
         }
       }

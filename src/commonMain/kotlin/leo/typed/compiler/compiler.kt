@@ -86,6 +86,9 @@ fun <V> Compiler<V>.set(compiled: Compiled<V>): Compiler<V> =
 fun <V> Compiler<V>.set(block: Block<V>): Compiler<V> =
   copy(block = block)
 
+fun <V> Compiler<V>.setCast(compiled: Compiled<V>): Compiler<V> =
+  set(block.module.cast(compiled))
+
 val <V> Compiler<V>.context get() = block.context
 val <V> Compiler<V>.environment get() = context.environment
 
@@ -184,7 +187,7 @@ fun <V> Compiler<V>.have(script: Script): Compiler<V> =
   have(block.module.compiled(script))
 
 fun <V> Compiler<V>.have(rhs: Compiled<V>): Compiler<V> =
-  set(compiled.have(rhs))
+  setCast(compiled.have(rhs))
 
 fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   block.module.type(lhs).let { lhsType ->
@@ -271,7 +274,7 @@ fun <V> Compiler<V>.make(script: Script): Compiler<V> =
   } ?: compileError(script("make" lineTo script))
 
 fun <V> Compiler<V>.make(name: String): Compiler<V> =
-  set(compiled.make(name))
+  setCast(compiled.make(name))
 
 fun <V> Compiler<V>.select(script: Script): Compiler<V> =
   set(
@@ -303,13 +306,13 @@ fun <V> Compiler<V>.the(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.word(script: Script): Compiler<V> =
   script.onlyLineOrNull?.fieldOrNull?.let { scriptField ->
-    block.module.compiled(scriptField.rhs)?.let { rhsCompiled ->
+    block.module.compiled(scriptField.rhs).let { rhsCompiled ->
       word(scriptField.name lineTo rhsCompiled)
     }
   }?: compileError(script(wordName lineTo script))
 
 fun <V> Compiler<V>.word(compiledLine: CompiledLine<V>): Compiler<V> =
-  set(compiled.plus(compiledLine))
+  setCast(compiled.plus(compiledLine))
 
 fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
   set(block.module.resolve(compiled.plus(compiledLine)))

@@ -25,6 +25,8 @@ import leo.numberName
 import leo.pickName
 import leo.plusName
 import leo.quoteName
+import leo.recursiveLine
+import leo.recursiveName
 import leo.repeatName
 import leo.script
 import leo.selectName
@@ -56,6 +58,7 @@ import leo.typed.compiled.rhs
 import leo.typed.compiled.select
 import leo.typed.compiled.switch
 import leo.typed.compiled.the
+import leo.typed.compiled.tuple
 import leo.typed.compiled.variable
 import leo.typed.compiler.native.DoublePlusDoubleNative
 import leo.typed.compiler.native.Native
@@ -65,6 +68,7 @@ import leo.typed.compiler.native.nativeEnvironment
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextTypeLine
+import leo.typesName
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -543,5 +547,20 @@ class CompileTest {
                     compiled(expression(variable(type("human"))), type("egg")))),
                 type("egg")))),
           type("egg")))
+  }
+
+  @Test
+  fun cast() {
+    script(
+      typesName lineTo script(
+        letName lineTo script(
+          "foo" lineTo script(),
+          beName lineTo script(recursiveName lineTo script("bar")))),
+      "bar" lineTo script())
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled(
+          expression(tuple(line(field("bar", compiled())))),
+          type(recursiveLine("bar" lineTo type()))))
   }
 }
