@@ -10,6 +10,7 @@ import leo.typed.compiler.native.DoubleRootNative
 import leo.typed.compiler.native.DoubleSinusNative
 import leo.typed.compiler.native.DoubleStringNative
 import leo.typed.compiler.native.DoubleTimesDoubleNative
+import leo.typed.compiler.native.EDoubleNative
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.ObjectEqualsObjectNative
 import leo.typed.compiler.native.PiDoubleNative
@@ -24,6 +25,7 @@ import leo.typed.indexed.Value
 import leo.typed.indexed.native
 import leo.typed.indexed.nativeValue
 import leo.typed.indexed.value
+import kotlin.math.E
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -52,6 +54,8 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       nativeValue(params[0].native.double.toString().native)
     PiDoubleNative ->
       nativeValue(PI.native)
+    EDoubleNative ->
+      nativeValue(E.native)
     DoubleRootNative ->
       nativeValue(sqrt(params[0].native.double).native)
     DoubleSinusNative ->

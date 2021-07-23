@@ -15,7 +15,6 @@ import leo.typed.indexed.SwitchExpression
 import leo.typed.indexed.TupleExpression
 import leo.typed.indexed.VariableExpression
 
-
 val Expression<Python>.containsOperator: Boolean get() =
   when (this) {
     is BooleanExpression ->
@@ -41,6 +40,35 @@ val Expression<Python>.containsOperator: Boolean get() =
       switch.lhs.containsOperator || switch.cases.any { it.containsOperator }
     is TupleExpression ->
       tuple.expressionList.any { it.containsOperator }
+    is VariableExpression ->
+      false
+  }
+
+val Expression<Python>.containsMath: Boolean get() =
+  when (this) {
+    is BooleanExpression ->
+      false
+    is ConditionalExpression ->
+      conditional.condition.containsMath
+          || conditional.trueCase.containsMath
+          || conditional.falseCase.containsMath
+    is EmptyExpression ->
+      false
+    is FunctionExpression ->
+      function.expression.containsMath
+    is GetExpression ->
+      get.lhs.containsMath
+    is IndexExpression ->
+      false
+    is InvokeExpression ->
+      invoke.lhs.containsMath || invoke.params.any { it.containsMath }
+    is NativeExpression ->
+      native.string.contains("math.")
+    is RecursiveExpression -> true
+    is SwitchExpression ->
+      switch.lhs.containsMath || switch.cases.any { it.containsMath }
+    is TupleExpression ->
+      tuple.expressionList.any { it.containsMath }
     is VariableExpression ->
       false
   }

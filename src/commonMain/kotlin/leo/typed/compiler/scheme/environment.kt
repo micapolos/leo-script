@@ -9,6 +9,7 @@ import leo.functionLineTo
 import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.numberName
 import leo.textName
 import leo.toName
 import leo.type
@@ -25,6 +26,8 @@ import leo.typed.compiler.Environment
 import leo.typed.compiler.python.scriptLineOrNull
 import scheme.Scheme
 import scheme.scheme
+import kotlin.math.E
+import kotlin.math.PI
 
 val schemeEnvironment: Environment<Scheme>
   get() =
@@ -43,6 +46,18 @@ val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
       nativeCompiled(scheme("-"), type(type functionLineTo schemeNumberType))
     type(schemeNumberTypeLine, "times" lineTo schemeNumberType) ->
       nativeCompiled(scheme("*"), type(type functionLineTo schemeNumberType))
+    type(schemeNumberTypeLine, "divided" lineTo type("by" lineTo schemeNumberType)) ->
+      nativeCompiled(scheme("/"), type(type functionLineTo schemeNumberType))
+    type(numberName lineTo type("pi")) ->
+      nativeCompiled(scheme("(lambda (x) $PI)"), type(type functionLineTo schemeNumberType))
+    type(numberName lineTo type("e")) ->
+      nativeCompiled(scheme("(lambda (x) $E)"), type(type functionLineTo schemeNumberType))
+    type("root" lineTo schemeNumberType) ->
+      nativeCompiled(scheme("sqrt"), type(type functionLineTo schemeNumberType))
+    type("sinus" lineTo schemeNumberType) ->
+      nativeCompiled(scheme("sin"), type(type functionLineTo schemeNumberType))
+    type("cosinus" lineTo schemeNumberType) ->
+      nativeCompiled(scheme("cos"), type(type functionLineTo schemeNumberType))
     type(schemeNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (schemeNumberType)))) ->
       nativeCompiled(scheme("<"), type(type functionLineTo isType))
     type(textName lineTo schemeNumberType) ->

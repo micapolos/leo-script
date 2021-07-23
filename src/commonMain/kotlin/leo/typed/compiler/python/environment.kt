@@ -9,6 +9,7 @@ import leo.functionLineTo
 import leo.isName
 import leo.isType
 import leo.lineTo
+import leo.numberName
 import leo.script
 import leo.textName
 import leo.toName
@@ -42,6 +43,18 @@ val Compiled<Python>.resolveOrNull: Compiled<Python>? get() =
       nativeCompiled(python("operator.sub"), type(type functionLineTo pythonNumberType))
     type(pythonNumberTypeLine, "times" lineTo pythonNumberType) ->
       nativeCompiled(python("operator.mul"), type(type functionLineTo pythonNumberType))
+    type(pythonNumberTypeLine, "divided" lineTo type("by" lineTo pythonNumberType)) ->
+      nativeCompiled(python("operator.div"), type(type functionLineTo pythonNumberType))
+    type(numberName lineTo type("pi")) ->
+      nativeCompiled(python("(lambda x: math.pi)"), type(type functionLineTo pythonNumberType))
+    type(numberName lineTo type("e")) ->
+      nativeCompiled(python("(lambda x: math.e)"), type(type functionLineTo pythonNumberType))
+    type("root" lineTo pythonNumberType) ->
+      nativeCompiled(python("math.sqrt"), type(type functionLineTo pythonNumberType))
+    type("sinus" lineTo pythonNumberType) ->
+      nativeCompiled(python("math.sin"), type(type functionLineTo pythonNumberType))
+    type("cosinus" lineTo pythonNumberType) ->
+      nativeCompiled(python("math.cos"), type(type functionLineTo pythonNumberType))
     type(pythonNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (pythonNumberType)))) ->
       nativeCompiled(python("operator.lt"), type(type functionLineTo isType))
     type(pythonTextTypeLine, "plus" lineTo pythonTextType) ->

@@ -59,7 +59,7 @@ fun TypeRecursive.scriptLine(fn: Fn = { null }): ScriptLine =
     recursiveName lineTo script(line.scriptLine(fn))
 
 @Suppress("unused")
-fun TypeRecurse.scriptLine(fn: Fn = { null }): ScriptLine =
+fun TypeRecurse.scriptLine(@Suppress("UNUSED_PARAMETER") fn: Fn = { null }): ScriptLine =
     recurseName lineTo script()
 
 val String.isTypeKeyword: Boolean
@@ -73,5 +73,5 @@ val String.isTypeKeyword: Boolean
       else -> false
     }
 
-fun TypeNative.scriptLine(fn: Fn = { null }): ScriptLine =
+fun TypeNative.scriptLine(@Suppress("UNUSED_PARAMETER") fn: Fn = { null }): ScriptLine =
   nativeName lineTo script

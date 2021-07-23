@@ -45,6 +45,8 @@ val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
       nativeCompiled(DoubleDividedByDoubleNative, type(type functionLineTo nativeNumberType))
     type(numberName lineTo type("pi")) ->
       nativeCompiled(PiDoubleNative, type(type functionLineTo nativeNumberType))
+    type(numberName lineTo type("e")) ->
+      nativeCompiled(EDoubleNative, type(type functionLineTo nativeNumberType))
     type("root" lineTo nativeNumberType) ->
       nativeCompiled(DoubleRootNative, type(type functionLineTo nativeNumberType))
     type("sinus" lineTo nativeNumberType) ->

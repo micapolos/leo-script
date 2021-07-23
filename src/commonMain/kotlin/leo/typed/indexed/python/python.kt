@@ -40,6 +40,7 @@ val Expression<Python>.python: Python get() =
   python(
     string(
       if (containsOperator) "import operator;" else "",
+      if (containsMath) "import math;" else "",
       if (containsRecursion) "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));" else "",
       python(scope()).string))
 

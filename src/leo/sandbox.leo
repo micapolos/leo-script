@@ -1,0 +1,2 @@
+compile scheme
+  pi.number

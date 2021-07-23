@@ -18,6 +18,7 @@ object DoubleRootNative : Native()
 object DoubleSinusNative : Native()
 object DoubleCosinusNative : Native()
 object PiDoubleNative : Native()
+object EDoubleNative : Native()
 object DoubleIsLessThanDoubleNative : Native()
 object DoubleStringNative : Native()
 object ObjectEqualsObjectNative : Native()
@@ -65,10 +66,9 @@ val Native.scriptLine get() =
           "double" lineTo script(),
           "divided" lineTo script(
             "by" lineTo script("double")))
-      DoubleStringNative ->
-        script("string" lineTo script("double"))
-      PiDoubleNative ->
-        script("double" lineTo script("pi"))
+      DoubleStringNative -> script("string" lineTo script("double"))
+      PiDoubleNative -> script("double" lineTo script("pi"))
+      EDoubleNative -> script("double" lineTo script("e"))
       DoubleRootNative -> script("root" lineTo script("double"))
       DoubleSinusNative -> script("sinus" lineTo script("double"))
       DoubleCosinusNative -> script("cosinus" lineTo script("double"))
