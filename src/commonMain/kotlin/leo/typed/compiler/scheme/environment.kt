@@ -33,7 +33,7 @@ val schemeEnvironment: Environment<Scheme>
   get() =
     Environment(
       { literal -> compiled(nativeLine(literal.scheme), literal.schemeTypeLine) },
-      { compiled -> compiled.resolveOrNull?.invoke(compiled) },
+      { compiled -> compiled.resolveOrNull },
       { it.leoScriptLine },
       { schemeTypesEnvironment },
       { typeLine -> typeLine.scriptLineOrNull })
@@ -41,37 +41,37 @@ val schemeEnvironment: Environment<Scheme>
 val Compiled<Scheme>.resolveOrNull: Compiled<Scheme>? get() =
   when (type) {
     type(schemeNumberTypeLine, "plus" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("+"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("+"), type(type functionLineTo schemeNumberType)).invoke(this)
     type(schemeNumberTypeLine, "minus" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("-"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("-"), type(type functionLineTo schemeNumberType)).invoke(this)
     type(schemeNumberTypeLine, "times" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("*"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("*"), type(type functionLineTo schemeNumberType)).invoke(this)
     type(schemeNumberTypeLine, "divided" lineTo type("by" lineTo schemeNumberType)) ->
-      nativeCompiled(scheme("/"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("/"), type(type functionLineTo schemeNumberType)).invoke(this)
     type(numberName lineTo type("pi")) ->
-      nativeCompiled(scheme("(lambda (x) $PI)"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("$PI"), schemeNumberType)
     type(numberName lineTo type("e")) ->
-      nativeCompiled(scheme("(lambda (x) $E)"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("$E"), schemeNumberType)
     type("root" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("sqrt"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("sqrt"), type(type functionLineTo schemeNumberType)).invoke(this)
     type("sinus" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("sin"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("sin"), type(type functionLineTo schemeNumberType)).invoke(this)
     type("cosinus" lineTo schemeNumberType) ->
-      nativeCompiled(scheme("cos"), type(type functionLineTo schemeNumberType))
+      nativeCompiled(scheme("cos"), type(type functionLineTo schemeNumberType)).invoke(this)
     type(schemeNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (schemeNumberType)))) ->
-      nativeCompiled(scheme("<"), type(type functionLineTo isType))
+      nativeCompiled(scheme("<"), type(type functionLineTo isType)).invoke(this)
     type(textName lineTo schemeNumberType) ->
-      nativeCompiled(scheme("number->string"), type(type functionLineTo schemeTextType))
+      nativeCompiled(scheme("number->string"), type(type functionLineTo schemeTextType)).invoke(this)
     type(schemeTextTypeLine, "plus" lineTo schemeTextType) ->
-      nativeCompiled(scheme("string-append"), type(type functionLineTo schemeTextType))
+      nativeCompiled(scheme("string-append"), type(type functionLineTo schemeTextType)).invoke(this)
     type("length" lineTo schemeTextType) ->
-      nativeCompiled(scheme("string-length"), type(type functionLineTo type("length" lineTo schemeNumberType)))
+      nativeCompiled(scheme("string-length"), type(type functionLineTo type("length" lineTo schemeNumberType))).invoke(this)
     else ->
       infix(isName) { isLhs, isRhs ->
         isRhs.prefix(equalName) { isEqualRhs ->
           isEqualRhs.prefix(toName) { isEqualToRhs ->
             compiled(isLhs.onlyCompiledLine).as_(compiled(isEqualToRhs.onlyCompiledLine).type).let {
-              nativeCompiled(scheme("equal?"), type(type functionLineTo isType))
+              nativeCompiled(scheme("equal?"), type(type functionLineTo isType)).invoke(this)
             }
           }
         }

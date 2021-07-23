@@ -20,8 +20,11 @@ import leo.typed.compiler.native.StringPlusStringNative
 import leo.typed.compiler.native.double
 import leo.typed.compiler.native.native
 import leo.typed.compiler.native.string
+import leo.typed.indexed.Evaluation
 import leo.typed.indexed.Evaluator
 import leo.typed.indexed.Value
+import leo.typed.indexed.ValueScope
+import leo.typed.indexed.evaluation
 import leo.typed.indexed.native
 import leo.typed.indexed.nativeValue
 import leo.typed.indexed.value
@@ -32,7 +35,9 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 val nativeEvaluator: Evaluator<Native> get() =
-  Evaluator { value(*it) }
+  Evaluator(
+    { params -> value(*params) },
+    { scope -> valueEvaluation(scope) })
 
 fun Native.value(vararg params: Value<Native>): Value<Native> =
   when (this) {
@@ -52,10 +57,8 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       value(params[0].native.double < params[1].native.double)
     DoubleStringNative ->
       nativeValue(params[0].native.double.toString().native)
-    PiDoubleNative ->
-      nativeValue(PI.native)
-    EDoubleNative ->
-      nativeValue(E.native)
+    PiDoubleNative -> error("")
+    EDoubleNative -> error("")
     DoubleRootNative ->
       nativeValue(sqrt(params[0].native.double).native)
     DoubleSinusNative ->
@@ -68,4 +71,12 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       nativeValue(params[0].native.string.plus(params[1].native.string).native)
     StringLengthNative ->
       nativeValue(params[0].native.string.length.toDouble().native)
+  }
+
+@Suppress("UNUSED_PARAMETER")
+fun Native.valueEvaluation(scope: ValueScope<Native>): Evaluation<Native, Value<Native>> =
+  when (this) {
+    PiDoubleNative -> nativeValue(PI.native).evaluation()
+    EDoubleNative -> nativeValue(E.native).evaluation()
+    else -> nativeValue(this).evaluation()
   }

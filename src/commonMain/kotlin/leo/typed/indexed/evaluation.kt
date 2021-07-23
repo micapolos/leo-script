@@ -33,9 +33,10 @@ fun <V> Expression<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
     is VariableExpression -> variable.valueEvaluation(scope)
   }
 
-@Suppress("unused")
-fun <V> V.nativeValueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  nativeValue(this).evaluation()
+fun <V> V.nativeValueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
+  evaluatorEvaluation<V>().bind { evaluator ->
+    evaluator.nativeValueEvaluationFn.invoke(this, scope)
+  }
 
 @Suppress("unused")
 fun <V> Empty.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =

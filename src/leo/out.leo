@@ -1,1 +1,1 @@
-scheme "((lambda (x) 3.141592653589793) `())"
+python "import operator;import math;operator.mul(math.pi,10)"

@@ -30,7 +30,7 @@ val pythonEnvironment: Environment<Python>
   get() =
     Environment(
       { literal -> compiled(nativeLine(literal.python), literal.pythonTypeLine) },
-      { compiled -> compiled.resolveOrNull?.invoke(compiled) },
+      { compiled -> compiled.resolveOrNull },
       { compileError(script("script")) },
       { pythonTypesEnvironment },
       { typeLine -> typeLine.scriptLineOrNull })
@@ -38,37 +38,37 @@ val pythonEnvironment: Environment<Python>
 val Compiled<Python>.resolveOrNull: Compiled<Python>? get() =
   when (type) {
     type(pythonNumberTypeLine, "plus" lineTo pythonNumberType) ->
-      nativeCompiled(python("operator.add"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("operator.add"), type(type functionLineTo pythonNumberType)).invoke(this)
     type(pythonNumberTypeLine, "minus" lineTo pythonNumberType) ->
-      nativeCompiled(python("operator.sub"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("operator.sub"), type(type functionLineTo pythonNumberType)).invoke(this)
     type(pythonNumberTypeLine, "times" lineTo pythonNumberType) ->
-      nativeCompiled(python("operator.mul"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("operator.mul"), type(type functionLineTo pythonNumberType)).invoke(this)
     type(pythonNumberTypeLine, "divided" lineTo type("by" lineTo pythonNumberType)) ->
-      nativeCompiled(python("operator.div"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("operator.div"), type(type functionLineTo pythonNumberType)).invoke(this)
     type(numberName lineTo type("pi")) ->
-      nativeCompiled(python("(lambda x: math.pi)"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("math.pi"), pythonNumberType)
     type(numberName lineTo type("e")) ->
-      nativeCompiled(python("(lambda x: math.e)"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("math.e"), pythonNumberType)
     type("root" lineTo pythonNumberType) ->
-      nativeCompiled(python("math.sqrt"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("math.sqrt"), type(type functionLineTo pythonNumberType)).invoke(this)
     type("sinus" lineTo pythonNumberType) ->
-      nativeCompiled(python("math.sin"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("math.sin"), type(type functionLineTo pythonNumberType)).invoke(this)
     type("cosinus" lineTo pythonNumberType) ->
-      nativeCompiled(python("math.cos"), type(type functionLineTo pythonNumberType))
+      nativeCompiled(python("math.cos"), type(type functionLineTo pythonNumberType)).invoke(this)
     type(pythonNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (pythonNumberType)))) ->
-      nativeCompiled(python("operator.lt"), type(type functionLineTo isType))
+      nativeCompiled(python("operator.lt"), type(type functionLineTo isType)).invoke(this)
     type(pythonTextTypeLine, "plus" lineTo pythonTextType) ->
-      nativeCompiled(python("operator.add"), type(type functionLineTo pythonTextType))
+      nativeCompiled(python("operator.add"), type(type functionLineTo pythonTextType)).invoke(this)
     type(textName lineTo pythonNumberType) ->
-      nativeCompiled(python("str"), type(type functionLineTo pythonTextType))
+      nativeCompiled(python("str"), type(type functionLineTo pythonTextType)).invoke(this)
     type("length" lineTo pythonTextType) ->
-      nativeCompiled(python("len"), type(type functionLineTo type("length" lineTo pythonNumberType)))
+      nativeCompiled(python("len"), type(type functionLineTo type("length" lineTo pythonNumberType))).invoke(this)
     else ->
       infix(isName) { isLhs, isRhs ->
         isRhs.prefix(equalName) { isEqualRhs ->
           isEqualRhs.prefix(toName) { isEqualToRhs ->
             compiled(isLhs.onlyCompiledLine).as_(compiled(isEqualToRhs.onlyCompiledLine).type).let {
-              nativeCompiled(python("operator.eq"), type(type functionLineTo isType))
+              nativeCompiled(python("operator.eq"), type(type functionLineTo isType)).invoke(this)
             }
           }
         }
