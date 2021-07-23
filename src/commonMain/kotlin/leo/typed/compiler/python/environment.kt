@@ -77,7 +77,10 @@ val Compiled<Python>.resolveOrNull: Compiled<Python>? get() =
 
 val Literal.python: Python
   get() =
-  python(toString())
+    when (this) {
+      is NumberLiteral -> python(number.toString())
+      is StringLiteral -> stringPython(string)
+    }
 
 val Literal.pythonTypeLine: TypeLine
   get() =

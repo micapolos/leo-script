@@ -1,1 +1,1 @@
-python "import math;math.sin(math.sqrt((2*(3+4))))"
+python "import math;'OK' if (10<math.pi) else 'not OK'"

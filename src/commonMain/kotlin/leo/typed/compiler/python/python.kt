@@ -9,6 +9,8 @@ fun python(string: String) = Python(string)
 
 fun python(boolean: Boolean) = python(if (boolean) "True" else "False")
 fun python(int: Int) = python(int.toString())
+fun python(double: Double) = python(double.toString())
+fun stringPython(string: String) = python("'${string.replace("\n", "\\n").replace("'", "\\'")}'")
 fun tuplePython(vararg pythons: Python) = python("(" + pythons.joinToString(",") { it.string } + ")")
 fun Python.get(python: Python): Python = python("$string[${python.string}]")
 fun Python.invoke(vararg pythons: Python) = python("$string${tuplePython(*pythons).string}")
