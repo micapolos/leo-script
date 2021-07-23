@@ -3,6 +3,7 @@ package leo.typed.compiled
 import leo.Type
 import leo.TypeChoice
 import leo.TypeLine
+import leo.TypeStructure
 import leo.atom
 import leo.base.filterMap
 import leo.base.mapIndexed
@@ -38,3 +39,10 @@ fun Type.getLineOrNull(index: Int): TypeLine? =
 
 fun TypeChoice.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
   lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.name != name)?.the }.onlyOrNull
+
+val Type.compileStructure: TypeStructure
+  get() =
+    structureOrNull ?: compileError(script("structure"))
+
+val Type.compileLine: TypeLine get() =
+  onlyLineOrNull ?: compileError(script("line"))
