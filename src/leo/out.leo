@@ -1,1 +1,1 @@
-native double 10
+python "(2+2)"
