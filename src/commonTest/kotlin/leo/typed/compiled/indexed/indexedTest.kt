@@ -5,9 +5,11 @@ import leo.empty
 import leo.functionLineTo
 import leo.lineTo
 import leo.numberName
+import leo.numberTypeLine
 import leo.textName
 import leo.textType
 import leo.type
+import leo.typed.compiled.apply
 import leo.typed.compiled.bind
 import leo.typed.compiled.binding
 import leo.typed.compiled.compiled
@@ -363,5 +365,29 @@ class IndexedTest {
                     expression<Native>(variable(0)).get(1),
                     nativeExpression(10.0.native))))),
             expression(variable(0)))))
+  }
+
+  @Test
+  fun invoke() {
+    compiled(expression<Native>(variable(type("foo"))), type(nativeNumberTypeLine, nativeTextTypeLine))
+      .linkPlus(nativeNumberCompiledLine(10.0.native))
+      .apply(
+        compiled(
+          expression(variable(type("fn"))),
+          type(type(nativeNumberTypeLine, nativeTextTypeLine, nativeNumberTypeLine) functionLineTo type(numberTypeLine))))
+      .indexedExpression(scope(type("foo"), type("fn")))
+      .assertEqualTo(
+        expression(
+          invoke(
+            expression(
+              function(
+                1,
+                expression(
+                  invoke(
+                    expression(variable(0)),
+                    expression<Native>(variable(0)).get(0),
+                    expression<Native>(variable(0)).get(1),
+                    nativeExpression(10.0.native))))),
+            expression(variable(1)))))
   }
 }

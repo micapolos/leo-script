@@ -91,7 +91,7 @@ fun <V> leo.typed.compiled.Apply<V>.indexedExpression(scope: Scope): Expression<
                     *stack(*0.until(fragment.tail.arity).map { expression<V>(variable(0)).get(it) }.toTypedArray())
                       .pushAll(fragment.tuple.expressionStack)
                       .array)))),
-              fragment.tail.expression))
+            fragment.tail.expression))
     }
   }
 
