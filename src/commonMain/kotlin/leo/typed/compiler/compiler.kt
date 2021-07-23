@@ -307,7 +307,11 @@ fun <V> Compiler<V>.word(compiledLine: CompiledLine<V>): Compiler<V> =
   setCast(compiled.plus(compiledLine))
 
 fun <V> Compiler<V>.plus(compiledLine: CompiledLine<V>): Compiler<V> =
-  set(block.module.resolve(compiled.plus(compiledLine)))
+  block.module.cast(compiled.plus(compiledLine)).let { compiled ->
+    null
+      ?: block.resolveOrNull(compiled)?.let { set(it) }
+      ?: set(block.module.resolveCompiled(compiled))
+  }
 
 val <V> Compiler<V>.completeCompiled: Compiled<V>
   get() =

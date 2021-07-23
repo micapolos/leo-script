@@ -1,12 +1,6 @@
-python
-  pi.number
-  divided by 3
-  sinus
-  do
-    "sin(π/3)"
-    plus
-      number
-      is less than 0
-      switch
-        yes doing " < 0"
-        no doing " >= 0"
+set
+  width 10
+  height 20
+width.number
+times height.number
+debug

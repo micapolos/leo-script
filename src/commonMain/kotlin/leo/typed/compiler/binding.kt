@@ -6,6 +6,7 @@ import leo.atom
 import leo.base.notNullIf
 import leo.line
 import leo.lineOrNull
+import leo.name
 import leo.nameOrNull
 import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
@@ -49,7 +50,7 @@ fun <V> TypeGiven.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
   compiled.type.nameOrNull?.let { name ->
     type.onlyLineOrNull.let { onlyLineOrNull ->
       if (onlyLineOrNull != null)
-        onlyLineOrNull.nameOrNull?.let { lineName ->
+        onlyLineOrNull.name.let { lineName ->
           compiled(expression<V>(variable(type(lineName))), type).let { compiled ->
             if (name != lineName) compiled.getOrNull(name)
             else compiled
@@ -57,9 +58,7 @@ fun <V> TypeGiven.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
         }
       else
         type.structureOrNull?.lineOrNull(name)?.let { typeLine ->
-          typeLine.nameOrNull?.let { lineName ->
-            compiled(expression(variable(type(lineName))), type(typeLine))
-          }
+          compiled(expression(variable(type(typeLine.name))), type(typeLine))
         }
     }
   }

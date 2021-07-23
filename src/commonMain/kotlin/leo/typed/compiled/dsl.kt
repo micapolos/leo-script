@@ -19,8 +19,9 @@ import leo.isEmpty
 import leo.line
 import leo.lineTo
 import leo.linkOrNull
+import leo.map
 import leo.mapIt
-import leo.nameOrNull
+import leo.name
 import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
 import leo.onlyOrNull
@@ -213,9 +214,7 @@ fun <V> CompiledTuple<V>.lineOrNull(index: Int): CompiledLine<V>? =
 
 fun <V> Compiled<V>.nonTupleLineOrNull(index: Int): CompiledLine<V>? =
   type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
-    typeLine.nameOrNull?.let { name ->
-      compiled(line(get(this, name)), typeLine)
-    }
+    compiled(line(get(this, typeLine.name)), typeLine)
   }
 
 fun <V> Compiled<V>.lineCompiled(index: Int): Compiled<V> =
@@ -243,9 +242,7 @@ val <V> Compiled<V>.tupleCompiledTupleOrNull: CompiledTuple<V>? get() =
 
 val <V> Compiled<V>.resolvedCompiledTupleOrNull: CompiledTuple<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    typeLine.nameOrNull?.let { name ->
-      compiled(tuple(line(get(this, name))), typeStructure(typeLine))
-    }
+    compiled(tuple(line(get(this, typeLine.name))), typeStructure(typeLine))
   }
 
 val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
@@ -267,7 +264,7 @@ fun <V> Fragment<V>.plus(line: Line<V>): Fragment<V> =
 
 val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    typeLine.nameOrNull?.let { name ->
+    typeLine.name.let { name ->
       null
         ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
         ?: compiled(line(get(this, name)), typeLine)
@@ -286,15 +283,11 @@ val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
 
 fun <V> CompiledSelect<V>.the(compiledLine: CompiledLine<V>): CompiledSelect<V> =
   ifOrNull(caseOrNull == null) {
-    compiledLine.typeLine.nameOrNull?.let { name ->
-      CompiledSelect(case(name, compiledLine.line), choice.plus(compiledLine.typeLine))
-    }
+    CompiledSelect(case(compiledLine.typeLine.name, compiledLine.line), choice.plus(compiledLine.typeLine))
   }?: compileError(script("pick"))
 
 fun <V> CompiledSelect<V>.not(typeLine: TypeLine): CompiledSelect<V> =
-  typeLine.nameOrNull?.let {
-    CompiledSelect(caseOrNull, choice.plus(typeLine))
-  } ?:compileError(script("drop"))
+  CompiledSelect(caseOrNull, choice.plus(typeLine))
 
 fun <V> CompiledSelect<V>.plus(line: CompiledSelectLine<V>): CompiledSelect<V> =
   when (line) {
@@ -364,3 +357,6 @@ fun <V> selectCompiled(vararg lines: CompiledSelectLine<V>): Compiled<V> =
 
 fun <V> recursive(compiledLine: CompiledLine<V>): CompiledLine<V> =
   compiled(compiledLine.line, recursiveLine(compiledLine.typeLine))
+
+val <V> CompiledTuple<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
+  zip(tuple.lineStack, typeStructure.lineStack).map { compiled(first!!, second!!) }

@@ -13,7 +13,7 @@ import leo.fieldOrNull
 import leo.getFromBottom
 import leo.lineSeq
 import leo.lineTo
-import leo.nameOrNull
+import leo.name
 import leo.onlyLineOrNull
 import leo.reverse
 import leo.script
@@ -25,10 +25,10 @@ fun Type.lineIndex(name: String): Int =
   lineIndexOrNull(name) ?: compileError(script("line" lineTo script(name)))
 
 fun Type.lineIndexOrNull(name: String): Int? =
-  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull?.index
+  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.name != name)?.the }?.onlyOrNull?.index
 
 fun Type.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
-  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.nameOrNull != name)?.the }?.onlyOrNull
+  structureOrNull?.lineSeq?.mapIndexed?.filterMap { orNullIf(value.name != name)?.the }?.onlyOrNull
 
 val Type.rhsOrNull: Type? get() =
   structureOrNull?.onlyLineOrNull?.atom?.fieldOrNull?.rhsType
@@ -37,4 +37,4 @@ fun Type.getLineOrNull(index: Int): TypeLine? =
   rhsOrNull?.structureOrNull?.lineStack?.getFromBottom(index)
 
 fun TypeChoice.indexedLineOrNull(name: String): IndexedValue<TypeLine>? =
-  lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.nameOrNull != name)?.the }.onlyOrNull
+  lineStack.reverse.seq.mapIndexed.filterMap { orNullIf(value.name != name)?.the }.onlyOrNull

@@ -15,7 +15,7 @@ import leo.getFromBottom
 import leo.isSimple
 import leo.lineCount
 import leo.map
-import leo.nameOrNull
+import leo.name
 import leo.seq
 import leo.size
 import leo.type
@@ -113,7 +113,7 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
                   caseStack
                     .getFromBottom(0)!!
                     .indexedExpression(
-                      scope.plus(type(compiledChoice.choice.lineStack.getFromBottom(0)!!.nameOrNull!!))))),
+                      scope.plus(type(compiledChoice.choice.lineStack.getFromBottom(0)!!.name))))),
               expression(
                 function(
                   1,
@@ -121,7 +121,7 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
                     .getFromBottom(1)!!
                     .indexedExpression(
                       scope.plus(
-                        type(compiledChoice.choice.lineStack.getFromBottom(1)!!.nameOrNull!!))))))
+                        type(compiledChoice.choice.lineStack.getFromBottom(1)!!.name))))))
             .invoke(it.get(1))
         else
           it.get(0)
@@ -130,7 +130,7 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
                 .seq
                 .mapIndexed
                 .map {
-                  expression(function(1, value.indexedExpression(scope.plus(type(compiledChoice.choice.lineStack.get(index)!!.nameOrNull!!)))))
+                  expression(function(1, value.indexedExpression(scope.plus(type(compiledChoice.choice.lineStack.get(index)!!.name)))))
                 }
                 .stack
                 .array)

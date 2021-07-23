@@ -24,7 +24,7 @@ import leo.base.firstOrNull
 import leo.base.ifOrNull
 import leo.base.notNullIf
 import leo.fieldOrNull
-import leo.nameOrNull
+import leo.name
 import leo.onlyLineOrNull
 import leo.primitiveOrNull
 import leo.recurseOrNull
@@ -140,7 +140,5 @@ fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toChoice: TypeChoice): Cast<E
     .seq
     .firstOrNull { this == fromTypeLine }
     ?.let { selectedTypeLine ->
-      selectedTypeLine.nameOrNull?.let { name ->
-        cast(expression(select(toChoice, case(name, this))))
-      }
+      cast(expression(select(toChoice, case(selectedTypeLine.name, this))))
     }

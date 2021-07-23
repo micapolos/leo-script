@@ -22,7 +22,7 @@ import leo.lineTo
 import leo.make
 import leo.matchInfix
 import leo.matchPrefix
-import leo.nameOrNull
+import leo.name
 import leo.onlyLineOrNull
 import leo.plus
 import leo.push
@@ -30,23 +30,29 @@ import leo.repeatName
 import leo.reverse
 import leo.ropeOrNull
 import leo.script
+import leo.setName
 import leo.stack
 import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledChoice
+import leo.typed.compiled.CompiledField
+import leo.typed.compiled.CompiledLine
 import leo.typed.compiled.as_
 import leo.typed.compiled.bind
 import leo.typed.compiled.binding
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledLineStack
 import leo.typed.compiled.compiledSelect
+import leo.typed.compiled.compiledTuple
 import leo.typed.compiled.compiledVariable
 import leo.typed.compiled.expression
 import leo.typed.compiled.fn
 import leo.typed.compiled.have
 import leo.typed.compiled.not
+import leo.typed.compiled.onlyCompiledFieldOrNull
 import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.recFn
+import leo.typed.compiled.rhs
 import leo.typed.compiled.the
 
 data class Block<V>(
@@ -133,7 +139,7 @@ fun <V> Block<V>.bind(compiled: Compiled<V>): Block<V> =
   Block(
     module.plus(binding(given(compiled.type))),
     bindingStack.fold(compiled.compiledLineStack.reverse) {
-      push(binding(type(it.typeLine.nameOrNull!!), compiled(it)))
+      push(binding(type(it.typeLine.name), compiled(it)))
     })
 
 fun <V> Block<V>.plusCast(type: Type): Block<V> =
@@ -165,7 +171,7 @@ fun <V> Block<V>.plusCast(nameStack: Stack<String>, rope: Rope<TypeLine>): Block
           type(rope.current),
           compiledSelect<V>()
             .fold(rope.head) { not(it) }
-            .the(compiledVariable<V>(type(rope.current.nameOrNull!!), type(rope.current)).onlyCompiledLine)
+            .the(compiledVariable<V>(type(rope.current.name), type(rope.current)).onlyCompiledLine)
             .fold(rope.tail.reverse) { not(it) }
             .compiled)))
 
@@ -174,3 +180,20 @@ fun <V> Block<V>.updateTypesBlock(fn: (Block<Types>) -> Block<Types>) =
 
 fun <V> Block<V>.compiledChoice(): CompiledChoice<V> =
   context.compiledChoice()
+
+fun <V> Block<V>.resolveOrNull(compiled: Compiled<V>): Block<V>? =
+  compiled.onlyCompiledFieldOrNull?.let { resolveOrNull(it) }
+
+fun <V> Block<V>.resolveOrNull(compiledField: CompiledField<V>): Block<V>? =
+  when (compiledField.typeField.name) {
+    setName -> set(compiledField.rhs)
+    else -> null
+  }
+
+fun <V> Block<V>.set(compiled: Compiled<V>): Block<V> =
+  fold(compiled.compiledTuple.compiledLineStack) { set(it) }
+
+fun <V> Block<V>.set(compiledLine: CompiledLine<V>): Block<V> =
+  this
+    .plus(binding(constant(type(compiledLine.typeLine.name), type(compiledLine.typeLine))))
+    .plus(binding(type(compiledLine.typeLine.name), compiled(compiledLine)))

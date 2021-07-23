@@ -7,7 +7,7 @@ import leo.TypeLine
 import leo.base.firstOrNull
 import leo.base.mapIndexed
 import leo.fold
-import leo.nameOrNull
+import leo.name
 import leo.push
 import leo.reverse
 import leo.seq
@@ -32,4 +32,4 @@ fun Scope.plusNames(type: Type): Scope =
   fold(type.structureOrNull!!.lineStack.reverse) { plusName(it) }
 
 fun Scope.plusName(typeLine: TypeLine): Scope =
-  plus(type(typeLine.nameOrNull!!))
+  plus(type(typeLine.name))

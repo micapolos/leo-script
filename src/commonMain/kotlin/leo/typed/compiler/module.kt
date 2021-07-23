@@ -56,7 +56,7 @@ fun <V> Module<V>.body(script: Script): Body<V> =
     recursive(body(recursiveScript))
   }?: body(this.compiled(script))
 
-fun <V> Module<V>.resolve(compiled: Compiled<V>): Compiled<V> =
+fun <V> Module<V>.resolveCompiled(compiled: Compiled<V>): Compiled<V> =
   context.resolve(cast(compiled))
 
 fun <V> Module<V>.cast(compiled: Compiled<V>): Compiled<V> =
