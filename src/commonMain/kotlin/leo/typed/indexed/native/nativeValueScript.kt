@@ -19,7 +19,7 @@ import leo.typed.indexed.script
 
 val nativeValueScriptContext: ValueScriptContext<Native>
   get() = ValueScriptContext(
-    { native -> native.nativeScriptLine },
+    { native -> native.scriptLine },
     { value, typeLine ->
       when (typeLine) {
         nativeTextTypeLine -> value.native.nativeScriptLine

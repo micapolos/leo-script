@@ -9,7 +9,6 @@ import leo.functionType
 import leo.lineTo
 import leo.literal
 import leo.nativeName
-import leo.numberType
 import leo.script
 import leo.textType
 import leo.type
@@ -21,6 +20,7 @@ import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeScript
 import leo.typed.compiler.native.nativeScriptLine
+import leo.typed.compiler.native.nativeTextType
 import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typed.indexed.nativeValue
 import leo.typed.indexed.value
@@ -52,14 +52,14 @@ class ValueScriptTest {
   @Test
   fun nativeDouble() {
     nativeValue(128.0.native)
-      .script(numberType)
+      .script(nativeNumberType)
       .assertEqualTo(script(literal(128)))
   }
 
   @Test
   fun nativeString() {
     nativeValue("Hello, world!".native)
-      .script(textType)
+      .script(nativeTextType)
       .assertEqualTo(script(literal("Hello, world!")))
   }
 
@@ -77,14 +77,14 @@ class ValueScriptTest {
   @Test
   fun field() {
     nativeValue(128.0.native)
-      .script(type("id" lineTo numberType))
+      .script(type("id" lineTo nativeNumberType))
       .assertEqualTo(script("id" lineTo script(literal(128))))
   }
 
   @Test
   fun fields() {
     value(nativeValue(128.0.native), nativeValue("foo".native))
-      .script(type("id" lineTo numberType, "name" lineTo textType))
+      .script(type("id" lineTo nativeNumberType, "name" lineTo nativeTextType))
       .assertEqualTo(script(
         "id" lineTo script(literal(128)),
         "name" lineTo script(literal("foo"))))
