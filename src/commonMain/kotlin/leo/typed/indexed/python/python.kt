@@ -34,12 +34,12 @@ import leo.typed.indexed.SwitchExpression
 import leo.typed.indexed.TupleExpression
 import leo.typed.indexed.VariableExpression
 import leo.typed.indexed.containsRecursion
+import leo.typed.indexed.nativeExpression
 import leo.variable
 
 val Expression<Python>.python: Python get() =
   python(
     string(
-      if (containsOperator) "import operator;" else "",
       if (containsMath) "import math;" else "",
       if (containsRecursion) "Z=lambda f:(lambda g:f(g(g)))(lambda g:f(lambda *y:g(g)(*y)));" else "",
       python(scope()).string))
@@ -65,7 +65,21 @@ val Empty.python: Python get() =
   python("None")
 
 fun ExpressionInvoke<Python>.python(scope: Scope): Python =
-  lhs.python(scope).invoke(*params.map { it.python(scope) }.toTypedArray())
+  when (lhs) {
+    nativeExpression(python("operator.add")) ->
+      python("(${params[0].python(scope).string}+${params[1].python(scope).string})")
+    nativeExpression(python("operator.sub")) ->
+      python("(${params[0].python(scope).string}-${params[1].python(scope).string})")
+    nativeExpression(python("operator.mul")) ->
+      python("(${params[0].python(scope).string}*${params[1].python(scope).string})")
+    nativeExpression(python("operator.div")) ->
+      python("(${params[0].python(scope).string}/${params[1].python(scope).string})")
+    nativeExpression(python("operator.eq")) ->
+      python("(${params[0].python(scope).string}==${params[1].python(scope).string})")
+    nativeExpression(python("operator.lt")) ->
+      python("(${params[0].python(scope).string}<${params[1].python(scope).string})")
+    else -> lhs.python(scope).invoke(*params.map { it.python(scope) }.toTypedArray())
+  }
 
 fun ExpressionFunction<Python>.python(scope: Scope): Python =
   python(

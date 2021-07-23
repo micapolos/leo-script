@@ -14,7 +14,6 @@ import leo.textName
 import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiler.Environment
-import leo.typed.compiler.native.resolveOrNull
 import leo.typed.compiler.staticCompiled
 import leo.typed.compiler.types.typesEnvironment
 
