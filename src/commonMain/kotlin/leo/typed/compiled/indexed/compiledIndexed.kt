@@ -171,8 +171,12 @@ fun <V> Compiled<V>.indexedFragment(scope: Scope): ExpressionFragment<V> =
 
 fun <V> leo.typed.compiled.Expression<V>.indexedFragment(scope: Scope, arity: Int): ExpressionFragment<V> =
   when (this) {
-    is leo.typed.compiled.TupleExpression -> ExpressionFragment(ExpressionTail(expression(empty), 0), tuple.indexedTuple(scope))
-    else -> ExpressionFragment(ExpressionTail(indexedExpression(scope), arity), ExpressionTuple(stack()))
+    is leo.typed.compiled.TupleExpression ->
+      ExpressionFragment(ExpressionTail(expression(empty), 0), tuple.indexedTuple(scope))
+    is leo.typed.compiled.LinkExpression ->
+      link.indexedFragment(scope)
+    else ->
+      ExpressionFragment(ExpressionTail(indexedExpression(scope), arity), ExpressionTuple(stack()))
   }
 
 fun <V> leo.typed.compiled.Link<V>.indexedExpression(scope: Scope): Expression<V> =

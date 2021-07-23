@@ -26,6 +26,7 @@ import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
 import leo.onlyOrNull
 import leo.plus
+import leo.plusOrNull
 import leo.push
 import leo.recursiveLine
 import leo.script
@@ -347,3 +348,8 @@ fun <V> recursive(compiledLine: CompiledLine<V>): CompiledLine<V> =
 
 val <V> CompiledTuple<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
   zip(tuple.lineStack, typeStructure.lineStack).map { compiled(first!!, second!!) }
+
+fun <V> Compiled<V>.linkPlus(compiledLine: CompiledLine<V>): Compiled<V> =
+  type.plusOrNull(compiledLine.typeLine)?.let { type ->
+    compiled(expression(link(this, compiledLine)), type)
+  }?: compileError(script("plus"))

@@ -17,9 +17,11 @@ import leo.typed.compiled.expression
 import leo.typed.compiled.fn
 import leo.typed.compiled.invoke
 import leo.typed.compiled.lineTo
+import leo.typed.compiled.linkPlus
 import leo.typed.compiled.nativeCompiled
 import leo.typed.compiled.nativeCompiledLine
 import leo.typed.compiled.nativeNumberCompiled
+import leo.typed.compiled.nativeNumberCompiledLine
 import leo.typed.compiled.not
 import leo.typed.compiled.switch
 import leo.typed.compiled.the
@@ -38,6 +40,7 @@ import leo.typed.indexed.indirect
 import leo.typed.indexed.invoke
 import leo.typed.indexed.nativeExpression
 import leo.typed.indexed.switch
+import leo.typed.indexed.tuple
 import leo.variable
 import kotlin.test.Test
 
@@ -316,5 +319,49 @@ class IndexedTest {
     expression<Unit>(variable(type("two")))
       .indexedExpression(scope(type("one"), type("two")))
       .assertEqualTo(expression(variable(0)))
+  }
+
+  @Test
+  fun empty_plusLine() {
+    compiled<Native>()
+      .linkPlus(nativeNumberCompiledLine(10.0.native))
+      .indexedExpression
+      .assertEqualTo(expression(tuple(nativeExpression(10.0.native))))
+  }
+
+  @Test
+  fun empty_plusTwoLines() {
+    compiled<Native>()
+      .linkPlus(nativeNumberCompiledLine(10.0.native))
+      .linkPlus(nativeNumberCompiledLine(20.0.native))
+      .indexedExpression
+      .assertEqualTo(expression(tuple(nativeExpression(10.0.native), nativeExpression(20.0.native))))
+  }
+
+  @Test
+  fun line_plusLine() {
+    compiled(expression<Native>(variable(type("foo"))), nativeNumberType)
+      .linkPlus(nativeNumberCompiledLine(10.0.native))
+      .indexedExpression(scope(type("foo")))
+      .assertEqualTo(expression(tuple(expression(variable(0)), nativeExpression(10.0.native))))
+  }
+
+  @Test
+  fun twoLines_plusLine() {
+    compiled(expression<Native>(variable(type("foo"))), type(nativeNumberTypeLine, nativeTextTypeLine))
+      .linkPlus(nativeNumberCompiledLine(10.0.native))
+      .indexedExpression(scope(type("foo")))
+      .assertEqualTo(
+        expression(
+          invoke(
+            expression(
+              function(
+                1,
+                expression(
+                  tuple(
+                    expression<Native>(variable(0)).get(0),
+                    expression<Native>(variable(0)).get(1),
+                    nativeExpression(10.0.native))))),
+            expression(variable(0)))))
   }
 }
