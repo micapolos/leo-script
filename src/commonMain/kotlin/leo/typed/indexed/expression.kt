@@ -2,7 +2,9 @@ package leo.typed.indexed
 
 import leo.Empty
 import leo.IndexVariable
+import leo.Stack
 import leo.anyScriptLine
+import leo.stack
 import leo.variable
 
 sealed class Expression<out V> { override fun toString() = script { it.anyScriptLine }.toString() }
@@ -20,13 +22,13 @@ data class RecursiveExpression<out V>(val recursive: ExpressionRecursive<V>): Ex
 data class InvokeExpression<out V>(val invoke: ExpressionInvoke<V>): Expression<V>() { override fun toString() = super.toString() }
 data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>() { override fun toString() = super.toString() }
 
-data class ExpressionTuple<out V>(val expressionList: List<Expression<V>>)
+data class ExpressionTuple<out V>(val expressionStack: Stack<Expression<V>>)
 data class ExpressionGet<out V>(val lhs: Expression<V>, val index: Int)
 data class ExpressionConditional<out V>(val condition: Expression<V>, val trueCase: Expression<V>, val falseCase: Expression<V>)
-data class ExpressionSwitch<out V>(val lhs: Expression<V>, val cases: List<Expression<V>>)
+data class ExpressionSwitch<out V>(val lhs: Expression<V>, val caseStack: Stack<Expression<V>>)
 data class ExpressionFunction<out V>(val arity: Int, val expression: Expression<V>)
 data class ExpressionRecursive<out V>(val function: ExpressionFunction<V>)
-data class ExpressionInvoke<out V>(val lhs: Expression<V>, val params: List<Expression<V>>)
+data class ExpressionInvoke<out V>(val lhs: Expression<V>, val paramStack: Stack<Expression<V>>)
 
 fun <V> nativeExpression(native: V): Expression<V> = NativeExpression(native)
 fun <V> expression(empty: Empty): Expression<V> = EmptyExpression(empty)
@@ -41,12 +43,12 @@ fun <V> expression(recursive: ExpressionRecursive<V>): Expression<V> = Recursive
 fun <V> expression(invoke: ExpressionInvoke<V>): Expression<V> = InvokeExpression(invoke)
 fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 
-fun <V> tuple(vararg expressions: Expression<V>) = ExpressionTuple(listOf(*expressions))
+fun <V> tuple(vararg expressions: Expression<V>) = ExpressionTuple(stack(*expressions))
 fun <V> get(lhs: Expression<V>, index: Int) = ExpressionGet(lhs, index)
-fun <V> switch(lhs: Expression<V>, vararg cases: Expression<V>) = ExpressionSwitch(lhs, listOf(*cases))
+fun <V> switch(lhs: Expression<V>, vararg cases: Expression<V>) = ExpressionSwitch(lhs, stack(*cases))
 fun <V> function(arity: Int, expression: Expression<V>) = ExpressionFunction(arity, expression)
 fun <V> recursive(function: ExpressionFunction<V>) = ExpressionRecursive(function)
-fun <V> invoke(lhs: Expression<V>, vararg params: Expression<V>) = ExpressionInvoke(lhs, listOf(*params))
+fun <V> invoke(lhs: Expression<V>, vararg params: Expression<V>) = ExpressionInvoke(lhs, stack(*params))
 
 fun <V> expression(vararg expressions: Expression<V>) = expression(tuple(*expressions))
 fun <V> Expression<V>.invoke(vararg params: Expression<V>) = expression(leo.typed.indexed.invoke(this, *params))

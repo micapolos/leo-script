@@ -1,5 +1,7 @@
 package leo.typed.indexed
 
+import leo.any
+
 val Expression<*>.containsRecursion: Boolean get() =
   when (this) {
     is BooleanExpression ->
@@ -17,13 +19,13 @@ val Expression<*>.containsRecursion: Boolean get() =
     is IndexExpression ->
       false
     is InvokeExpression ->
-      invoke.lhs.containsRecursion || invoke.params.any { it.containsRecursion }
+      invoke.lhs.containsRecursion || invoke.paramStack.any { containsRecursion }
     is NativeExpression -> false
     is RecursiveExpression -> true
     is SwitchExpression ->
-      switch.lhs.containsRecursion || switch.cases.any { it.containsRecursion }
+      switch.lhs.containsRecursion || switch.caseStack.any { containsRecursion }
     is TupleExpression ->
-      tuple.expressionList.any { it.containsRecursion }
+      tuple.expressionStack.any { containsRecursion }
     is VariableExpression ->
       false
   }

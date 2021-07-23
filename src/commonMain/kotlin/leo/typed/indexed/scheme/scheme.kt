@@ -2,7 +2,9 @@ package leo.typed.indexed.scheme
 
 import leo.Empty
 import leo.IndexVariable
+import leo.array
 import leo.base.iterate
+import leo.map
 import leo.typed.compiled.Scope
 import leo.typed.compiled.push
 import leo.typed.compiled.scope
@@ -57,7 +59,7 @@ val Empty.scheme: Scheme get() =
   scheme("`()")
 
 fun ExpressionInvoke<Scheme>.scheme(scope: Scope): Scheme =
-  scheme(lhs.scheme(scope), *params.map { it.scheme(scope) }.toTypedArray())
+  scheme(lhs.scheme(scope), *paramStack.map { scheme(scope) }.array)
 
 fun ExpressionFunction<Scheme>.scheme(scope: Scope): Scheme =
   scheme(
@@ -72,7 +74,7 @@ fun ExpressionRecursive<Scheme>.scheme(scope: Scope): Scheme =
     variable(scope.depth).scheme)
 
 fun ExpressionTuple<Scheme>.scheme(scope: Scope): Scheme =
-  vectorScheme(*expressionList.map { it.scheme(scope) }.toTypedArray())
+  vectorScheme(*expressionStack.map { scheme(scope) }.array)
 
 fun ExpressionGet<Scheme>.scheme(scope: Scope): Scheme =
   lhs.scheme(scope).vectorRef(scheme(index))
@@ -88,7 +90,7 @@ fun ExpressionConditional<Scheme>.scheme(scope: Scope): Scheme =
     falseCase.scheme(scope))
 
 fun ExpressionSwitch<Scheme>.scheme(scope: Scope): Scheme =
-  lhs.scheme(scope).switch(*cases.map { it.scheme(scope) }.toTypedArray())
+  lhs.scheme(scope).switch(*caseStack.map { scheme(scope) }.array)
 
 fun IndexVariable.scheme(scope: Scope) =
   variable(scope.depth - index - 1).scheme

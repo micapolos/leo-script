@@ -9,7 +9,6 @@ import leo.listScriptLine
 import leo.literal
 import leo.plus
 import leo.script
-import leo.stack
 
 typealias Fn<V> = (V) -> ScriptLine
 
@@ -56,7 +55,7 @@ fun <V> Int.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script =
 fun <V> ExpressionInvoke<V>.script(fn: Fn<V>): Script =
   lhs.script(fn)
     .plus("invoke" lineTo script(
-      stack(*params.toTypedArray()).listScriptLine { "param" lineTo script(fn) }))
+      paramStack.listScriptLine { "param" lineTo script(fn) }))
 
 fun <V> V.nativeScript(fn: Fn<V>): Script =
   script("native" lineTo script(fn(this)))
@@ -68,12 +67,12 @@ fun <V> ExpressionSwitch<V>.script(fn: Fn<V>): Script =
   lhs.script(fn)
     .plus(
       "switch" lineTo script(
-        stack(*cases.toTypedArray()).listScriptLine { "case" lineTo script(fn) }))
+        caseStack.listScriptLine { "case" lineTo script(fn) }))
 
 fun <V> ExpressionTuple<V>.script(fn: Fn<V>): Script =
   script(
     "tuple" lineTo script(
-      stack(*expressionList.toTypedArray()).listScriptLine { "item" lineTo script(fn) }))
+      expressionStack.listScriptLine { "item" lineTo script(fn) }))
 
 fun <V> IndexVariable.script(@Suppress("UNUSED_PARAMETER") fn: Fn<V>): Script =
   script("variable" lineTo script(literal(index)))

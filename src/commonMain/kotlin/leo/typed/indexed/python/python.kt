@@ -2,8 +2,11 @@ package leo.typed.indexed.python
 
 import leo.Empty
 import leo.IndexVariable
+import leo.array
 import leo.base.iterate
 import leo.base.string
+import leo.getFromBottom
+import leo.map
 import leo.typed.compiled.Scope
 import leo.typed.compiled.push
 import leo.typed.compiled.scope
@@ -67,18 +70,18 @@ val Empty.python: Python get() =
 fun ExpressionInvoke<Python>.python(scope: Scope): Python =
   when (lhs) {
     nativeExpression(python("operator.add")) ->
-      python("(${params[0].python(scope).string}+${params[1].python(scope).string})")
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}+${paramStack.getFromBottom(1)!!.python(scope).string})")
     nativeExpression(python("operator.sub")) ->
-      python("(${params[0].python(scope).string}-${params[1].python(scope).string})")
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}-${paramStack.getFromBottom(1)!!.python(scope).string})")
     nativeExpression(python("operator.mul")) ->
-      python("(${params[0].python(scope).string}*${params[1].python(scope).string})")
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}*${paramStack.getFromBottom(1)!!.python(scope).string})")
     nativeExpression(python("operator.div")) ->
-      python("(${params[0].python(scope).string}/${params[1].python(scope).string})")
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}/${paramStack.getFromBottom(1)!!.python(scope).string})")
     nativeExpression(python("operator.eq")) ->
-      python("(${params[0].python(scope).string}==${params[1].python(scope).string})")
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}==${paramStack.getFromBottom(1)!!.python(scope).string})")
     nativeExpression(python("operator.lt")) ->
-      python("(${params[0].python(scope).string}<${params[1].python(scope).string})")
-    else -> lhs.python(scope).invoke(*params.map { it.python(scope) }.toTypedArray())
+      python("(${paramStack.getFromBottom(0)!!.python(scope).string}<${paramStack.getFromBottom(1)!!.python(scope).string})")
+    else -> lhs.python(scope).invoke(*paramStack.map { python(scope) }.array)
   }
 
 fun ExpressionFunction<Python>.python(scope: Scope): Python =
@@ -94,7 +97,7 @@ fun ExpressionRecursive<Python>.python(scope: Scope): Python =
   python("Z(lambda ${variable(scope.depth).python.string}:${function.python(scope.push).string})")
 
 fun ExpressionTuple<Python>.python(scope: Scope): Python =
-  tuplePython(*expressionList.map { it.python(scope) }.toTypedArray())
+  tuplePython(*expressionStack.map { python(scope) }.array)
 
 fun ExpressionGet<Python>.python(scope: Scope): Python =
   lhs.python(scope).get(python(index))
@@ -109,7 +112,7 @@ fun ExpressionConditional<Python>.python(scope: Scope): Python =
   condition.python(scope).ifThenElse(trueCase.python(scope), falseCase.python(scope))
 
 fun ExpressionSwitch<Python>.python(scope: Scope): Python =
-  tuplePython(*cases.map { it.python(scope) }.toTypedArray())
+  tuplePython(*caseStack.map { python(scope) }.array)
     .get(lhs.python(scope))
     .invoke()
 

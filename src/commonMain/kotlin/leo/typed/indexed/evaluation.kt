@@ -5,10 +5,9 @@ import leo.IndexVariable
 import leo.Stateful
 import leo.array
 import leo.base.fold
-import leo.base.reverseStack
-import leo.base.seq
 import leo.bind
 import leo.flat
+import leo.getFromBottom
 import leo.getStateful
 import leo.map
 import leo.stateful
@@ -47,7 +46,7 @@ fun <V> Boolean.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<
   value<V>(this).evaluation()
 
 fun <V> ExpressionTuple<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
-  expressionList.seq.reverseStack.map { valueEvaluation(scope) }.flat.map { valueStack ->
+  expressionStack.map { valueEvaluation(scope) }.flat.map { valueStack ->
     value(*valueStack.array)
   }
 
@@ -56,7 +55,7 @@ fun <V> Int.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>):
 
 fun <V> ExpressionSwitch<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
   lhs.valueEvaluation(scope).bind { lhsValue ->
-    cases[lhsValue.index].valueEvaluation(scope)
+    caseStack.getFromBottom(lhsValue.index)!!.valueEvaluation(scope)
   }
 
 fun <V> ExpressionConditional<V>.valueEvaluation(@Suppress("UNUSED_PARAMETER") scope: ValueScope<V>): Evaluation<V, Value<V>> =
@@ -78,7 +77,7 @@ fun <V> IndexVariable.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value
 
 fun <V> ExpressionInvoke<V>.valueEvaluation(scope: ValueScope<V>): Evaluation<V, Value<V>> =
   lhs.valueEvaluation(scope).bind { lhsValue ->
-    params.seq.reverseStack.map { valueEvaluation(scope) }.flat.bind { paramStack ->
+    paramStack.map { valueEvaluation(scope) }.flat.bind { paramStack ->
       lhsValue.invokeValueEvaluation(*paramStack.array)
     }
   }
