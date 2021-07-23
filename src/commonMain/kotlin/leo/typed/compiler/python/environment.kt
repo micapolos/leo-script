@@ -31,7 +31,8 @@ val pythonEnvironment: Environment<Python>
       { literal -> compiled(nativeLine(literal.python), literal.pythonTypeLine) },
       { compiled -> compiled.resolveOrNull?.invoke(compiled) },
       { compileError(script("script")) },
-      { pythonTypesEnvironment })
+      { pythonTypesEnvironment },
+      { typeLine -> typeLine.scriptLineOrNull })
 
 val Compiled<Python>.resolveOrNull: Compiled<Python>? get() =
   when (type) {

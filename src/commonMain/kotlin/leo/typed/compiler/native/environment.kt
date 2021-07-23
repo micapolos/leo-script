@@ -30,7 +30,8 @@ val nativeEnvironment: Environment<Native>
       { literal -> compiled(nativeLine(literal.native), literal.nativeTypeLine) },
       { compiled -> compiled.resolveOrNull?.invoke(compiled) },
       { it.scriptLine },
-      { nativeTypesEnvironment })
+      { nativeTypesEnvironment },
+      { typeLine -> typeLine.nativeScriptLineOrNull })
 
 val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
   when (type) {

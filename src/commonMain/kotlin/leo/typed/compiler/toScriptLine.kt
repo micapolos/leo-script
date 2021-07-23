@@ -42,7 +42,7 @@ val Scope.toScriptLine: ScriptLine get() =
 val Binding.toScriptLine: ScriptLine get() =
   "binding" lineTo script(
     when (this) {
-      is FunctionBinding -> function.scriptLine
+      is FunctionBinding -> function.scriptLine()
       is ConstantBinding -> constant.scriptLine
       is GivenBinding -> given.scriptLine
     })

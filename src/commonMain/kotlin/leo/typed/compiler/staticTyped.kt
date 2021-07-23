@@ -16,7 +16,7 @@ import leo.typed.compiled.lineTo
 import leo.typed.compiled.plus
 
 fun <V> Environment<V>.resolveType(compiled: Compiled<V>): Compiled<V> =
-  staticCompiled(compiled.type.script)
+  staticCompiled(compiled.type.script(typeLineScriptLineOrNullFn))
 
 fun <V> Environment<V>.staticCompiled(script: Script): Compiled<V> =
   compiled<V>().fold(script.lineSeq.reverse) { plus(staticTypedLine(it)) }

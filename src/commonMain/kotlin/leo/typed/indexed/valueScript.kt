@@ -37,7 +37,8 @@ import leo.zip
 
 data class ValueScriptContext<in V>(
   val nativeScriptLineFn: (V) -> ScriptLine,
-  val customScriptLineOrNullFn: (Value<V>, TypeLine) -> ScriptLine?)
+  val customScriptLineOrNullFn: (Value<V>, TypeLine) -> ScriptLine?,
+  val typeLineScriptLineOrNullFn: (TypeLine) -> ScriptLine?)
 
 fun <V> Value<V>.script(type: Type, context: ValueScriptContext<V>): Script =
   when (type) {
@@ -114,7 +115,7 @@ fun <V> Value<V>.scriptLine(typeAtom: TypeAtom, context: ValueScriptContext<V>):
 
 @Suppress("unused")
 fun <V> Value<V>.scriptLine(typeFunction: TypeFunction, @Suppress("UNUSED_PARAMETER") context: ValueScriptContext<V>): ScriptLine =
-  typeFunction.scriptLine
+  typeFunction.scriptLine(context.typeLineScriptLineOrNullFn)
 
 fun <V> Value<V>.scriptLine(typePrimitive: TypePrimitive, context: ValueScriptContext<V>): ScriptLine =
   when (typePrimitive) {

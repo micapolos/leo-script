@@ -22,6 +22,7 @@ import leo.typed.compiler.native.StringLengthNative
 import leo.typed.compiler.native.StringNative
 import leo.typed.compiler.native.StringPlusStringNative
 import leo.typed.compiler.native.nativeNumberTypeLine
+import leo.typed.compiler.native.nativeScriptLineOrNull
 import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typed.indexed.Value
 import leo.typed.indexed.ValueScriptContext
@@ -30,14 +31,15 @@ import leo.typed.indexed.script
 
 val nativeValueScriptContext: ValueScriptContext<Native>
   get() = ValueScriptContext(
-  { native -> native.scriptLine },
-  { value, typeLine ->
-    when (typeLine) {
-      nativeTextTypeLine -> value.native.scriptLine
-      nativeNumberTypeLine -> value.native.scriptLine
-      else -> null
-    }
-  })
+    { native -> native.scriptLine },
+    { value, typeLine ->
+      when (typeLine) {
+        nativeTextTypeLine -> value.native.scriptLine
+        nativeNumberTypeLine -> value.native.scriptLine
+        else -> null
+      }
+    },
+    { typeLine -> typeLine.nativeScriptLineOrNull })
 
 fun Value<Native>.script(type: Type): Script =
   script(type, nativeValueScriptContext)

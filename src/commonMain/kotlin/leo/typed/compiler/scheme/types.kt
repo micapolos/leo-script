@@ -1,5 +1,7 @@
 package leo.typed.compiler.scheme
 
+import leo.ScriptLine
+import leo.TypeLine
 import leo.Types
 import leo.atom
 import leo.line
@@ -31,3 +33,11 @@ val schemeNumberType get() = type(schemeNumberTypeLine)
 
 val schemeTextTypeLine get() = textName lineTo type(line(atom(primitive(native(script("scheme" lineTo script("string")))))))
 val schemeNumberTypeLine get() = numberName lineTo type(line(atom(primitive(native(script("scheme" lineTo script("number")))))))
+
+
+val TypeLine.scriptLineOrNull: ScriptLine? get() =
+  when (this) {
+    schemeNumberTypeLine -> numberName lineTo script()
+    schemeTextTypeLine -> textName lineTo script()
+    else -> null
+  }

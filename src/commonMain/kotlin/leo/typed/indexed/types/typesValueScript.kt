@@ -11,7 +11,8 @@ import leo.typed.indexed.script
 val typesValueScriptContext: ValueScriptContext<Types>
   get() = ValueScriptContext(
     { native -> error("") },
-    { value, typeLine -> null })
+    { value, typeLine -> null },
+    { typeLine -> null })
 
 fun Value<Types>.script(type: Type): Script =
   script(type, typesValueScriptContext)

@@ -17,11 +17,11 @@ data class ChoiceType(val choice: TypeChoice) : Type() {
 }
 
 data class TypeChoice(val lineStack: Stack<TypeLine>) {
-  override fun toString() = script.toString()
+  override fun toString() = script().toString()
 }
 
 data class TypeStructure(val lineStack: Stack<TypeLine>) {
-  override fun toString() = script.toString()
+  override fun toString() = script().toString()
 }
 
 sealed class TypeLine {
@@ -37,7 +37,7 @@ data class RecursibleTypeLine(val recursible: TypeRecursible) : TypeLine() {
 }
 
 sealed class TypeRecursible {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 data class AtomTypeRecursible(val atom: TypeAtom) : TypeRecursible() {
@@ -49,7 +49,7 @@ data class RecurseTypeRecursible(val recurse: TypeRecurse) : TypeRecursible() {
 }
 
 sealed class TypeAtom {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 data class PrimitiveTypeAtom(val primitive: TypePrimitive) : TypeAtom() {
@@ -61,11 +61,11 @@ data class FunctionTypeAtom(val function: TypeFunction) : TypeAtom() {
 }
 
 data class TypeField(val name: String, val rhsType: Type) {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 sealed class TypePrimitive {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 data class NativeTypePrimitive(val native_: TypeNative) : TypePrimitive() {
@@ -77,11 +77,11 @@ data class FieldTypePrimitive(val field: TypeField) : TypePrimitive() {
 }
 
 data class TypeFunction(val lhsType: Type, val rhsType: Type) {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 data class TypeRecursive(val line: TypeLine) {
-  override fun toString() = scriptLine.toString()
+  override fun toString() = scriptLine().toString()
 }
 
 object TypeText {

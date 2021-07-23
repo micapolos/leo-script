@@ -1,5 +1,7 @@
 package leo.typed.compiler.native
 
+import leo.Script
+import leo.ScriptLine
 import leo.Type
 import leo.TypeLine
 import leo.Types
@@ -10,6 +12,7 @@ import leo.native
 import leo.numberName
 import leo.primitive
 import leo.script
+import leo.scriptLine
 import leo.textName
 import leo.type
 import leo.typed.compiled.Compiled
@@ -34,3 +37,13 @@ val nativeNumberTypeLine: TypeLine get() =
   numberName lineTo type(line(atom(primitive(native(script("kotlin" lineTo script("double")))))))
 val nativeTextTypeLine: TypeLine get() =
   textName lineTo type(line(atom(primitive(native(script("kotlin" lineTo script("string")))))))
+
+val TypeLine.nativeScriptLineOrNull: ScriptLine? get() =
+  when (this) {
+    nativeNumberTypeLine -> numberName lineTo script()
+    nativeTextTypeLine -> textName lineTo script()
+    else -> null
+  }
+
+val TypeLine.nativeScriptLine: ScriptLine get() = scriptLine { it.nativeScriptLineOrNull }
+val Type.nativeScript: Script get() = script { it.nativeScriptLineOrNull }

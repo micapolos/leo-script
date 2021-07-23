@@ -9,6 +9,7 @@ import leo.typed.compiled.nativeNumberCompiled
 import leo.typed.compiler.native.native
 import leo.typed.compiler.native.nativeEnvironment
 import leo.typed.compiler.native.nativeNumberType
+import leo.typed.compiler.native.nativeScript
 import kotlin.test.Test
 
 class StaticTypedTermTest {
@@ -41,7 +42,7 @@ class StaticTypedTermTest {
       .assertEqualTo(
         compiled(
           "point" lineTo compiled(
-            "x" lineTo nativeEnvironment.staticCompiled(nativeNumberType.script),
-            "y" lineTo nativeEnvironment.staticCompiled(nativeNumberType.script))))
+            "x" lineTo nativeEnvironment.staticCompiled(nativeNumberType.nativeScript),
+            "y" lineTo nativeEnvironment.staticCompiled(nativeNumberType.nativeScript))))
   }
 }

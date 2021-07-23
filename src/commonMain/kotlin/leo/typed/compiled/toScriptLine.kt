@@ -39,7 +39,7 @@ fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
     .plus("apply" lineTo script(rhs.toScriptLine(fn)))
 
 fun <V> Select<V>.toScript(fn: (V) -> ScriptLine): Script =
-  choice.script
+  choice.script()
     .plus(
       "case" lineTo script(case.line.toScriptLine(fn)))
 

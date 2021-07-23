@@ -2,72 +2,64 @@ package leo
 
 import leo.base.runIf
 
-val Type.scriptLine: ScriptLine
-  get() =
-    "type" lineTo script
+typealias Fn = (TypeLine) -> ScriptLine?
+val nullFn: Fn get() = { null }
 
-val Type.script: Script
-  get() =
+val Type.scriptLine: ScriptLine get() = "type" lineTo script
+
+val Type.script: Script get() = script()
+val TypeLine.scriptLine: ScriptLine get() = scriptLine()
+
+fun Type.script(fn: Fn = { null }): Script =
+  when (this) {
+    is StructureType -> structure.script(fn)
+    is ChoiceType -> choice.script(fn)
+  }
+
+fun TypeStructure.script(fn: Fn = { null }): Script =
+  lineStack.map { scriptLine(fn) }.script
+
+fun TypeChoice.script(fn: Fn = { null }): Script =
+  script(choiceName lineTo lineStack.map { scriptLine(fn) }.script)
+
+fun TypeLine.scriptLine(fn: Fn = { null }): ScriptLine =
+  fn(this) ?: when (this) {
+    is RecursiveTypeLine -> recursive.scriptLine(fn)
+    is RecursibleTypeLine -> recursible.scriptLine(fn)
+  }
+
+fun TypeRecursible.scriptLine(fn: Fn = { null }): ScriptLine =
     when (this) {
-      is StructureType -> structure.script
-      is ChoiceType -> choice.script
+      is AtomTypeRecursible -> atom.scriptLine(fn)
+      is RecurseTypeRecursible -> recurse.scriptLine(fn)
     }
 
-val TypeStructure.script: Script
-  get() =
-    lineStack.map { scriptLine }.script
-
-val TypeChoice.script: Script
-  get() =
-    script(choiceName lineTo lineStack.map { scriptLine }.script)
-
-val TypeLine.scriptLine: ScriptLine
-  get() =
+fun TypeAtom.scriptLine(fn: Fn = { null }): ScriptLine =
     when (this) {
-      is RecursiveTypeLine -> recursive.scriptLine
-      is RecursibleTypeLine -> recursible.scriptLine
+      is FunctionTypeAtom -> function.scriptLine(fn)
+      is PrimitiveTypeAtom -> primitive.scriptLine(fn)
     }
 
-val TypeRecursible.scriptLine: ScriptLine
-  get() =
+fun TypePrimitive.scriptLine(fn: Fn = { null }): ScriptLine =
     when (this) {
-      is AtomTypeRecursible -> atom.scriptLine
-      is RecurseTypeRecursible -> recurse.scriptLine
+      is FieldTypePrimitive -> field.scriptLine(fn)
+      is NativeTypePrimitive -> native_.scriptLine(fn)
     }
 
-val TypeAtom.scriptLine: ScriptLine
-  get() =
-    when (this) {
-      is FunctionTypeAtom -> function.scriptLine
-      is PrimitiveTypeAtom -> primitive.scriptLine
-    }
+fun TypeField.scriptLine(fn: Fn = { null }): ScriptLine =
+    unescapedScriptLine(fn).runIf(name.isTypeKeyword) { theName lineTo script(this) }
 
-val TypePrimitive.scriptLine: ScriptLine
-  get() =
-    when (this) {
-      is FieldTypePrimitive -> field.scriptLine
-      is NativeTypePrimitive -> native_.scriptLine
-    }
+fun TypeField.unescapedScriptLine(fn: Fn = { null }): ScriptLine =
+    name lineTo rhsType.script(fn)
 
-val TypeField.scriptLine: ScriptLine
-  get() =
-    unescapedScriptLine.runIf(name.isTypeKeyword) { theName lineTo script(this) }
+fun TypeFunction.scriptLine(fn: Fn = { null }): ScriptLine =
+    functionName lineTo lhsType.script(fn).plus(doingName lineTo rhsType.script(fn))
 
-val TypeField.unescapedScriptLine: ScriptLine
-  get() =
-    name lineTo rhsType.script
-
-val TypeFunction.scriptLine: ScriptLine
-  get() =
-    functionName lineTo lhsType.script.plus(doingName lineTo rhsType.script)
-
-val TypeRecursive.scriptLine: ScriptLine
-  get() =
-    recursiveName lineTo script(line.scriptLine)
+fun TypeRecursive.scriptLine(fn: Fn = { null }): ScriptLine =
+    recursiveName lineTo script(line.scriptLine(fn))
 
 @Suppress("unused")
-val TypeRecurse.scriptLine: ScriptLine
-  get() =
+fun TypeRecurse.scriptLine(fn: Fn = { null }): ScriptLine =
     recurseName lineTo script()
 
 val String.isTypeKeyword: Boolean
@@ -81,5 +73,5 @@ val String.isTypeKeyword: Boolean
       else -> false
     }
 
-val TypeNative.scriptLine: ScriptLine get() =
+fun TypeNative.scriptLine(fn: Fn = { null }): ScriptLine =
   nativeName lineTo script

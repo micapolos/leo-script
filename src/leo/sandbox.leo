@@ -1,2 +1,7 @@
-pi.number
-divided by 10
+types
+  let
+    point
+    have
+      x number
+      y number
+debug

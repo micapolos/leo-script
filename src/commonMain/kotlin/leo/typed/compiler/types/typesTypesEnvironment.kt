@@ -13,7 +13,8 @@ fun typesEnvironment(resolveOrNullFn: (Compiled<Types>) -> Compiled<Types>?): En
     { literal -> compileError(script("literal")) },
     resolveOrNullFn,
     { native -> compileError(script("native")) },
-    { typesTypesEnvironment })
+    { typesTypesEnvironment },
+    { typeLine -> null })
 
 val typesTypesEnvironment: Environment<Types>
   get() =

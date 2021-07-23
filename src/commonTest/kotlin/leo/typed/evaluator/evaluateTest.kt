@@ -19,7 +19,6 @@ import leo.numberName
 import leo.plusName
 import leo.repeatName
 import leo.script
-import leo.scriptLine
 import leo.selectName
 import leo.switchName
 import leo.textName
@@ -28,6 +27,8 @@ import leo.toName
 import leo.typeName
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
+import leo.typed.compiler.native.nativeScript
+import leo.typed.compiler.native.nativeScriptLine
 import leo.typed.compiler.native.nativeTextType
 import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typesName
@@ -42,7 +43,7 @@ class EvaluateTest {
       typeName lineTo script()
     )
       .evaluate
-      .assertEqualTo(nativeNumberType.script)
+      .assertEqualTo(nativeNumberType.nativeScript)
   }
 
   @Test
@@ -51,7 +52,7 @@ class EvaluateTest {
       line(literal("foo")),
       typeName lineTo script())
       .evaluate
-      .assertEqualTo(nativeTextType.script)
+      .assertEqualTo(nativeTextType.nativeScript)
   }
 
   @Test
@@ -65,8 +66,8 @@ class EvaluateTest {
       .assertEqualTo(
         script(
           choiceName lineTo script(
-            nativeNumberTypeLine.scriptLine,
-            nativeTextTypeLine.scriptLine)))
+            nativeNumberTypeLine.nativeScriptLine,
+            nativeTextTypeLine.nativeScriptLine)))
   }
 
   @Test
@@ -134,8 +135,8 @@ class EvaluateTest {
       .assertEqualTo(
         script(
           "point" lineTo script(
-            "x" lineTo nativeNumberType.script,
-            "y" lineTo nativeNumberType.script)))
+            "x" lineTo nativeNumberType.nativeScript,
+            "y" lineTo nativeNumberType.nativeScript)))
   }
 
   @Test
