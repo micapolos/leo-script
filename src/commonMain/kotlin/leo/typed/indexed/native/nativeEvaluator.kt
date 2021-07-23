@@ -1,10 +1,13 @@
 package leo.typed.indexed.native
 
+import leo.typed.compiler.native.DoubleCosinusNative
 import leo.typed.compiler.native.DoubleDividedByDoubleNative
 import leo.typed.compiler.native.DoubleIsLessThanDoubleNative
 import leo.typed.compiler.native.DoubleMinusDoubleNative
 import leo.typed.compiler.native.DoubleNative
 import leo.typed.compiler.native.DoublePlusDoubleNative
+import leo.typed.compiler.native.DoubleRootNative
+import leo.typed.compiler.native.DoubleSinusNative
 import leo.typed.compiler.native.DoubleStringNative
 import leo.typed.compiler.native.DoubleTimesDoubleNative
 import leo.typed.compiler.native.Native
@@ -22,6 +25,9 @@ import leo.typed.indexed.native
 import leo.typed.indexed.nativeValue
 import leo.typed.indexed.value
 import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 val nativeEvaluator: Evaluator<Native> get() =
   Evaluator { value(*it) }
@@ -46,6 +52,12 @@ fun Native.value(vararg params: Value<Native>): Value<Native> =
       nativeValue(params[0].native.double.toString().native)
     PiDoubleNative ->
       nativeValue(PI.native)
+    DoubleRootNative ->
+      nativeValue(sqrt(params[0].native.double).native)
+    DoubleSinusNative ->
+      nativeValue(sin(params[0].native.double).native)
+    DoubleCosinusNative ->
+      nativeValue(cos(params[0].native.double).native)
     ObjectEqualsObjectNative ->
       value(params[0] == params[1])
     StringPlusStringNative ->
