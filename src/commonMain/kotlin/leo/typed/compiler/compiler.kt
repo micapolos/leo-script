@@ -13,7 +13,6 @@ import leo.base.fold
 import leo.base.reverse
 import leo.beName
 import leo.commentName
-import leo.compileName
 import leo.debugName
 import leo.doName
 import leo.doingName
@@ -35,7 +34,6 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.nameStackOrNull
 import leo.onlyLineOrNull
-import leo.plus
 import leo.quoteName
 import leo.repeatName
 import leo.repeatingName
@@ -63,6 +61,7 @@ import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.line
 import leo.typed.compiled.lineTo
 import leo.typed.compiled.make
+import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.onlyCompiledLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
@@ -120,7 +119,6 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     asName -> as_(field.rhs)
     beName -> be(field.rhs)
     commentName -> comment(field.rhs)
-    compileName -> compile(field.rhs)
     debugName -> debug(field.rhs)
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
@@ -135,6 +133,8 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     typesName -> types(field.rhs)
     theName -> the(field.rhs)
     wordName -> word(field.rhs)
+    "python" -> python(field.rhs)
+    "scheme" -> scheme(field.rhs)
     else -> null
   }
 
@@ -150,24 +150,11 @@ fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
 fun <V> Compiler<V>.comment(@Suppress("UNUSED_PARAMETER") script: Script): Compiler<V> =
   this
 
-fun <V> Compiler<V>.compile(script: Script): Compiler<V> =
-  if (!compiled.type.isEmpty) compileError(
-    compiled.type.script
-      .plus("compile" lineTo script)
-      .plus("is" lineTo script(
-        "not" lineTo script(
-          "matching" lineTo script(
-            "compile" lineTo script(
-              "any" lineTo script(
-                "language" lineTo script(
-                  "any" lineTo script("script")))))))))
-  else script.matchPrefix { name, rhs ->
-    when (name) {
-      "scheme" -> set(environment.staticCompiled(script(rhs.compiled(schemeEnvironment).indexedExpression.scheme.leoScriptLine)))
-      "python" -> set(environment.staticCompiled(script(rhs.compiled(pythonEnvironment).indexedExpression.python.scriptLine)))
-      else -> compileError(script("compile" lineTo script(name)))
-    }
-  }?: compileError(script("compile" lineTo script))
+fun <V> Compiler<V>.scheme(script: Script): Compiler<V> =
+  plus(environment.staticCompiled(script(script.compiled(schemeEnvironment).indexedExpression.scheme.leoScriptLine)).onlyCompiledLine)
+
+fun <V> Compiler<V>.python(script: Script): Compiler<V> =
+  plus(environment.staticCompiled(script(script.compiled(pythonEnvironment).indexedExpression.python.scriptLine)).onlyCompiledLine)
 
 fun <V> Compiler<V>.types(script: Script): Compiler<V> =
   set(block.updateTypesBlock { it.compiler.plus(script).block })
