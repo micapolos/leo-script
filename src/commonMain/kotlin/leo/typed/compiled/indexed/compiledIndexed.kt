@@ -22,7 +22,6 @@ import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.indexedLineOrNull
-import leo.typed.compiled.lineIndex
 import leo.typed.indexed.Expression
 import leo.typed.indexed.expression
 import leo.typed.indexed.function
@@ -155,7 +154,7 @@ fun <V> leo.typed.compiled.Get<V>.indexedExpression(scope: Scope): Expression<V>
   when (lhs.type.lineCount) {
     0 -> lhs.indexedExpression(scope)
     1 -> lhs.indexedExpression(scope)
-    else -> lhs.indexedExpression(scope).get(lhs.type.lineIndex(name))
+    else -> lhs.indexedExpression(scope).get(index)
   }
 
 fun <V> leo.typed.compiled.Content<V>.indexedExpression(scope: Scope): Expression<V> =

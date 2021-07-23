@@ -129,17 +129,6 @@ fun <V> Compiled<V>.tupleLineOrNull(name: String): CompiledLine<V>? =
     }
   }
 
-fun <V> Compiled<V>.tupleGetLineOrNull(name: String): CompiledLine<V>? =
-  tupleContentOrNull?.tupleLineOrNull(name)
-
-fun <V> Compiled<V>.resolvedGetLineOrNull(name: String): CompiledLine<V>? =
-  type.rhsOrNull?.indexedLineOrNull(name)?.let { indexedLine ->
-    compiled(line(get(this, name)), indexedLine.value)
-  }
-
-fun <V> Compiled<V>.getLineOrNull(name: String): CompiledLine<V>? =
-  rhsOrNull?.lineOrNull(name)
-
 fun <V> Compiled<V>.getOrNull(name: String): Compiled<V>? =
   null
     ?: lineOrNull(name)?.let { compiled(it) }
@@ -214,7 +203,7 @@ fun <V> CompiledTuple<V>.lineOrNull(index: Int): CompiledLine<V>? =
 
 fun <V> Compiled<V>.nonTupleLineOrNull(index: Int): CompiledLine<V>? =
   type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
-    compiled(line(get(this, typeLine.name)), typeLine)
+    compiled(line(get(this, index)), typeLine)
   }
 
 fun <V> Compiled<V>.lineCompiled(index: Int): Compiled<V> =
@@ -242,7 +231,7 @@ val <V> Compiled<V>.tupleCompiledTupleOrNull: CompiledTuple<V>? get() =
 
 val <V> Compiled<V>.resolvedCompiledTupleOrNull: CompiledTuple<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    compiled(tuple(line(get(this, typeLine.name))), typeStructure(typeLine))
+    compiled(tuple(line(get(this, 0))), typeStructure(typeLine))
   }
 
 val <V> Compiled<V>.compiledTupleOrNull: CompiledTuple<V>? get() =
@@ -264,11 +253,9 @@ fun <V> Fragment<V>.plus(line: Line<V>): Fragment<V> =
 
 val <V> Compiled<V>.onlyCompiledLineOrNull: CompiledLine<V>? get() =
   type.onlyLineOrNull?.let { typeLine ->
-    typeLine.name.let { name ->
-      null
-        ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
-        ?: compiled(line(get(this, name)), typeLine)
-    }
+    null
+      ?: expression.tupleOrNull?.lineStack?.onlyOrNull?.let { line -> compiled(line, typeLine) }
+      ?: compiled(line(get(this, 0)), typeLine)
   }
 
 val <V> Compiled<V>.onlyCompiledFieldOrNull: CompiledField<V>? get() =

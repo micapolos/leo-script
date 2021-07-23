@@ -1,1 +1,1 @@
-"Jajko"
+native double 10

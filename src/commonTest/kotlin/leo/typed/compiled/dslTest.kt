@@ -88,14 +88,14 @@ class DslTest {
       .line(0)
       .assertEqualTo(
         compiled(
-          line(get(compiled, "x")),
+          line(get(compiled, 0)),
           "x" lineTo type("zero")))
 
     compiled
       .line(1)
       .assertEqualTo(
         compiled(
-          line(get(compiled, "y")),
+          line(get(compiled, 1)),
           "y" lineTo type("one")))
   }
 
@@ -203,7 +203,7 @@ class DslTest {
 
     compiled
       .compiledTupleOrNull
-      .assertEqualTo(compiled(tuple(line(get(compiled, "x"))), structure("x" lineTo type("zero"))))
+      .assertEqualTo(compiled(tuple(line(get(compiled, 0))), structure("x" lineTo type("zero"))))
   }
 
   @Test

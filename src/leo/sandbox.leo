@@ -1,1 +1,2 @@
-"Jajko".native
+10.native
+
