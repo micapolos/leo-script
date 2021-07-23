@@ -32,6 +32,7 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is ContentExpression -> content.toScript(fn)
     is BindExpression -> bind.toScript(fn)
     is VariableExpression -> variable.toScript(fn)
+    is LinkExpression -> link.toScript(fn)
   }
 
 fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
@@ -49,6 +50,9 @@ fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
 
 fun <V> Tuple<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("tuple" lineTo lineStack.map { toScriptLine(fn) }.script)
+
+fun <V> Link<V>.toScript(fn: (V) -> ScriptLine): Script =
+  lhsCompiled.expression.toScript(fn).plus(rhsCompiledLine.line.toScriptLine(fn))
 
 fun <V> Content<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("content" lineTo script(lhs.toScriptLine(fn)))

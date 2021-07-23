@@ -11,7 +11,9 @@ import leo.base.onlyOrNull
 import leo.base.orNullIf
 import leo.base.the
 import leo.fieldOrNull
+import leo.fold
 import leo.getFromBottom
+import leo.isStatic
 import leo.lineSeq
 import leo.lineTo
 import leo.name
@@ -46,3 +48,9 @@ val Type.compileStructure: TypeStructure
 
 val Type.compileLine: TypeLine get() =
   onlyLineOrNull ?: compileError(script("line"))
+
+val TypeStructure.dynamicLineCount: Int get() =
+  0.fold(lineStack) { plus(it.dynamicLineCount) }
+
+val TypeLine.dynamicLineCount: Int get() =
+  if (isStatic) 0 else 1

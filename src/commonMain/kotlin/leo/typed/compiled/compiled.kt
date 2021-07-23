@@ -39,6 +39,7 @@ data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
 data class ContentExpression<V>(val content: Content<V>): Expression<V>()
 data class BindExpression<V>(val bind: Bind<V>): Expression<V>()
+data class LinkExpression<V>(val link: Link<V>): Expression<V>()
 
 data class Tuple<out V>(val lineStack: Stack<Line<V>>)
 
@@ -59,6 +60,7 @@ data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>
 data class Content<out V>(val lhs: Compiled<V>)
 data class Binding<out V>(val type: Type, val compiled: Compiled<V>)
 data class Bind<out V>(val binding: Binding<V>, val compiled: Compiled<V>)
+data class Link<out V>(val lhsCompiled: Compiled<V>, val rhsCompiledLine: CompiledLine<V>)
 data class TypeVariable(val type: Type)
 
 sealed class CompiledSelectLine<out V>
@@ -82,6 +84,7 @@ fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
 fun <V> expression(content: Content<V>): Expression<V> = ContentExpression(content)
 fun <V> expression(bind: Bind<V>): Expression<V> = BindExpression(bind)
 fun <V> expression(variable: TypeVariable): Expression<V> = VariableExpression(variable)
+fun <V> expression(link: Link<V>): Expression<V> = LinkExpression(link)
 
 fun <V> nativeLine(native: V): Line<V> = NativeLine(native)
 fun <V> line(field: Field<V>): Line<V> = FieldLine(field)
@@ -107,6 +110,7 @@ fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(
 fun <V> content(lhs: Compiled<V>) = Content(lhs)
 fun <V> binding(type: Type, compiled: Compiled<V>) = Binding(type, compiled)
 fun <V> bind(binding: Binding<V>, compiled: Compiled<V>) = Bind(binding, compiled)
+fun <V> link(lhs: Compiled<V>, rhs: CompiledLine<V>) = Link(lhs, rhs)
 fun variable(type: Type) = TypeVariable(type)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =

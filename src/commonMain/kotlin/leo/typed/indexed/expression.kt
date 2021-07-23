@@ -4,6 +4,7 @@ import leo.Empty
 import leo.IndexVariable
 import leo.Stack
 import leo.anyScriptLine
+import leo.push
 import leo.stack
 import leo.variable
 
@@ -29,6 +30,9 @@ data class ExpressionSwitch<out V>(val lhs: Expression<V>, val caseStack: Stack<
 data class ExpressionFunction<out V>(val arity: Int, val expression: Expression<V>)
 data class ExpressionRecursive<out V>(val function: ExpressionFunction<V>)
 data class ExpressionInvoke<out V>(val lhs: Expression<V>, val paramStack: Stack<Expression<V>>)
+
+data class ExpressionTail<out V>(val expression: Expression<V>, val arity: Int)
+data class ExpressionFragment<out V>(val tail: ExpressionTail<V>, val tuple: ExpressionTuple<V>)
 
 fun <V> nativeExpression(native: V): Expression<V> = NativeExpression(native)
 fun <V> expression(empty: Empty): Expression<V> = EmptyExpression(empty)
@@ -59,3 +63,9 @@ fun <V> Expression<V>.ifThenElse(trueCase: Expression<V>, falseCase: Expression<
 
 fun <V> Expression<V>.indirect(fn: (Expression<V>) -> Expression<V>): Expression<V> =
   expression(function(1, fn(expression(variable(0))))).invoke(this)
+
+fun <V> ExpressionTuple<V>.plus(expression: Expression<V>): ExpressionTuple<V> =
+  expressionStack.push(expression).let(::ExpressionTuple)
+
+fun <V> ExpressionFragment<V>.plus(expression: Expression<V>): ExpressionFragment<V> =
+  copy(tuple = tuple.plus(expression))
