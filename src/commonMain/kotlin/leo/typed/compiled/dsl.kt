@@ -96,11 +96,6 @@ fun <V> fnLine(type: Type, body: Body<V>): CompiledLine<V> =
 fun <V> fnLine(type: Type, body: Compiled<V>): CompiledLine<V> =
   compiled(line(function(type, body(body))), type functionLineTo body.type)
 
-val <V> Compiled<V>.content: Compiled<V> get() = TODO()
-
-val <V> Compiled<V>.tupleContentOrNull: Compiled<V>? get() =
-  onlyLineOrNull?.fieldRhsOrNull
-
 val <V> CompiledLine<V>.fieldRhsOrNull: Compiled<V>? get() =
   line.fieldOrNull?.rhs
 
@@ -203,10 +198,6 @@ val <V> Compiled<V>.onlyCompiledFieldOrNull: CompiledField<V>? get() =
 
 val <V> Compiled<V>.onlyCompiledLine: CompiledLine<V> get() =
   onlyLineOrNull ?: compileError(script("line"))
-
-//val <V> Compiled<V>.compiledLineStack: Stack<CompiledLine<V>> get() =
-//  zip(compiledTuple.tuple.lineStack, compiledTuple.typeStructure.lineStack)
-//    .mapIt { compiled(it.first!!, it.second!!) }
 
 fun <V> CompiledSelect<V>.the(compiledLine: CompiledLine<V>): CompiledSelect<V> =
   ifOrNull(caseOrNull == null) {

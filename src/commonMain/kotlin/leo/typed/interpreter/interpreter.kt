@@ -2,8 +2,8 @@ package leo.typed.interpreter
 
 import leo.typed.compiler.Compiler
 import leo.typed.compiler.native.Native
-import leo.typed.indexed.Evaluator
+import leo.typed.indexed.Evaluated
 
 data class Interpreter<V>(
   val compiler: Compiler<V>,
-  val evaluator: Evaluator<Native>)
+  val evaluated: Evaluated<Native>)

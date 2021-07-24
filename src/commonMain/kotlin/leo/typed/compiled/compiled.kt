@@ -38,7 +38,6 @@ data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>
 data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
 data class ContentExpression<V>(val content: Content<V>): Expression<V>()
-//data class BindExpression<V>(val bind: Bind<V>): Expression<V>()
 
 sealed class Line<out V>
 data class NativeLine<V>(val native: V): Line<V>()
@@ -55,8 +54,6 @@ data class Get<out V>(val lhs: Compiled<V>, val index: Int)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
 data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
 data class Content<out V>(val lhs: Compiled<V>)
-//data class Binding<out V>(val type: Type, val compiled: Compiled<V>)
-//data class Bind<out V>(val binding: Binding<V>, val compiled: Compiled<V>)
 data class Link<out V>(val lhsCompiled: Compiled<V>, val rhsCompiledLine: CompiledLine<V>)
 
 sealed class CompiledSelectLine<out V>
@@ -77,7 +74,6 @@ fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
 fun <V> expression(select: Select<V>): Expression<V> = SelectExpression(select)
 fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
 fun <V> expression(content: Content<V>): Expression<V> = ContentExpression(content)
-//fun <V> expression(bind: Bind<V>): Expression<V> = BindExpression(bind)
 fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 fun <V> expression(link: Link<V>): Expression<V> = LinkExpression(link)
 
@@ -102,8 +98,6 @@ fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, case: Case<V>) = Select(choice, case)
 fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(*cases))
 fun <V> content(lhs: Compiled<V>) = Content(lhs)
-//fun <V> binding(type: Type, compiled: Compiled<V>) = Binding(type, compiled)
-//fun <V> bind(binding: Binding<V>, compiled: Compiled<V>) = Bind(binding, compiled)
 fun <V> link(lhs: Compiled<V>, rhs: CompiledLine<V>) = Link(lhs, rhs)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
