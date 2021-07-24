@@ -52,9 +52,9 @@ fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
     .plus("switch" lineTo caseStack.map { toScriptLine(fn) }.script)
 
 fun <V> Link<V>.toScript(fn: (V) -> ScriptLine): Script =
-  lhsCompiled.expression.toScript(fn).plus(rhsCompiledLine.line.toScriptLine(fn))
+  lhs.expression.toScript(fn).plus(rhsLine.line.toScriptLine(fn))
 
-fun <V> Content<V>.toScript(fn: (V) -> ScriptLine): Script =
+fun <V> CompiledContent<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("content" lineTo script(lhs.toScriptLine(fn)))
 
 fun <V> Line<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =

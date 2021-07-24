@@ -37,7 +37,7 @@ data class ApplyExpression<V>(val apply: Apply<V>): Expression<V>()
 data class VariableExpression<out V>(val variable: IndexVariable): Expression<V>()
 data class SelectExpression<V>(val select: Select<V>): Expression<V>()
 data class SwitchExpression<V>(val switch: Switch<V>): Expression<V>()
-data class ContentExpression<V>(val content: Content<V>): Expression<V>()
+data class ContentExpression<V>(val content: CompiledContent<V>): Expression<V>()
 
 sealed class Line<out V>
 data class NativeLine<V>(val native: V): Line<V>()
@@ -53,8 +53,20 @@ data class Body<out V>(val compiled: Compiled<V>, val isRecursive: Boolean)
 data class Get<out V>(val lhs: Compiled<V>, val index: Int)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
 data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
-data class Content<out V>(val lhs: Compiled<V>)
-data class Link<out V>(val lhsCompiled: Compiled<V>, val rhsCompiledLine: CompiledLine<V>)
+data class CompiledContent<out V>(val lhs: Compiled<V>)
+data class Link<out V>(val lhs: Compiled<V>, val rhsLine: CompiledLine<V>)
+
+object Content
+
+sealed class Op<out V>
+data class ContentOp<V>(val content: Content): Op<V>()
+data class AppendOp<V>(val append: CompiledLineAppend<V>): Op<V>()
+data class ApplyOp<V>(val apply: CompiledApply<V>): Op<V>()
+data class SwitchOp<V>(val switch: CompiledCases<V>): Op<V>()
+
+data class CompiledLineAppend<out V>(val line: CompiledLine<V>)
+data class CompiledApply<out V>(val compiled: Compiled<V>)
+data class CompiledCases<out V>(val caseStack: Stack<Compiled<V>>)
 
 sealed class CompiledSelectLine<out V>
 data class TheCompiledSelectLine<V>(val the: CompiledLineThe<V>): CompiledSelectLine<V>()
@@ -73,7 +85,7 @@ fun <V> expression(empty: Empty): Expression<V> = EmptyExpression(empty)
 fun <V> expression(apply: Apply<V>): Expression<V> = ApplyExpression(apply)
 fun <V> expression(select: Select<V>): Expression<V> = SelectExpression(select)
 fun <V> expression(switch: Switch<V>): Expression<V> = SwitchExpression(switch)
-fun <V> expression(content: Content<V>): Expression<V> = ContentExpression(content)
+fun <V> expression(content: CompiledContent<V>): Expression<V> = ContentExpression(content)
 fun <V> expression(variable: IndexVariable): Expression<V> = VariableExpression(variable)
 fun <V> expression(link: Link<V>): Expression<V> = LinkExpression(link)
 
@@ -97,8 +109,18 @@ fun <V> field(name: String, rhs: Compiled<V>) = Field(name, rhs)
 fun <V> get(lhs: Compiled<V>, index: Int) = Get(lhs, index)
 fun <V> select(choice: TypeChoice, case: Case<V>) = Select(choice, case)
 fun <V> switch(lhs: Compiled<V>, vararg cases: Compiled<V>) = Switch(lhs, stack(*cases))
-fun <V> content(lhs: Compiled<V>) = Content(lhs)
+fun <V> content(lhs: Compiled<V>) = CompiledContent(lhs)
 fun <V> link(lhs: Compiled<V>, rhs: CompiledLine<V>) = Link(lhs, rhs)
+
+fun <V> append(line: CompiledLine<V>) = CompiledLineAppend(line)
+fun <V> apply(compiled: Compiled<V>) = CompiledApply(compiled)
+fun <V> compiledCases(vararg cases: Compiled<V>) = CompiledCases(stack(*cases))
+fun <V> cases(case: Compiled<V>, vararg cases: Compiled<V>) = CompiledCases(stack(case, *cases))
+
+fun <V> op(content: Content): Op<V> = ContentOp(content)
+fun <V> op(apply: CompiledApply<V>): Op<V> = ApplyOp(apply)
+fun <V> op(switch: CompiledCases<V>): Op<V> = SwitchOp(switch)
+fun <V> op(append: CompiledLineAppend<V>): Op<V> = AppendOp(append)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)

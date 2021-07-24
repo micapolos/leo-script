@@ -69,8 +69,8 @@ fun <V> Block<V>.plusGiven(compiled: Compiled<V>): Block<V> =
   when (compiled.expression) {
     is LinkExpression ->
       this
-        .plusGiven(compiled.expression.link.lhsCompiled)
-        .plusGiven(compiled.expression.link.rhsCompiledLine)
+        .plusGiven(compiled.expression.link.lhs)
+        .plusGiven(compiled.expression.link.rhsLine)
     else ->
       when (compiled.type.lineCount) {
         0 -> this

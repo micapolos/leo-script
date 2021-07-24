@@ -122,8 +122,8 @@ val <V> Expression<V>.linkOrNull: Link<V>? get() =
 val <V> Compiled<V>.onlyLineOrNull: CompiledLine<V>? get() =
   when (expression) {
     is LinkExpression ->
-      ifOrNull(expression.link.lhsCompiled.type.isEmpty) {
-        expression.link.rhsCompiledLine
+      ifOrNull(expression.link.lhs.type.isEmpty) {
+        expression.link.rhsLine
       }
     else -> type.onlyLineOrNull?.let { line(0) }
   }
@@ -159,8 +159,8 @@ fun <V, R> Compiled<V>.prefix(name: String, fn: (Compiled<V>) -> R?): R? =
 fun <V> Compiled<V>.lineOrNull(index: Int): CompiledLine<V>? =
   when (expression) {
     is LinkExpression ->
-      if (index == type.lineCount - 1) expression.link.rhsCompiledLine
-      else expression.link.lhsCompiled.lineOrNull(index)
+      if (index == type.lineCount - 1) expression.link.rhsLine
+      else expression.link.lhs.lineOrNull(index)
     else ->
       type.structureOrNull?.lineStack?.getFromBottom(index)?.let { typeLine ->
         compiled(line(get(this, index)), typeLine)

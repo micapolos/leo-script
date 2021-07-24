@@ -192,8 +192,8 @@ val <V> leo.typed.compiled.Link<V>.indexedExpression: Expression<V> get() =
   }
 
 val <V> leo.typed.compiled.Link<V>.indexedFragment: ExpressionFragment<V> get() =
-  lhsCompiled.expression.indexedFragment(lhsCompiled.type.lineCount)
-    .plus(rhsCompiledLine.line.indexedExpression)
+  lhs.expression.indexedFragment(lhs.type.lineCount)
+    .plus(rhsLine.line.indexedExpression)
 
 val <V> leo.typed.compiled.Field<V>.indexedExpression: Expression<V> get() =
   rhs.indexedExpression
@@ -205,7 +205,7 @@ val <V> leo.typed.compiled.Get<V>.indexedExpression: Expression<V> get() =
     else -> lhs.indexedExpression.get(index)
   }
 
-val <V> leo.typed.compiled.Content<V>.indexedExpression: Expression<V> get() =
+val <V> leo.typed.compiled.CompiledContent<V>.indexedExpression: Expression<V> get() =
   lhs.indexedExpression
 
 val <V> leo.typed.compiled.Function<V>.indexedExpression: Expression<V> get() =
