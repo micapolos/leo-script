@@ -1,5 +1,5 @@
-scheme
-  30.fibonacci
+julia
+  40.fibonacci
   repeat
     giving number
     doing

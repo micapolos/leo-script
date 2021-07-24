@@ -65,9 +65,12 @@ import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.onlyLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
+import leo.typed.compiler.julia.juliaEnvironment
+import leo.typed.compiler.julia.scriptLine
 import leo.typed.compiler.python.pythonEnvironment
 import leo.typed.compiler.python.scriptLine
 import leo.typed.compiler.scheme.schemeEnvironment
+import leo.typed.indexed.julia.julia
 import leo.typed.indexed.python.python
 import leo.typed.indexed.scheme.scheme
 import leo.typesName
@@ -133,6 +136,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     typesName -> types(field.rhs)
     theName -> the(field.rhs)
     wordName -> word(field.rhs)
+    "julia" -> julia(field.rhs)
     "python" -> python(field.rhs)
     "scheme" -> scheme(field.rhs)
     else -> null
@@ -155,6 +159,9 @@ fun <V> Compiler<V>.scheme(script: Script): Compiler<V> =
 
 fun <V> Compiler<V>.python(script: Script): Compiler<V> =
   plus(environment.staticCompiled(script(script.compiled(pythonEnvironment).indexedExpression.python.scriptLine)).onlyCompiledLine)
+
+fun <V> Compiler<V>.julia(script: Script): Compiler<V> =
+  plus(environment.staticCompiled(script(script.compiled(juliaEnvironment).indexedExpression.julia.scriptLine)).onlyCompiledLine)
 
 fun <V> Compiler<V>.types(script: Script): Compiler<V> =
   set(block.updateTypesBlock { it.compiler.plus(script).block })
