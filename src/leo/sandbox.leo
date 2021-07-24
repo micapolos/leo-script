@@ -1,4 +1,4 @@
-python
+scheme
   30.fibonacci
   repeat
     giving number

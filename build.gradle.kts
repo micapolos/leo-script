@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "micapolos"
-version = "0.25.24"
+version = "0.25.25"
 
 repositories {
     mavenCentral()
