@@ -64,7 +64,7 @@ fun <V> Compiled<V>.castOrNull(toType: Type): Compiled<V>? =
 
 fun <V> Expression<V>.castOrNull(fromType: Type, toType: Type, recursiveOrNull: TypeRecursive?): Cast<Expression<V>>? =
   null
-    ?: compiled(this, fromType).onlyCompiledLineOrNull?.let { compiledLine ->
+    ?: compiled(this, fromType).onlyLineOrNull?.let { compiledLine ->
       compiledLine.line.castOrNull(compiledLine.typeLine, toType, recursiveOrNull)
     }
     ?: notNullIf(fromType == toType) { cast(identity) }
@@ -74,7 +74,7 @@ fun <V> Line<V>.castOrNull(fromTypeLine: TypeLine, toType: Type, recursiveOrNull
     is StructureType -> toType.structure.onlyLineOrNull
       ?.let { toTypeLine ->
         castOrNull(fromTypeLine, toTypeLine, recursiveOrNull)
-          ?.map { expression(tuple(it)) }
+          ?.map { expression(link(compiled(), compiled(it, toTypeLine))) }
       }
     is ChoiceType -> castOrNull(fromTypeLine, toType.choice)
   }

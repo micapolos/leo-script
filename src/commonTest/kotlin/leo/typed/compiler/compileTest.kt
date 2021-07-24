@@ -36,12 +36,11 @@ import leo.theName
 import leo.type
 import leo.typeName
 import leo.typed.compiled.apply
-import leo.typed.compiled.bind
-import leo.typed.compiled.binding
 import leo.typed.compiled.body
 import leo.typed.compiled.case
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledSelect
+import leo.typed.compiled.compiledVariable
 import leo.typed.compiled.expression
 import leo.typed.compiled.field
 import leo.typed.compiled.fn
@@ -58,8 +57,6 @@ import leo.typed.compiled.rhs
 import leo.typed.compiled.select
 import leo.typed.compiled.switch
 import leo.typed.compiled.the
-import leo.typed.compiled.tuple
-import leo.typed.compiled.variable
 import leo.typed.compiler.native.DoublePlusDoubleNative
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.native
@@ -69,6 +66,7 @@ import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextTypeLine
 import leo.typesName
+import leo.variable
 import kotlin.test.Test
 import kotlin.test.assertFails
 
@@ -188,7 +186,7 @@ class CompileTest {
       .compiled(nativeEnvironment)
       .assertEqualTo(
         nativeNumberCompiled(10.0.native)
-          .apply(fn(nativeNumberType, recursive(body(compiled(expression(variable(type("number"))), nativeNumberType))))))
+          .apply(fn(nativeNumberType, recursive(body(compiled(expression(variable(0)), nativeNumberType))))))
   }
 
   @Test
@@ -209,7 +207,7 @@ class CompileTest {
                   compiled("loop" lineTo nativeNumberCompiled(0.0.native))
                     .apply(
                       compiled(
-                        expression(variable(type("loop" lineTo nativeNumberType))),
+                        expression(variable(1)),
                         type(line(atom(
                           function(
                             type("loop" lineTo nativeNumberType),
@@ -226,7 +224,7 @@ class CompileTest {
       .assertEqualTo(
         nativeCompiler
           .plus(nativeNumberCompiledLine(10.0.native))
-          .do_(body(compiled(expression(variable(type(numberName))), nativeNumberType))))
+          .do_(body(compiled(expression(variable(0)), nativeNumberType))))
   }
 
   @Test
@@ -245,7 +243,7 @@ class CompileTest {
           .apply(
             nativeCompiled(
               DoublePlusDoubleNative,
-              type(type(nativeNumberTypeLine, "plus" lineTo nativeNumberType) functionLineTo nativeNumberType))))
+              type(nativeNumberTypeLine, "plus" lineTo nativeNumberType) functionLineTo nativeNumberType)))
   }
 
   @Test
@@ -368,9 +366,9 @@ class CompileTest {
           .rhs
           .switch(
             nativeNumberType,
-            compiled(expression<Native>(variable(type("one"))), type("one" lineTo nativeNumberType)).get(numberName),
-            compiled(expression<Native>(variable(type("two"))), type("two" lineTo nativeNumberType)).get(numberName),
-            compiled(expression<Native>(variable(type("three"))), type("three" lineTo nativeNumberType)).get(numberName)))
+            compiled(expression<Native>(variable(0)), type("one" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("two" lineTo nativeNumberType)).get(numberName),
+            compiled(expression<Native>(variable(0)), type("three" lineTo nativeNumberType)).get(numberName)))
   }
 
   @Test
@@ -465,7 +463,7 @@ class CompileTest {
                   "x" lineTo nativeNumberType,
                   "y" lineTo nativeNumberType)),
               compiled(
-                expression<Native>(variable(type("point"))),
+                expression<Native>(variable(0)),
                 type(
                   "point" lineTo type(
                     "x" lineTo nativeNumberType,
@@ -521,7 +519,20 @@ class CompileTest {
   }
 
   @Test
-  fun doubleLet() {
+  fun letBe() {
+    script(
+      letName lineTo script(
+        "chicken" lineTo script(),
+        beName lineTo script("egg")),
+      "chicken" lineTo script())
+      .compiled(nativeEnvironment)
+      .assertEqualTo(
+        compiled<Native>("egg")
+          .apply(fn(type("egg"), compiledVariable(0, type("egg")))))
+  }
+
+  @Test
+  fun doubleLetBe() {
     script(
       letName lineTo script(
         "chicken" lineTo script(),
@@ -532,21 +543,15 @@ class CompileTest {
       "human" lineTo script())
       .compiled(nativeEnvironment)
       .assertEqualTo(
-        compiled(
-          expression(
-            bind(
-              binding(
-                type("chicken"),
-                compiled("egg")),
-              compiled(
-                expression(
-                  bind(
-                    binding(
-                      type("human"),
-                      compiled(expression(variable(type("chicken"))), type("egg"))),
-                    compiled(expression(variable(type("human"))), type("egg")))),
-                type("egg")))),
-          type("egg")))
+        compiled<Native>("egg")
+          .apply(
+            fn(
+              type("egg"),
+              compiledVariable<Native>(0, type("egg"))
+                .apply(
+                  fn(
+                    type("egg"),
+                    compiledVariable(0, type("egg")))))))
   }
 
   @Test
@@ -560,7 +565,8 @@ class CompileTest {
       .compiled(nativeEnvironment)
       .assertEqualTo(
         compiled(
-          expression(tuple(line(field("bar", compiled())))),
-          type(recursiveLine("bar" lineTo type()))))
+          compiled(
+            line(field("bar", compiled())),
+            recursiveLine("bar" lineTo type()))))
   }
 }

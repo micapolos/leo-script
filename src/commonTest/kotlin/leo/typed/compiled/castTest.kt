@@ -115,8 +115,9 @@ class CastTest {
       .castOrNull(type(recursiveLine("empty" lineTo type())))
       .assertEqualTo(
         compiled(
-          expression(tuple(line(field("empty", compiled())))),
-          type(line(recursive("empty" lineTo type())))))
+          compiled(
+            line(field("empty", compiled())),
+            line(recursive("empty" lineTo type())))))
   }
 
   @Test
@@ -132,15 +133,14 @@ class CastTest {
       .castOrNull(type(natTypeLine))
       .assertEqualTo(
         compiled(
-          expression(
-            tuple(
-              line(
+          compiled(
+            line(
                 field(
                   "nat",
                   selectCompiled(
                     line(the("zero" lineTo compiled())),
-                    line(not("previous" lineTo type(natTypeLine)))))))),
-          type(natTypeLine)))
+                    line(not("previous" lineTo type(natTypeLine)))))),
+            natTypeLine)))
   }
 
   @Test

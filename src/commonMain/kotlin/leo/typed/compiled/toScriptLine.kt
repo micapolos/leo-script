@@ -1,10 +1,9 @@
 package leo.typed.compiled
 
+import leo.Empty
 import leo.IndexVariable
 import leo.Script
 import leo.ScriptLine
-import leo.bindName
-import leo.bindingName
 import leo.functionName
 import leo.lineTo
 import leo.literal
@@ -28,12 +27,16 @@ fun <V> Expression<V>.toScript(fn: (V) -> ScriptLine): Script =
     is ApplyExpression -> apply.toScript(fn)
     is SelectExpression -> select.toScript(fn)
     is SwitchExpression -> switch.toScript(fn)
-    is TupleExpression -> tuple.toScript(fn)
     is ContentExpression -> content.toScript(fn)
-    is BindExpression -> bind.toScript(fn)
+//    is BindExpression -> bind.toScript(fn)
     is VariableExpression -> variable.toScript(fn)
     is LinkExpression -> link.toScript(fn)
+    is EmptyExpression -> empty.toScript(fn)
   }
+
+@Suppress("unused")
+fun <V> Empty.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
+  script()
 
 fun <V> Apply<V>.toScript(fn: (V) -> ScriptLine): Script =
   script(lhs.toScriptLine(fn))
@@ -48,17 +51,11 @@ fun <V> Switch<V>.toScript(fn: (V) -> ScriptLine): Script =
   script(lhs.toScriptLine(fn))
     .plus("switch" lineTo caseStack.map { toScriptLine(fn) }.script)
 
-fun <V> Tuple<V>.toScript(fn: (V) -> ScriptLine): Script =
-  script("tuple" lineTo lineStack.map { toScriptLine(fn) }.script)
-
 fun <V> Link<V>.toScript(fn: (V) -> ScriptLine): Script =
   lhsCompiled.expression.toScript(fn).plus(rhsCompiledLine.line.toScriptLine(fn))
 
 fun <V> Content<V>.toScript(fn: (V) -> ScriptLine): Script =
   script("content" lineTo script(lhs.toScriptLine(fn)))
-
-fun <V> IndexVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
-  script("variable" lineTo script(literal(index)))
 
 fun <V> Line<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
   when (this) {
@@ -78,15 +75,15 @@ fun <V> Function<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     "parameter" lineTo script(paramType.scriptLine),
     body.toScriptLine(fn))
 
-fun <V> Bind<V>.toScript(fn: (V) -> ScriptLine): Script =
-  script(
-    binding.toScriptLine(fn),
-    bindName lineTo script(compiled.toScriptLine(fn)))
-
-fun <V> Binding<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
-  bindingName lineTo script(
-    type.scriptLine,
-    compiled.toScriptLine(fn))
+//fun <V> Bind<V>.toScript(fn: (V) -> ScriptLine): Script =
+//  script(
+//    binding.toScriptLine(fn),
+//    bindName lineTo script(compiled.toScriptLine(fn)))
+//
+//fun <V> Binding<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
+//  bindingName lineTo script(
+//    type.scriptLine,
+//    compiled.toScriptLine(fn))
 
 fun <V> Get<V>.toScriptLine(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): ScriptLine =
   "get" lineTo script(
@@ -98,8 +95,8 @@ fun <V> Body<V>.toScriptLine(fn: (V) -> ScriptLine): ScriptLine =
     compiled.toScriptLine(fn),
     "recursive" lineTo script(isRecursive.yesNoName))
 
-fun <V> TypeVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
+fun <V> IndexVariable.toScript(@Suppress("UNUSED_PARAMETER") fn: (V) -> ScriptLine): Script =
   script(toScriptLine)
 
-val TypeVariable.toScriptLine: ScriptLine get() =
-  "variable" lineTo script(type.scriptLine)
+val IndexVariable.toScriptLine: ScriptLine get() =
+  "variable" lineTo script(literal(index))

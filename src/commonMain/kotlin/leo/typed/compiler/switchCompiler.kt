@@ -67,7 +67,7 @@ fun <V> SwitchCompiler<V>.plus(field: ScriptField): SwitchCompiler<V> =
         .orIfNull { compileError(script("doing")) }
         .let { rhs ->
           module
-            .runIf(!isSimple) { plus(binding(given(type(remainingCaseStackLink.head)))) }
+            .runIf(!isSimple) { plus(given(type(remainingCaseStackLink.head))) }
             .compiled(rhs)
             .let { caseCompiled ->
               caseCompiled.type.also {

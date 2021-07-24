@@ -8,8 +8,10 @@ import leo.base.filterMap
 import leo.base.mapFirstOrNull
 import leo.base.orIfNull
 import leo.base.the
+import leo.fold
 import leo.matchPrefix
 import leo.repeatingName
+import leo.reverse
 import leo.seq
 import leo.staticScriptOrNull
 import leo.type
@@ -18,6 +20,7 @@ import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.body
 import leo.typed.compiled.castOrNull
+import leo.typed.compiled.compileStructure
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.recursive
 import leo.typed.indexed.script
@@ -40,6 +43,9 @@ fun <V> Module<V>.updateTypesBlock(fn: (Block<Types>) -> Block<Types>): Module<V
 
 fun <V> Module<V>.plus(binding: Binding): Module<V> =
   copy(context = context.plus(binding))
+
+fun <V> Module<V>.plus(given: TypeGiven): Module<V> =
+  fold(given.type.compileStructure.lineStack.reverse) { plus(binding(given(it))) }
 
 fun <V> Module<V>.type(script: Script): Type =
   inTypesBlock { typeLocal ->

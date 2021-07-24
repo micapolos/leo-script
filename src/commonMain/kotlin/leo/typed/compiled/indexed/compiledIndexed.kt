@@ -1,25 +1,29 @@
 package leo.typed.compiled.indexed
 
-import leo.EmptyStack
-import leo.LinkStack
+import leo.Empty
+import leo.IndexVariable
 import leo.array
 import leo.base.map
 import leo.base.mapIndexed
-import leo.base.runIf
 import leo.base.stack
 import leo.empty
-import leo.get
 import leo.getFromBottom
 import leo.isSimple
 import leo.lineCount
 import leo.map
-import leo.name
+import leo.onlyOrNull
 import leo.pushAll
 import leo.seq
 import leo.size
 import leo.stack
-import leo.type
+import leo.typed.compiled.ApplyExpression
 import leo.typed.compiled.Compiled
+import leo.typed.compiled.ContentExpression
+import leo.typed.compiled.EmptyExpression
+import leo.typed.compiled.LinkExpression
+import leo.typed.compiled.SelectExpression
+import leo.typed.compiled.SwitchExpression
+import leo.typed.compiled.VariableExpression
 import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.indexedLineOrNull
 import leo.typed.indexed.Expression
@@ -40,43 +44,42 @@ import leo.typed.indexed.tuple
 import leo.variable
 
 val <V> Compiled<V>.indexedExpression: Expression<V> get() =
-  indexedExpression(scope())
+  expression.indexedExpression
 
-fun <V> Compiled<V>.indexedExpression(scope: Scope): Expression<V> =
-  expression.indexedExpression(scope)
-
-fun <V> leo.typed.compiled.Expression<V>.indexedExpression(scope: Scope): Expression<V> =
+val <V> leo.typed.compiled.Expression<V>.indexedExpression: Expression<V> get() =
   when (this) {
-    is leo.typed.compiled.ApplyExpression -> apply.indexedExpression(scope)
-    is leo.typed.compiled.SelectExpression -> select.indexedExpression(scope)
-    is leo.typed.compiled.SwitchExpression -> switch.indexedExpression(scope)
-    is leo.typed.compiled.TupleExpression -> tuple.indexedExpression(scope)
-    is leo.typed.compiled.ContentExpression -> content.indexedExpression(scope)
-    is leo.typed.compiled.BindExpression -> bind.indexedExpression(scope)
-    is leo.typed.compiled.VariableExpression -> variable.indexedExpression(scope)
-    is leo.typed.compiled.LinkExpression -> link.indexedExpression(scope)
+    is ApplyExpression -> apply.indexedExpression
+    is SelectExpression -> select.indexedExpression
+    is SwitchExpression -> switch.indexedExpression
+    is ContentExpression -> content.indexedExpression
+    is VariableExpression -> variable.indexedExpression()
+    is LinkExpression -> link.indexedExpression
+    is EmptyExpression -> empty.indexedExpression()
   }
 
-fun <V> leo.typed.compiled.Line<V>.indexedExpression(scope: Scope): Expression<V> =
+fun <V> Empty.indexedExpression(): Expression<V> =
+  expression(this)
+
+val <V> leo.typed.compiled.Line<V>.indexedExpression: Expression<V> get() =
   when (this) {
-    is leo.typed.compiled.FieldLine -> field.indexedExpression(scope)
-    is leo.typed.compiled.FunctionLine -> function.indexedExpression(scope)
-    is leo.typed.compiled.GetLine -> get.indexedExpression(scope)
+    is leo.typed.compiled.FieldLine -> field.indexedExpression
+    is leo.typed.compiled.FunctionLine -> function.indexedExpression
+    is leo.typed.compiled.GetLine -> get.indexedExpression
     is leo.typed.compiled.NativeLine -> nativeExpression(native)
   }
 
-fun <V> leo.typed.compiled.Apply<V>.indexedExpression(scope: Scope): Expression<V> =
-  lhs.indexedFragment(scope).let { fragment ->
+val <V> leo.typed.compiled.Apply<V>.indexedExpression: Expression<V> get() =
+  lhs.indexedFragment.let { fragment ->
     when (fragment.tail.arity) {
       0 ->
         expression(
           invoke(
-            rhs.indexedExpression(scope),
+            rhs.indexedExpression,
             *fragment.tuple.expressionStack.array))
       1 ->
         expression(
           invoke(
-            rhs.indexedExpression(scope),
+            rhs.indexedExpression,
             fragment.tail.expression,
             *fragment.tuple.expressionStack.array))
       else ->
@@ -87,7 +90,7 @@ fun <V> leo.typed.compiled.Apply<V>.indexedExpression(scope: Scope): Expression<
                 1,
                 expression(
                   invoke(
-                    rhs.indexedExpression(scope),
+                    rhs.indexedExpression,
                     *stack(*0.until(fragment.tail.arity).map { expression<V>(variable(0)).get(it) }.toTypedArray())
                       .pushAll(fragment.tuple.expressionStack)
                       .array)))),
@@ -95,28 +98,28 @@ fun <V> leo.typed.compiled.Apply<V>.indexedExpression(scope: Scope): Expression<
     }
   }
 
-fun <V> leo.typed.compiled.Select<V>.indexedExpression(scope: Scope): Expression<V> =
-  if (choice.isSimple) indexExpression(scope)
-  else expression(indexExpression(scope), case.line.indexedExpression(scope))
+val <V> leo.typed.compiled.Select<V>.indexedExpression: Expression<V> get() =
+  if (choice.isSimple) indexExpression
+  else expression(indexExpression, case.line.indexedExpression)
 
-fun <V> leo.typed.compiled.Select<V>.indexExpression(@Suppress("UNUSED_PARAMETER") scope: Scope): Expression<V> =
+val <V> leo.typed.compiled.Select<V>.indexExpression: Expression<V> get() =
   choice.indexedLineOrNull(case.name)!!.let {
     if (choice.lineStack.size == 2) expression(it.index == 0)
     else expression(it.index)
   }
 
-fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression<V> =
+val <V> leo.typed.compiled.Switch<V>.indexedExpression: Expression<V> get() =
   lhs.compiledChoice.let { compiledChoice ->
     if (compiledChoice.choice.isSimple)
       if (compiledChoice.choice.lineStack.size == 2)
-        compiledChoice.expression.indexedExpression(scope).ifThenElse(
-          caseStack.getFromBottom(0)!!.indexedExpression(scope),
-          caseStack.getFromBottom(1)!!.indexedExpression(scope))
+        compiledChoice.expression.indexedExpression.ifThenElse(
+          caseStack.getFromBottom(0)!!.indexedExpression,
+          caseStack.getFromBottom(1)!!.indexedExpression)
       else
-        compiledChoice.expression.indexedExpression(scope)
-          .switch(*caseStack.map { indexedExpression(scope) }.array)
+        compiledChoice.expression.indexedExpression
+          .switch(*caseStack.map { indexedExpression }.array)
     else
-      compiledChoice.expression.indexedExpression(scope).indirect {
+      compiledChoice.expression.indexedExpression.indirect {
         if (compiledChoice.choice.lineStack.size == 2)
           it.get(0)
             .ifThenElse(
@@ -125,16 +128,13 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
                   1,
                   caseStack
                     .getFromBottom(0)!!
-                    .indexedExpression(
-                      scope.plus(type(compiledChoice.choice.lineStack.getFromBottom(0)!!.name))))),
+                    .indexedExpression)),
               expression(
                 function(
                   1,
                   caseStack
                     .getFromBottom(1)!!
-                    .indexedExpression(
-                      scope.plus(
-                        type(compiledChoice.choice.lineStack.getFromBottom(1)!!.name))))))
+                    .indexedExpression)))
             .invoke(it.get(1))
         else
           it.get(0)
@@ -143,7 +143,7 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
                 .seq
                 .mapIndexed
                 .map {
-                  expression(function(1, value.indexedExpression(scope.plus(type(compiledChoice.choice.lineStack.get(index)!!.name)))))
+                  expression(function(1, value.indexedExpression))
                 }
                 .stack
                 .array)
@@ -151,39 +151,31 @@ fun <V> leo.typed.compiled.Switch<V>.indexedExpression(scope: Scope): Expression
       }
   }
 
-fun <V> leo.typed.compiled.Tuple<V>.indexedExpression(scope: Scope): Expression<V> =
-  indexedTuple(scope).let { tuple ->
-    when (tuple.expressionStack) {
-      is EmptyStack -> expression(empty)
-      is LinkStack ->
-        when (tuple.expressionStack.link.tail) {
-          is EmptyStack -> tuple.expressionStack.link.head
-          is LinkStack -> expression(tuple)
-        }
-    }
-  }
+val <V> Compiled<V>.indexedFragment: ExpressionFragment<V> get() =
+  expression.indexedFragment(type.lineCount)
 
-fun <V> leo.typed.compiled.Tuple<V>.indexedTuple(scope: Scope): ExpressionTuple<V> =
-  ExpressionTuple(lineStack.map { indexedExpression(scope) })
-
-fun <V> Compiled<V>.indexedFragment(scope: Scope): ExpressionFragment<V> =
-  expression.indexedFragment(scope, type.lineCount)
-
-fun <V> leo.typed.compiled.Expression<V>.indexedFragment(scope: Scope, arity: Int): ExpressionFragment<V> =
+fun <V> leo.typed.compiled.Expression<V>.indexedFragment(arity: Int): ExpressionFragment<V> =
   when (this) {
-    is leo.typed.compiled.TupleExpression ->
-      ExpressionFragment(ExpressionTail(expression(empty), 0), tuple.indexedTuple(scope))
     is leo.typed.compiled.LinkExpression ->
-      link.indexedFragment(scope)
+      link.indexedFragment
     else ->
-      ExpressionFragment(ExpressionTail(indexedExpression(scope), arity), ExpressionTuple(stack()))
+      ExpressionFragment(ExpressionTail(indexedExpression, arity), ExpressionTuple(stack()))
   }
 
-fun <V> leo.typed.compiled.Link<V>.indexedExpression(scope: Scope): Expression<V> =
-  indexedFragment(scope).let { fragment ->
+val <V> leo.typed.compiled.Link<V>.indexedExpression: Expression<V> get() =
+  indexedFragment.let { fragment ->
     when (fragment.tail.arity) {
-      0 -> expression(fragment.tuple)
-      1 -> expression(tuple(fragment.tail.expression, *fragment.tuple.expressionStack.array))
+      0 ->
+        when (fragment.tuple.expressionStack.size) {
+          0 -> expression(empty)
+          1 -> fragment.tuple.expressionStack.onlyOrNull!!
+          else -> expression(fragment.tuple)
+        }
+      1 ->
+        when (fragment.tuple.expressionStack.size) {
+          0 -> fragment.tail.expression
+          else -> expression(tuple(fragment.tail.expression, *fragment.tuple.expressionStack.array))
+        }
       else ->
         expression(
           invoke(
@@ -199,38 +191,35 @@ fun <V> leo.typed.compiled.Link<V>.indexedExpression(scope: Scope): Expression<V
     }
   }
 
-fun <V> leo.typed.compiled.Link<V>.indexedFragment(scope: Scope): ExpressionFragment<V> =
-  lhsCompiled.expression.indexedFragment(scope, lhsCompiled.type.lineCount)
-    .plus(rhsCompiledLine.line.indexedExpression(scope))
+val <V> leo.typed.compiled.Link<V>.indexedFragment: ExpressionFragment<V> get() =
+  lhsCompiled.expression.indexedFragment(lhsCompiled.type.lineCount)
+    .plus(rhsCompiledLine.line.indexedExpression)
 
-fun <V> leo.typed.compiled.Field<V>.indexedExpression(scope: Scope): Expression<V> =
-  rhs.indexedExpression(scope)
+val <V> leo.typed.compiled.Field<V>.indexedExpression: Expression<V> get() =
+  rhs.indexedExpression
 
-fun <V> leo.typed.compiled.Get<V>.indexedExpression(scope: Scope): Expression<V> =
+val <V> leo.typed.compiled.Get<V>.indexedExpression: Expression<V> get() =
   when (lhs.type.lineCount) {
-    0 -> lhs.indexedExpression(scope)
-    1 -> lhs.indexedExpression(scope)
-    else -> lhs.indexedExpression(scope).get(index)
+    0 -> lhs.indexedExpression
+    1 -> lhs.indexedExpression
+    else -> lhs.indexedExpression.get(index)
   }
 
-fun <V> leo.typed.compiled.Content<V>.indexedExpression(scope: Scope): Expression<V> =
-  lhs.indexedExpression(scope)
+val <V> leo.typed.compiled.Content<V>.indexedExpression: Expression<V> get() =
+  lhs.indexedExpression
 
-fun <V> leo.typed.compiled.Function<V>.indexedExpression(scope: Scope): Expression<V> =
+val <V> leo.typed.compiled.Function<V>.indexedExpression: Expression<V> get() =
   function(
     paramType.lineCount,
-    body.compiled.indexedExpression(
-      scope
-        .runIf(body.isRecursive) { plus(paramType) }
-        .plusNames(paramType)))
+    body.compiled.indexedExpression)
     .let { function ->
     if (body.isRecursive) expression(recursive(function))
     else expression(function)
   }
 
-fun <V> leo.typed.compiled.Bind<V>.indexedExpression(scope: Scope): Expression<V> =
-  expression(function(1, compiled.indexedExpression(scope.plus(binding.type))))
-    .invoke(binding.compiled.indexedExpression(scope))
+//fun <V> leo.typed.compiled.Bind<V>.indexedExpression(scope: Scope): Expression<V> =
+//  expression(function(1, compiled.indexedExpression(scope.plus(binding.type))))
+//    .invoke(binding.compiled.indexedExpression(scope))
 
-fun <V> leo.typed.compiled.TypeVariable.indexedExpression(scope: Scope): Expression<V> =
-  expression(scope.indexVariable(this))
+fun <V> IndexVariable.indexedExpression(): Expression<V> =
+  expression(variable(index))

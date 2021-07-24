@@ -4,56 +4,56 @@ import leo.base.assertEqualTo
 import leo.base.assertFails
 import leo.base.assertNotNull
 import leo.base.assertNull
-import leo.functionType
+import leo.functionLineTo
 import leo.lineTo
 import leo.numberTypeLine
-import leo.structure
 import leo.textTypeLine
 import leo.type
+import leo.variable
 import kotlin.test.Test
 
 class DslTest {
   @Test
   fun empty() {
     compiled(
-      "x" lineTo nativeCompiled(10, type(numberTypeLine)),
-      "y" lineTo nativeCompiled(20, type(numberTypeLine)))
+      "x" lineTo nativeCompiled(10, numberTypeLine),
+      "y" lineTo nativeCompiled(20, numberTypeLine))
       .assertNotNull
   }
 
   @Test
   fun apply() {
-    nativeCompiled("num", type(numberTypeLine))
-      .apply(nativeCompiled("fn", functionType(type(numberTypeLine), type(textTypeLine))))
+    nativeCompiled("num", numberTypeLine)
+      .apply(nativeCompiled("fn", type(numberTypeLine) functionLineTo type(textTypeLine)))
       .assertEqualTo(
         compiled(
           expression(
             apply(
-              nativeCompiled("num", type(numberTypeLine)),
-              nativeCompiled("fn", functionType(type(numberTypeLine), type(textTypeLine))))),
+              nativeCompiled("num", numberTypeLine),
+              nativeCompiled("fn", type(numberTypeLine) functionLineTo type(textTypeLine)))),
           type(textTypeLine)))
   }
 
   @Test
   fun apply_notFunction() {
     assertFails {
-      nativeCompiled("num", type(numberTypeLine))
-        .apply(nativeCompiled("fn", type(numberTypeLine)))
+      nativeCompiled("num", numberTypeLine)
+        .apply(nativeCompiled("fn", numberTypeLine))
     }
   }
 
   @Test
   fun apply_typeMismatch() {
     assertFails {
-      nativeCompiled("num", type(numberTypeLine))
-        .apply(nativeCompiled("fn", functionType(type(textTypeLine), type(numberTypeLine))))
+      nativeCompiled("num", numberTypeLine)
+        .apply(nativeCompiled("fn", type(textTypeLine) functionLineTo type(numberTypeLine)))
     }
   }
 
   @Test
   fun do_() {
-    nativeCompiled("number", type(numberTypeLine))
-      .do_(body(nativeCompiled("text", type(textTypeLine))))
+    nativeCompiled("number", numberTypeLine)
+      .do_(body(nativeCompiled("text", textTypeLine)))
       .assertNotNull
   }
 
@@ -79,7 +79,7 @@ class DslTest {
   @Test
   fun lineAtIndex_notTuple() {
     val compiled = compiled(
-      expression<Unit>(variable(type("foo"))),
+      expression<Unit>(variable(0)),
       type(
         "x" lineTo type("zero"),
         "y" lineTo type("one")))
@@ -120,7 +120,7 @@ class DslTest {
   @Test
   fun getOrNull_lines() {
     val compiled = compiled(
-      expression<Unit>(variable(type("foo"))),
+      expression<Unit>(variable(0)),
       type(
         "x" lineTo type("zero"),
         "y" lineTo type("one")))
@@ -141,7 +141,7 @@ class DslTest {
   @Test
   fun getOrNull_inner() {
     val compiled = compiled(
-      expression<Unit>(variable(type("foo"))),
+      expression<Unit>(variable(0)),
       type(
         "point" lineTo type(
           "x" lineTo type("zero"),
@@ -163,7 +163,7 @@ class DslTest {
   @Test
   fun getOrNull_twoLevelsInner() {
     val compiled = compiled(
-      expression<Unit>(variable(type("foo"))),
+      expression<Unit>(variable(0)),
       type(
         "my" lineTo type(
           "point" lineTo type(
@@ -184,36 +184,13 @@ class DslTest {
   }
 
   @Test
-  fun compiledTupleOrNull_tuple() {
-    compiled(
-      "x" lineTo compiled("zero"),
-      "y" lineTo compiled<Unit>("one"))
-      .compiledTupleOrNull
-      .assertEqualTo(
-        compiledTuple(
-          "x" lineTo compiled("zero"),
-          "y" lineTo compiled("one")))
-  }
-
-  @Test
-  fun compiledTupleOrNull_expression_singleLine() {
-    val compiled = compiled(
-      expression<Unit>(variable(type("foo"))),
-      type("x" lineTo type("zero")))
-
-    compiled
-      .compiledTupleOrNull
-      .assertEqualTo(compiled(tuple(line(get(compiled, 0))), structure("x" lineTo type("zero"))))
-  }
-
-  @Test
   fun indirect() {
     compiled<Unit>("foo")
       .indirect { compiled("bar" lineTo it) }
       .assertEqualTo(
         fn(
           type("foo"),
-          compiled("bar" lineTo compiledVariable<Unit>(type("foo"), type("foo"))))
+          compiled("bar" lineTo compiledVariable<Unit>(0, type("foo"))))
           .invoke(compiled("foo")))
   }
 

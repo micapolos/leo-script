@@ -21,7 +21,7 @@ val <V> Compiler<V>.toScriptLine: ScriptLine get() =
 val <V> Block<V>.toScriptLine: ScriptLine get() =
   "block" lineTo script(
     module.toScriptLine,
-    "typed" lineTo bindingStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
+    "param" lineTo compiledStack.listScriptLine { toScriptLine(context.environment.scriptLineFn) }.script)
 
 val <V> Module<V>.toScriptLine: ScriptLine get() =
   "module" lineTo script(
@@ -50,5 +50,5 @@ val Binding.toScriptLine: ScriptLine get() =
 val Constant.scriptLine: ScriptLine get() =
   "constant" lineTo lhsType.script.plus(beingName lineTo rhsType.script)
 
-val TypeGiven.scriptLine: ScriptLine get() =
-  "given" lineTo type.script
+val TypeLineGiven.scriptLine: ScriptLine get() =
+  "given" lineTo script(typeLine.scriptLine)

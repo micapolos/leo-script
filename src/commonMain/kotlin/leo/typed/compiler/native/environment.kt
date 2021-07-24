@@ -36,36 +36,36 @@ val nativeEnvironment: Environment<Native>
 val Compiled<Native>.resolveOrNull: Compiled<Native>? get() =
   when (type) {
     type(nativeNumberTypeLine, "plus" lineTo nativeNumberType) ->
-      nativeCompiled(DoublePlusDoubleNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoublePlusDoubleNative, type functionLineTo nativeNumberType).invoke(this)
     type(nativeNumberTypeLine, "minus" lineTo nativeNumberType) ->
-      nativeCompiled(DoubleMinusDoubleNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleMinusDoubleNative, type functionLineTo nativeNumberType).invoke(this)
     type(nativeNumberTypeLine, "times" lineTo nativeNumberType) ->
-      nativeCompiled(DoubleTimesDoubleNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleTimesDoubleNative, type functionLineTo nativeNumberType).invoke(this)
     type(nativeNumberTypeLine, "divided" lineTo type("by" lineTo nativeNumberType)) ->
-      nativeCompiled(DoubleDividedByDoubleNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleDividedByDoubleNative, type functionLineTo nativeNumberType).invoke(this)
     type(numberName lineTo type("pi")) ->
-      nativeCompiled(PiDoubleNative, nativeNumberType)
+      nativeCompiled(PiDoubleNative, nativeNumberTypeLine)
     type(numberName lineTo type("e")) ->
-      nativeCompiled(EDoubleNative, nativeNumberType)
+      nativeCompiled(EDoubleNative, nativeNumberTypeLine)
     type("root" lineTo nativeNumberType) ->
-      nativeCompiled(DoubleRootNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleRootNative, type functionLineTo nativeNumberType).invoke(this)
     type("sinus" lineTo nativeNumberType) ->
-      nativeCompiled(DoubleSinusNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleSinusNative, type functionLineTo nativeNumberType).invoke(this)
     type("cosinus" lineTo nativeNumberType) ->
-      nativeCompiled(DoubleCosinusNative, type(type functionLineTo nativeNumberType)).invoke(this)
+      nativeCompiled(DoubleCosinusNative, type functionLineTo nativeNumberType).invoke(this)
     type(nativeNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (nativeNumberType)))) ->
-      nativeCompiled(DoubleIsLessThanDoubleNative, type(type functionLineTo isType)).invoke(this)
+      nativeCompiled(DoubleIsLessThanDoubleNative, type functionLineTo isType).invoke(this)
     type(nativeTextTypeLine, "plus" lineTo nativeTextType) ->
-      nativeCompiled(StringPlusStringNative, type(type functionLineTo nativeTextType)).invoke(this)
+      nativeCompiled(StringPlusStringNative, type functionLineTo nativeTextType).invoke(this)
     type("length" lineTo nativeTextType) ->
-      nativeCompiled(StringLengthNative, type(type functionLineTo type("length" lineTo nativeNumberType))).invoke(this)
+      nativeCompiled(StringLengthNative, type functionLineTo type("length" lineTo nativeNumberType)).invoke(this)
     type(textName lineTo nativeNumberType) ->
-      nativeCompiled(DoubleStringNative, type(type functionLineTo nativeTextType)).invoke(this)
+      nativeCompiled(DoubleStringNative, type functionLineTo nativeTextType).invoke(this)
     else -> infix(isName) { isLhs, isRhs ->
       isRhs.prefix(equalName) { isEqualRhs ->
         isEqualRhs.prefix(toName) { isEqualToRhs ->
           compiled(isLhs.onlyCompiledLine).as_(compiled(isEqualToRhs.onlyCompiledLine).type).let {
-            nativeCompiled(ObjectEqualsObjectNative, type(type functionLineTo isType)).invoke(this)
+            nativeCompiled(ObjectEqualsObjectNative, type functionLineTo isType).invoke(this)
           }
         }
       }

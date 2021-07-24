@@ -1,73 +1,63 @@
 package leo.typed.compiler
 
+import leo.IndexVariable
 import leo.Type
 import leo.TypeFunction
+import leo.TypeLine
 import leo.atom
 import leo.base.notNullIf
 import leo.line
-import leo.lineOrNull
 import leo.name
 import leo.nameOrNull
-import leo.onlyFieldOrNull
-import leo.onlyLineOrNull
-import leo.structureOrNull
 import leo.type
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.expression
-import leo.typed.compiled.getOrNull
 import leo.typed.compiled.invoke
-import leo.typed.compiled.variable
+import leo.variable
 
 sealed class Binding
-data class GivenBinding(val given: TypeGiven) : Binding()
+data class GivenBinding(val given: TypeLineGiven) : Binding()
 data class ConstantBinding(val constant: Constant) : Binding()
 data class FunctionBinding(val function: TypeFunction) : Binding()
 
 data class TypeGiven(val type: Type)
+data class TypeLineGiven(val typeLine: TypeLine)
 
 fun binding(constant: Constant): Binding = ConstantBinding(constant)
 fun binding(function: TypeFunction): Binding = FunctionBinding(function)
-fun binding(given: TypeGiven): Binding = GivenBinding(given)
+fun binding(given: TypeLineGiven): Binding = GivenBinding(given)
 
 fun given(type: Type) = TypeGiven(type)
+fun given(typeLine: TypeLine) = TypeLineGiven(typeLine)
 
-fun <V> Binding.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
+fun <V> Binding.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   when (this) {
-    is FunctionBinding -> function.resolveOrNull(compiled)
-    is ConstantBinding -> constant.resolveOrNull(compiled)
-    is GivenBinding -> given.resolveOrNull(compiled)
+    is FunctionBinding -> function.resolveOrNull(variable, compiled)
+    is ConstantBinding -> constant.resolveOrNull(variable, compiled)
+    is GivenBinding -> given.resolveOrNull(variable, compiled)
   }
 
-fun <V> TypeFunction.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
+fun <V> TypeFunction.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   notNullIf(compiled.type == lhsType) {
-    compiled(expression<V>(variable(lhsType)), type(line(atom(this)))).invoke(compiled)
+    compiled(expression<V>(variable), type(line(atom(this)))).invoke(compiled)
   }
 
-fun <V> TypeGiven.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
+fun <V> TypeLineGiven.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   compiled.type.nameOrNull?.let { name ->
-    type.onlyLineOrNull.let { onlyLineOrNull ->
-      if (onlyLineOrNull != null)
-        onlyLineOrNull.name.let { lineName ->
-          compiled(expression<V>(variable(type(lineName))), type).let { compiled ->
-            if (name != lineName) compiled.getOrNull(name)
-            else compiled
-          }
-        }
-      else
-        type.structureOrNull?.lineOrNull(name)?.let { typeLine ->
-          compiled(expression(variable(type(typeLine.name))), type(typeLine))
-        }
+    notNullIf(typeLine.name == name) {
+      compiled(expression(variable), type(typeLine))
     }
+    // TODO: Deep resolve!!!
   }
 
 val Binding.rhsType: Type get() =
   when (this) {
     is ConstantBinding -> constant.rhsType
     is FunctionBinding -> function.rhsType
-    is GivenBinding -> given.type
+    is GivenBinding -> type(given.typeLine)
   }
 
 fun <V> Binding.compiledChoiceOrNull(): CompiledChoice<V>? =
@@ -77,7 +67,5 @@ fun <V> Binding.compiledChoiceOrNull(): CompiledChoice<V>? =
     is GivenBinding -> given.compiledChoice()
   }
 
-fun <V> TypeGiven.compiledChoice(): CompiledChoice<V> =
-  type.onlyFieldOrNull!!.let { typeField ->
-    compiled(expression<V>(variable(type(typeField.name))), type).compiledChoice
-  }
+fun <V> TypeLineGiven.compiledChoice(): CompiledChoice<V> =
+  compiled(expression<V>(variable(0)), type(typeLine)).compiledChoice

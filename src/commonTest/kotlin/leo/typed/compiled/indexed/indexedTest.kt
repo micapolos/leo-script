@@ -1,17 +1,14 @@
 package leo.typed.compiled.indexed
 
+import leo.typed.indexed.expression as indexedExpression
 import leo.base.assertEqualTo
 import leo.empty
 import leo.functionLineTo
 import leo.lineTo
-import leo.numberName
-import leo.numberTypeLine
-import leo.textName
 import leo.textType
+import leo.textTypeLine
 import leo.type
 import leo.typed.compiled.apply
-import leo.typed.compiled.bind
-import leo.typed.compiled.binding
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.compiledVariable
@@ -27,14 +24,12 @@ import leo.typed.compiled.nativeNumberCompiledLine
 import leo.typed.compiled.not
 import leo.typed.compiled.switch
 import leo.typed.compiled.the
-import leo.typed.compiled.variable
 import leo.typed.compiler.native.Native
 import leo.typed.compiler.native.native
 import leo.typed.compiler.native.nativeNumberType
 import leo.typed.compiler.native.nativeNumberTypeLine
 import leo.typed.compiler.native.nativeTextType
 import leo.typed.compiler.native.nativeTextTypeLine
-import leo.typed.indexed.expression
 import leo.typed.indexed.function
 import leo.typed.indexed.get
 import leo.typed.indexed.ifThenElse
@@ -51,7 +46,7 @@ class IndexedTest {
   fun empty() {
     compiled<Nothing>()
       .indexedExpression
-      .assertEqualTo(expression(empty))
+      .assertEqualTo(indexedExpression(empty))
   }
 
   @Test
@@ -65,7 +60,7 @@ class IndexedTest {
   fun multiLine() {
     compiled(nativeCompiledLine("foo"), nativeCompiledLine("bar"))
       .indexedExpression
-      .assertEqualTo(expression(nativeExpression("foo"), nativeExpression("bar")))
+      .assertEqualTo(indexedExpression(nativeExpression("foo"), nativeExpression("bar")))
   }
 
   @Test
@@ -79,45 +74,46 @@ class IndexedTest {
   fun function_constant() {
     fn(nativeNumberType, nativeCompiled("foo", nativeTextTypeLine))
       .indexedExpression
-      .assertEqualTo(expression(function(1, nativeExpression("foo"))))
+      .assertEqualTo(indexedExpression(function(1, nativeExpression("foo"))))
   }
 
   @Test
   fun function_typeVariable() {
     fn(
       type("x" lineTo type("one"), "y" lineTo type("two")),
-      compiled(expression<Nothing>(variable(type("x"))), type("x" lineTo type("one"))))
+      compiled(expression<Nothing>(variable(1)), type("x" lineTo type("one"))))
       .indexedExpression
-      .assertEqualTo(expression(function(2, expression(variable(1)))))
+      .assertEqualTo(indexedExpression(function(2, indexedExpression(variable(1)))))
 
     fn(
       type("x" lineTo type("one"), "y" lineTo type("two")),
-      compiled(expression<Nothing>(variable(type("y"))), type("y" lineTo type("two"))))
+      compiled(expression<Nothing>(variable(0)), type("y" lineTo type("two"))))
       .indexedExpression
-      .assertEqualTo(expression(function(2, expression(variable(0)))))
+      .assertEqualTo(indexedExpression(function(2, indexedExpression(variable(0)))))
   }
 
   @Test
   fun function_variables() {
     fn(
       type(nativeNumberTypeLine, nativeTextTypeLine),
-      compiledVariable<String>(type(numberName), nativeNumberType))
+      compiledVariable<String>(1, nativeNumberType))
       .indexedExpression
-      .assertEqualTo(expression(function(2, expression(variable(1)))))
+      .assertEqualTo(indexedExpression(function(2, indexedExpression(variable(1)))))
 
     fn(
       type(nativeNumberTypeLine, nativeTextTypeLine),
-      compiledVariable<String>(type(textName), nativeNumberType))
+      compiledVariable<String>(0, nativeNumberType))
       .indexedExpression
-      .assertEqualTo(expression(function(2, expression(variable(0)))))
+      .assertEqualTo(indexedExpression(function(2, indexedExpression(variable(0)))))
   }
 
   @Test
   fun functionInvoke() {
-    fn(nativeTextType, compiledVariable<Nothing>(type(textName), nativeNumberType))
+    fn(nativeTextType, compiledVariable<Nothing>(0, nativeNumberType))
       .invoke(nativeCompiled("foo", nativeTextTypeLine))
       .indexedExpression
-      .assertEqualTo(expression(function(1, expression<String>(variable(0)))).invoke(nativeExpression("foo")))
+      .assertEqualTo(
+        indexedExpression(function(1, indexedExpression<String>(variable(0)))).invoke(nativeExpression("foo")))
   }
 
   @Test
@@ -127,14 +123,14 @@ class IndexedTest {
       .not("no" lineTo type())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(true))
+      .assertEqualTo(indexedExpression(true))
 
     compiledSelect<String>()
       .not("yes" lineTo type())
       .the("no" lineTo compiled())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(false))
+      .assertEqualTo(indexedExpression(false))
   }
 
   @Test
@@ -145,7 +141,7 @@ class IndexedTest {
       .not("maybe" lineTo type())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(0))
+      .assertEqualTo(indexedExpression(0))
 
     compiledSelect<String>()
       .not("yes" lineTo type())
@@ -153,7 +149,7 @@ class IndexedTest {
       .not("maybe" lineTo type())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(1))
+      .assertEqualTo(indexedExpression(1))
 
     compiledSelect<String>()
       .not("yes" lineTo type())
@@ -161,7 +157,7 @@ class IndexedTest {
       .the("maybe" lineTo compiled())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(2))
+      .assertEqualTo(indexedExpression(2))
   }
 
   @Test
@@ -171,14 +167,14 @@ class IndexedTest {
       .not(nativeTextTypeLine)
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(expression(true), nativeExpression(10)))
+      .assertEqualTo(indexedExpression(indexedExpression(true), nativeExpression(10)))
 
     compiledSelect<String>()
       .not(nativeTextTypeLine)
       .the(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(expression(false), nativeExpression(10)))
+      .assertEqualTo(indexedExpression(indexedExpression(false), nativeExpression(10)))
   }
 
   @Test
@@ -189,7 +185,7 @@ class IndexedTest {
       .not(type() functionLineTo type())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(expression(0), nativeExpression(10)))
+      .assertEqualTo(indexedExpression(indexedExpression(0), nativeExpression(10)))
 
     compiledSelect<String>()
       .not(nativeTextTypeLine)
@@ -197,7 +193,7 @@ class IndexedTest {
       .not(type() functionLineTo type())
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(expression(1), nativeExpression(10)))
+      .assertEqualTo(indexedExpression(indexedExpression(1), nativeExpression(10)))
 
     compiledSelect<String>()
       .not(nativeTextTypeLine)
@@ -205,7 +201,7 @@ class IndexedTest {
       .the(nativeCompiledLine(10, nativeNumberTypeLine))
       .compiled
       .indexedExpression
-      .assertEqualTo(expression(expression(2), nativeExpression(10)))
+      .assertEqualTo(indexedExpression(indexedExpression(2), nativeExpression(10)))
   }
 
   @Test
@@ -217,11 +213,11 @@ class IndexedTest {
         .compiled)
       .switch(
         textType,
-        nativeCompiled("OK", textType),
-        nativeCompiled("fail", textType))
+        nativeCompiled("OK", textTypeLine),
+        nativeCompiled("fail", textTypeLine))
       .indexedExpression
       .assertEqualTo(
-        expression<String>(true)
+        indexedExpression<String>(true)
           .ifThenElse(
             nativeExpression("OK"),
             nativeExpression("fail")))
@@ -237,12 +233,12 @@ class IndexedTest {
         .compiled)
       .switch(
         textType,
-        nativeCompiled("OK", textType),
-        nativeCompiled("fail", textType),
-        nativeCompiled("maybe", textType))
+        nativeCompiled("OK", textTypeLine),
+        nativeCompiled("fail", textTypeLine),
+        nativeCompiled("maybe", textTypeLine))
       .indexedExpression
       .assertEqualTo(
-        expression<String>(0)
+        indexedExpression<String>(0)
           .switch(
             nativeExpression("OK"),
             nativeExpression("fail"),
@@ -258,17 +254,17 @@ class IndexedTest {
         .compiled)
       .switch(
         textType,
-        compiledVariable(type("yes"), type("yes" lineTo nativeNumberType)),
-        compiledVariable(type("no"), type("no" lineTo nativeNumberType)))
+        compiledVariable(0, type("yes" lineTo nativeNumberType)),
+        compiledVariable(0, type("no" lineTo nativeNumberType)))
       .indexedExpression
       .assertEqualTo(
-        expression(expression(true), nativeExpression(10.0.native))
+        indexedExpression(indexedExpression(true), nativeExpression(10.0.native))
           .indirect { lhs ->
             lhs
               .get(0)
               .ifThenElse(
-                expression(function(1, expression(variable(0)))),
-                expression(function(1, expression(variable(0)))))
+                indexedExpression(function(1, indexedExpression(variable(0)))),
+                indexedExpression(function(1, indexedExpression(variable(0)))))
               .invoke(lhs.get(1))
           })
   }
@@ -283,44 +279,32 @@ class IndexedTest {
         .compiled)
       .switch(
         textType,
-        compiledVariable(type("yes"), type("yes" lineTo nativeNumberType)),
-        compiledVariable(type("maybe"), type("maybe" lineTo nativeNumberType)),
-        compiledVariable(type("no"), type("no" lineTo nativeNumberType)))
+        compiledVariable(0, type("yes" lineTo nativeNumberType)),
+        compiledVariable(0, type("maybe" lineTo nativeNumberType)),
+        compiledVariable(0, type("no" lineTo nativeNumberType)))
       .indexedExpression
       .assertEqualTo(
-        expression(expression(0), nativeExpression(10.0.native))
+        indexedExpression(indexedExpression(0), nativeExpression(10.0.native))
           .indirect { lhs ->
             lhs
               .get(0)
               .switch(
-                expression(function(1, expression(variable(0)))),
-                expression(function(1, expression(variable(0)))),
-                expression(function(1, expression(variable(0)))))
+                indexedExpression(function(1, indexedExpression(variable(0)))),
+                indexedExpression(function(1, indexedExpression(variable(0)))),
+                indexedExpression(function(1, indexedExpression(variable(0)))))
               .invoke(lhs.get(1))
           })
   }
 
   @Test
-  fun bind() {
-    compiled(
-      expression(
-        bind(
-          binding(type("foo"), nativeCompiled("bar")),
-          compiled(expression(variable(type("foo"))), type("bar")))),
-      type("bar"))
-      .indexedExpression(scope())
-      .assertEqualTo(expression(function(1, expression<String>(variable(0)))).invoke(nativeExpression("bar")))
-  }
-
-  @Test
   fun variable() {
-    expression<Unit>(variable(type("one")))
-      .indexedExpression(scope(type("one"), type("two")))
-      .assertEqualTo(expression(variable(1)))
+    expression<Unit>(variable(1))
+      .indexedExpression
+      .assertEqualTo(indexedExpression(variable(1)))
 
-    expression<Unit>(variable(type("two")))
-      .indexedExpression(scope(type("one"), type("two")))
-      .assertEqualTo(expression(variable(0)))
+    expression<Unit>(variable(0))
+      .indexedExpression
+      .assertEqualTo(indexedExpression(variable(0)))
   }
 
   @Test
@@ -328,7 +312,7 @@ class IndexedTest {
     compiled<Native>()
       .linkPlus(nativeNumberCompiledLine(10.0.native))
       .indexedExpression
-      .assertEqualTo(expression(tuple(nativeExpression(10.0.native))))
+      .assertEqualTo(nativeExpression(10.0.native))
   }
 
   @Test
@@ -337,57 +321,60 @@ class IndexedTest {
       .linkPlus(nativeNumberCompiledLine(10.0.native))
       .linkPlus(nativeNumberCompiledLine(20.0.native))
       .indexedExpression
-      .assertEqualTo(expression(tuple(nativeExpression(10.0.native), nativeExpression(20.0.native))))
+      .assertEqualTo(indexedExpression(tuple(nativeExpression(10.0.native), nativeExpression(20.0.native))))
   }
 
   @Test
   fun line_plusLine() {
-    compiled(expression<Native>(variable(type("foo"))), nativeNumberType)
+    compiled(expression<Native>(variable(0)), nativeNumberType)
       .linkPlus(nativeNumberCompiledLine(10.0.native))
-      .indexedExpression(scope(type("foo")))
-      .assertEqualTo(expression(tuple(expression(variable(0)), nativeExpression(10.0.native))))
+      .indexedExpression
+      .assertEqualTo(indexedExpression(tuple(indexedExpression(variable(0)), nativeExpression(10.0.native))))
   }
 
   @Test
   fun twoLines_plusLine() {
-    compiled(expression<Native>(variable(type("foo"))), type(nativeNumberTypeLine, nativeTextTypeLine))
+    compiled(expression<Native>(variable(0)), type(nativeNumberTypeLine, nativeTextTypeLine))
       .linkPlus(nativeNumberCompiledLine(10.0.native))
-      .indexedExpression(scope(type("foo")))
+      .indexedExpression
       .assertEqualTo(
-        expression(
+        indexedExpression(
           invoke(
-            expression(
+            indexedExpression(
               function(
                 1,
-                expression(
+                indexedExpression(
                   tuple(
-                    expression<Native>(variable(0)).get(0),
-                    expression<Native>(variable(0)).get(1),
+                    indexedExpression<Native>(variable(0)).get(0),
+                    indexedExpression<Native>(variable(0)).get(1),
                     nativeExpression(10.0.native))))),
-            expression(variable(0)))))
+            indexedExpression(variable(0)))))
   }
 
   @Test
   fun invoke() {
-    compiled(expression<Native>(variable(type("foo"))), type(nativeNumberTypeLine, nativeTextTypeLine))
+    compiled(expression<Native>(variable(128)), type(nativeNumberTypeLine, nativeTextTypeLine))
       .linkPlus(nativeNumberCompiledLine(10.0.native))
       .apply(
-        compiled(
-          expression(variable(type("fn"))),
-          type(type(nativeNumberTypeLine, nativeTextTypeLine, nativeNumberTypeLine) functionLineTo type(numberTypeLine))))
-      .indexedExpression(scope(type("foo"), type("fn")))
+        fn(
+          type(nativeNumberTypeLine, nativeTextTypeLine, nativeNumberTypeLine),
+          compiled("foo")))
+      .indexedExpression
       .assertEqualTo(
-        expression(
+        indexedExpression(
           invoke(
-            expression(
+            indexedExpression(
               function(
                 1,
-                expression(
+                indexedExpression(
                   invoke(
-                    expression(variable(0)),
-                    expression<Native>(variable(0)).get(0),
-                    expression<Native>(variable(0)).get(1),
+                    indexedExpression(
+                      function(
+                        3,
+                        indexedExpression(empty))),
+                    indexedExpression<Native>(variable(0)).get(0),
+                    indexedExpression<Native>(variable(0)).get(1),
                     nativeExpression(10.0.native))))),
-            expression(variable(1)))))
+            indexedExpression(variable(128)))))
   }
 }

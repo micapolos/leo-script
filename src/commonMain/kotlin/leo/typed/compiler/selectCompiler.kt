@@ -18,7 +18,7 @@ import leo.theName
 import leo.typed.compiled.CompiledLine
 import leo.typed.compiled.CompiledSelect
 import leo.typed.compiled.not
-import leo.typed.compiled.onlyCompiledLineOrNull
+import leo.typed.compiled.onlyLineOrNull
 import leo.typed.compiled.the
 
 data class SelectCompiler<V>(
@@ -44,7 +44,7 @@ fun <V> SelectCompiler<V>.plusOrNull(scriptField: ScriptField): SelectCompiler<V
   }
 
 fun <V> SelectCompiler<V>.the(script: Script): SelectCompiler<V> =
-  module.compiled(script).onlyCompiledLineOrNull
+  module.compiled(script).onlyLineOrNull
     ?.let { the(it) }
     ?: compileError(script(pickName lineTo script))
 

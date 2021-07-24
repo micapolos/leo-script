@@ -62,7 +62,7 @@ import leo.typed.compiled.line
 import leo.typed.compiled.lineTo
 import leo.typed.compiled.make
 import leo.typed.compiled.onlyCompiledLine
-import leo.typed.compiled.onlyCompiledLineOrNull
+import leo.typed.compiled.onlyLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
 import leo.typed.compiler.python.pythonEnvironment
@@ -180,7 +180,7 @@ fun <V> Compiler<V>.have(rhs: Compiled<V>): Compiler<V> =
 fun <V> Compiler<V>.functionDoing(lhs: Script, rhs: Script): Compiler<V> =
   block.module.type(lhs).let { lhsType ->
     block.module
-      .plus(binding(given(lhsType)))
+      .plus(given(lhsType))
       .compiled(rhs)
       .let { bodyCompiled ->
         set(
@@ -197,7 +197,7 @@ fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
       block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(lhsType functionTo rhsType))
-          .plus(binding(given(lhsType)))
+          .plus(given(lhsType))
           .compiled(rhs)
           .as_(rhsType)
           .let { bodyCompiled ->
@@ -213,7 +213,7 @@ fun <V> Compiler<V>.functionRepeating(lhs: Script, rhs: Script): Compiler<V> =
 
 fun <V> Compiler<V>.do_(script: Script): Compiler<V> =
   block.module
-    .plus(binding(given(compiled.type)))
+    .plus(given(compiled.type))
     .compiled(script)
     .let { bodyCompiled ->
       apply(
@@ -229,7 +229,7 @@ fun <V> Compiler<V>.repeat(script: Script): Compiler<V> =
       block.module.type(givingRhs).let { rhsType ->
         block.module
           .plus(binding(compiled.type functionTo rhsType))
-          .plus(binding(given(compiled.type)))
+          .plus(given(compiled.type))
           .compiled(doingRhs)
           .as_(rhsType)
           .let { bodyCompiled ->
@@ -293,7 +293,7 @@ fun <V> Compiler<V>.quote(script: Script): Compiler<V> =
   else set(environment.staticCompiled(script))
 
 fun <V> Compiler<V>.the(script: Script): Compiler<V> =
-  block.module.compiled(script).onlyCompiledLineOrNull?.let { plus(it) }
+  block.module.compiled(script).onlyLineOrNull?.let { plus(it) }
     ?: compileError(script(theName lineTo script))
 
 fun <V> Compiler<V>.word(script: Script): Compiler<V> =
