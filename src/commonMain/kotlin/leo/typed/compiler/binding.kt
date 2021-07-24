@@ -15,6 +15,7 @@ import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.expression
+import leo.typed.compiled.getOrNull
 import leo.typed.compiled.invoke
 import leo.variable
 
@@ -40,6 +41,13 @@ fun <V> Binding.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): C
     is GivenBinding -> given.resolveOrNull(variable, compiled)
   }
 
+fun <V> Binding.resolveDeepOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
+  when (this) {
+    is FunctionBinding -> function.resolveOrNull(variable, compiled)
+    is ConstantBinding -> constant.resolveOrNull(variable, compiled)
+    is GivenBinding -> given.resolveDeepOrNull(variable, compiled)
+  }
+
 fun <V> TypeFunction.resolveOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
   notNullIf(compiled.type == lhsType) {
     compiled(expression<V>(variable), type(line(atom(this)))).invoke(compiled)
@@ -51,6 +59,11 @@ fun <V> TypeLineGiven.resolveOrNull(variable: IndexVariable, compiled: Compiled<
       compiled(expression(variable), type(typeLine))
     }
     // TODO: Deep resolve!!!
+  }
+
+fun <V> TypeLineGiven.resolveDeepOrNull(variable: IndexVariable, compiled: Compiled<V>): Compiled<V>? =
+  compiled.type.nameOrNull?.let { name ->
+    compiled(expression<V>(variable), type(typeLine)).getOrNull(name)
   }
 
 val Binding.rhsType: Type get() =

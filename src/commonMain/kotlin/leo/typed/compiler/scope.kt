@@ -19,7 +19,11 @@ fun Scope.plus(binding: Binding): Scope =
   bindingStack.push(binding).let(::Scope)
 
 fun <V> Scope.resolveOrNull(compiled: Compiled<V>): Compiled<V>? =
-  bindingStack.seq.mapIndexed.mapFirstOrNull { value.resolveOrNull(variable(index), compiled) }
+  bindingStack.seq.mapIndexed.run {
+    null
+      ?: mapFirstOrNull { value.resolveOrNull(variable(index), compiled) }
+      ?: mapFirstOrNull { value.resolveDeepOrNull(variable(index), compiled) }
+  }
 
 fun <V> Scope.resolve(compiled: Compiled<V>): Compiled<V> =
   resolveOrNull(compiled) ?: compiled
