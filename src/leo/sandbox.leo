@@ -1,6 +1,6 @@
-point
-  x 10
-  y 20
-  z 30
-x.number
-
+julia
+  point
+    x 10
+    y 20
+    z 30
+  do x.number

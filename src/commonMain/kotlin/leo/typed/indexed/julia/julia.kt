@@ -105,13 +105,13 @@ fun ExpressionTuple<Julia>.julia(scope: Scope): Julia =
   tupleJulia(*expressionStack.map { julia(scope) }.array)
 
 fun ExpressionGet<Julia>.julia(scope: Scope): Julia =
-  lhs.julia(scope).get(julia(index))
+  lhs.julia(scope).get(julia(index.inc()))
 
 fun Boolean.julia(@Suppress("UNUSED_PARAMETER") scope: Scope): Julia =
   julia(this)
 
 fun Int.julia(@Suppress("UNUSED_PARAMETER") scope: Scope): Julia =
-  julia(this.inc())
+  julia(inc())
 
 fun ExpressionConditional<Julia>.julia(scope: Scope): Julia =
   condition.julia(scope).ifThenElse(trueCase.julia(scope), falseCase.julia(scope))
