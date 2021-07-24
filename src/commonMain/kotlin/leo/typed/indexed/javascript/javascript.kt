@@ -79,6 +79,8 @@ fun ExpressionInvoke<Javascript>.javascript(scope: Scope): Javascript =
       javascript("(${paramStack.getFromBottom(0)!!.javascript(scope).string}==${paramStack.getFromBottom(1)!!.javascript(scope).string})")
     nativeExpression(javascript("((x,y)=>x<y)")) ->
       javascript("(${paramStack.getFromBottom(0)!!.javascript(scope).string}<${paramStack.getFromBottom(1)!!.javascript(scope).string})")
+    nativeExpression(javascript("(s=>s.length)")) ->
+      javascript("${paramStack.getFromBottom(0)!!.javascript(scope).string}.length")
     else -> lhs.javascript(scope).invoke(*paramStack.map { javascript(scope) }.array)
   }
 

@@ -46,23 +46,23 @@ val Compiled<Javascript>.resolveOrNull: Compiled<Javascript>? get() =
     type(javascriptNumberTypeLine, "divided" lineTo type("by" lineTo javascriptNumberType)) ->
       nativeCompiled(javascript("((x,y)=>x/y)"), type functionLineTo javascriptNumberType).invoke(this)
     type(numberName lineTo type("pi")) ->
-      nativeCompiled(javascript("pi"), javascriptNumberTypeLine)
+      nativeCompiled(javascript("Math.PI"), javascriptNumberTypeLine)
     type(numberName lineTo type("e")) ->
-      nativeCompiled(javascript("exp(1)"), javascriptNumberTypeLine)
+      nativeCompiled(javascript("Math.E"), javascriptNumberTypeLine)
     type("root" lineTo javascriptNumberType) ->
-      nativeCompiled(javascript("sqrt"), type functionLineTo javascriptNumberType).invoke(this)
+      nativeCompiled(javascript("Math.sqrt"), type functionLineTo javascriptNumberType).invoke(this)
     type("sinus" lineTo javascriptNumberType) ->
-      nativeCompiled(javascript("sin"), type functionLineTo javascriptNumberType).invoke(this)
+      nativeCompiled(javascript("Math.sin"), type functionLineTo javascriptNumberType).invoke(this)
     type("cosinus" lineTo javascriptNumberType) ->
-      nativeCompiled(javascript("cos"), type functionLineTo javascriptNumberType).invoke(this)
+      nativeCompiled(javascript("Math.cos"), type functionLineTo javascriptNumberType).invoke(this)
     type(javascriptNumberTypeLine, "is" lineTo type("less" lineTo type("than" lineTo (javascriptNumberType)))) ->
       nativeCompiled(javascript("((x,y)=>x<y)"), type functionLineTo isType).invoke(this)
     type(javascriptTextTypeLine, "plus" lineTo javascriptTextType) ->
       nativeCompiled(javascript("((x,y)=>x+y)"), type functionLineTo javascriptTextType).invoke(this)
     type(textName lineTo javascriptNumberType) ->
-      nativeCompiled(javascript("string"), type functionLineTo javascriptTextType).invoke(this)
+      nativeCompiled(javascript("String"), type functionLineTo javascriptTextType).invoke(this)
     type("length" lineTo javascriptTextType) ->
-      nativeCompiled(javascript("length"), type functionLineTo type("length" lineTo javascriptNumberType)).invoke(this)
+      nativeCompiled(javascript("(s=>s.length)"), type functionLineTo type("length" lineTo javascriptNumberType)).invoke(this)
     else ->
       infix(isName) { isLhs, isRhs ->
         isRhs.prefix(equalName) { isEqualRhs ->
