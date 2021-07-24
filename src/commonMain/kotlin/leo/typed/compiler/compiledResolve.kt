@@ -7,11 +7,11 @@ import leo.lineTo
 import leo.plus
 import leo.script
 import leo.typed.compiled.Compiled
-import leo.typed.compiled.content
 import leo.typed.compiled.getOrNull
 import leo.typed.compiled.infix
 import leo.typed.compiled.invoke
 import leo.typed.compiled.prefix
+import leo.typed.compiled.rhs
 
 val <V> Compiled<V>.resolvedOrNull: Compiled<V>?
   get() =
@@ -26,7 +26,7 @@ val <V> Compiled<V>.resolveApplyOrNull: Compiled<V>?
 
 val <V> Compiled<V>.resolveContentOrNull: Compiled<V>?
   get() =
-    prefix(contentName) { it.content }
+    prefix(contentName) { it.rhs }
 
 val <V> Compiled<V>.resolveGetOrNull: Compiled<V>?
   get() =

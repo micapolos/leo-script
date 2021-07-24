@@ -4,24 +4,29 @@ import leo.DebugError
 import leo.FieldScriptLine
 import leo.Literal
 import leo.LiteralScriptLine
+import leo.NumberLiteral
 import leo.Script
 import leo.ScriptField
 import leo.ScriptLine
+import leo.StringLiteral
 import leo.Type
 import leo.asName
 import leo.base.fold
 import leo.base.reverse
 import leo.beName
 import leo.commentName
+import leo.contentName
 import leo.debugName
 import leo.doName
 import leo.doingName
+import leo.exactIntOrNull
 import leo.exampleName
 import leo.fieldOrNull
 import leo.fold
 import leo.functionLineTo
 import leo.functionName
 import leo.functionTo
+import leo.getName
 import leo.givingName
 import leo.haveName
 import leo.isEmpty
@@ -34,6 +39,7 @@ import leo.matchInfix
 import leo.matchPrefix
 import leo.nameStackOrNull
 import leo.onlyLineOrNull
+import leo.onlyNameOrNull
 import leo.quoteName
 import leo.repeatName
 import leo.repeatingName
@@ -56,6 +62,7 @@ import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.do_
 import leo.typed.compiled.function
+import leo.typed.compiled.get
 import leo.typed.compiled.have
 import leo.typed.compiled.indexed.indexedExpression
 import leo.typed.compiled.line
@@ -65,6 +72,7 @@ import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.onlyLineOrNull
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
+import leo.typed.compiled.rhs
 import leo.typed.compiler.julia.juliaEnvironment
 import leo.typed.compiler.julia.scriptLine
 import leo.typed.compiler.python.pythonEnvironment
@@ -126,6 +134,7 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     doName -> do_(field.rhs)
     exampleName -> example(field.rhs)
     functionName -> function(field.rhs)
+    getName -> get(field.rhs)
     haveName -> have(field.rhs)
     letName -> let(field.rhs)
     makeName -> make(field.rhs)
@@ -177,6 +186,28 @@ fun <V> Compiler<V>.function(script: Script): Compiler<V> =
       else -> null
     }
   } ?: compileError(script(functionName lineTo script))
+
+fun <V> Compiler<V>.get(script: Script): Compiler<V> =
+  script.onlyLineOrNull?.let { line ->
+    when (line) {
+      is FieldScriptLine ->
+        line.field.onlyNameOrNull?.let { name -> get(name) }
+      is LiteralScriptLine ->
+        when (line.literal) {
+          is NumberLiteral -> line.literal.number.exactIntOrNull?.let { get(it.dec()) }
+          is StringLiteral -> null
+        }
+    }
+  }?: compileError(script("get" lineTo script))
+
+fun <V> Compiler<V>.get(index: Int): Compiler<V> =
+  set(compiled.get(index))
+
+fun <V> Compiler<V>.get(name: String): Compiler<V> =
+  when (name) {
+    contentName -> set(compiled.rhs)
+    else -> set(compiled.get(name))
+  }
 
 fun <V> Compiler<V>.have(script: Script): Compiler<V> =
   have(block.module.compiled(script))

@@ -1,5 +1,6 @@
 package leo
 
+import leo.base.orNullIf
 import kotlin.math.cos
 import kotlin.math.roundToLong
 import kotlin.math.sin
@@ -58,3 +59,6 @@ val Number.cosinus: Number
 val Number.string: String
   get() =
     toString()
+
+val Number.exactIntOrNull: Int? get() =
+  double.toInt().orNullIf { toDouble() != double }

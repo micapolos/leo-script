@@ -20,6 +20,7 @@ import leo.isEmpty
 import leo.line
 import leo.lineCount
 import leo.lineTo
+import leo.literal
 import leo.name
 import leo.onlyFieldOrNull
 import leo.onlyLineOrNull
@@ -108,17 +109,17 @@ fun <V> Compiled<V>.getOrNull(name: String): Compiled<V>? =
     ?: lineOrNull(name)?.let { compiled(it) }
     ?: rhsOrNull?.getOrNull(name)
 
-fun <V> Compiled<V>.get(name: String): Compiled<V> =
-  getOrNull(name)?:compileError(script("get"))
+fun <V> Compiled<V>.get(index: Int): Compiled<V> =
+  getOrNull(index)?:compileError(script("get" lineTo script("index" lineTo script(literal(index)))))
 
-fun <V> Compiled<V>.getLine(index: Int): CompiledLine<V> =
-  getLineOrNull(index) ?: compileError(script("get" lineTo script("line")))
+fun <V> Compiled<V>.get(name: String): Compiled<V> =
+  getOrNull(name)?:compileError(script("get" lineTo script("name" lineTo script(name))))
 
 fun <V> Compiled<V>.getLineOrNull(index: Int): CompiledLine<V>? =
   rhsOrNull?.line(index)
 
 fun <V> Compiled<V>.getOrNull(index: Int): Compiled<V>? =
-  getLineOrNull(index)?.let { compiled(it) }
+  lineOrNull(index)?.let { compiled(it) }
 
 val <V> Expression<V>.linkOrNull: Link<V>? get() =
   (this as? LinkExpression)?.link
