@@ -58,11 +58,11 @@ data class Link<out V>(val lhs: Compiled<V>, val rhsLine: CompiledLine<V>)
 
 object Content
 
-sealed class Op<out V>
-data class ContentOp<V>(val content: Content): Op<V>()
-data class AppendOp<V>(val append: CompiledLineAppend<V>): Op<V>()
-data class ApplyOp<V>(val apply: CompiledApply<V>): Op<V>()
-data class SwitchOp<V>(val switch: CompiledCases<V>): Op<V>()
+sealed class CompiledOp<out V>
+data class ContentCompiledOp<V>(val content: Content): CompiledOp<V>()
+data class AppendCompiledOp<V>(val append: CompiledLineAppend<V>): CompiledOp<V>()
+data class ApplyCompiledOp<V>(val apply: CompiledApply<V>): CompiledOp<V>()
+data class SwitchCompiledOp<V>(val switch: CompiledCases<V>): CompiledOp<V>()
 
 data class CompiledLineAppend<out V>(val line: CompiledLine<V>)
 data class CompiledApply<out V>(val compiled: Compiled<V>)
@@ -117,10 +117,10 @@ fun <V> apply(compiled: Compiled<V>) = CompiledApply(compiled)
 fun <V> compiledCases(vararg cases: Compiled<V>) = CompiledCases(stack(*cases))
 fun <V> cases(case: Compiled<V>, vararg cases: Compiled<V>) = CompiledCases(stack(case, *cases))
 
-fun <V> op(content: Content): Op<V> = ContentOp(content)
-fun <V> op(apply: CompiledApply<V>): Op<V> = ApplyOp(apply)
-fun <V> op(switch: CompiledCases<V>): Op<V> = SwitchOp(switch)
-fun <V> op(append: CompiledLineAppend<V>): Op<V> = AppendOp(append)
+fun <V> op(content: Content): CompiledOp<V> = ContentCompiledOp(content)
+fun <V> op(apply: CompiledApply<V>): CompiledOp<V> = ApplyCompiledOp(apply)
+fun <V> op(switch: CompiledCases<V>): CompiledOp<V> = SwitchCompiledOp(switch)
+fun <V> op(append: CompiledLineAppend<V>): CompiledOp<V> = AppendCompiledOp(append)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)
