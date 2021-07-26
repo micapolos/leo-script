@@ -64,7 +64,7 @@ data class OpTyped<out V>(val op: Op<V>, val type: Type)
 data class Fragment<out V>(val opTypedStack: Stack<OpTyped<V>>)
 
 sealed class Op<out V>
-data class CompiledOp<V>(val compiled: Compiled<V>): Op<V>()
+data class BeOp<V>(val be: FragmentBe<V>): Op<V>()
 data class GetOp<V>(val get: IndexGet): Op<V>()
 data class ContentOp<V>(val content: Content): Op<V>()
 data class AppendOp<V>(val append: CompiledLineAppend<V>): Op<V>()
@@ -80,6 +80,7 @@ data class CompiledApply<out V>(val compiled: Compiled<V>)
 data class CompiledCases<out V>(val caseStack: Stack<Compiled<V>>)
 data class CompiledBind<out V>(val compiled: Compiled<V>)
 data class CompiledThe<out V>(val compiled: Compiled<V>)
+data class FragmentBe<out V>(val fragment: Fragment<V>)
 
 sealed class CompiledSelectLine<out V>
 data class TheCompiledSelectLine<V>(val the: CompiledLineThe<V>): CompiledSelectLine<V>()
@@ -132,6 +133,7 @@ fun <V> cases(case: Compiled<V>, vararg cases: Compiled<V>) = CompiledCases(stac
 fun <V> bind(compiled: Compiled<V>) = CompiledBind(compiled)
 fun get(index: Int) = IndexGet(index)
 fun <V> the(compiled: Compiled<V>) = CompiledThe(compiled)
+fun <V> be(fragment: Fragment<V>) = FragmentBe(fragment)
 
 fun <V> fragment(vararg opTypeds: OpTyped<V>) = Fragment(stack(*opTypeds))
 fun <V> op(append: CompiledLineAppend<V>): Op<V> = AppendOp(append)
@@ -139,10 +141,10 @@ fun <V> op(get: IndexGet): Op<V> = GetOp(get)
 fun <V> op(content: Content): Op<V> = ContentOp(content)
 fun <V> op(apply: CompiledApply<V>): Op<V> = ApplyOp(apply)
 fun <V> op(switch: CompiledCases<V>): Op<V> = SwitchOp(switch)
-fun <V> op(compiled: Compiled<V>): Op<V> = CompiledOp(compiled)
 fun <V> op(select: Select<V>): Op<V> = SelectOp(select)
 fun <V> op(bind: CompiledBind<V>): Op<V> = BindOp(bind)
 fun <V> op(variable: IndexVariable): Op<V> = VariableOp(variable)
+fun <V> op(be: FragmentBe<V>): Op<V> = BeOp(be)
 fun <V> op(the: CompiledThe<V>): Op<V> = TheOp(the)
 
 fun <V> typed(op: Op<V>, type: Type) = OpTyped(op, type)

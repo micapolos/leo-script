@@ -59,6 +59,7 @@ import leo.typed.compiled.Fragment
 import leo.typed.compiled.append
 import leo.typed.compiled.apply
 import leo.typed.compiled.as_
+import leo.typed.compiled.be
 import leo.typed.compiled.body
 import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledChoice
@@ -408,7 +409,7 @@ fun <V> Compiler<V>.beFragment(script: Script): Fragment<V> =
   block.module.compiled(script).let { compiled ->
     fragment(
       typed(
-        op(block.module.compiled(script)),
+        op(be(block.module.fragment(script))),
         compiled.type))
   }
 

@@ -18,6 +18,7 @@ import leo.type
 import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledChoice
+import leo.typed.compiled.Fragment
 import leo.typed.compiled.body
 import leo.typed.compiled.castOrNull
 import leo.typed.compiled.compileStructure
@@ -79,3 +80,5 @@ val <V> Module<V>.typeSeq: Seq<Type> get() =
 
 fun <V> Module<V>.compiledChoice(): CompiledChoice<V> =
   context.compiledChoice()
+
+fun <V> Module<V>.fragment(script: Script): Fragment<V> = TODO()
