@@ -51,6 +51,7 @@ data class Select<out V>(val choice: TypeChoice, val case: Case<V>)
 data class Function<out V>(val paramType: Type, val body: Body<V>)
 data class Body<out V>(val compiled: Compiled<V>, val isRecursive: Boolean)
 data class Get<out V>(val lhs: Compiled<V>, val index: Int)
+data class IndexGet(val index: Int)
 data class Apply<out V>(val lhs: Compiled<V>, val rhs: Compiled<V>)
 data class Switch<out V>(val lhs: Compiled<V>, val caseStack: Stack<Compiled<V>>)
 data class CompiledContent<out V>(val lhs: Compiled<V>)
@@ -58,15 +59,27 @@ data class Link<out V>(val lhs: Compiled<V>, val rhsLine: CompiledLine<V>)
 
 object Content
 
-sealed class CompiledOp<out V>
-data class ContentCompiledOp<V>(val content: Content): CompiledOp<V>()
-data class AppendCompiledOp<V>(val append: CompiledLineAppend<V>): CompiledOp<V>()
-data class ApplyCompiledOp<V>(val apply: CompiledApply<V>): CompiledOp<V>()
-data class SwitchCompiledOp<V>(val switch: CompiledCases<V>): CompiledOp<V>()
+data class OpTyped<out V>(val op: Op<V>, val type: Type)
+
+data class Fragment<out V>(val opTypedStack: Stack<OpTyped<V>>)
+
+sealed class Op<out V>
+data class CompiledOp<V>(val compiled: Compiled<V>): Op<V>()
+data class GetOp<V>(val get: IndexGet): Op<V>()
+data class ContentOp<V>(val content: Content): Op<V>()
+data class AppendOp<V>(val append: CompiledLineAppend<V>): Op<V>()
+data class ApplyOp<V>(val apply: CompiledApply<V>): Op<V>()
+data class SwitchOp<V>(val switch: CompiledCases<V>): Op<V>()
+data class SelectOp<V>(val select: Select<V>): Op<V>()
+data class BindOp<V>(val bind: CompiledBind<V>): Op<V>()
+data class VariableOp<V>(val variable: IndexVariable): Op<V>()
+data class TheOp<V>(val the: CompiledThe<V>): Op<V>()
 
 data class CompiledLineAppend<out V>(val line: CompiledLine<V>)
 data class CompiledApply<out V>(val compiled: Compiled<V>)
 data class CompiledCases<out V>(val caseStack: Stack<Compiled<V>>)
+data class CompiledBind<out V>(val compiled: Compiled<V>)
+data class CompiledThe<out V>(val compiled: Compiled<V>)
 
 sealed class CompiledSelectLine<out V>
 data class TheCompiledSelectLine<V>(val the: CompiledLineThe<V>): CompiledSelectLine<V>()
@@ -116,11 +129,23 @@ fun <V> append(line: CompiledLine<V>) = CompiledLineAppend(line)
 fun <V> apply(compiled: Compiled<V>) = CompiledApply(compiled)
 fun <V> compiledCases(vararg cases: Compiled<V>) = CompiledCases(stack(*cases))
 fun <V> cases(case: Compiled<V>, vararg cases: Compiled<V>) = CompiledCases(stack(case, *cases))
+fun <V> bind(compiled: Compiled<V>) = CompiledBind(compiled)
+fun get(index: Int) = IndexGet(index)
+fun <V> the(compiled: Compiled<V>) = CompiledThe(compiled)
 
-fun <V> op(content: Content): CompiledOp<V> = ContentCompiledOp(content)
-fun <V> op(apply: CompiledApply<V>): CompiledOp<V> = ApplyCompiledOp(apply)
-fun <V> op(switch: CompiledCases<V>): CompiledOp<V> = SwitchCompiledOp(switch)
-fun <V> op(append: CompiledLineAppend<V>): CompiledOp<V> = AppendCompiledOp(append)
+fun <V> fragment(vararg opTypeds: OpTyped<V>) = Fragment(stack(*opTypeds))
+fun <V> op(append: CompiledLineAppend<V>): Op<V> = AppendOp(append)
+fun <V> op(get: IndexGet): Op<V> = GetOp(get)
+fun <V> op(content: Content): Op<V> = ContentOp(content)
+fun <V> op(apply: CompiledApply<V>): Op<V> = ApplyOp(apply)
+fun <V> op(switch: CompiledCases<V>): Op<V> = SwitchOp(switch)
+fun <V> op(compiled: Compiled<V>): Op<V> = CompiledOp(compiled)
+fun <V> op(select: Select<V>): Op<V> = SelectOp(select)
+fun <V> op(bind: CompiledBind<V>): Op<V> = BindOp(bind)
+fun <V> op(variable: IndexVariable): Op<V> = VariableOp(variable)
+fun <V> op(the: CompiledThe<V>): Op<V> = TheOp(the)
+
+fun <V> typed(op: Op<V>, type: Type) = OpTyped(op, type)
 
 infix fun <V> String.lineTo(compiled: Compiled<V>): CompiledLine<V> =
   compiled(line(field(this, compiled)), this lineTo compiled.type)

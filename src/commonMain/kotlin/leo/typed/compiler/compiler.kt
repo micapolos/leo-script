@@ -40,6 +40,7 @@ import leo.matchPrefix
 import leo.nameStackOrNull
 import leo.onlyLineOrNull
 import leo.onlyNameOrNull
+import leo.plus
 import leo.quoteName
 import leo.repeatName
 import leo.repeatingName
@@ -54,6 +55,8 @@ import leo.typed.compiled.Body
 import leo.typed.compiled.Compiled
 import leo.typed.compiled.CompiledChoice
 import leo.typed.compiled.CompiledLine
+import leo.typed.compiled.Fragment
+import leo.typed.compiled.append
 import leo.typed.compiled.apply
 import leo.typed.compiled.as_
 import leo.typed.compiled.body
@@ -61,6 +64,8 @@ import leo.typed.compiled.compiled
 import leo.typed.compiled.compiledChoice
 import leo.typed.compiled.compiledSelect
 import leo.typed.compiled.do_
+import leo.typed.compiled.fn
+import leo.typed.compiled.fragment
 import leo.typed.compiled.function
 import leo.typed.compiled.get
 import leo.typed.compiled.have
@@ -70,9 +75,11 @@ import leo.typed.compiled.lineTo
 import leo.typed.compiled.make
 import leo.typed.compiled.onlyCompiledLine
 import leo.typed.compiled.onlyLineOrNull
+import leo.typed.compiled.op
 import leo.typed.compiled.plus
 import leo.typed.compiled.recursive
 import leo.typed.compiled.rhs
+import leo.typed.compiled.typed
 import leo.typed.compiler.javascript.javascriptEnvironment
 import leo.typed.compiler.javascript.scriptLine
 import leo.typed.compiler.julia.juliaEnvironment
@@ -155,11 +162,11 @@ fun <V> Compiler<V>.plusSpecialOrNull(field: ScriptField): Compiler<V>? =
     else -> null
   }
 
-fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
-  as_(block.module.type(script))
-
 fun <V> Compiler<V>.be(script: Script): Compiler<V> =
   set(block.module.compiled(script))
+
+fun <V> Compiler<V>.as_(script: Script): Compiler<V> =
+  as_(block.module.type(script))
 
 fun <V> Compiler<V>.as_(type: Type): Compiler<V> =
   set(compiled.as_(type))
@@ -367,3 +374,130 @@ fun <V> Compiler<V>.plus(binding: Binding): Compiler<V> =
 
 val <V> Compiler<V>.begin: Compiler<V> get() =
   block.module.block.compiler
+
+fun <V> Compiler<V>.compiledFragment(scriptLine: ScriptLine): Fragment<V> =
+  when (scriptLine) {
+    is FieldScriptLine -> compiledFragment(scriptLine.field)
+    is LiteralScriptLine -> compiledFragment(scriptLine.literal)
+  }
+
+fun <V> Compiler<V>.compiledFragment(scriptField: ScriptField): Fragment<V> =
+  when (scriptField.name) {
+    asName -> asFragment(scriptField.rhs)
+    beName -> beFragment(scriptField.rhs)
+    commentName -> commentFragment(scriptField.rhs)
+    debugName -> debugFragment(scriptField.rhs)
+    doName -> doFragment(scriptField.rhs)
+    exampleName -> exampleFragment(scriptField.rhs)
+    functionName -> functionFragment(scriptField.rhs)
+    else -> TODO()
+  }
+
+fun <V> Compiler<V>.compiledFragment(literal: Literal): Fragment<V> =
+  context.environment.compiledLine(literal).let { compiledLine ->
+    fragment(
+      typed(
+        op(append(compiledLine)),
+        compiled.type.plus(compiledLine.typeLine)))
+  }
+
+fun <V> Compiler<V>.asFragment(script: Script): Fragment<V> =
+  compiled.as_(block.module.type(script)).let { fragment() }
+
+fun <V> Compiler<V>.beFragment(script: Script): Fragment<V> =
+  block.module.compiled(script).let { compiled ->
+    fragment(
+      typed(
+        op(block.module.compiled(script)),
+        compiled.type))
+  }
+
+@Suppress("unused")
+fun <V> Compiler<V>.commentFragment(@Suppress("UNUSED_PARAMETER") script: Script): Fragment<V> =
+  fragment()
+
+fun <V> Compiler<V>.debugFragment(@Suppress("UNUSED_PARAMETER") script: Script): Fragment<V> =
+  throw DebugError(script(toScriptLine))
+
+fun <V> Compiler<V>.doFragment(script: Script): Fragment<V> =
+  block.module
+    .plus(given(compiled.type))
+    .compiled(script)
+    .let { bodyCompiled ->
+      fragment(
+        typed(
+          op(leo.typed.compiled.apply(fn(compiled.type, bodyCompiled))),
+          bodyCompiled.type))
+    }
+
+fun <V> Compiler<V>.exampleFragment(script: Script): Fragment<V> =
+  block.module.compiled(script).let { fragment() }
+
+fun <V> Compiler<V>.functionFragment(script: Script): Fragment<V> =
+  script.matchInfix { lhs, name, rhs ->
+    when (name) {
+      doingName -> functionDoingFragment(lhs, rhs)
+      repeatingName -> functionRepeatingFragment(lhs, rhs)
+      else -> null
+    }
+  } ?: compileError(script(functionName lineTo script))
+
+fun <V> Compiler<V>.functionDoingFragment(lhs: Script, rhs: Script): Fragment<V> =
+  block.module.type(lhs).let { lhsType ->
+    block.module
+      .plus(given(lhsType))
+      .compiled(rhs)
+      .let { bodyCompiled ->
+        fragment(
+          typed(
+            op(
+              append(
+                compiled(
+                  line(function(lhsType, body(bodyCompiled))),
+                  lhsType functionLineTo bodyCompiled.type))),
+            compiled.type.plus(lhsType functionLineTo bodyCompiled.type)))
+      }
+  }
+
+fun <V> Compiler<V>.functionRepeatingFragment(lhs: Script, rhs: Script): Fragment<V> =
+  lhs.matchInfix(givingName) { givingLhs, givingRhs ->
+    block.module.type(givingLhs).let { lhsType ->
+      block.module.type(givingRhs).let { rhsType ->
+        block.module
+          .plus(binding(lhsType functionTo rhsType))
+          .plus(given(lhsType))
+          .compiled(rhs)
+          .as_(rhsType)
+          .let { bodyCompiled ->
+            fragment(
+              typed(
+                op(
+                  append(
+                    compiled(
+                      line(function(compiled.type, recursive(body(bodyCompiled)))),
+                      compiled.type functionLineTo rhsType))),
+                compiled.type.plus(compiled.type functionLineTo rhsType)))
+          }
+      }
+    }
+  } ?: compileError(script(functionName lineTo script(repeatingName)))
+
+fun <V> Compiler<V>.getFragment(script: Script): Fragment<V> =
+  script.onlyLineOrNull?.let { line ->
+    when (line) {
+      is FieldScriptLine ->
+        line.field.onlyNameOrNull?.let { name -> getFragment(name) }
+      is LiteralScriptLine ->
+        when (line.literal) {
+          is NumberLiteral -> line.literal.number.exactIntOrNull?.let { getFragment(it.dec()) }
+          is StringLiteral -> null
+        }
+    }
+  }?: compileError(script("get" lineTo script))
+
+fun <V> Compiler<V>.getFragment(index: Int): Fragment<V> =
+  TODO()
+
+fun <V> Compiler<V>.getFragment(name: String): Fragment<V> =
+  TODO()
+
